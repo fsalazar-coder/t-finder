@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
 import googleIcon from '../../public/images/google-icon.webp';
-import { IconCancel } from '../icons/icons';
+import { IconCancel } from '../../icons/icons';
+import { config } from 'dotenv';
 
 
 
@@ -33,13 +34,21 @@ export default function LoginModal(props: any) {
       (document.body.style.overflowY = 'hidden')
       : (document.body.style.overflowY = 'auto');
   }, [loginModal]);
-  
+
   const loginSubmitHandle = async (e: any) => {
     e.preventDefault();
-    setLoading(true);
+    setLoading(true);     //Ampliar
+
+    const config: any = {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true
+    };
+
     try {
       await axios
-        .post('/api/login', { email, password })
+        .post('/api/login', { email, password }, config)
         .then((response) => {
           if (response.data.accessToken) {
             let id = response.data.user.id;

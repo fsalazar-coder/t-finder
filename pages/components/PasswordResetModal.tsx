@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { IconCancel } from '../icons/icons';
+import { IconCancel } from '../../icons/icons';
 
 
 

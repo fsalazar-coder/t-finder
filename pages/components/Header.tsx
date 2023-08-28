@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Typewriter } from 'react-simple-typewriter';
-import { IconArrowRight } from '../icons/icons';
+import { IconArrowRight } from '../../icons/icons';
 
 
 

@@ -4,10 +4,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Cors from 'cors';
 import initMiddleware from '../../lib/init-middleware';
-import dotenv from 'dotenv';
 import { NextResponse } from 'next/server';
-
-dotenv.config();
 
 const cors = initMiddleware(
   Cors({
@@ -27,7 +24,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       console.log('Request metod is POST')
 
-      const client = await MongoClient.connect(process.env.DB_URI!);
+      if (!process.env.DB_URI) {
+        throw new Error("MONGODB_URI environment variable is not defined");
+      }
+
+      const client = await MongoClient.connect(process.env.DB_URI);
       const db = client.db();
 
       console.log('MongoClient Connected')
@@ -50,7 +51,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       };
       await db.collection('users').insertOne(user);
 
-      const token = jwt.sign({ email }, process.env.SECRET_KEY!);
+      if (!process.env.SECRET_KEY) {
+        throw new Error("SECRET_KEY environment variable is not defined");
+      }
+
+      const token = jwt.sign({ email }, process.env.SECRET_KEY);
 
       return NextResponse.json({ db });
     }

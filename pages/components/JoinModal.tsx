@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
 import googleIcon from '../../public/images/google-icon.webp';
-import { IconCancel } from '../icons/icons';
+import { IconCancel } from '../../icons/icons';
 
 
 
@@ -37,9 +37,17 @@ export default function JoinModal(props: any) {
   const handleSubmitJoin = async (e: any) => {
     e.preventDefault();
     setLoading(true);     //ampliar
+
+    const config: any = {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true
+    };
+
     try {
       await axios
-        .post('/api/register', { email, password })
+        .post('/api/register', { email, password }, config)
         .then((response: any) => {
           localStorage.setItem('token', response.data.token);
           props.successModalOpen();

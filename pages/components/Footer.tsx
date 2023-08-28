@@ -5,7 +5,7 @@ import {
   IconFacebook,
   IconInstagram,
   IconTwitter
-} from '../icons/icons';
+} from '../../icons/icons';
 
 
 
