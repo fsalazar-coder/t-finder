@@ -16,23 +16,25 @@ export default function NavbarTopSlider(props: any) {
       }`
     }>
       {
-        navbarTopSliderElementText.map((elementText: string, index: any) => {
-          return (
-            <li
-              key={index}
-              className='w-fit h-fit px-2 flex flex-row justify-center items-start list-none'>
-              <h2 className='w-full h-2/3 py-1 px-8 text-slate-50 hover:text-fuchsia-600 text-base lg:text-lg xl:text-xl font-light hover:font-bold tracking-wider flex flex-row justify-center items-center cursor-pointer transition-all'>
-                {elementText}
-              </h2>
-            </li>
-          )
-        })
+        navbarTopSliderElementText ?
+          navbarTopSliderElementText.map((elementText: string, index: any) => {
+            return (
+              <li
+                key={index}
+                className='w-fit h-fit px-2 flex flex-row justify-center items-start list-none'>
+                <h2 className='w-full h-2/3 py-1 px-8 text-slate-50 hover:text-fuchsia-600 text-base lg:text-lg xl:text-xl font-light hover:font-bold tracking-wider flex flex-row justify-center items-center cursor-pointer transition-all'>
+                  {elementText}
+                </h2>
+              </li>
+            )
+          })
+          : ''
       }
       <li
         key='login-navbar-buttom'
         className='w-fit h-fit px-2 flex flex-row justify-center items-start list-none'
         onClick={props.loginModalOpen}
-        >
+      >
         <h2 className='w-full h-2/3 py-1 px-8 text-slate-50 hover:text-fuchsia-600 text-base lg:text-lg xl:text-xl font-light hover:font-bold tracking-wider flex flex-row justify-center items-center cursor-pointer transition-all'>
           Login
         </h2>
@@ -41,7 +43,7 @@ export default function NavbarTopSlider(props: any) {
         key='join-navbar-buttom'
         className='w-fit h-fit px-2 flex flex-row justify-center items-start list-none'
         onClick={props.joinModalOpen}
-        >
+      >
         <h2 className='w-full h-2/3 py-1 px-8 text-slate-50 hover:text-fuchsia-600 text-base lg:text-lg xl:text-xl font-light hover:font-bold tracking-wider flex flex-row justify-center items-center cursor-pointer transition-all'>
           Join
         </h2>
