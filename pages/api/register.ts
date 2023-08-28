@@ -15,7 +15,7 @@ const cors = initMiddleware(
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  
+
   console.log('entrando a registro, TRY')
 
   try {
@@ -28,13 +28,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         throw new Error("MONGODB_URI environment variable is not defined");
       }
 
-      const client = await MongoClient.connect(process.env.DB_URI);
-      const db = client.db();
-
-      console.log('MongoClient Connected')
+      const client = new MongoClient(process.env.DB_URI);
+      await client.connect();
+      const db = await client.db("admin").command({ ping: 1 });      
+      console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
       const { email, password } = req.body;
-
       console.log(`Request body done, email: ${email} and password: ${password}`)
 
       const existingUser = await db.collection('users').findOne({ email });

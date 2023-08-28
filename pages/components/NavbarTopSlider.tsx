@@ -16,19 +16,17 @@ export default function NavbarTopSlider(props: any) {
       }`
     }>
       {
-        navbarTopSliderElementText ?
-          navbarTopSliderElementText.map((elementText: string, index: any) => {
-            return (
-              <li
-                key={index}
-                className='w-fit h-fit px-2 flex flex-row justify-center items-start list-none'>
-                <h2 className='w-full h-2/3 py-1 px-8 text-slate-50 hover:text-fuchsia-600 text-base lg:text-lg xl:text-xl font-light hover:font-bold tracking-wider flex flex-row justify-center items-center cursor-pointer transition-all'>
-                  {elementText}
-                </h2>
-              </li>
-            )
-          })
-          : ''
+        navbarTopSliderElementText?.map((elementText: string, index: any) => {
+          return (
+            <li
+              key={index}
+              className='w-fit h-fit px-2 flex flex-row justify-center items-start list-none'>
+              <h2 className='w-full h-2/3 py-1 px-8 text-slate-50 hover:text-fuchsia-600 text-base lg:text-lg xl:text-xl font-light hover:font-bold tracking-wider flex flex-row justify-center items-center cursor-pointer transition-all'>
+                {elementText}
+              </h2>
+            </li>
+          )
+        })
       }
       <li
         key='login-navbar-buttom'
