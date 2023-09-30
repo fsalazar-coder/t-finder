@@ -5,8 +5,12 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import LoginModal from "./components/LoginModal";
 import JoinModal from "./components/JoinModal";
-import SuccessModal from './components/SuccessModal'
+import MessageModal from './components/MessageModal';
 import PasswordResetModal from "./components/PasswordResetModal";
+import Presentation from "./components/Presentation";
+import Blog from "./components/Blog";
+import Testimonials from "./components/Testimonials";
+import Data from './data/data.json';
 
 
 
@@ -14,16 +18,16 @@ export default function Home() {
 
   const [loginModal, setLoginModal] = useState(false);
   const [joinModal, setJoinModal] = useState(false);
-  const [successModal, setSuccessModal] = useState(false);
+  const [messageModal, setMessageModal] = useState(false);
+  const [textMessageModal, setTextMessageModal] = useState(String);
   const [passwordResetModal, setPasswordResetModal] = useState(false);
-
   const [sectionActived, setSectionActived] = useState(String);                          /***State active section on viewport: string***/
   const [screenNarrow, setScreenNarrow] = useState(Boolean);                             /***State screen narrow: true or false***/
 
+
   const headerSectionRef: any = useRef(null),                                            /***Ref. to each section to animation and navbar-indicator position control***/
-    findTalentSectionRef: any = useRef(null),
-    findJobSectionRef: any = useRef(null),
-    aboutSectionRef: any = useRef(null),
+    talentSectionRef: any = useRef(null),
+    jobSectionRef: any = useRef(null),
     testimonialsSectionRef: any = useRef(null),
     blogSectionRef: any = useRef(null),
     contactSectionRef: any = useRef(null);
@@ -53,9 +57,8 @@ export default function Home() {
     });
     let sections: any[] = [                                                              /***Sections array to observer***/
       headerSectionRef.current,
-      findTalentSectionRef.current,
-      findJobSectionRef.current,
-      aboutSectionRef.current,
+      talentSectionRef.current,
+      jobSectionRef.current,
       testimonialsSectionRef.current,
       blogSectionRef.current,
       contactSectionRef.current
@@ -65,7 +68,7 @@ export default function Home() {
 
 
   return (
-    <main className='w-full h-auto relative font-montserrat select-none overflow-x-hidden'>
+    <main className='w-full h-full relative font-montserrat select-none overflow-hidden'>
 
       {/**navbar */}
       <div className='w-auto h-auto'>
@@ -92,63 +95,76 @@ export default function Home() {
         />
       </section>
 
-      {/***find talent section***/}
+      {/***talent section***/}
       <section
-        id='find-talent-section'
-        className='w-full h-[350px] sm:h-[420px] lg:h-[615px] bg-white'
-        ref={findTalentSectionRef}
+        id='talent-section'
+        className='w-full h-auto py-8 lg:h-[615px] lg:py-0 bg-white'
+        ref={talentSectionRef}
       >
-        FIND TALENT SECTION
+        <Presentation
+          xDirectionReverse={true}
+          sectionTitleWatermark='TALENT'
+          sectionTitle='We find the talent you need'
+          colorTitleDark={false}
+          image={Data.talent.image}
+          description={Data.talent.description}
+          textButton='Search talents'
+          joinModalOpen={() => setJoinModal(true)}
+        />
       </section>
 
-      {/**find job section */}
+      {/**job section */}
       <section
-        id='find-job-section'
-        className='w-full h-[350px] sm:h-[420px] lg:h-[615px] bg-gray-300'
-        ref={findJobSectionRef}
+        id='job-section'
+        className='w-full h-auto py-8 lg:h-[615px] lg:py-0 bg-slate-100'
+        ref={jobSectionRef}
       >
-        FIND JOB SECTION
-      </section>
-
-      {/***About us section***/}
-      <section
-        id='about-section'
-        className='w-full h-[350px] sm:h-[420px] lg:h-[615px] bg-white'
-        ref={aboutSectionRef}
-      >
-        ABOUT US SECTION
+        <Presentation
+          xDirectionReverse={false}
+          sectionTitleWatermark='JOB'
+          sectionTitle='We find the job that fits your requirements'
+          colorTitleDark={true}
+          image={Data.job.image}
+          description={Data.job.description}
+          textButton='Search job'
+          joinModalOpen={() => setJoinModal(true)}
+        />
       </section>
 
       {/**testimonials section */}
       <section
         id='testimonials-section'
-        className='w-full h-[350px] sm:h-[420px] lg:h-[615px] bg-gray-300'
+        className='w-full h-auto py-8 lg:h-[615px] bg-white'
         ref={testimonialsSectionRef}
       >
-        TESTOMONIALS SECTION
+        <Testimonials 
+          sectionTitleWatermark='TESTIMONIALS'
+          sectionTitle='What our users say'
+          colorTitleDark={false}
+          data={Data.testimonials}
+          testimonialsSectionActived={sectionActived === 'testimonials-section'}
+        />
       </section>
 
       {/**blog section */}
       <section
         id='blog-section'
-        className='w-full h-[350px] sm:h-[420px] lg:h-[615px] bg-white'
+        className='w-full h-auto py-8 lg:h-[615px] lg:py-0 bg-slate-100'
         ref={blogSectionRef}
       >
-        BLOG SECTION
-      </section>
-
-      {/**trusted section */}
-      <section
-        id='trusted-section'
-        className='w-full h-auto bg-gray-300'
-      >
-        TRUSTED
+        <Blog
+          sectionTitleWatermark='BLOG'
+          sectionTitle='Recent post'
+          colorTitleDark={true}
+          posters={Data.blog}
+          blogSectionActived={sectionActived === 'blog-section'}
+        />
       </section>
 
       {/***Contact section***/}
       <section
         id='footer-section'
-        className='w-full h-[350px] sm:h-[420px] lg:h-[615px]'
+        className='w-full h-auto'
         ref={contactSectionRef}
       >
         <Footer
@@ -165,7 +181,10 @@ export default function Home() {
           setLoginModal(true);
           setJoinModal(false)
         }}
-        successModalOpen={() => setSuccessModal(true)}
+        messageModalOpen={(e: any) => {
+          setMessageModal(true)
+          setTextMessageModal(e)
+        }}
       />
 
       {/**Hidden-visible login modal */}
@@ -180,6 +199,10 @@ export default function Home() {
           setLoginModal(false);
           setJoinModal(true)
         }}
+        messageModalOpen={(e: any) => {
+          setMessageModal(true)
+          setTextMessageModal(e)
+        }}
       />
 
       {/**Hidden-visible password-reset modal */}
@@ -189,10 +212,12 @@ export default function Home() {
       />
 
       {/**Hidden-visible success modal (join & password-reset)*/}
-      <SuccessModal
-        successModal={successModal}
-        successModalClose={() => setSuccessModal(false)}
+      <MessageModal
+        messageModal={messageModal}
+        textMessageModal={textMessageModal}
+        messageModalClose={() => setMessageModal(false)}
       />
     </main>
   )
 }
+

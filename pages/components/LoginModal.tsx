@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from "../../context/authContext";
 import axios from 'axios';
 import Image from 'next/image';
 import googleIcon from '../../public/images/google-icon.webp';
 import { IconCancel } from '../../icons/icons';
-import { config } from 'dotenv';
 
 
 
@@ -14,6 +14,7 @@ export default function LoginModal(props: any) {
   const [emailChange, setEmailChange] = useState(false);
   const [passwordChange, setPasswordChange] = useState(false);
   const [loading, setLoading] = useState(false);       //AMPLIAR!!!
+  const { setAuth } = useAuth();
 
   const loginModal = props.loginModal;
 
@@ -35,6 +36,7 @@ export default function LoginModal(props: any) {
       : (document.body.style.overflowY = 'auto');
   }, [loginModal]);
 
+
   const loginSubmitHandle = async (e: any) => {
     e.preventDefault();
     setLoading(true);     //Ampliar
@@ -47,19 +49,17 @@ export default function LoginModal(props: any) {
     };
 
     try {
-      await axios
-        .post('/api/login', { email, password }, config)
-        .then((response) => {
-          if (response.data.accessToken) {
-            let id = response.data.user.id;
-            const token = response.data.accessToken;
-            localStorage.setItem('id', id);
-            localStorage.setItem('email', email);
-            localStorage.setItem('password', password);
+      await axios.post("/api/auth", { email, password, action: "login" }, config)
+        .then((response: any) => {
+          console.log(response)
+          if (response.data.token) {           //if (res.status === 200) is another option???
+            const token = response.data.token;
             localStorage.setItem('token', token);
+            setAuth({ email });
             setEmail('');
             setPassword('');
             props.loginModalClose();
+            console.log('User signed!!!')
           }
         })
         .catch((error) => {

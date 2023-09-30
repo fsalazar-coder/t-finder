@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from "../../context/authContext";
 import axios from 'axios';
 import Image from 'next/image';
 import googleIcon from '../../public/images/google-icon.webp';
@@ -12,7 +13,8 @@ export default function JoinModal(props: any) {
   const [password, setPassword] = useState('');
   const [emailChange, setEmailChange] = useState(false);
   const [passwordChange, setPasswordChange] = useState(false);
-  const [loading, setLoading] = useState(false);       //AMPLIAR!!!
+  const [loading, setLoading] = useState(false);       //AMPLIAR!!!  
+  const { setAuth } = useAuth();
 
   const joinModal = props.joinModal;
 
@@ -47,15 +49,20 @@ export default function JoinModal(props: any) {
 
     try {
       await axios
-        .post('/api/register', { email, password }, config)
+        .post("/api/auth", { email, password, action: "register" }, config)
         .then((response: any) => {
-          localStorage.setItem('token', response.data.token);
-          props.successModalOpen();
-          props.joinModalClose();
+          let res = response.data.status;
+          if (res === 'success') {
+            props.joinModalClose();
+            props.messageModalOpen('Successfull user created!!!');
+          }
+          else if (res === 'User already exists') {
+            props.messageModalOpen('User already exists');
+          }
         })
     }
     catch (error) {
-      console.log('ERROR EN SUBMIT: ', error);
+      console.log('An error occurred during registration')
     }
     finally {
       setEmail('');

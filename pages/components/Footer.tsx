@@ -12,19 +12,17 @@ import {
 export default function Footer(props: any) {
 
   const navegationA = [
-    'Home',
+    'Find Talent',
+    'Find Job',
     'About Us',
-    'Features',
-    'Works & Projects',
-    'Services',
-    'Blog'
+    'Blog',
   ];
 
   const navegationB = [
-    'Security safeguards',
     'Terms of service',
     'Privacy',
-    'Accessibility'
+    'Accessibility',
+    'Help'
   ];
 
   const navegationC: any = [
