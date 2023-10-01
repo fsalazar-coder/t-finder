@@ -106,8 +106,8 @@ export default function Home() {
           sectionTitleWatermark='TALENT'
           sectionTitle='Empower your recruitment: Why recruiters choose t-finder'
           colorTitleDark={false}
-          image={Data.talent.image}
-          description={Data.talent.description}
+          image={Data?.talent.image}
+          description={Data?.talent.description}
           textButton='Search talents'
           joinModalOpen={() => setJoinModal(true)}
         />
@@ -124,8 +124,8 @@ export default function Home() {
           sectionTitleWatermark='JOB'
           sectionTitle='Say goodbye to resumes: We match you with jobs that truly fit'
           colorTitleDark={true}
-          image={Data.job.image}
-          description={Data.job.description}
+          image={Data?.job.image}
+          description={Data?.job.description}
           textButton='Search job'
           joinModalOpen={() => setJoinModal(true)}
         />
@@ -141,7 +141,7 @@ export default function Home() {
           sectionTitleWatermark='TESTIMONIALS'
           sectionTitle='What our users say'
           colorTitleDark={false}
-          data={Data.testimonials}
+          data={Data?.testimonials}
           testimonialsSectionActived={sectionActived === 'testimonials-section'}
         />
       </section>
@@ -156,7 +156,7 @@ export default function Home() {
           sectionTitleWatermark='BLOG'
           sectionTitle='Recent post'
           colorTitleDark={true}
-          posters={Data.blog}
+          posters={Data?.blog}
           blogSectionActived={sectionActived === 'blog-section'}
         />
       </section>
