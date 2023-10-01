@@ -38,7 +38,7 @@ export default function Presentation(props: any) {
           {/**unorder list */}
           <ul className='w-full my-4 flex flex-col justify-center align-center'>
             {
-              props.description.map((obj: any, index: any) =>
+              props.description?.map((obj: any, index: any) =>
                 <li
                   key={index}
                   className='w-full flex flex-row'

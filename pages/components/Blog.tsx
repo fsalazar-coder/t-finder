@@ -43,7 +43,7 @@ export default function Blog(props: any) {
           onMouseLeave={() => { setHovered(false) }}
         >
           {
-            props.posters.map((item: any, index: any) => {
+            props.posters?.map((item: any, index: any) => {
               return (
                 <BlogElement
                   key={index}

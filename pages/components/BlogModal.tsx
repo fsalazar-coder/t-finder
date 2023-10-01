@@ -63,7 +63,7 @@ export default function BlogModal(props: any) {
         <div className='w-full h-full px-4 md:px-8 flex flex-col'>
           {/**title */}
           <h2 className='w-full mt-2 lg:mt-4 text-slate-950 text-base lg:text-2xl font-bold'>
-            {article.title}
+            {article?.title}
           </h2>
           {/**author */}
           <h4 className='w-full h-fit text-slate-600 text-sm lg:text-lg font-semibold'>

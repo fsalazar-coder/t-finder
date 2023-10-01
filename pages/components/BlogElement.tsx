@@ -44,8 +44,8 @@ export default function BlogElement(props: any) {
         {/**poster image */}
         <Image
           className='w-full h-auto rounded-sm z-0'
-          src={article.image}
-          alt={article.alt}
+          src={article?.image}
+          alt={article?.alt}
           width={800}
           height={550}
         />
@@ -53,11 +53,11 @@ export default function BlogElement(props: any) {
         <div className='w-full absolute bottom-0 p-3 flex flex-col justify-end items-start bg-gradient-to-b from-transparent via-black to-black opacity-80 z-10'>
           {/**title */}
           <h3 className='w-full text-white text-base lg:text-xl font-semibold text-start'>
-            {article.title}
+            {article?.title}
           </h3>
           {/**subtitle */}
           <h6 className='w-full text-slate-600 text-sm md:text-base font-semibold'>
-            {article.date}
+            {article?.date}
           </h6>
         </div>
       </div>
