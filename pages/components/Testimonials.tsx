@@ -124,7 +124,7 @@ export default function Testimonials(props: any) {
               ref={carouselRef}
             >
               {
-                props.data.map((item: any, index: any) => {
+                props.data?.map((item: any, index: any) => {
                   return (
                     <TestimonyElement
                       key={index}

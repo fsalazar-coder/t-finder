@@ -70,7 +70,7 @@ export default function TestimonyElement(props: any) {
         </h4>
         {/**category */}
         <h5 className='w-full text-slate-600 text-sm md:text-base'>
-          {data?.category} {data.talent? `- ${data.talent}` : ''}
+          {data?.category} {data?.talent? `- ${data?.talent}` : ''}
         </h5>
       </div>
     </li>
