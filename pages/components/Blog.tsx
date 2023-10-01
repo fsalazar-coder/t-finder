@@ -32,9 +32,8 @@ export default function Blog(props: any) {
       <div className='container w-full h-full flex flex-col justify-center items-center lg:px-5 list-none transition-all'>
         {/**title */}
         <SectionTitles
-          sectionTitleWatermark={props.sectionTitleWatermark}
           sectionTitle={props.sectionTitle}
-          colorTitleDark={props.colorTitleDark}
+          sectionSubtitle={props.sectionSubtitle}
         />
         {/**content */}
         <ul
@@ -43,7 +42,7 @@ export default function Blog(props: any) {
           onMouseLeave={() => { setHovered(false) }}
         >
           {
-            props.posters?.map((item: any, index: any) => {
+            props.data?.map((item: any, index: any) => {
               return (
                 <BlogElement
                   key={index}
@@ -72,7 +71,7 @@ export default function Blog(props: any) {
           setBlogModal(false);
           setBlogModalAnimationClose(true);
         }}
-        article={props.posters? props.posters[blogActiveIndex] : undefined }
+        article={props.data? props.data[blogActiveIndex] : undefined }
       />
     </div>
   )

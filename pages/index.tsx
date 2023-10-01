@@ -103,9 +103,8 @@ export default function Home() {
       >
         <Presentation
           xDirectionReverse={true}
-          sectionTitleWatermark='TALENT'
-          sectionTitle='Empower your recruitment: Why recruiters choose t-finder'
-          colorTitleDark={false}
+          sectionTitle='RECRUIT'
+          sectionSubtitle='Empower your recruitment. Why recruiters choose t-finder'
           image={Data?.talent.image}
           description={Data?.talent.description}
           textButton='Search talents'
@@ -121,9 +120,8 @@ export default function Home() {
       >
         <Presentation
           xDirectionReverse={false}
-          sectionTitleWatermark='JOB'
-          sectionTitle='Say goodbye to resumes: We match you with jobs that truly fit'
-          colorTitleDark={true}
+          sectionTitle='JOB'
+          sectionSubtitle='Say goodbye to resumes. We match you with jobs that truly fit'
           image={Data?.job.image}
           description={Data?.job.description}
           textButton='Search job'
@@ -138,9 +136,8 @@ export default function Home() {
         ref={testimonialsSectionRef}
       >
         <Testimonials 
-          sectionTitleWatermark='TESTIMONIALS'
-          sectionTitle='What our users say'
-          colorTitleDark={false}
+          sectionTitle='TESTIMONIALS'
+          sectionSubtitle='What our users say'
           data={Data?.testimonials}
           testimonialsSectionActived={sectionActived === 'testimonials-section'}
         />
@@ -153,10 +150,9 @@ export default function Home() {
         ref={blogSectionRef}
       >
         <Blog
-          sectionTitleWatermark='BLOG'
-          sectionTitle='Recent post'
-          colorTitleDark={true}
-          posters={Data?.blog}
+          sectionTitle='BLOG'
+          sectionSubtitle='Recent post'
+          data={Data?.blog}
           blogSectionActived={sectionActived === 'blog-section'}
         />
       </section>

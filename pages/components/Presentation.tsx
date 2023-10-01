@@ -31,9 +31,8 @@ export default function Presentation(props: any) {
         <div className='w-4/5 h-auto lg:w-1/2 lg:h-full flex flex-col justify-center'>
           {/**title */}
           <SectionTitles
-            sectionTitleWatermark={props.sectionTitleWatermark}
             sectionTitle={props.sectionTitle}
-            colorTitleDark={props.colorTitleDark}
+            sectionSubtitle={props.sectionSubtitle}
           />
           {/**unorder list */}
           <ul className='w-full my-4 flex flex-col justify-center align-center'>

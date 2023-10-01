@@ -85,8 +85,8 @@ export default function Testimonials(props: any) {
       <div className='container w-full h-full flex flex-col justify-center items-center px-2 lg:px-5 list-none transition-all'>
         {/**title */}
         <SectionTitles
-          sectionTitleWatermark={props.sectionTitleWatermark}
           sectionTitle={props.sectionTitle}
+          sectionSubtitle={props.sectionSubtitle}
         />
 
         <div className='w-full h-full flex flex-row justify-between items-center'>

@@ -4,16 +4,11 @@ export default function SectionTitles(props: any) {
 
   return (
     <div className='w-full flex flex-col'>
-      <h1 className={
-        `${props.colorTitleDark ?
-          'bg-slate-200' :
-          'bg-slate-100'
-        } w-full h-fit text-2xl md:text-4xl lg:text-6xl text-transparent bg-clip-text font-extrabold text-start z-0`
-      }>
-        {props.sectionTitleWatermark}
-      </h1>
-      <h2 className='w-fit h-fit text-slate-800 text-lg md:text-xl lg:text-2xl xl:text-3xl tracking-wide font-bold'>
+      <h1 className='text-2xl md:text-4xl lg:text-6xl text-transparent bg-slate-600 bg-clip-text font-extrabold text-start z-0'>
         {props.sectionTitle}
+      </h1>
+      <h2 className='w-fit h-fit text-fuchsia-400 text-base md:text-lg lg:text-xl tracking-wide font-bold'>
+        {props.sectionSubtitle}
       </h2>
     </div>
   )
