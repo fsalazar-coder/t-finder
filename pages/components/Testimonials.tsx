@@ -23,7 +23,7 @@ export default function Testimonials(props: any) {
   const portfolioActived = props.portfolioSectionActived;                                /***To active animation on works section: true or false***/
   const carouselSelected: any = carouselRef.current;
   const carousel = props.data;                                                            /***Carousel-Works kind mirror***/
-  const carouselLength = carousel.length;
+  const carouselLength = carousel?.length;
   const carouselPositionMaxLimit = carouselLength - 1;
   const animations = [                                                                   /***CSS Animation to close-open modal and each work element***/
     'md:animate-[appear-right_1.0s_ease]',

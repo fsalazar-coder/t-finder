@@ -67,17 +67,17 @@ export default function BlogModal(props: any) {
           </h2>
           {/**author */}
           <h4 className='w-full h-fit text-slate-600 text-sm lg:text-lg font-semibold'>
-            {article.name}
+            {article?.name}
           </h4>
           {/**date */}
           <h5 className='w-full h-fit text-slate-600 text-sm lg:text-base'>
-            {article.date}
+            {article?.date}
           </h5>
           {/**line animate-decoration */}
           <div className={blogModal ? `w-full h-0.5 my-4 bg-fuchsia-300 animate-[width-change_1.0s_ease]` : ''} />
           {/**description */}
           <h4 className='w-full h-full px-2 lg:px-0 mb-4 lg:mb-8 text-gray-700 text-sm sm:text-lg lg:text-xl font-normal text-justify overflow-y-auto'>
-            {article.description}
+            {article?.description}
           </h4>
         </div>
       </div>
