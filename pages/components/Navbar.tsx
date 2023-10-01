@@ -1,19 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from "../../context/authContext";
 import NavbarTopSlider from './NavbarTopSlider';
-import {
-  IconUser,
-  IconProfile,
-  IconFolderUserFill,
-  IconUserSearchLine,
-  IconBxPowerOff
-} from '@/icons/icons';
+import { IconUser } from '@/icons/icons';
 import Dropdown from './Dropdown';
 
 const dropdownUser = [
-  { icon: <IconProfile />, title: 'Profile' },
-  { icon: <IconFolderUserFill />, title: 'Job Request' },
-  { icon: <IconUserSearchLine />, title: 'Talent Request' }
+  { title: 'Profile' },
+  { title: 'Job Request' },
+  { title: 'Talent Request' },
+  { title: 'Notifications' }
 ];
 
 
@@ -29,7 +24,7 @@ export default function Navbar(props: any) {
 
 
   const screenNarrow = props.screenNarrow;
-  const navbarElementText = ['Talent', 'Job', 'Blog'];
+  const navbarElementText = [''];
 
   useEffect(() => {
     const backgroundScrollHandle = () => {

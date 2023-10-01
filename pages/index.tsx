@@ -104,7 +104,7 @@ export default function Home() {
         <Presentation
           xDirectionReverse={true}
           sectionTitleWatermark='TALENT'
-          sectionTitle='We find the talent you need'
+          sectionTitle='Empower your recruitment: Why recruiters choose t-finder'
           colorTitleDark={false}
           image={Data.talent.image}
           description={Data.talent.description}
@@ -122,7 +122,7 @@ export default function Home() {
         <Presentation
           xDirectionReverse={false}
           sectionTitleWatermark='JOB'
-          sectionTitle='We find the job that fits your requirements'
+          sectionTitle='Say goodbye to resumes: We match you with jobs that truly fit'
           colorTitleDark={true}
           image={Data.job.image}
           description={Data.job.description}

@@ -1,0 +1,183 @@
+{
+  "talent": {
+    "image": "/images/talent-3-removebg.png",
+    "description": [
+      {
+        "subTitle": "AI help",
+        "text": "Our platform uses AI to match recruiters with perfect talent. Say goodbye to sifting through endless resumes, T-Finder does the heavy lifting for you."
+      },
+      {
+        "subTitle": "Fast Recruitment Process",
+        "text": "Time is money and T-Finder understands this. With us you can streamline your entire recruitment process, making it faster and more efficient than ever before."
+      },
+      {
+        "subTitle": "Global Talent Pool",
+        "text": "Expand your search beyond geographic boundaries. T-Finder gives you access to a global network of qualified professionals, ensuring you find the best fit for your team."
+      }
+    ]
+  },
+  "job": {
+    "image": "/images/talent-2-removebg.png",
+    "description": [
+      {
+        "subTitle": "No more scrolling through irrelevant listings",
+        "text": "Our AI algorithms analyze your skills, experience, and preferences to recommend jobs that are the perfect fit for you."
+      },
+      {
+        "subTitle": "Quick Application Process",
+        "text": "T-Finder simplifies the job application process, making it quick and hassle-free. Apply for multiple jobs with just a few clicks and get faster responses from employers."
+      },
+      {
+        "subTitle": "Worldwide Opportunities",
+        "text": "T-Finder connects you to opportunities around the world, so you can expand your horizons and find your dream job, wherever it may be."
+      }
+    ]
+  },
+  "aboutUs": {
+    "description": [
+      {
+        "subTitle": "We like You.",
+        "text": ""
+      },
+      {
+        "subTitle": "Intelligently, we connect the job with talent.",
+        "text": ""
+      },
+      {
+        "subTitle": "We use top technology tools.",
+        "text": ""
+      },
+      {
+        "subTitle": "Our scope is worldwide.",
+        "text": ""
+      }
+    ]
+  },
+  "testimonials": [
+    {
+      "date": "MAY 11, 2022",
+      "fullName": "Cristina Hoftman",
+      "image": "/images/users/cristina.jpg",
+      "alt": "DearHR",
+      "category": "Talent",
+      "talent": "Biology teacher",
+      "testimony": "T-Finder made my job search effortless. Found my dream job in less than a week. Highly recommend"
+    },
+    {
+      "date": "MAY 10, 2022",
+      "fullName": "Karla Vitanza",
+      "image": "/images/users/karla.jpg",
+      "alt": "DearHR",
+      "category": "Recruiter",
+      "talent": "",
+      "testimony": "As a recruiter, T-Finder has been a game-changer. Quality candidates, easy-to-use interface. 10/10."
+    },
+    {
+      "date": "JUN 15, 2023",
+      "fullName": "Bhatti Hardwak",
+      "image": "/images/users/bhatti.jpg",
+      "alt": "DearHR",
+      "category": "Talent",
+      "talent": "Mathematical",
+      "testimony": "I used to struggle with finding freelance gigs. T-Finder changed that. Now, I'm always booked!"
+    },
+    {
+      "date": "JUN 12, 2022",
+      "fullName": "Laura Mödrich",
+      "image": "/images/users/laura.jpg",
+      "alt": "DearHR",
+      "category": "Talent",
+      "talent": "Physical",
+      "testimony": "T-Finder's algorithm is spot-on. It matched me with a role that perfectly fits my skill set."
+    },
+    {
+      "date": "OCT 24, 2022",
+      "fullName": "Carlos Segal",
+      "image": "/images/users/carlos.jpg",
+      "alt": "DearHR",
+      "category": "Recruiter",
+      "talent": "",
+      "testimony": "I've tried other platforms, but T-Finder stands out for its user-friendly design and efficiency."
+    },
+    {
+      "date": "DIC 03, 2022",
+      "fullName": "Lu Chang",
+      "image": "/images/users/lu.jpg",
+      "alt": "DearHR",
+      "category": "Recruiter",
+      "talent": "",
+      "testimony": "T-Finder helped me discover talents I didn't even know I needed. It's an invaluable resource for my business."
+    },
+    {
+      "date": "FEB 28, 2022",
+      "fullName": "Maggy Novoa",
+      "image": "/images/users/maggy.jpg",
+      "alt": "DearHR",
+      "category": "Talent",
+      "talent": "Administrator",
+      "testimony": "Got my first job through T-Finder! The process was smooth, and the support team was very helpful."
+    },
+    {
+      "date": "MAY 18, 2022",
+      "fullName": "Marcos White",
+      "image": "/images/users/marcos.jpg",
+      "alt": "DearHR",
+      "category": "Recruiter",
+      "talent": "",
+      "testimony": "As a small business owner, T-Finder made hiring simple and affordable. It's a must-use platform."
+    },
+    {
+      "date": "AGO 07, 2022",
+      "fullName": "Luisa Lane",
+      "image": "/images/users/luisa.jpg",
+      "alt": "DearHR",
+      "category": "Talent",
+      "talent": "Mechanical engineer",
+      "testimony": "With T-Finder, I was able to focus on honing my skills instead of worrying about job hunting."
+    },
+    {
+      "date": "APR 23, 2022",
+      "fullName": "Antonio Bush",
+      "image": "/images/users/antonio.jpg",
+      "alt": "DearHR",
+      "category": "Talent",
+      "talent": "Lawyer",
+      "testimony": "T-Finder is the only platform where I found opportunities that truly align with my career goals."
+    }
+  ],
+  "blog": [
+    {
+      "userID": "asalazar100579",
+      "name": "Antonio S",
+      "date": "APR 05, 2022",
+      "comments": "189",
+      "likes": "15",
+      "image": "/images/blog-1b.jpg",
+      "alt": "DearHR",
+      "title": "'AI' is the technology of the present",
+      "description": "Artificial Intelligence (AI) is no longer a concept confined to science fiction; it's a reality that's transforming various industries. From healthcare and transportation to entertainment and recruitment, AI's applications are limitless. Machine learning algorithms analyze vast amounts of data, making predictions and automating tasks that once required human intervention. Platforms like T-Finder leverage AI to connect job seekers with recruiters, simplifying and speeding up the process. With advancements like these, it's clear that AI isn't just the technology of the future; it's shaping our present in remarkable ways."
+    },
+    {
+      "userID": "choftman100579",
+      "name": "Cristina H",
+      "date": "APR 25, 2022",
+      "comments": "23",
+      "likes": "58",
+      "image": "/images/blog-2b.jpg",
+      "alt": "DearHR",
+      "title": "The curriculun vitae is thing of the past",
+      "description": "In the digital age, the traditional curriculum vitae is increasingly becoming obsolete. Recruiters are overwhelmed with piles of resumes, making the job search process cumbersome for both parties. Innovative platforms like T-Finder are stepping in to change the game. Using advanced artificial intelligence algorithms, these platforms automatically match job seekers with roles that fit their skills and experience. Gone are the days of manually sending out resumes and filling in lengthy application forms. The future of job hunting is here, and it's digital, precise, and incredibly efficient."
+    },
+    {
+      "userID": "kvitanza100579",
+      "name": "Karla V",
+      "date": "JUN 15, 2022",
+      "comments": "127",
+      "likes": "55",
+      "image": "/images/blog-3b.jpg",
+      "alt": "DearHR",
+      "title": "By using 'AI' you can choose a better employee",
+      "description": "Recruitment has always been a challenging process, often involving tedious tasks like sorting through resumes and conducting multiple interviews. Artificial Intelligence (AI) is revolutionizing this landscape. Platforms such as T-Finder employ AI algorithms to analyze candidate data and match it with job descriptions. This technology considers various factors, like skills, experience, and even cultural fit, to provide a list of the most suitable candidates. As a result, employers can make more informed decisions faster, ensuring they choose the best talent for their teams. In today's competitive market, AI is the key to smarter hiring."
+    }
+  ]
+}
