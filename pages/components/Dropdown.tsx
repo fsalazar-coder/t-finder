@@ -26,9 +26,11 @@ export default function Dropdown(props: any) {
         </li>
         {/**acount options */}
         {
-          props.dropdownUser.map((item: any) => {
+          props.dropdownUser.map((item: any, index: any) => {
             return (
-              <li className='w-full h-auto py-2 px-4 flex flex-row items-center bg-slate-50 hover:bg-fuchsia-100'>
+              <li
+                key={index}
+                className='w-full h-auto py-2 px-4 flex flex-row items-center bg-slate-50 hover:bg-fuchsia-100'>
                 <h3 className='text-slate-500 hover:text-slate-600 text-xs lg:text-sm xl:text-base font-light'>
                   {item.title}
                 </h3>

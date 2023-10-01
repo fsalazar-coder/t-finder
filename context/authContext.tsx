@@ -19,7 +19,7 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 
 
-export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
+export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   const [auth, setAuth] = useState<null | { email: string }>(null);
 
   const logout = () => {

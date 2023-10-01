@@ -3,6 +3,7 @@ import { useAuth } from "../../context/authContext";
 import NavbarTopSlider from './NavbarTopSlider';
 import { IconUser } from '@/icons/icons';
 import Dropdown from './Dropdown';
+import { AuthProvider } from '../../context/authContext';
 
 const dropdownUser = [
   { title: 'Profile' },

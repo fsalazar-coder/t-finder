@@ -56,7 +56,7 @@ export default function TestimonyElement(props: any) {
       </div>
       {/**testimony */}
       <h3 className='w-full mt-10 lg:mt-14 text-slate-500 text-sm lg:text-base text-justify'>
-        "{data.testimony}"
+      &quot;{data.testimony}&quot;
       </h3>
       <div className='w-full h-fit pb-2 flex flex-col'>
         {/**name */}
