@@ -6,11 +6,11 @@ let client: MongoClient;
 let clientPromise: Promise<MongoClient> | undefined;
 
 if (!uri) {
-  throw new Error('MONGODB_URI environment variable is not defined. Add Mongo URI to .env.local')
+  throw new Error('MONGODB_URI environment variable is not defined...')
 }
 
 client = new MongoClient(uri);
-clientPromise = client.connect();
+clientPromise = client?.connect();
 
 
 export default clientPromise

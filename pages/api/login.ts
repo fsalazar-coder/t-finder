@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     await cors(req, res);
     const client = await clientPromise;
-    const db = client?.db("talent-finder");
+    const db = client?.db("t-finder");
 
     if (req.method === 'POST') {
       const { email, password } = req.body;
