@@ -1,16 +1,19 @@
 import { MongoClient } from 'mongodb'
 
-const uri = process.env.DB_URI
 
 let client: MongoClient;
-let clientPromise: Promise<MongoClient> | undefined;
 
-if (!uri) {
-  throw new Error('MONGODB_URI environment variable is not defined...')
+
+
+async function dbConnect() {
+  if (!client) {
+    if (!process.env.DB_URI) {
+      throw new Error('MONGODB_URI environment variable is not defined...')
+    }
+    client = new MongoClient(process.env.DB_URI);
+    await client?.connect();
+  }
+  return { db: client.db('t-finder'), client };
 }
 
-client = new MongoClient(uri);
-clientPromise = client?.connect();
-
-
-export default clientPromise
+export default dbConnect;

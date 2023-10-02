@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Cors from 'cors';
 import initMiddleware from '../../lib/init-middleware';
-import clientPromise from "../../lib/mongodb";
+import dbConnect from "../../lib/mongodb";
 
 const cors = initMiddleware(
   Cors({
@@ -17,8 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     await cors(req, res);
-    const client = await clientPromise;
-    const db = client?.db("t-finder");
+    const { db } = await dbConnect();
 
     if (req.method === 'POST') {
       const { email, password } = req.body;
