@@ -60,7 +60,7 @@ export default function LoginModal(props: any) {
             setPassword('');
             props.loginModalClose();
           }
-          else if (resData.error === 'Invalid credential') {
+          else if (resData.status === 'Invalid credential') {
             props.messageModalOpen('Invalid credential. Try again');
           }
         })

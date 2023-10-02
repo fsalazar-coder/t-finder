@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const existingUser = await collection?.findOne({ email });
 
       if (existingUser) {
-        return res.status(400).json({ error: 'User already exists' });
+        return res.status(200).json({ status: 'User already exists' });
       }
 
       const hashedPassword = await bcrypt.hash(password, 12);
@@ -48,12 +48,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       //login
       const user = await collection?.findOne({ email });
       if (!user) {
-        return res.status(400).json({ error: 'Invalid credential' });
+        return res.status(200).json({ status: 'Invalid credential' });
       }
 
       const isValidPassword = await bcrypt.compare(password, user.password);
       if (!isValidPassword) {
-        return res.status(400).json({ error: 'Invalid credential' });
+        return res.status(200).json({ status: 'Invalid credential' });
       }
 
       if (!process.env.SECRET_KEY) {
