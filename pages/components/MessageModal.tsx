@@ -100,7 +100,7 @@ export default function MessageModal(props: any) {
                     strokeWidth={8}
                     strokeLinecap='round'
                   >
-                    <g transform="matrix(0.80,8.70e-32,8.40e-32,0.80,-489.57,-205.68)">
+                    <g transform="matrix(1,0,0,1,-1,-1)">
                       <path
                         className={
                           `${checkAnimation ?
@@ -110,6 +110,22 @@ export default function MessageModal(props: any) {
                         }
                         fill="none"
                         d="M616.306,283.025 L634.087,300.805 L673.361,261.53"
+                      />
+                    </g>
+                  </svg>
+                  <svg
+                    className="cross red-stroke"
+                    width="52"
+                    height="52"
+                    viewBox="0 0 52 52"
+                  >
+                    <g transform="matrix(1,0,0,1,-1,-1)">
+                      <line
+                        className="cross__line"
+                        x1="1" y1="51" x2="51" y2="1"
+                      />
+                      <line className="cross__line"
+                        x1="1" y1="1" x2="51" y2="51"
                       />
                     </g>
                   </svg>
@@ -124,7 +140,7 @@ export default function MessageModal(props: any) {
           {/**OK: close button */}
           <div className='w-full h-[30%] flex flex-col justify-center items-center'>
             <button
-              className='w-auto h-auto text-white px-6 py-3 flex flex-row justify-center items-center rounded-full bg-green-400 md:bg-violet-900 md:hover:bg-green-400 hover:shadow-2xl transition-all z-30'
+              className='w-auto h-auto text-white px-6 py-3 flex flex-row justify-center items-center rounded-full bg-fuchsia-400 md:bg-fuchsia-300 md:hover:bg-fuchsia-600 md:hover:shadow-2xl transition-all z-30'
               onClick={() => props.messageModalClose()}
             >
               <h5 className='w-fit h-fit text-sm sm:text-xs md:text-sm lg:text-base xl:text-lg leading-none font-bold md:font-medium tracking-wider'>
