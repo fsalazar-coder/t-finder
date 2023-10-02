@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Cors from 'cors';
 import initMiddleware from '../../lib/init-middleware';
-import clientPromise from "../../lib/mongodb";
+import dbConnect from "../../lib/mongodb";
 
 const cors = initMiddleware(
   Cors({
@@ -16,8 +16,7 @@ export default async function handler(req: any, res: any) {
 
   try {
     await cors(req, res);
-    const client = await clientPromise;
-    const db = client?.db("t-finder");
+    const { db } = await dbConnect();
     const { method } = req;
 
     if (req.method !== 'POST') {
@@ -33,7 +32,6 @@ export default async function handler(req: any, res: any) {
       const existingUser = await collection?.findOne({ email });
 
       if (existingUser) {
-        client?.close();
         return res.status(200).json({ status: 'User already exists' });
       }
 
@@ -44,7 +42,6 @@ export default async function handler(req: any, res: any) {
         password: hashedPassword,
       });
 
-      client?.close();
       return res.status(200).json({ status: 'Success register' });
     }
     else {
