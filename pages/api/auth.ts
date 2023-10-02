@@ -48,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       //login
       const user = await collection?.findOne({ email });
       if (!user) {
-        return res.status(400).json({ error: "Invalid credential" });
+        return res.status(400).json({ error: 'Invalid credential' });
       }
 
       const isValidPassword = await bcrypt.compare(password, user.password);
