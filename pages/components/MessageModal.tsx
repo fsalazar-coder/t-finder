@@ -97,7 +97,7 @@ export default function MessageModal(props: any) {
                 :
                 <>
                   <svg
-                    className='w-[54px] h-[54px] absolute stroke-red-600'
+                    className='w-[55px] h-[55px] absolute stroke-red-600'
                     strokeWidth={8}
                     strokeLinecap='round'
                   >
@@ -109,16 +109,16 @@ export default function MessageModal(props: any) {
                             : 'hidden'
                           }`
                         }
-                        x1="1" y1="52" x2="52" y2="1"
+                        x1="1" y1="1" x2="50" y2="50"
                       />
                       <line
                         className={
                           `${checkAnimation ?
-                            'animate-[draw-check_0.5s_ease-in]'
+                            'animate-[draw-check_0.75s_ease-in]'
                             : 'hidden'
                           }`
                         }
-                        x1="1" y1="1" x2="52" y2="52"
+                        x1="1" y1="50" x2="50" y2="1"
                       />
                     </g>
                   </svg>
