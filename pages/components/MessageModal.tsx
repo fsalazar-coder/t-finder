@@ -109,7 +109,7 @@ export default function MessageModal(props: any) {
                             : 'hidden'
                           }`
                         }
-                        x1="1" y1="1" x2="50" y2="50"
+                        x1="1" y1="1" x2="45" y2="45"
                       />
                       <line
                         className={
@@ -118,7 +118,7 @@ export default function MessageModal(props: any) {
                             : 'hidden'
                           }`
                         }
-                        x1="1" y1="50" x2="50" y2="1"
+                        x1="1" y1="45" x2="45" y2="1"
                       />
                     </g>
                   </svg>
