@@ -36,7 +36,7 @@ export default function JoinModal(props: any) {
       : (document.body.style.overflowY = 'auto');
   }, [joinModal]);
 
-  const handleSubmitJoin = async (e: any) => {
+  const joinSubmitHandle = async (e: any) => {
     e.preventDefault();
     setLoading(true);     //ampliar
 
@@ -57,7 +57,7 @@ export default function JoinModal(props: any) {
             props.messageModalOpen('User created successfull');
           }
           else if (res === 'User already exists') {
-            props.messageModalOpen('User already exists');
+            props.messageModalOpen('User already exists. Try again');
           }
         })
     }
@@ -100,9 +100,7 @@ export default function JoinModal(props: any) {
         <div className='w-6 h-6 absolute -top-5 -right-5 flex flex-col justify-center items-center rounded-full bg-white'>
           <i
             className='w-fit h-full text-gray-900 sm:text-gray-400 text-2xl sm:xl flex justify-center cursor-pointer sm:hover:text-gray-900'
-            onClick={() => {
-              props.joinModalClose()
-            }}
+            onClick={() => { props.joinModalClose() }}
           >
             <IconCancel />
           </i>
@@ -124,7 +122,7 @@ export default function JoinModal(props: any) {
             {/**form-box */}
             <form
               className='w-full h-full px-2 flex flex-col justify-between items-center'
-              onSubmit={(e) => handleSubmitJoin(e)}
+              onSubmit={(e) => joinSubmitHandle(e)}
             >
               {/**inputs */}
               <div className='w-full h-fit flex flex-col justify-start items-center'>

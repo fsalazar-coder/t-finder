@@ -131,10 +131,7 @@ export default function LoginModal(props: any) {
             {/**form-box */}
             <form
               className='w-full h-full px-2 flex flex-col justify-between items-center'
-              onSubmit={(e) => {
-                loginSubmitHandle(e);
-                props.loginModalClose();
-              }}
+              onSubmit={(e) => { loginSubmitHandle(e) }}
             >
               {/**inputs */}
               <div className='w-full h-fit flex flex-col justify-start items-center'>
@@ -205,9 +202,7 @@ export default function LoginModal(props: any) {
                     value={password}
                     onFocus={() => { setPasswordChange(true) }}
                     onBlur={(e) => { setPasswordChange(false) }}
-                    onChange={(e) => {
-                      setPassword(e.target.value)
-                    }}
+                    onChange={(e) => { setPassword(e.target.value) }}
                   />
                 </div>
               </div>
