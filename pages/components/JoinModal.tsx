@@ -51,12 +51,12 @@ export default function JoinModal(props: any) {
       await axios
         .post("/api/auth", { email, password, action: "register" }, config)
         .then((response: any) => {
-          let res = response.data.status;
-          if (res === 'Success register') {
+          let resData = response.data;
+          if (resData.status === 'Success register') {
             props.joinModalClose();
             props.messageModalOpen('User created successfull');
           }
-          else if (res === 'User already exists') {
+          else if (resData.error === 'User already exists') {
             props.messageModalOpen('User already exists');
           }
         })
