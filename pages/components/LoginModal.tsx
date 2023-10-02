@@ -52,7 +52,7 @@ export default function LoginModal(props: any) {
       await axios.post("/api/auth", { email, password, action: "login" }, config)
         .then((response: any) => {
           let resData = response.data;
-          if (resData.Token) {
+          if (resData.token) {
             const token = response.data.token;
             localStorage.setItem('token', token);
             setAuth({ email });
