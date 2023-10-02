@@ -11,13 +11,19 @@ import Presentation from "./components/Presentation";
 import Blog from "./components/Blog";
 import Testimonials from "./components/Testimonials";
 import Data from './data/data.json';
+import LogoutModal from "./components/LogoutModal";
+import { useAuth } from "../context/authContext";
 
 
 
 export default function Home() {
 
+
+  const { auth } = useAuth();
+  const { setAuth } = useAuth();
   const [loginModal, setLoginModal] = useState(false);
   const [joinModal, setJoinModal] = useState(false);
+  const [logoutModal, setLogoutModal] = useState(false);
   const [messageModal, setMessageModal] = useState(false);
   const [textMessageModal, setTextMessageModal] = useState(String);
   const [messageModalSuccessfull, setMessageModalSuccessfull] = useState(Boolean);
@@ -80,6 +86,7 @@ export default function Home() {
           loginModalClose={() => setLoginModal(false)}
           joinModalOpen={() => setJoinModal(true)}
           joinModalClose={() => setJoinModal(false)}
+          logoutModal={() => { setLogoutModal(true) }}
         />
       </div>
 
@@ -136,7 +143,7 @@ export default function Home() {
         className='w-full h-auto py-8 lg:h-[615px] bg-white'
         ref={testimonialsSectionRef}
       >
-        <Testimonials 
+        <Testimonials
           sectionTitle='TESTIMONIALS'
           sectionSubtitle='What our users say'
           data={Data?.testimonials}
@@ -226,6 +233,16 @@ export default function Home() {
         textMessageModal={textMessageModal}
         messageModalSuccessfull={messageModalSuccessfull}
         messageModalClose={() => setMessageModal(false)}
+      />
+
+      {/**Hidden-visible logout modal */}
+      <LogoutModal
+        logoutModal={logoutModal}
+        logout={() => {
+          setAuth(null);
+          setLogoutModal(false);
+        }}
+        logoutCancel={() => setLogoutModal(false)}
       />
     </main>
   )

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 export default function MessageModal(props: any) {
 
   const [circleAnimation, setCircleAnimation] = useState(false);
-  const [checkAnimation, setCheckAnimation] = useState(false);
+  const [symbolAnimation, setSymbolAnimation] = useState(false);
   const messageModal = props.messageModal;
   const textMessageModal = props.textMessageModal;
   const messageModalSuccessfull = props.messageModalSuccessfull;
@@ -14,8 +14,8 @@ export default function MessageModal(props: any) {
     if (messageModal) {
       setCircleAnimation(true);
       setTimeout(() => {
-        setCheckAnimation(true)
-      }, 4000);
+        setSymbolAnimation(true)
+      }, 1000);
     }
   }, [messageModal]);
 
@@ -53,14 +53,14 @@ export default function MessageModal(props: any) {
           <div className='w-full h-1/2 relative flex flex-col justify-center items-center'>
             <svg className={
               `${messageModalSuccessfull ?
-                'stroke-green-100' :
-                'stroke-red-100'
+                'stroke-green-200' :
+                'stroke-red-200'
               } w-[110px] h-[110px]`
             }>
               <circle
                 className={
                   `${circleAnimation ?
-                    'animate-[draw-circle_2.5s_ease-in]'
+                    'animate-[draw-circle_2.0s_ease-in-out_forwards]'
                     : 'hidden'
                   }`
                 }
@@ -84,8 +84,8 @@ export default function MessageModal(props: any) {
                   <g transform="matrix(0.80,8.70e-32,8.40e-32,0.80,-489.57,-205.68)">
                     <path
                       className={
-                        `${checkAnimation ?
-                          'animate-[draw-check_0.5s_ease-in]'
+                        `${symbolAnimation ?
+                          'animate-[draw-check_0.5s_ease-in-out_forwards]'
                           : 'hidden'
                         }`
                       }
@@ -104,21 +104,21 @@ export default function MessageModal(props: any) {
                     <g transform="matrix(1,0,0,1,-1,-1)">
                       <line
                         className={
-                          `${checkAnimation ?
-                            'animate-[draw-check_0.5s_ease-in]'
+                          `${symbolAnimation ?
+                            'animate-[draw-check_0.5s_ease-in-out_forwards]'
                             : 'hidden'
                           }`
                         }
-                        x1="1" y1="1" x2="45" y2="45"
+                        x1="5" y1="5" x2="50" y2="50"
                       />
                       <line
                         className={
-                          `${checkAnimation ?
-                            'animate-[draw-check_0.75s_ease-in]'
+                          `${symbolAnimation ?
+                            'animate-[draw-check_1.0s_ease-in]'
                             : 'hidden'
                           }`
                         }
-                        x1="1" y1="45" x2="45" y2="1"
+                        x1="5" y1="50" x2="50" y2="5"
                       />
                     </g>
                   </svg>

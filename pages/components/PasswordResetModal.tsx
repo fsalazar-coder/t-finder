@@ -77,7 +77,7 @@ export default function PasswordReset(props: any) {
               Password reset
             </h2>
             <h4 className='w-full h-fit text-gray-600 text-sm md:text-base lg:text-lg tracking-wide font-normal text-start flex'>
-              Don&Apos;t worry, <br /> let&Apos;s get your password back
+              Don&apos;t worry, <br /> let&apos;s get your password back
             </h4>
           </div>
           {/**form container */}

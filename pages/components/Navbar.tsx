@@ -3,7 +3,6 @@ import { useAuth } from "../../context/authContext";
 import NavbarTopSlider from './NavbarTopSlider';
 import { IconUser } from '@/icons/icons';
 import Dropdown from './Dropdown';
-import { AuthProvider } from '../../context/authContext';
 
 const dropdownUser = [
   { title: 'Profile' },
@@ -154,7 +153,7 @@ export default function Navbar(props: any) {
                                         className='w-full h-full flex flex-row items-center'
                                         onClick={() => {
                                           setDropdown(false);
-                                          setAuth(null);
+                                          props.logoutModal();
                                         }}
                                       >
                                         <h3 className='h-auto text-slate-500 hover:text-slate-600 text-xs lg:text-sm xl:text-base font-light'>
