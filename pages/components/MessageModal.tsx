@@ -96,36 +96,29 @@ export default function MessageModal(props: any) {
                 </svg>
                 :
                 <>
-                  <svg className='w-[55px] h-[41px] absolute stroke-red-600'
+                  <svg
+                    className='w-[54px] h-[54px] absolute stroke-red-600'
                     strokeWidth={8}
                     strokeLinecap='round'
                   >
                     <g transform="matrix(1,0,0,1,-1,-1)">
-                      <path
+                      <line
                         className={
                           `${checkAnimation ?
                             'animate-[draw-check_0.5s_ease-in]'
                             : 'hidden'
                           }`
                         }
-                        fill="none"
-                        d="M616.306,283.025 L634.087,300.805 L673.361,261.53"
+                        x1="1" y1="52" x2="52" y2="1"
                       />
-                    </g>
-                  </svg>
-                  <svg
-                    className="cross red-stroke"
-                    width="52"
-                    height="52"
-                    viewBox="0 0 52 52"
-                  >
-                    <g transform="matrix(1,0,0,1,-1,-1)">
                       <line
-                        className="cross__line"
-                        x1="1" y1="51" x2="51" y2="1"
-                      />
-                      <line className="cross__line"
-                        x1="1" y1="1" x2="51" y2="51"
+                        className={
+                          `${checkAnimation ?
+                            'animate-[draw-check_0.5s_ease-in]'
+                            : 'hidden'
+                          }`
+                        }
+                        x1="1" y1="1" x2="52" y2="52"
                       />
                     </g>
                   </svg>
