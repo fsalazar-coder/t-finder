@@ -52,7 +52,7 @@ export default function JoinModal(props: any) {
         .post("/api/auth", { email, password, action: "register" }, config)
         .then((response: any) => {
           let res = response.data.status;
-          if (res === 'success') {
+          if (res === 'Success register') {
             props.joinModalClose();
             props.messageModalOpen('Successfull user created!!!');
           }

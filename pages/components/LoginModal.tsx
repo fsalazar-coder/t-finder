@@ -51,15 +51,18 @@ export default function LoginModal(props: any) {
     try {
       await axios.post("/api/auth", { email, password, action: "login" }, config)
         .then((response: any) => {
-          console.log(response)
-          if (response.data.token) {           //if (res.status === 200) is another option???
+          let resToken = response.data.token;
+          let resStatus = response.data.status;
+          if (resToken) {
             const token = response.data.token;
             localStorage.setItem('token', token);
             setAuth({ email });
             setEmail('');
             setPassword('');
             props.loginModalClose();
-            console.log('User signed!!!')
+          }
+          else if (resStatus === 'Invalid credential') {
+            props.messageModalOpen('Invalid credential. Try again.');
           }
         })
         .catch((error) => {

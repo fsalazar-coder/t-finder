@@ -1,8 +1,6 @@
 import { MongoClient } from 'mongodb'
 
-
 let client: MongoClient;
-
 
 
 async function dbConnect() {
