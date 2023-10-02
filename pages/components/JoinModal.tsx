@@ -54,15 +54,16 @@ export default function JoinModal(props: any) {
           let res = response.data.status;
           if (res === 'Success register') {
             props.joinModalClose();
-            props.messageModalOpen('User created successfull');
+            props.messageSuccessfull('User created successfull');
           }
           else if (res === 'User already exists') {
-            props.messageModalOpen('User already exists. Try again');
+            props.messageError('User already exists. Try again');
           }
         })
     }
     catch (error) {
-      console.log('An error occurred during registration')
+      console.log('Error on register: ', error);
+      props.messageError('An error occurred. Try latter');
     }
     finally {
       setEmail('');

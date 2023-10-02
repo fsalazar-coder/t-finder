@@ -20,6 +20,7 @@ export default function Home() {
   const [joinModal, setJoinModal] = useState(false);
   const [messageModal, setMessageModal] = useState(false);
   const [textMessageModal, setTextMessageModal] = useState(String);
+  const [messageModalSuccessfull, setMessageModalSuccessfull] = useState(Boolean);
   const [passwordResetModal, setPasswordResetModal] = useState(false);
   const [sectionActived, setSectionActived] = useState(String);                          /***State active section on viewport: string***/
   const [screenNarrow, setScreenNarrow] = useState(Boolean);                             /***State screen narrow: true or false***/
@@ -175,11 +176,17 @@ export default function Home() {
         joinModalClose={() => setJoinModal(false)}
         loginModalOpen={() => {
           setLoginModal(true);
-          setJoinModal(false)
+          setJoinModal(false);
         }}
-        messageModalOpen={(e: any) => {
-          setMessageModal(true)
-          setTextMessageModal(e)
+        messageSuccessfull={(e: any) => {
+          setMessageModal(true);
+          setTextMessageModal(e);
+          setMessageModalSuccessfull(true);
+        }}
+        messageError={(e: any) => {
+          setMessageModal(true);
+          setTextMessageModal(e);
+          setMessageModalSuccessfull(false);
         }}
       />
 
@@ -195,9 +202,15 @@ export default function Home() {
           setLoginModal(false);
           setJoinModal(true)
         }}
-        messageModalOpen={(e: any) => {
-          setMessageModal(true)
-          setTextMessageModal(e)
+        messageSuccessfull={(e: any) => {
+          setMessageModal(true);
+          setTextMessageModal(e);
+          setMessageModalSuccessfull(true);
+        }}
+        messageError={(e: any) => {
+          setMessageModal(true);
+          setTextMessageModal(e);
+          setMessageModalSuccessfull(false);
         }}
       />
 
@@ -211,6 +224,7 @@ export default function Home() {
       <MessageModal
         messageModal={messageModal}
         textMessageModal={textMessageModal}
+        messageModalSuccessfull={messageModalSuccessfull}
         messageModalClose={() => setMessageModal(false)}
       />
     </main>

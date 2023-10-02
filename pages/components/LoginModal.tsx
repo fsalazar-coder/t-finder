@@ -61,15 +61,13 @@ export default function LoginModal(props: any) {
             props.loginModalClose();
           }
           else if (resData.status === 'Invalid credential') {
-            props.messageModalOpen('Invalid credential. Try again');
+            props.messageError('Invalid credential. Try again');
           }
-        })
-        .catch((error) => {
-          console.error(error)
         })
     }
     catch (error) {
-      console.log('ERROR EN LOGIN: ', error);
+      console.log('Error on login: ', error);
+      props.messageError('An error occurred. Try latter');
     }
     finally {
       setEmail('');

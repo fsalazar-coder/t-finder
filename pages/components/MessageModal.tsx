@@ -8,6 +8,7 @@ export default function MessageModal(props: any) {
   const [checkAnimation, setCheckAnimation] = useState(false);
   const messageModal = props.messageModal;
   const textMessageModal = props.textMessageModal;
+  const messageModalSuccessfull = props.messageModalSuccessfull;
 
   useEffect(() => {
     if (messageModal) {
@@ -45,12 +46,17 @@ export default function MessageModal(props: any) {
           : 'absolute hidden'
       }
     >
-      {/**box successfull */}
+      {/**box */}
       <div className='container w-full md:w-[650px] xl:w-[750px] h-full px-[2%] ml:px-[10%] md:px-0 py-10 flex flex-col justify-center items-center'>
         <div className='w-[90%] sm:w-1/2 h-1/2 flex flex-col justify-end items-center rounded-md bg-white animate-[appear_1.0s] z-[2000]'>
-          {/**SVG: animation circle & check */}
+          {/**SVG: animation circle-check or circle-error */}
           <div className='w-full h-1/2 relative flex flex-col justify-center items-center'>
-            <svg className='w-[110px] h-[110px] stroke-blue-100'>
+            <svg className={
+              `${messageModalSuccessfull ?
+                'stroke-green-100' :
+                'stroke-red-100'
+              } w-[110px] h-[110px]`
+            }>
               <circle
                 className={
                   `${circleAnimation ?
@@ -69,27 +75,51 @@ export default function MessageModal(props: any) {
                 strokeLinecap='round'
               />
             </svg>
-            <svg className='w-[55px] h-[41px] absolute stroke-blue-600'
-              strokeWidth={8}
-              strokeLinecap='round'
-            >
-              <g transform="matrix(0.80,8.70e-32,8.40e-32,0.80,-489.57,-205.68)">
-                <path
-                  className={
-                    `${checkAnimation ?
-                      'animate-[draw-check_0.5s_ease-in]'
-                      : 'hidden'
-                    }`
-                  }
-                  fill="none"
-                  d="M616.306,283.025 L634.087,300.805 L673.361,261.53"
-                />
-              </g>
-            </svg>
+            {
+              messageModalSuccessfull ?
+                <svg className='w-[55px] h-[41px] absolute stroke-green-600'
+                  strokeWidth={8}
+                  strokeLinecap='round'
+                >
+                  <g transform="matrix(0.80,8.70e-32,8.40e-32,0.80,-489.57,-205.68)">
+                    <path
+                      className={
+                        `${checkAnimation ?
+                          'animate-[draw-check_0.5s_ease-in]'
+                          : 'hidden'
+                        }`
+                      }
+                      fill="none"
+                      d="M616.306,283.025 L634.087,300.805 L673.361,261.53"
+                    />
+                  </g>
+                </svg>
+                :
+                <>
+                  <svg className='w-[55px] h-[41px] absolute stroke-red-600'
+                    strokeWidth={8}
+                    strokeLinecap='round'
+                  >
+                    <g transform="matrix(0.80,8.70e-32,8.40e-32,0.80,-489.57,-205.68)">
+                      <path
+                        className={
+                          `${checkAnimation ?
+                            'animate-[draw-check_0.5s_ease-in]'
+                            : 'hidden'
+                          }`
+                        }
+                        fill="none"
+                        d="M616.306,283.025 L634.087,300.805 L673.361,261.53"
+                      />
+                    </g>
+                  </svg>
+                </>
+            }
           </div>
-          {/**Successful message sent */}
+
+          {/**message sent */}
           <h4 className='w-full h-[20%] px-4 text-sm sm:text-base text-center flex flex-col justify-center items-center'>
-          {textMessageModal}
+            {textMessageModal}
           </h4>
           {/**OK: close button */}
           <div className='w-full h-[30%] flex flex-col justify-center items-center'>
