@@ -11,7 +11,6 @@ import Presentation from "./components/Presentation";
 import Blog from "./components/Blog";
 import Testimonials from "./components/Testimonials";
 import Data from './data/data.json';
-import LogoutModal from "./components/LogoutModal";
 import { useAuth } from "../context/authContext";
 
 
@@ -23,10 +22,9 @@ export default function Home() {
   const { setAuth } = useAuth();
   const [loginModal, setLoginModal] = useState(false);
   const [joinModal, setJoinModal] = useState(false);
-  const [logoutModal, setLogoutModal] = useState(false);
   const [messageModal, setMessageModal] = useState(false);
-  const [textMessageModal, setTextMessageModal] = useState(String);
-  const [messageModalSuccessfull, setMessageModalSuccessfull] = useState(Boolean);
+  const [typeMessageModal, setTypeMessageModal] = useState(String);
+  const [descriptionMessageModal, setDescriptionMessageModal] = useState(String);
   const [passwordResetModal, setPasswordResetModal] = useState(false);
   const [sectionActived, setSectionActived] = useState(String);                          /***State active section on viewport: string***/
   const [screenNarrow, setScreenNarrow] = useState(Boolean);                             /***State screen narrow: true or false***/
@@ -86,7 +84,11 @@ export default function Home() {
           loginModalClose={() => setLoginModal(false)}
           joinModalOpen={() => setJoinModal(true)}
           joinModalClose={() => setJoinModal(false)}
-          logoutModal={() => { setLogoutModal(true) }}
+          messageLogout={(e: any) => {
+            setMessageModal(true);
+            setTypeMessageModal('logout');
+            setDescriptionMessageModal(e);
+          }}
         />
       </div>
 
@@ -185,15 +187,15 @@ export default function Home() {
           setLoginModal(true);
           setJoinModal(false);
         }}
-        messageSuccessfull={(e: any) => {
+        messageSuccessful={(e: any) => {
           setMessageModal(true);
-          setTextMessageModal(e);
-          setMessageModalSuccessfull(true);
+          setTypeMessageModal('successful');
+          setDescriptionMessageModal(e);
         }}
         messageError={(e: any) => {
           setMessageModal(true);
-          setTextMessageModal(e);
-          setMessageModalSuccessfull(false);
+          setTypeMessageModal('error');
+          setDescriptionMessageModal(e);
         }}
       />
 
@@ -209,15 +211,10 @@ export default function Home() {
           setLoginModal(false);
           setJoinModal(true)
         }}
-        messageSuccessfull={(e: any) => {
-          setMessageModal(true);
-          setTextMessageModal(e);
-          setMessageModalSuccessfull(true);
-        }}
         messageError={(e: any) => {
           setMessageModal(true);
-          setTextMessageModal(e);
-          setMessageModalSuccessfull(false);
+          setTypeMessageModal('error');
+          setDescriptionMessageModal(e);
         }}
       />
 
@@ -225,26 +222,25 @@ export default function Home() {
       <PasswordResetModal
         passwordResetModal={passwordResetModal}
         passwordResetModalClose={() => setPasswordResetModal(false)}
+        messageSuccessful={(e: any) => {
+          setMessageModal(true);
+          setTypeMessageModal('successful');
+          setDescriptionMessageModal(e);
+        }}
+        messageError={(e: any) => {
+          setMessageModal(true);
+          setTypeMessageModal('error');
+          setDescriptionMessageModal(e);
+        }}
       />
 
       {/**Hidden-visible success modal (join & password-reset)*/}
       <MessageModal
         messageModal={messageModal}
-        textMessageModal={textMessageModal}
-        messageModalSuccessfull={messageModalSuccessfull}
+        typeMessageModal={typeMessageModal}
+        subtitle={descriptionMessageModal}
         messageModalClose={() => setMessageModal(false)}
-      />
-
-      {/**Hidden-visible logout modal */}
-      <LogoutModal
-        logoutModal={logoutModal}
-        logout={() => {
-          setAuth(null);
-          setLogoutModal(false);
-        }}
-        logoutCancel={() => setLogoutModal(false)}
       />
     </main>
   )
 }
-

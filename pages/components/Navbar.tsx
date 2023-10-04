@@ -148,16 +148,16 @@ export default function Navbar(props: any) {
                                     imageUser={false}
                                     emailUser={auth.email}
                                     dropdownUser={dropdownUser}
-                                    buttonSignout={
+                                    buttonLogout={
                                       <button
                                         className='w-full h-full flex flex-row items-center'
                                         onClick={() => {
                                           setDropdown(false);
-                                          props.logoutModal();
+                                          props.messageLogout();
                                         }}
                                       >
                                         <h3 className='h-auto text-slate-500 hover:text-slate-600 text-xs lg:text-sm xl:text-base font-light'>
-                                          Sign out
+                                          Log out
                                         </h3>
                                       </button>
                                     }

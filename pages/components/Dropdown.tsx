@@ -39,7 +39,7 @@ export default function Dropdown(props: any) {
           })
         }
         <li className='w-full h-auto py-4 px-4 flex flex-row justify-center items-center bg-slate-50 hover:bg-fuchsia-100 border-t border-slate-100'>
-          {props.buttonSignout}
+          {props.buttonLogout}
         </li>
       </ul>
     </>

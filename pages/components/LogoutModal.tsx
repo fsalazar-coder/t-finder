@@ -27,16 +27,26 @@ export default function LogoutModal(props: any) {
   return (
     <div
       className={
-        logoutModal ?
-          `w-screen h-screen fixed top-0 flex flex-col justify-center items-center bg-black bg-opacity-75 transition-all animate-[appear_0.5s] z-[1000]`
-          : 'absolute hidden'
+        `w-screen h-screen fixed top-0 flex flex-col justify-center items-center bg-black bg-opacity-75 transform z-[60]
+      ${logoutModal ?
+          'scale-100 animate-[fade-in_0.50s]'
+          : props.logoutModalAnimationClose ?
+            'scale-0 animate-[fade-out_0.30s]'
+            : 'hidden'
+        }`
       }
     >
       {/**box */}
-      <div className='container w-full md:w-[650px] xl:w-[750px] h-full px-[2%] ml:px-[10%] md:px-0 py-10 flex flex-col justify-center items-center'>
-        <div className='w-[90%] sm:w-1/2 h-1/2 flex flex-col justify-end items-center rounded-md bg-white animate-[appear_1.0s] z-[2000]'>
+      <div className={
+        `container w-64 lg:w-[22rem] relative flex flex-col justify-start items-center bg-white rounded-md shadow-lg transform
+        ${logoutModal ?
+          'scale-100 animate-[zoom-in_0.50s]'
+          : 'scale-0 animate-[zoom-out_0.30s]'
+        }`
+      }>
+        <div className='w-full flex flex-col justify-start items-center'>
           {/**SVG: animation circle */}
-          <div className='w-full h-1/2 relative flex flex-col justify-center items-center'>
+          <div className='w-full h-32 relative px-4 lg:px-8 pt-2 lg:pt-4 flex flex-col justify-center items-center rounded-t-md animate-[appear_1.0s]'>
             <svg className='w-[110px] h-[110px] stroke-red-200'>
               <circle
                 className={
@@ -83,27 +93,30 @@ export default function LogoutModal(props: any) {
               </g>
             </svg>
           </div>
-
-          {/**message sent */}
-          <h4 className='w-full h-[20%] px-4 text-sm sm:text-base text-center flex flex-col justify-center items-center'>
+          {/**message container */}
+          <h2 className='w-full pt-4 lg:pt-6 px-4 lg:px-8 text-xl lg:text-3xl text-slate-950 text-center flex flex-col justify-center items-center'>
+            Are you sure?
+          </h2>
+          <h4 className='w-full px-4 lg:px-8 text-sm lg:text-base text-slate-600 text-center flex flex-col justify-center items-center'>
             Logout your session with this action
           </h4>
-          <div className='w-full h-20 flex flex-row justify-around items-center'>
+          {/**OK & cancel buttons */}
+          <div className='w-full py-4 lg:py-6 px-4 lg:px-8 flex flex-row justify-between items-center'>
             {/**logout session button */}
             <button
-              className='w-auto h-auto text-white px-6 py-3 flex flex-row justify-center items-center rounded-full bg-green-400 md:bg-green-300 md:hover:bg-green-600 md:hover:shadow-2xl transition-all z-30'
-              onClick={() => props.logout() }
+              className='w-[45%] text-slate-50 lg:hover:text-white lg:hover:font-bold py-2 flex flex-row justify-center items-center bg-green-400 lg:bg-green-300 lg:hover:bg-green-400 cursor-default lg:cursor-pointer rounded-md transition-all'
+              onClick={() => props.logout()}
             >
-              <h5 className='w-fit h-fit text-sm sm:text-xs md:text-sm lg:text-base xl:text-lg leading-none font-bold md:font-medium tracking-wider'>
-                OK
+              <h5 className='w-full text-sm lg:text-base font-bold leading-none'>
+                Logout
               </h5>
             </button>
             {/**Cancel logout session button */}
             <button
-              className='w-auto h-auto text-white px-6 py-3 flex flex-row justify-center items-center rounded-full bg-red-400 md:bg-red-300 md:hover:bg-red-600 md:hover:shadow-2xl transition-all z-30'
-              onClick={() => props.logoutCancel() }
+              className='w-[45%] text-slate-50 lg:hover:text-white lg:hover:font-bold py-2 flex flex-row justify-center items-center bg-red-400 lg:bg-red-300 lg:hover:bg-red-400 cursor-default lg:cursor-pointer rounded-md transition-all'
+              onClick={() => props.logoutCancel()}
             >
-              <h5 className='w-fit h-fit text-sm sm:text-xs md:text-sm lg:text-base xl:text-lg leading-none font-bold md:font-medium tracking-wider'>
+              <h5 className='w-full text-sm lg:text-base font-bold leading-none'>
                 Cancel
               </h5>
             </button>
