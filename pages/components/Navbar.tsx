@@ -151,9 +151,9 @@ export default function Navbar(props: any) {
                                     buttonLogout={
                                       <button
                                         className='w-full h-full flex flex-row items-center'
-                                        onClick={() => {
+                                        onClick={(e: any) => {
                                           setDropdown(false);
-                                          props.messageLogout();
+                                          props.messageLogout('Logout your session with this action');
                                         }}
                                       >
                                         <h3 className='h-auto text-slate-500 hover:text-slate-600 text-xs lg:text-sm xl:text-base font-light'>

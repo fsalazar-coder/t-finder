@@ -54,7 +54,7 @@ export default function JoinModal(props: any) {
           let res = response.data.status;
           if (res === 'Success register') {
             props.joinModalClose();
-            props.messageSuccessfull('User created successfull');
+            props.messageSuccessful('Your user have been created');
           }
           else if (res === 'User already exists') {
             props.messageError('User already exists');
