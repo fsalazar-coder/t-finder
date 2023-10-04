@@ -61,7 +61,7 @@ export default function MessageModal(props: any) {
         <div className='w-full flex flex-col justify-start items-center'>
 
           {/**SVG: animation circle: successful, error & alert */}
-          <div className='w-full h-32 relative px-4 lg:px-8 pt-2 lg:pt-4 flex flex-col justify-center items-center rounded-t-md animate-[appear_1.0s]'>
+          <div className='w-full h-32 relative px-4 lg:px-8 py-4 lg:py-6 flex flex-col justify-center items-center rounded-t-md animate-[appear_1.0s] border border-gray-500'>
             <svg className={
               `${typeMessageModal === 'successful' ?
                 'stroke-green-200' : typeMessageModal === 'error' ?
@@ -143,7 +143,7 @@ export default function MessageModal(props: any) {
           </div>
 
           {/**message title */}
-          <h2 className='w-full pt-2 lg:pt-4 px-4 lg:px-8 text-xl lg:text-3xl text-slate-950 text-center flex flex-col justify-center items-center'>
+          <h2 className='w-full px-4 lg:px-8 text-xl lg:text-3xl text-slate-950 text-center flex flex-col justify-center items-center'>
             {typeMessageModal === 'successful' ? 'Successful' :
               typeMessageModal === 'error' ? 'Error' : 'Are you sure?'}
           </h2>
@@ -152,7 +152,7 @@ export default function MessageModal(props: any) {
             {subtitle}
           </h4>
           {/**buttons */}
-          <div className='w-full py-2 lg:py-4 px-4 lg:px-8 flex flex-row justify-between items-center'>
+          <div className='w-full py-4 lg:py-6 px-4 lg:px-8 flex flex-row justify-between items-center'>
             {
               typeMessageModal === 'logout' ?
                 <>
