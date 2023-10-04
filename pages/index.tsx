@@ -243,7 +243,7 @@ export default function Home() {
           setMessageModal(false);
           setAuth(null);
         }}
-        logoutCancel={() => setMessageModal(false) }
+        messageModalClose={() => setMessageModal(false) }
       />
     </main>
   )

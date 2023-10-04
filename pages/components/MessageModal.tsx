@@ -168,7 +168,7 @@ export default function MessageModal(props: any) {
                   {/**Cancel logout session button */}
                   <button
                     className='w-[45%] text-slate-50 lg:hover:text-white lg:hover:font-bold py-2 flex flex-row justify-center items-center bg-red-400 lg:bg-red-300 lg:hover:bg-red-400 cursor-default lg:cursor-pointer rounded-md transition-all'
-                    onClick={() => props.logoutCancel()}
+                    onClick={() => props.messageModalClose()}
                   >
                     <h5 className='w-full text-sm lg:text-base font-bold leading-none'>
                       Cancel
@@ -179,7 +179,7 @@ export default function MessageModal(props: any) {
                 <>
                   {/**OK or try-again button */}
                   <button
-                    className='w-[45%] text-slate-50 lg:hover:text-white lg:hover:font-bold py-2 flex flex-row justify-center items-center bg-green-400 lg:bg-green-300 lg:hover:bg-green-400 cursor-default lg:cursor-pointer rounded-md transition-all'
+                    className='w-full text-slate-50 lg:hover:text-white lg:hover:font-bold py-2 flex flex-row justify-center items-center bg-green-400 lg:bg-green-300 lg:hover:bg-green-400 cursor-default lg:cursor-pointer rounded-md transition-all'
                     onClick={() => props.messageModalClose()}
                   >
                     <h5 className='w-full text-sm lg:text-base font-bold leading-none'>
