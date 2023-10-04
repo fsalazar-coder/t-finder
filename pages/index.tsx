@@ -239,6 +239,7 @@ export default function Home() {
         messageModal={messageModal}
         typeMessageModal={typeMessageModal}
         subtitle={descriptionMessageModal}
+        logout={() => setAuth(null)}
         messageModalClose={() => setMessageModal(false)}
       />
     </main>
