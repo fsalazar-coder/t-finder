@@ -236,11 +236,14 @@ export default function Home() {
 
       {/**Hidden-visible success modal (join & password-reset)*/}
       <MessageModal
-        messageModal={messageModal}
+        activedModal={messageModal}
         typeMessageModal={typeMessageModal}
         subtitle={descriptionMessageModal}
-        logout={() => setAuth(null)}
-        messageModalClose={() => setMessageModal(false)}
+        logout={() => {
+          setMessageModal(false);
+          setAuth(null);
+        }}
+        logoutCancel={() => setMessageModal(false) }
       />
     </main>
   )

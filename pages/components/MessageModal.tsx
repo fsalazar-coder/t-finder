@@ -6,21 +6,21 @@ export default function MessageModal(props: any) {
 
   const [circleAnimation, setCircleAnimation] = useState(false);
   const [symbolAnimation, setSymbolAnimation] = useState(false);
-  const messageModal = props.messageModal;
+  const activedModal = props.activedModal;
   const typeMessageModal = props.typeMessageModal;
-  const descriptionMessageModal = props.descriptionMessageModal;
+  const subtitle = props.subtitle;
 
   useEffect(() => {
-    if (messageModal) {
+    if (activedModal) {
       setCircleAnimation(true);
       setTimeout(() => {
         setSymbolAnimation(true)
       }, 1000);
     }
-  }, [messageModal]);
+  }, [activedModal]);
 
   const modalCloseEscapeHandle = (e: any) => {
-    if (messageModal) {
+    if (activedModal) {
       if ((e.chartCode | e.keyCode) === 27) {
         props.messageModalClose();
       }
@@ -32,17 +32,17 @@ export default function MessageModal(props: any) {
   });
 
   useEffect(() => {
-    messageModal ?
+    activedModal ?
       (document.body.style.overflowY = 'hidden')
       : (document.body.style.overflowY = 'auto');
-  }, [messageModal]);
+  }, [activedModal]);
 
 
   return (
     <div
       className={
         `w-screen h-screen fixed top-0 flex flex-col justify-center items-center bg-black bg-opacity-75 transform z-[60]
-      ${messageModal ?
+      ${activedModal ?
           'scale-100 animate-[fade-in_0.50s]'
           : props.messageModalAnimationClose ?
             'scale-0 animate-[fade-out_0.30s]'
@@ -53,7 +53,7 @@ export default function MessageModal(props: any) {
       {/**box */}
       <div className={
         `container w-64 lg:w-[22rem] relative flex flex-col justify-start items-center bg-white rounded-md shadow-lg transform
-          ${messageModal ?
+          ${activedModal ?
           'scale-100 animate-[zoom-in_0.50s]'
           : 'scale-0 animate-[zoom-out_0.30s]'
         }`
@@ -149,7 +149,7 @@ export default function MessageModal(props: any) {
           </h2>
           {/**message sub-title */}
           <h4 className='w-full px-4 lg:px-8 text-sm lg:text-base text-slate-600 text-center flex flex-col justify-center items-center'>
-            {descriptionMessageModal}
+            {subtitle}
           </h4>
           {/**buttons */}
           <div className='w-full py-5 lg:py-6 px-4 lg:px-8 flex flex-row justify-between items-center'>
@@ -177,7 +177,7 @@ export default function MessageModal(props: any) {
                 </>
                 :
                 <>
-                  {/**OK or try again button */}
+                  {/**OK or try-again button */}
                   <button
                     className='w-[45%] text-slate-50 lg:hover:text-white lg:hover:font-bold py-2 flex flex-row justify-center items-center bg-green-400 lg:bg-green-300 lg:hover:bg-green-400 cursor-default lg:cursor-pointer rounded-md transition-all'
                     onClick={() => props.messageModalClose()}
@@ -185,10 +185,7 @@ export default function MessageModal(props: any) {
                     <h5 className='w-full text-sm lg:text-base font-bold leading-none'>
                       {
                         typeMessageModal === 'successful' ?
-                          'Ok' :
-                          typeMessageModal === 'error' ?
-                            'Try again' :
-                            ''
+                          'Ok' : 'Try again'
                       }
                     </h5>
                   </button>
