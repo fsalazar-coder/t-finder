@@ -143,7 +143,7 @@ export default function MessageModal(props: any) {
           </div>
 
           {/**message title */}
-          <h2 className='w-full pt-4 lg:pt-6 px-4 lg:px-8 text-xl lg:text-3xl text-slate-950 text-center flex flex-col justify-center items-center'>
+          <h2 className='w-full pt-2 lg:pt-4 px-4 lg:px-8 text-xl lg:text-3xl text-slate-950 text-center flex flex-col justify-center items-center'>
             {typeMessageModal === 'successful' ? 'Successful' :
               typeMessageModal === 'error' ? 'Error' : 'Are you sure?'}
           </h2>
@@ -152,7 +152,7 @@ export default function MessageModal(props: any) {
             {subtitle}
           </h4>
           {/**buttons */}
-          <div className='w-full py-5 lg:py-6 px-4 lg:px-8 flex flex-row justify-between items-center'>
+          <div className='w-full py-2 lg:py-4 px-4 lg:px-8 flex flex-row justify-between items-center'>
             {
               typeMessageModal === 'logout' ?
                 <>
