@@ -18,13 +18,11 @@ export default function Navbar(props: any) {
   const { auth } = useAuth();
   const { setAuth } = useAuth();
   const [transparentBackground, setTransparentBackground] = useState(true);              /***Transparent background state: boolean***/
-  const [navbarNarrowActive, setNavbarNarrowActive] = useState(false);
+  const [navbarTopSlider, setNavbarTopSlider] = useState(false);
   const [navbarFirstUse, setNavbarFirstUse] = useState(false);
   const [dropdown, setDropdown] = useState(false);
 
-
   const screenNarrow = props.screenNarrow;
-  const navbarElementText = [''];
 
   useEffect(() => {
     const backgroundScrollHandle = () => {
@@ -69,131 +67,101 @@ export default function Navbar(props: any) {
               </h2>
             </div>
           </div>
-
           {/**Navbar (right) */}
-          <div className={
-            `${screenNarrow ?
-              'w-1/3'
-              : 'w-5/6'
-            } h-full flex flex-row justify-end items-center z-30`
-          }>
-            <nav className={
-              `${screenNarrow ?
-                'w-fit flex flex-col justify-end'
-                : 'w-5/6 relative'
-              } h-full`
-            }>
+          <div className='w-auto h-full flex flex-row justify-end items-center z-30'>
+            <nav className='w-fit h-full flex flex-col justify-end relative'>
               {
-                screenNarrow ?
-                  /**Navbar narrow: Menu hamburguer, navbar elements hidden-visible */
-                  <div
-                    className='w-5 h-6 relative flex flex-col justify-center items-center transition-all'
-                    onClick={() => {
-                      setNavbarNarrowActive(!navbarNarrowActive);
-                      setNavbarFirstUse(true);
-                    }}
-                  >
-                    {
-                      navbarNarrowActive ?
-                        <>
-                          <div className='w-5 h-[2px] absolute top-[4px] bg-slate-50 transform rotate-45 transition-all' />
-                          <div className='w-5 h-[2px] absolute top-[4px] bg-slate-50 transform -rotate-45 transition-all' />
-                          <div className='w-5 h-[2px] absolute bg-slate-50 transform scale-0 transition-all' />
-                          <div className='w-5 h-[2px] absolute bottom-[17px] bg-slate-50 transform -rotate-45 transition-all' />
-                          <div className='w-5 h-[2px] absolute bottom-[17px] bg-slate-50 transform rotate-45 transition-all' />
-                        </>
-                        :
-                        <>
-                          <div className='w-5 h-[2px] absolute -top-1 bg-slate-50 transition-all' />
-                          <div className='w-5 h-[2px] absolute -top-1 bg-slate-50 transition-all' />
-                          <div className='w-5 h-[2px] absolute top-[3px] bg-slate-50 transition-all' />
-                          <div className='w-5 h-[2px] absolute bottom-3 bg-slate-50 transition-all' />
-                          <div className='w-5 h-[2px] absolute bottom-3 bg-slate-50 transition-all' />
-                        </>
-                    }
+                auth ?
+                /**Icon or image user and dropdown */
+                  <div className='w-full h-full flex flex-row justify-end items-center'>
+                    <li
+                      className='relative flex-col justify-start items-start cursor-pointer'
+                      onMouseEnter={() => setDropdown(true)}
+                      onMouseLeave={() => setDropdown(false)}
+                    >
+                      <i className='w-7 h-7 text-slate-50 text-sm lg:text-base xl:text-lg font-light flex flex-row justify-center items-center border border-slate-50 rounded-full cursor-pointer transition-all'>
+                        <IconUser />
+                      </i>
+                      {/**dropdown */}
+                      {
+                        dropdown ?
+                          <Dropdown
+                            imageUser={false}
+                            emailUser={auth.email}
+                            dropdownUser={dropdownUser}
+                            buttonLogout={
+                              <button
+                                className='w-full h-full flex flex-row items-center'
+                                onClick={(e: any) => {
+                                  setDropdown(false);
+                                  props.messageLogout('Logout your session with this action');
+                                }}
+                              >
+                                <h3 className='h-auto text-slate-500 hover:text-slate-600 text-xs lg:text-sm xl:text-base font-light'>
+                                  Log out
+                                </h3>
+                              </button>
+                            }
+                          />
+                          : ''
+                      }
+                    </li>
                   </div>
                   :
-                  /**Navbar wide */
-                  <>
-                    {/**Navbar elements***/}
-                    <ul className='w-full h-full flex flex-row justify-end items-center'>
+                  screenNarrow ?
+                    /**Navbar narrow: Menu hamburguer, navbar elements hidden-visible */
+                    <div
+                      className='w-5 h-6 relative flex flex-col justify-center items-center transition-all'
+                      onClick={() => {
+                        setNavbarTopSlider(!navbarTopSlider);
+                        setNavbarFirstUse(true);
+                      }}
+                    >
                       {
-                        navbarElementText.map((elementText: string, index: any) => {
-                          return (
-                            <li
-                              key={index}
-                              className='w-fit h-fit px-2 flex flex-row justify-center items-start list-none'>
-                              <h2 className='w-full h-2/3 py-1 px-8 text-slate-50 hover:text-fuchsia-600 text-sm lg:text-base xl:text-lg font-light hover:font-bold tracking-wider flex flex-row justify-center items-center cursor-pointer transition-all'>
-                                {elementText}
-                              </h2>
-                            </li>
-                          )
-                        })
-                      }
-                      {
-                        auth ?
+                        navbarTopSlider ?
                           <>
-                            <li
-                              className='relative flex-col justify-start items-start cursor-pointer'
-                              onMouseEnter={() => setDropdown(true)}
-                              onMouseLeave={() => setDropdown(false)}
-                            >
-                              <i className='w-7 h-7 text-slate-50 text-sm lg:text-base xl:text-lg font-light flex flex-row justify-center items-center border border-slate-50 rounded-full cursor-pointer transition-all'>
-                                <IconUser />
-                              </i>
-                              {/**dropdown */}
-                              {
-                                dropdown ?
-                                  <Dropdown
-                                    imageUser={false}
-                                    emailUser={auth.email}
-                                    dropdownUser={dropdownUser}
-                                    buttonLogout={
-                                      <button
-                                        className='w-full h-full flex flex-row items-center'
-                                        onClick={(e: any) => {
-                                          setDropdown(false);
-                                          props.messageLogout('Logout your session with this action');
-                                        }}
-                                      >
-                                        <h3 className='h-auto text-slate-500 hover:text-slate-600 text-xs lg:text-sm xl:text-base font-light'>
-                                          Log out
-                                        </h3>
-                                      </button>
-                                    }
-                                  />
-                                  : ''
-                              }
-                            </li>
+                            <div className='w-5 h-[2px] absolute top-[4px] bg-slate-50 transform rotate-45 transition-all' />
+                            <div className='w-5 h-[2px] absolute top-[4px] bg-slate-50 transform -rotate-45 transition-all' />
+                            <div className='w-5 h-[2px] absolute bg-slate-50 transform scale-0 transition-all' />
+                            <div className='w-5 h-[2px] absolute bottom-[17px] bg-slate-50 transform -rotate-45 transition-all' />
+                            <div className='w-5 h-[2px] absolute bottom-[17px] bg-slate-50 transform rotate-45 transition-all' />
                           </>
                           :
                           <>
-                            {/**login buttom to open modal */}
-                            <li className='w-fit h-fit flex flex-row justify-center items-start list-none'>
-                              <button
-                                className='w-auto h-auto px-4 py-2 flex flex-row justify-center items-center transition-all z-30'
-                                onClick={props.loginModalOpen}
-                              >
-                                <h3 className='w-full h-2/3 py-1 px-8 text-slate-50 hover:text-white text-sm lg:text-base xl:text-lg font-semibold tracking-wider flex flex-row justify-center items-center border-2 border-fuchsia-300 hover:border-fuchsia-900 rounded-full cursor-pointer transition-all'>
-                                  Login
-                                </h3>
-                              </button>
-                            </li>
-                            {/**Join buttom to open modal */}
-                            <li className='w-fit h-fit flex flex-row justify-center items-start list-none'>
-                              <button
-                                className='w-auto h-auto px-4 py-2 flex flex-row justify-center items-center transition-all z-30'
-                                onClick={props.joinModalOpen}
-                              >
-                                <h3 className='w-full h-2/3 py-1 px-8 text-slate-50 hover:text-white text-sm lg:text-base xl:text-lg font-semibold tracking-wider flex flex-row justify-center items-center bg-fuchsia-300 hover:bg-fuchsia-900 border-2 border-fuchsia-300 hover:border-fuchsia-900 rounded-full cursor-pointer transition-all'>
-                                  Join
-                                </h3>
-                              </button>
-                            </li>
+                            <div className='w-5 h-[2px] absolute -top-1 bg-slate-50 transition-all' />
+                            <div className='w-5 h-[2px] absolute -top-1 bg-slate-50 transition-all' />
+                            <div className='w-5 h-[2px] absolute top-[3px] bg-slate-50 transition-all' />
+                            <div className='w-5 h-[2px] absolute bottom-3 bg-slate-50 transition-all' />
+                            <div className='w-5 h-[2px] absolute bottom-3 bg-slate-50 transition-all' />
                           </>
                       }
+                    </div>
+                    :
+                    /**Navbar wide */
+                    <ul className='h-full flex flex-row justify-center items-center'>
+                      {/**login buttom to open modal */}
+                      <li className='w-fit h-fit flex flex-row justify-center items-start list-none'>
+                        <button
+                          className='w-auto h-auto px-4 py-2 flex flex-row justify-center items-center transition-all z-30'
+                          onClick={props.loginModalOpen}
+                        >
+                          <h3 className='w-full h-2/3 py-1 px-8 text-slate-50 hover:text-white text-sm lg:text-base xl:text-lg font-semibold tracking-wider flex flex-row justify-center items-center border-2 border-fuchsia-300 hover:border-fuchsia-900 rounded-full cursor-pointer transition-all'>
+                            Login
+                          </h3>
+                        </button>
+                      </li>
+                      {/**Join buttom to open modal */}
+                      <li className='w-fit h-fit flex flex-row justify-center items-start list-none'>
+                        <button
+                          className='w-auto h-auto px-4 py-2 flex flex-row justify-center items-center transition-all z-30'
+                          onClick={props.joinModalOpen}
+                        >
+                          <h3 className='w-full h-2/3 py-1 px-8 text-slate-50 hover:text-white text-sm lg:text-base xl:text-lg font-semibold tracking-wider flex flex-row justify-center items-center bg-fuchsia-300 hover:bg-fuchsia-900 border-2 border-fuchsia-300 hover:border-fuchsia-900 rounded-full cursor-pointer transition-all'>
+                            Join
+                          </h3>
+                        </button>
+                      </li>
                     </ul>
-                  </>
               }
             </nav>
           </div>
@@ -204,11 +172,9 @@ export default function Navbar(props: any) {
       {
         screenNarrow ?
           <NavbarTopSlider
-            navbarElementText={navbarElementText}
-            screenNarrow={screenNarrow}
-            navbarNarrowActive={navbarNarrowActive}
+            navbarTopSlider={navbarTopSlider}
             navbarFirstUse={navbarFirstUse}
-            navbarNarrowActiveFalse={() => { setNavbarNarrowActive(false) }}
+            navbarTopSliderClose={() => { setNavbarTopSlider(false) }}
             loginModalOpen={props.loginModalOpen}                                  /**props to open login modal */
             joinModalOpen={props.joinModalOpen}                                    /**props to open join modal */
           />

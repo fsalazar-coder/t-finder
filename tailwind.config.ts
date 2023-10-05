@@ -163,6 +163,14 @@ const config: Config = {
             strokeDashoffset: '48',
           }
         },
+        'resaltar': {
+          '0%': { transform: 'scale(0.95)' },
+          '20%': { transform: 'scale(1.1)' },
+          '40%': { transform: 'scale(0.95)' },
+          '60%': { transform: 'scale(1.1)' },
+          '80%': { transform: 'scale(0.95)' },
+          '100%': { transform: 'scale(1)' },
+        },
       },
       screens: {
         'mp': '320px', /**mobile-portrait */

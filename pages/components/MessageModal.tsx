@@ -52,7 +52,7 @@ export default function MessageModal(props: any) {
     >
       {/**box */}
       <div className={
-        `container w-64 lg:w-[22rem] relative flex flex-col justify-start items-center bg-white rounded-md shadow-lg transform
+        `container w-64 lg:w-[22rem] p-4 lg:p-8 relative flex flex-col justify-start items-center bg-white rounded-md shadow-lg transform
           ${activedModal ?
           'scale-100 animate-[zoom-in_0.50s]'
           : 'scale-0 animate-[zoom-out_0.30s]'
@@ -61,98 +61,148 @@ export default function MessageModal(props: any) {
         <div className='w-full flex flex-col justify-start items-center'>
 
           {/**SVG: animation circle: successful, error & alert */}
-          <div className='w-full h-32 relative px-4 lg:px-8 py-4 lg:py-6 flex flex-col justify-center items-center rounded-t-md animate-[appear_1.0s] border border-gray-500'>
-            <svg className={
-              `${typeMessageModal === 'successful' ?
-                'stroke-green-200' : typeMessageModal === 'error' ?
-                  'stroke-red-200' : 'stroke-yellow-200'
-              } w-[110px] h-[110px]`
-            }>
+          <div className='w-full h-20 lg:h-28 relative flex flex-col justify-center items-center rounded-t-md animate-[appear_1.0s]'>
+            <svg
+              className='w-20 lg:w-28 h-20 lg:h-28 absolute'
+              viewBox='0 0 40 40'
+            >
               <circle
                 className={
-                  `${circleAnimation ?
-                    'animate-[draw-circle_2.0s_ease-in-out_forwards]'
+                  `${typeMessageModal === 'successful' ?
+                    'stroke-green-500' : typeMessageModal === 'error' ?
+                      'stroke-red-600' : 'stroke-yellow-300'
+                  }
+                  ${circleAnimation ?
+                    'animate-[draw-circle_2.0s_ease]'
                     : 'hidden'
                   }`
                 }
-                cx="55"
-                cy="55"
-                r="50"
+                cx="20"
+                cy="20"
+                r="18"
+                strokeWidth="3"
                 fill="none"
-                strokeWidth="5"
                 strokeMiterlimit={10}
                 strokeDasharray={330}
                 strokeDashoffset={0}
-                strokeLinecap='round'
               />
             </svg>
             {
               typeMessageModal === 'successful' ?
                 /**successful SVG animation */
-                <svg className='w-[55px] h-[41px] absolute stroke-green-600'
+                <svg
+                  className='w-10 h-10 stroke-green-600'
                   strokeWidth={8}
+                  viewBox='0 0 40 40'
                   strokeLinecap='round'
                 >
-                  <g transform="matrix(0.80,8.70e-32,8.40e-32,0.80,-489.57,-205.68)">
-                    <path
-                      className={
-                        `${symbolAnimation ?
-                          'animate-[draw-check_0.5s_ease-in-out_forwards]'
-                          : 'hidden'
-                        }`
-                      }
-                      fill="none"
-                      d="M616.306,283.025 L634.087,300.805 L673.361,261.53"
-                    />
-                  </g>
+                  <line
+                    className={
+                      `${symbolAnimation ?
+                        'animate-[draw-check_0.75s_ease-in-out_delay_1.0s]'
+                        : 'hidden'
+                      }`
+                    }
+                    x1="4"
+                    y1="26"
+                    x2="16"
+                    y2="36"
+                    strokeMiterlimit={10}
+                    strokeDasharray={330}
+                    strokeDashoffset={0}
+                  />
+                  <line
+                    className={
+                      `${symbolAnimation ?
+                        'animate-[draw-check_1.25s_ease-in-out_delay_0.75s]'
+                        : 'hidden'
+                      }`
+                    }
+                    x1="16" y1="36" x2="36" y2="12"
+                  />
                 </svg>
                 :
                 typeMessageModal === 'error' ?
                   /**error SVG animation */
                   <svg
-                    className='w-[55px] h-[55px] absolute stroke-red-600'
+                    className='w-10 lg:w-14 h-10 lg:h-14 stroke-red-600 flex'
                     strokeWidth={8}
+                    viewBox='0 0 40 40'
                     strokeLinecap='round'
                   >
-                    <g transform="matrix(1,0,0,1,-1,-1)">
-                      <line
-                        className={
-                          `${symbolAnimation ?
-                            'animate-[draw-check_0.5s_ease-in-out_forwards]'
-                            : 'hidden'
-                          }`
-                        }
-                        x1="5" y1="5" x2="50" y2="50"
-                      />
-                      <line
-                        className={
-                          `${symbolAnimation ?
-                            'animate-[draw-check_1.0s_ease-in]'
-                            : 'hidden'
-                          }`
-                        }
-                        x1="5" y1="50" x2="50" y2="5"
-                      />
-                    </g>
+                    <line
+                      className={
+                        `${symbolAnimation ?
+                          'animate-[draw-check_2.0s_ease]'
+                          : 'hidden'
+                        }`
+                      }
+                      x1="6"
+                      y1="6"
+                      x2="35"
+                      y2="35"
+                    />
+                    <line
+                      className={
+                        `${symbolAnimation ?
+                          'animate-[draw-check_3.0s_ease]'
+                          : 'hidden'
+                        }`
+                      }
+                      x1="6"
+                      y1="35"
+                      x2="35"
+                      y2="6"
+                    />
                   </svg>
                   :
                   /**alert SVG animation */
                   <>
+                    <svg
+                      className='w-10 lg:w-14 h-10 lg:h-14 stroke-yellow-300 flex'
+                      strokeWidth={8}
+                      viewBox='0 0 40 40'
+                      strokeLinecap='round'
+                    >
+                      <line
+                      className={
+                        `${symbolAnimation ?
+                          'animate-[draw-check_2.0s_ease]'
+                          : 'hidden'
+                        }`
+                      }
+                        x1="20"
+                        y1="4"
+                        x2="20"
+                        y2="27"
+                      />
+                      <line
+                      className={
+                        `${symbolAnimation ?
+                          'animate-[draw-check_3.0s_ease]'
+                          : 'hidden'
+                        }`
+                      }
+                        x1="20"
+                        y1="36"
+                        x2="20"
+                        y2="36"
+                      />
+                    </svg>
                   </>
             }
           </div>
-
           {/**message title */}
-          <h2 className='w-full px-4 lg:px-8 text-xl lg:text-3xl text-slate-950 text-center flex flex-col justify-center items-center'>
+          <h2 className='w-full pt-4 text-xl lg:text-3xl text-slate-950 text-center flex flex-col justify-center items-center'>
             {typeMessageModal === 'successful' ? 'Successful' :
               typeMessageModal === 'error' ? 'Error' : 'Are you sure?'}
           </h2>
           {/**message sub-title */}
-          <h4 className='w-full px-4 lg:px-8 text-sm lg:text-base text-slate-600 text-center flex flex-col justify-center items-center'>
+          <h4 className='w-full pb-6 text-sm lg:text-base text-slate-600 text-center flex flex-col justify-center items-center'>
             {subtitle}
           </h4>
           {/**buttons */}
-          <div className='w-full py-4 lg:py-6 px-4 lg:px-8 flex flex-row justify-between items-center'>
+          <div className='w-full flex flex-row justify-between items-center'>
             {
               typeMessageModal === 'logout' ?
                 <>
