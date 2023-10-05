@@ -1,8 +1,12 @@
+import { useAuth } from "../../context/authContext";
 import { IconUser } from '@/icons/icons';
+import Link from 'next/link';
 
 
 
 export default function Dropdown(props: any) {
+
+  const { auth } = useAuth();
 
   return (
     <>
@@ -26,20 +30,30 @@ export default function Dropdown(props: any) {
         </li>
         {/**acount options */}
         {
-          props.dropdownUser?.map((item: any, index: any) => {
+          props.navbarElement?.map((item: any, index: any) => {
             return (
               <li
                 key={index}
                 className='w-full h-auto py-2 px-4 flex flex-row items-center bg-slate-50 hover:bg-fuchsia-100'>
-                <h3 className='text-slate-500 hover:text-slate-600 text-xs lg:text-sm xl:text-base font-light'>
-                  {item?.title}
-                </h3>
+                <Link href={auth ? item?.href : ''}>
+                  <h3 className='text-slate-500 hover:text-slate-600 text-xs lg:text-sm xl:text-base font-light'>
+                    {item?.title}
+                  </h3>
+                </Link>
               </li>
             )
           })
         }
+        {/**logout button */}
         <li className='w-full h-auto py-4 px-4 flex flex-row justify-center items-center bg-slate-50 hover:bg-fuchsia-100 border-t border-slate-100'>
-          {props.buttonLogout}
+          <button
+            className='w-full h-full flex flex-row items-center'
+            onClick={() => props.buttonLogout()}
+          >
+            <h3 className='h-auto text-slate-500 hover:text-slate-600 text-xs lg:text-sm xl:text-base font-light'>
+              Log out
+            </h3>
+          </button>
         </li>
       </ul>
     </>

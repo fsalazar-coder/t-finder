@@ -4,11 +4,12 @@ import NavbarTopSlider from './NavbarTopSlider';
 import { IconUser } from '@/icons/icons';
 import Dropdown from './Dropdown';
 
-const dropdownUser = [
-  { title: 'Profile' },
-  { title: 'Job Request' },
-  { title: 'Talent Request' },
-  { title: 'Notifications' }
+const navbarElement = [
+  { title: 'Account', href: '/Account' },
+  { title: 'Profile', href: '' },
+  { title: 'Job Request', href: '' },
+  { title: 'Talent Request', href: '' },
+  { title: 'Notifications', href: '' }
 ];
 
 
@@ -86,20 +87,11 @@ export default function Navbar(props: any) {
                         <Dropdown
                           imageUser={false}
                           emailUser={auth.email}
-                          dropdownUser={dropdownUser}
-                          buttonLogout={
-                            <button
-                              className='w-full h-full flex flex-row items-center'
-                              onClick={(e: any) => {
-                                setDropdown(false);
-                                props.messageLogout('Logout your session with this action');
-                              }}
-                            >
-                              <h3 className='h-auto text-slate-500 hover:text-slate-600 text-xs lg:text-sm xl:text-base font-light'>
-                                Log out
-                              </h3>
-                            </button>
-                          }
+                          navbarElement={navbarElement}
+                          buttonLogout={(e: any) => {
+                            setDropdown(false);
+                            props.messageLogout('Logout your session with this action');
+                          }}
                         />
                         : ''
                     }
