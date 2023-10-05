@@ -82,13 +82,12 @@ export default function Testimonials(props: any) {
 
   return (
     <div className='w-full h-full flex flex-col justify-center items-center'>
-      <div className='container w-full h-full flex flex-col justify-center items-center px-2 lg:px-5 list-none transition-all'>
+      <div className='container w-full h-full flex flex-col justify-center px-0 lg:px-5 list-none transition-all'>
         {/**title */}
         <SectionTitles
           sectionTitle={props.sectionTitle}
           sectionSubtitle={props.sectionSubtitle}
         />
-
         <div className='w-full h-full flex flex-row justify-between items-center'>
           {/***Carousel left arrow***/}
           <div className={
@@ -157,6 +156,6 @@ export default function Testimonials(props: any) {
           </div>
         </div>
       </div>
-    </div >
+    </div>
   )
 }

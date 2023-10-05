@@ -29,7 +29,7 @@ export default function Blog(props: any) {
   return (
     <div className='w-full h-full flex flex-col justify-center items-center'>
       {/**Blog content */}
-      <div className='container w-full h-full flex flex-col justify-center items-center lg:px-5 list-none transition-all'>
+      <div className='container w-full h-full flex flex-col justify-center px-0 lg:px-5 list-none transition-all'>
         {/**title */}
         <SectionTitles
           sectionTitle={props.sectionTitle}

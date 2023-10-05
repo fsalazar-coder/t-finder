@@ -46,8 +46,7 @@ export default function Navbar(props: any) {
           } w-full h-10 lg:h-12 xl:h-14 2xl:h-16 fixed flex flex-row justify-center items-center z-50`
         }>
 
-        <div className='container w-full h-full px-2 lg:px-8 flex flex-row justify-between items-center'>
-
+        <div className='container w-full h-full px-0 lg:px-5 flex flex-row justify-between items-center'>
           {/**Logo (left) */}
           <div className={
             `${screenNarrow ?
@@ -68,44 +67,42 @@ export default function Navbar(props: any) {
             </div>
           </div>
           {/**Navbar (right) */}
-          <div className='w-auto h-full flex flex-row justify-end items-center z-30'>
-            <nav className='w-fit h-full flex flex-col justify-end relative'>
+          <div className='flex flex-row justify-center items-center z-30'>
+            <nav className='w-fit flex flex-col justify-center items-center relative'>
               {
                 auth ?
-                /**Icon or image user and dropdown */
-                  <div className='w-full h-full flex flex-row justify-end items-center'>
-                    <li
-                      className='relative flex-col justify-start items-start cursor-pointer'
-                      onMouseEnter={() => setDropdown(true)}
-                      onMouseLeave={() => setDropdown(false)}
-                    >
-                      <i className='w-7 h-7 text-slate-50 text-sm lg:text-base xl:text-lg font-light flex flex-row justify-center items-center border border-slate-50 rounded-full cursor-pointer transition-all'>
-                        <IconUser />
-                      </i>
-                      {/**dropdown */}
-                      {
-                        dropdown ?
-                          <Dropdown
-                            imageUser={false}
-                            emailUser={auth.email}
-                            dropdownUser={dropdownUser}
-                            buttonLogout={
-                              <button
-                                className='w-full h-full flex flex-row items-center'
-                                onClick={(e: any) => {
-                                  setDropdown(false);
-                                  props.messageLogout('Logout your session with this action');
-                                }}
-                              >
-                                <h3 className='h-auto text-slate-500 hover:text-slate-600 text-xs lg:text-sm xl:text-base font-light'>
-                                  Log out
-                                </h3>
-                              </button>
-                            }
-                          />
-                          : ''
-                      }
-                    </li>
+                  /**Icon or image user and dropdown */
+                  <div
+                    className='relative flex flex-col justify-start items-start cursor-pointer'
+                    onMouseEnter={() => setDropdown(true)}
+                    onMouseLeave={() => setDropdown(false)}
+                  >
+                    <i className='w-7 h-7 text-slate-50 text-sm lg:text-base xl:text-lg font-light flex flex-row justify-center items-center border border-slate-50 rounded-full cursor-pointer transition-all'>
+                      <IconUser />
+                    </i>
+                    {/**dropdown */}
+                    {
+                      dropdown ?
+                        <Dropdown
+                          imageUser={false}
+                          emailUser={auth.email}
+                          dropdownUser={dropdownUser}
+                          buttonLogout={
+                            <button
+                              className='w-full h-full flex flex-row items-center'
+                              onClick={(e: any) => {
+                                setDropdown(false);
+                                props.messageLogout('Logout your session with this action');
+                              }}
+                            >
+                              <h3 className='h-auto text-slate-500 hover:text-slate-600 text-xs lg:text-sm xl:text-base font-light'>
+                                Log out
+                              </h3>
+                            </button>
+                          }
+                        />
+                        : ''
+                    }
                   </div>
                   :
                   screenNarrow ?
@@ -120,19 +117,19 @@ export default function Navbar(props: any) {
                       {
                         navbarTopSlider ?
                           <>
-                            <div className='w-5 h-[2px] absolute top-[4px] bg-slate-50 transform rotate-45 transition-all' />
-                            <div className='w-5 h-[2px] absolute top-[4px] bg-slate-50 transform -rotate-45 transition-all' />
+                            <div className='w-5 h-[2px] absolute bg-slate-50 transform rotate-45 transition-all' />
+                            <div className='w-5 h-[2px] absolute bg-slate-50 transform -rotate-45 transition-all' />
                             <div className='w-5 h-[2px] absolute bg-slate-50 transform scale-0 transition-all' />
-                            <div className='w-5 h-[2px] absolute bottom-[17px] bg-slate-50 transform -rotate-45 transition-all' />
-                            <div className='w-5 h-[2px] absolute bottom-[17px] bg-slate-50 transform rotate-45 transition-all' />
+                            <div className='w-5 h-[2px] absolute bg-slate-50 transform -rotate-45 transition-all' />
+                            <div className='w-5 h-[2px] absolute bg-slate-50 transform rotate-45 transition-all' />
                           </>
                           :
                           <>
-                            <div className='w-5 h-[2px] absolute -top-1 bg-slate-50 transition-all' />
-                            <div className='w-5 h-[2px] absolute -top-1 bg-slate-50 transition-all' />
-                            <div className='w-5 h-[2px] absolute top-[3px] bg-slate-50 transition-all' />
-                            <div className='w-5 h-[2px] absolute bottom-3 bg-slate-50 transition-all' />
-                            <div className='w-5 h-[2px] absolute bottom-3 bg-slate-50 transition-all' />
+                            <div className='w-5 h-[2px] absolute top-1 bg-slate-50 transition-all' />
+                            <div className='w-5 h-[2px] absolute top-1 bg-slate-50 transition-all' />
+                            <div className='w-5 h-[2px] absolute top-[0.7rem] bg-slate-50 transition-all' />
+                            <div className='w-5 h-[2px] absolute bottom-1 bg-slate-50 transition-all' />
+                            <div className='w-5 h-[2px] absolute bottom-1 bg-slate-50 transition-all' />
                           </>
                       }
                     </div>

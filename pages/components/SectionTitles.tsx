@@ -3,7 +3,7 @@
 export default function SectionTitles(props: any) {
 
   return (
-    <div className='w-full flex flex-col'>
+    <div className='w-full lg:w-1/2 flex flex-col'>
       <h1 className='text-2xl md:text-4xl lg:text-6xl text-transparent bg-slate-600 bg-clip-text font-extrabold text-start z-0'>
         {props.sectionTitle}
       </h1>

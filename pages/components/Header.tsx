@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useAuth } from "../../context/authContext";
 import { Typewriter } from 'react-simple-typewriter';
 import { IconArrowRight } from '../../icons/icons';
 
@@ -6,6 +7,7 @@ import { IconArrowRight } from '../../icons/icons';
 
 export default function Header(props: any) {
 
+  const { auth } = useAuth();
   const [animationActived, setAnimationActived] = useState(false);
   const headerActived = props.headerSectionActived;                                      /**To active animation on header section: true or false***/
 
@@ -48,21 +50,20 @@ export default function Header(props: any) {
           Improving your experience with recruitment
         </h5>
       </div>
-
-      {/**button to open join modal (register) */}
-      <div className='w-full h-fit pt-10 flex justify-center items-center z-[35]'>
+          {/**button to open join modal (register) */}
+      < div className='w-full h-fit pt-10 flex justify-center items-center z-[35]'>
         <button
           className='w-fit h-fit px-8 py-3 text-slate-50 hover:text-white md:hover:font-bold bg-fuchsia-400 hover:bg-fuchsia-900 flex flex-row justify-center items-center rounded-full cursor-pointer transform hover:scale-[1.1] transition-all z-30'
           onClick={props.joinModalOpen}
         >
           <h3 className='w-full h-2/3 text-sm lg:text-base xl:text-lg font-semibold tracking-wider flex flex-row justify-center items-center rounded-full transition-all'>
-            Get started
+            {auth ? 'Go to my account' : 'Get started'}
           </h3>
           <i className='text-base xl:text-lg leading-none font-bold md:font-medium tracking-wider ml-1'>
             <IconArrowRight />
           </i>
         </button>
       </div>
-    </div>
+    </div >
   )
 }

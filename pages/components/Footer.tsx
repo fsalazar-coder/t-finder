@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useAuth } from "../../context/authContext";
 import {
   IconArrowRight,
   IconBxlLinkedin,
@@ -10,6 +10,8 @@ import {
 
 
 export default function Footer(props: any) {
+
+  const { auth } = useAuth();
 
   const navegationA = [
     'Find Talent',
@@ -37,7 +39,7 @@ export default function Footer(props: any) {
       <div className='w-full h-auto flex flex-col justify-center items-center bg-slate-50'>
         <div className='container w-full h-[230px] ml:h-[240px] sm:h-[280px] md:h-[360px] lg:h-[400px] px-5 lg:px-36 flex flex-col justify-center items-center'>
           <h3 className='w-full h-fit text-gray-600 text-sm sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl tracking-wide font-normal text-center flex justify-center'>
-            Discover the way of manager talent
+            {auth ? 'The way of manager talent' : 'Discover the way of manager talent'}
           </h3>
           <h1 className='w-full h-fit text-gray-950 text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-5xl tracking-wide font-bold text-center drop-shadow-2xl flex justify-center z-30'>
             intelligently
@@ -49,7 +51,7 @@ export default function Footer(props: any) {
               onClick={props.joinModalOpen}
             >
               <h3 className='w-full h-2/3 text-sm lg:text-base xl:text-lg font-semibold tracking-wider flex flex-row justify-center items-center rounded-full transition-all'>
-                Join to T-finder
+                {auth ? 'Go to my account' : 'Join to T-finder'}
               </h3>
               <i className='text-base xl:text-lg leading-none font-bold md:font-medium tracking-wider ml-1'>
                 <IconArrowRight />
