@@ -25,7 +25,7 @@ export default function AccountNavbar(props: any) {
       className='w-full lg:w-1/6 h-auto lg:h-full fixed flex flex-row justify-center items-center bg-slate-950 z-50'>
       <div className='container w-full h-auto lg:h-full px-0 py-2 lg:py-0 flex flex-row lg:flex-col justify-between lg:justify-start items-center'>
         {/**Logo */}
-        <div className='lg:w-full flex flex-row justify-start items-center z-30'>
+        <div className='lg:w-full py-1 lg:py-4 flex flex-row justify-center items-center z-30'>
           <h2 className='text-slate-400 font-light'>
             <a className='text-white font-bold'>
               T
@@ -64,20 +64,20 @@ export default function AccountNavbar(props: any) {
                 }
               </div>
               :
-              <div className='w-full flex flex-col justify-start items-center'>
-                <div className='py-6 flex flex-col justify-center items-center'>
+              <div className='w-full flex flex-col justify-center items-center'>
+                <div className='py-4 flex flex-col justify-center items-center'>
                   <i className='w-32 h-32 text-slate-50 text-6xl font-light flex flex-row justify-center items-center border border-slate-50 rounded-full cursor-pointer transition-all'>
                     <IconUser />
                   </i>
                 </div>
-                <nav className='w-full flex flex-col justify-start items-center'>
+                <nav className='w-full flex flex-col justify-center items-center'>
                   {
                     navbarElement?.map((item: any, index: any) => {
                       return (
                         <li
                           key={index}
-                          className='w-full h-auto py-2 px-4 flex flex-row items-center hover:bg-fuchsia-900 cursor-pointer'>
-                          <h3 className='text-slate-200 hover:text-slate-50 text-base font-light'>
+                          className='w-full h-auto py-2 flex flex-row justify-center items-center hover:bg-fuchsia-900 cursor-pointer'>
+                          <h3 className='text-slate-200 hover:text-slate-50 text-base text-center font-light'>
                             {item?.title}
                           </h3>
                         </li>
@@ -85,14 +85,14 @@ export default function AccountNavbar(props: any) {
                     })
                   }
                   {/**logout button */}
-                  <li className='w-full h-auto py-2 px-4 flex flex-row justify-center items-center hover:bg-fuchsia-900 cursor-pointer'>
+                  <li className='w-full h-auto py-2 flex flex-row justify-center items-center hover:bg-fuchsia-900 cursor-pointer'>
                     <button
-                      className='w-full h-full flex flex-row items-center'
+                      className='w-full h-full flex flex-row justify-center items-center'
                       onClick={(e: any) => {
                         props.messageLogout('Logout your session with this action');
                       }}
                     >
-                      <h3 className='h-auto text-slate-200 hover:text-slate-50 text-base font-light'>
+                      <h3 className='h-auto text-slate-200 hover:text-slate-50 text-base text-center font-light'>
                         Log out
                       </h3>
                     </button>
