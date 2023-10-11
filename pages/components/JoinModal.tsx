@@ -1,5 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from "../../context/authContext";
+import {
+  useAuth,
+  useJoinModal,
+  useLoginModal,
+  useMessageModal,
+  useMessageModalType,
+  useMessageModalText
+} from "../../context/authContext";
 import axios from 'axios';
 import Image from 'next/image';
 import googleIcon from '../../public/images/google-icon.webp';
@@ -9,19 +16,21 @@ import { IconCancel } from '../../icons/icons';
 
 export default function JoinModal(props: any) {
 
+  const { joinModal, setJoinModal } = useJoinModal();
+  const { setLoginModal } = useLoginModal();
+  const { setMessageModal } = useMessageModal();
+  const { setMessageModalType } = useMessageModalType();
+  const { setMessageModalText } = useMessageModalText();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailChange, setEmailChange] = useState(false);
   const [passwordChange, setPasswordChange] = useState(false);
   const [loading, setLoading] = useState(false);       //AMPLIAR!!!  
-  const { setAuth } = useAuth();
-
-  const joinModal = props.joinModal;
 
   const modalCloseEscapeHandle = (e: any) => {
     if (joinModal) {
       if ((e.chartCode | e.keyCode) === 27) {
-        props.joinModalClose();
+        setJoinModal(false);
       }
     }
   };
@@ -53,17 +62,25 @@ export default function JoinModal(props: any) {
         .then((response: any) => {
           let res = response.data.status;
           if (res === 'Success register') {
-            props.joinModalClose();
-            props.messageSuccessful('Your user have been created');
+            setJoinModal(false);
+            setMessageModal(true);
+            setMessageModalType('successful');
+            setMessageModalText('Your user have been created');
           }
           else if (res === 'User already exists') {
-            props.messageError('User already exists');
+            setMessageModal(true);
+            setMessageModalType('error');
+            setMessageModalText('User already exists');
           }
         })
     }
     catch (error) {
-      console.log('Error on register: ', error);
-      props.messageError('An error occurred');
+      () => {
+        console.log('Error on register: ', error);
+        setMessageModal(true);
+        setMessageModalType('error');
+        setMessageModalText('An error occurred');
+      }
     }
     finally {
       setEmail('');
@@ -84,7 +101,7 @@ export default function JoinModal(props: any) {
             : 'hidden'
         }`
       }
-      onClick={() => props.joinModalClose()}
+      onClick={() => setJoinModal(false)}
     >
       <div
         className={
@@ -100,7 +117,7 @@ export default function JoinModal(props: any) {
         <div className='w-6 h-6 absolute -top-5 -right-5 flex flex-col justify-center items-center rounded-full bg-white'>
           <i
             className='w-fit h-full text-gray-900 lg:text-gray-400 text-2xl lg:xl flex justify-center cursor-default lg:cursor-pointer lg:hover:text-gray-900'
-            onClick={() => { props.joinModalClose() }}
+            onClick={() => setJoinModal(false)}
           >
             <IconCancel />
           </i>
@@ -199,10 +216,10 @@ export default function JoinModal(props: any) {
                 <button
                   type='submit'
                   className={
-                    `${ email ? password ?
+                    `${email ? password ?
                       'font-bold bg-green-400 lg:bg-green-300 lg:hover:bg-green-400 cursor-default lg:cursor-pointer' :
-                        'bg-slate-400 cursor-default':
-                        'bg-slate-400 cursor-default'
+                      'bg-slate-400 cursor-default' :
+                      'bg-slate-400 cursor-default'
                     } w-full text-slate-50 lg:hover:text-white lg:hover:font-bold px-6 py-2 flex flex-row justify-center items-center rounded-md transition-all z-30`
                   }
                 >
@@ -234,7 +251,10 @@ export default function JoinModal(props: any) {
                 </h5>
                 <p
                   className='text-slate-600 lg:hover:text-green-400 text-xs lg:text-sm font-bold cursor-default lg:cursor-pointer'
-                  onClick={props.loginModalOpen}
+                  onClick={() => {
+                    setJoinModal(false);
+                    setLoginModal(true);
+                  }}
                 >
                   Login here
                 </p>

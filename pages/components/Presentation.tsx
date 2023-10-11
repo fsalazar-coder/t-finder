@@ -1,4 +1,4 @@
-import { useAuth } from "../../context/authContext";
+import { useAuth, useJoinModal } from "../../context/authContext";
 import Image from 'next/image';
 import {
   IconCheckCircle,
@@ -11,6 +11,7 @@ import SectionTitles from './SectionTitles';
 export default function Presentation(props: any) {
 
   const { auth } = useAuth();
+  const { setJoinModal } = useJoinModal();
 
 
   return (
@@ -72,7 +73,7 @@ export default function Presentation(props: any) {
             <div className='w-full h-fit flex flex-row items-center z-[35]'>
               <button
                 className='w-fit h-fit px-8 py-3 text-slate-50 hover:text-white md:hover:font-bold bg-fuchsia-400 hover:bg-fuchsia-900 flex flex-row justify-center items-center rounded-full cursor-pointer transform hover:scale-[1.1] transition-all z-30'
-                onClick={props.joinModalOpen}
+                onClick={() => setJoinModal(true)}
               >
                 <h3 className='w-full h-2/3 text-sm lg:text-base xl:text-lg font-semibold tracking-wider flex flex-row justify-center items-center rounded-full transition-all'>
                   {props.textButton}

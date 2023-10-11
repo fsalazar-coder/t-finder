@@ -1,28 +1,36 @@
 import { useEffect, useState } from 'react';
+import {
+  useAuth,
+  useMessageModal,
+  useMessageModalType,
+  useMessageModalText
+} from "../../context/authContext";
+import Link from 'next/link';
 
 
 
 export default function MessageModal(props: any) {
 
+  const { setAuth } = useAuth();
+  const { messageModal, setMessageModal } = useMessageModal();
+  const { messageModalType } = useMessageModalType();
+  const { messageModalText } = useMessageModalText();
   const [circleAnimation, setCircleAnimation] = useState(false);
   const [symbolAnimation, setSymbolAnimation] = useState(false);
-  const activedModal = props.activedModal;
-  const typeMessageModal = props.typeMessageModal;
-  const subtitle = props.subtitle;
 
   useEffect(() => {
-    if (activedModal) {
+    if (messageModal) {
       setCircleAnimation(true);
       setTimeout(() => {
         setSymbolAnimation(true)
       }, 1000);
     }
-  }, [activedModal]);
+  }, [messageModal]);
 
   const modalCloseEscapeHandle = (e: any) => {
-    if (activedModal) {
+    if (messageModal) {
       if ((e.chartCode | e.keyCode) === 27) {
-        props.messageModalClose();
+        setMessageModal(false);
       }
     }
   };
@@ -32,17 +40,17 @@ export default function MessageModal(props: any) {
   });
 
   useEffect(() => {
-    activedModal ?
+    messageModal ?
       (document.body.style.overflowY = 'hidden')
       : (document.body.style.overflowY = 'auto');
-  }, [activedModal]);
+  }, [messageModal]);
 
 
   return (
     <div
       className={
         `w-screen h-screen fixed top-0 flex flex-col justify-center items-center bg-black bg-opacity-75 transform z-[60]
-      ${activedModal ?
+      ${messageModal ?
           'scale-100 animate-[fade-in_0.50s]'
           : props.messageModalAnimationClose ?
             'scale-0 animate-[fade-out_0.30s]'
@@ -53,7 +61,7 @@ export default function MessageModal(props: any) {
       {/**box */}
       <div className={
         `container w-64 lg:w-[22rem] p-4 lg:p-8 relative flex flex-col justify-start items-center bg-white rounded-md shadow-lg transform
-          ${activedModal ?
+          ${messageModal ?
           'scale-100 animate-[zoom-in_0.50s]'
           : 'scale-0 animate-[zoom-out_0.30s]'
         }`
@@ -68,8 +76,8 @@ export default function MessageModal(props: any) {
             >
               <circle
                 className={
-                  `${typeMessageModal === 'successful' ?
-                    'stroke-green-500' : typeMessageModal === 'error' ?
+                  `${messageModalType === 'successful' ?
+                    'stroke-green-500' : messageModalType === 'error' ?
                       'stroke-red-600' : 'stroke-yellow-300'
                   }
                   ${circleAnimation ?
@@ -88,7 +96,7 @@ export default function MessageModal(props: any) {
               />
             </svg>
             {
-              typeMessageModal === 'successful' ?
+              messageModalType === 'successful' ?
                 /**successful SVG animation */
                 <svg
                   className='w-10 h-10 stroke-green-600'
@@ -122,7 +130,7 @@ export default function MessageModal(props: any) {
                   />
                 </svg>
                 :
-                typeMessageModal === 'error' ?
+                messageModalType === 'error' ?
                   /**error SVG animation */
                   <svg
                     className='w-10 lg:w-14 h-10 lg:h-14 stroke-red-600 flex'
@@ -165,24 +173,24 @@ export default function MessageModal(props: any) {
                       strokeLinecap='round'
                     >
                       <line
-                      className={
-                        `${symbolAnimation ?
-                          'animate-[draw-check_2.0s_ease]'
-                          : 'hidden'
-                        }`
-                      }
+                        className={
+                          `${symbolAnimation ?
+                            'animate-[draw-check_2.0s_ease]'
+                            : 'hidden'
+                          }`
+                        }
                         x1="20"
                         y1="4"
                         x2="20"
                         y2="27"
                       />
                       <line
-                      className={
-                        `${symbolAnimation ?
-                          'animate-[draw-check_3.0s_ease]'
-                          : 'hidden'
-                        }`
-                      }
+                        className={
+                          `${symbolAnimation ?
+                            'animate-[draw-check_3.0s_ease]'
+                            : 'hidden'
+                          }`
+                        }
                         x1="20"
                         y1="36"
                         x2="20"
@@ -194,31 +202,37 @@ export default function MessageModal(props: any) {
           </div>
           {/**message title */}
           <h2 className='w-full pt-4 text-xl lg:text-3xl text-slate-950 text-center flex flex-col justify-center items-center'>
-            {typeMessageModal === 'successful' ? 'Successful' :
-              typeMessageModal === 'error' ? 'Error' : 'Are you sure?'}
+            {messageModalType === 'successful' ? 'Successful' :
+              messageModalType === 'error' ? 'Error' : 'Are you sure?'}
           </h2>
           {/**message sub-title */}
           <h4 className='w-full pb-6 text-sm lg:text-base text-slate-600 text-center flex flex-col justify-center items-center'>
-            {subtitle}
+            {messageModalText}
           </h4>
           {/**buttons */}
           <div className='w-full flex flex-row justify-between items-center'>
             {
-              typeMessageModal === 'logout' ?
+              messageModalType === 'logout' ?
                 <>
                   {/**logout session button */}
-                  <button
-                    className='w-[45%] text-slate-50 lg:hover:text-white lg:hover:font-bold py-2 flex flex-row justify-center items-center bg-green-400 lg:bg-green-300 lg:hover:bg-green-400 cursor-default lg:cursor-pointer rounded-md transition-all'
-                    onClick={() => props.logout()}
-                  >
-                    <h5 className='w-full text-sm lg:text-base font-bold leading-none'>
-                      Logout
-                    </h5>
+                  <button className='w-[45%] text-slate-50 lg:hover:text-white lg:hover:font-bold py-2 flex flex-row justify-center items-center bg-green-400 lg:bg-green-300 lg:hover:bg-green-400 cursor-default lg:cursor-pointer rounded-md transition-all'>                      
+                  <Link
+                    className='w-full'
+                    href='/'
+                    scroll={false} 
+                    onClick={() => {
+                      setMessageModal(false);
+                      setAuth(null);
+                    }}>
+                      <h5 className='w-full text-sm lg:text-base font-bold leading-none'>
+                        Logout
+                      </h5>
+                    </Link>
                   </button>
                   {/**Cancel logout session button */}
                   <button
                     className='w-[45%] text-slate-50 lg:hover:text-white lg:hover:font-bold py-2 flex flex-row justify-center items-center bg-red-400 lg:bg-red-300 lg:hover:bg-red-400 cursor-default lg:cursor-pointer rounded-md transition-all'
-                    onClick={() => props.messageModalClose()}
+                    onClick={() => setMessageModal(false)}
                   >
                     <h5 className='w-full text-sm lg:text-base font-bold leading-none'>
                       Cancel
@@ -230,11 +244,11 @@ export default function MessageModal(props: any) {
                   {/**OK or try-again button */}
                   <button
                     className='w-full text-slate-50 lg:hover:text-white lg:hover:font-bold py-2 flex flex-row justify-center items-center bg-green-400 lg:bg-green-300 lg:hover:bg-green-400 cursor-default lg:cursor-pointer rounded-md transition-all'
-                    onClick={() => props.messageModalClose()}
+                    onClick={() => setMessageModal(false)}
                   >
                     <h5 className='w-full text-sm lg:text-base font-bold leading-none'>
                       {
-                        typeMessageModal === 'successful' ?
+                        messageModalType === 'successful' ?
                           'Ok' : 'Try again'
                       }
                     </h5>

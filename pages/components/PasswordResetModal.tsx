@@ -1,19 +1,31 @@
 import { useState, useEffect } from 'react';
+import {
+  useJoinModal,
+  useLoginModal,
+  usePasswordResetModal,
+  useMessageModal,
+  useMessageModalType,
+  useMessageModalText
+} from "../../context/authContext";
 import { IconCancel } from '../../icons/icons';
 
 
 
 export default function PasswordReset(props: any) {
 
+  const { setJoinModal } = useJoinModal();
+  const { setLoginModal } = useLoginModal();
+  const { passwordResetModal, setPasswordResetModal } = usePasswordResetModal();
+  const { setMessageModal } = useMessageModal();
+  const { setMessageModalType } = useMessageModalType();
+  const { setMessageModalText } = useMessageModalText();
   const [email, setEmail] = useState('');
   const [emailChange, setEmailChange] = useState(false);
-
-  const passwordResetModal = props.passwordResetModal;
 
   const modalCloseEscapeHandle = (e: any) => {
     if (passwordResetModal) {
       if ((e.chartCode | e.keyCode) === 27) {
-        props.passwordResetModalClose();
+        setPasswordResetModal(false);
       }
     }
   };
@@ -31,8 +43,11 @@ export default function PasswordReset(props: any) {
 
   const passwordResetSubmitHandle = async (e: any) => {
     e.preventDefault();
-    props.passwordResetModalClose();
-    props.messageSuccessfull('A recovery link has been sent to your email');
+    setEmail('');
+    setPasswordResetModal(false);
+    setMessageModal(true);
+    setMessageModalType('successful');
+    setMessageModalText('A recovery link has been sent to your email');
   }
 
   return (
@@ -46,7 +61,7 @@ export default function PasswordReset(props: any) {
             : 'hidden'
         }`
       }
-      onClick={() => props.passwordResetModalClose()}
+      onClick={() => setPasswordResetModal(false)}
     >
       <div
         className={
@@ -62,9 +77,7 @@ export default function PasswordReset(props: any) {
         <div className='w-6 h-6 absolute -top-5 -right-5 flex flex-col justify-center items-center rounded-full bg-white'>
           <i
             className='w-fit h-full text-gray-900 lg:text-gray-400 text-2xl lg:xl flex justify-center cursor-default lg:cursor-pointer lg:hover:text-gray-900'
-            onClick={() => {
-              props.passwordResetModalClose()
-            }}
+            onClick={() => setPasswordResetModal(false)}
           >
             <IconCancel />
           </i>

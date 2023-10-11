@@ -1,9 +1,14 @@
 import { useEffect, useState } from 'react';
-import { useAuth } from "../../context/authContext";
+import {
+  useAuth,
+  useDropdown,
+  useMessageModal,
+  useMessageModalType,
+  useMessageModalText
+} from "../../context/authContext";
 import { IconUser } from '@/icons/icons';
-import Dropdown from './Dropdown';
 
-const navbarElement = [
+const navbarElementAuth = [
   { title: 'Account', href: '/Account' },
   { title: 'Profile', href: '' },
   { title: 'Job Request', href: '' },
@@ -16,8 +21,12 @@ const navbarElement = [
 export default function AccountNavbar(props: any) {
 
   const { auth } = useAuth();
-  const { setAuth } = useAuth();
-  const [dropdown, setDropdown] = useState(false);
+  const { dropdown, setDropdown } = useDropdown();
+  const { setMessageModal } = useMessageModal();
+  const { setMessageModalType } = useMessageModalType();
+  const { setMessageModalText } = useMessageModalText();
+  const [navbarElementActive, setNavbarElementActive] = useState('Account');              /**navbar element to show on screen narrow */
+
   const screenNarrow = props.screenNarrow;
 
   return (
@@ -40,28 +49,18 @@ export default function AccountNavbar(props: any) {
         <div className='lg:w-full flex flex-row justify-center items-center lg:flex-col lg:justify-start lg:items-center z-30'>
           {
             screenNarrow ?
-              <div
-                className='relative flex flex-col justify-start items-start cursor-pointer'
-                onMouseEnter={() => setDropdown(true)}
-                onMouseLeave={() => setDropdown(false)}
-              >
-                <i className='w-7 h-7 text-slate-50 text-base font-light flex flex-row justify-center items-center border border-slate-50 rounded-full cursor-pointer transition-all'>
+              <div className='relative flex flex-row justify-center items-center'>
+                <div className='py-1 flex flex-row justify-center items-center z-30'>
+                  <h2 className='text-white'>
+                    {navbarElementActive}
+                  </h2>
+                </div>
+                <i
+                  className='w-7 h-7 mx-3 text-slate-50 text-base font-light flex flex-row justify-center items-center border border-slate-50 rounded-full cursor-pointer transition-all'
+                  onClick={() => setDropdown(!dropdown)}
+                >
                   <IconUser />
                 </i>
-                {/**dropdown */}
-                {
-                  dropdown ?
-                    <Dropdown
-                      imageUser={false}
-                      emailUser={auth?.email}
-                      navbarElement={navbarElement}
-                      buttonLogout={(e: any) => {
-                        setDropdown(false);
-                        props.messageLogout('Logout your session with this action');
-                      }}
-                    />
-                    : ''
-                }
               </div>
               :
               <div className='w-full flex flex-col justify-center items-center'>
@@ -72,12 +71,12 @@ export default function AccountNavbar(props: any) {
                 </div>
                 <nav className='w-full flex flex-col justify-center items-center'>
                   {
-                    navbarElement?.map((item: any, index: any) => {
+                    navbarElementAuth?.map((item: any, index: any) => {
                       return (
                         <li
                           key={index}
-                          className='w-full h-auto py-2 flex flex-row justify-center items-center hover:bg-fuchsia-900 cursor-pointer'>
-                          <h3 className='text-slate-200 hover:text-slate-50 text-base text-center font-light'>
+                          className='w-full h-auto py-2 flex flex-row justify-center items-center hover:bg-slate-900 cursor-pointer'>
+                          <h3 className='text-slate-500 hover:text-white text-base text-center font-light'>
                             {item?.title}
                           </h3>
                         </li>
@@ -85,11 +84,13 @@ export default function AccountNavbar(props: any) {
                     })
                   }
                   {/**logout button */}
-                  <li className='w-full h-auto py-2 flex flex-row justify-center items-center hover:bg-fuchsia-900 cursor-pointer'>
+                  <li className='w-full h-auto py-2 flex flex-row justify-center items-center hover:bg-slate-900 cursor-pointer'>
                     <button
                       className='w-full h-full flex flex-row justify-center items-center'
-                      onClick={(e: any) => {
-                        props.messageLogout('Logout your session with this action');
+                      onClick={() => {
+                        setMessageModal(true);
+                        setMessageModalType('logout');
+                        setMessageModalText('Logout your session with this action');
                       }}
                     >
                       <h3 className='h-auto text-slate-200 hover:text-slate-50 text-base text-center font-light'>

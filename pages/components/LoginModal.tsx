@@ -1,5 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from "../../context/authContext";
+import {
+  useAuth,
+  useJoinModal,
+  useLoginModal,
+  usePasswordResetModal,
+  useMessageModal,
+  useMessageModalType,
+  useMessageModalText
+} from "../../context/authContext";
 import axios from 'axios';
 import Image from 'next/image';
 import googleIcon from '../../public/images/google-icon.webp';
@@ -9,19 +17,23 @@ import { IconCancel } from '../../icons/icons';
 
 export default function LoginModal(props: any) {
 
+  const { setAuth } = useAuth();
+  const { setJoinModal } = useJoinModal();
+  const { loginModal, setLoginModal } = useLoginModal();
+  const { setPasswordResetModal } = usePasswordResetModal();
+  const { setMessageModal } = useMessageModal();
+  const { setMessageModalType } = useMessageModalType();
+  const { setMessageModalText } = useMessageModalText();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailChange, setEmailChange] = useState(false);
   const [passwordChange, setPasswordChange] = useState(false);
   const [loading, setLoading] = useState(false);       //AMPLIAR!!!
-  const { setAuth } = useAuth();
-
-  const loginModal = props.loginModal;
 
   const modalCloseEscapeHandle = (e: any) => {
     if (loginModal) {
       if ((e.chartCode | e.keyCode) === 27) {
-        props.loginModalClose();
+        setLoginModal(false);
       }
     }
   };
@@ -58,16 +70,22 @@ export default function LoginModal(props: any) {
             setAuth({ email });
             setEmail('');
             setPassword('');
-            props.loginModalClose();
+            setLoginModal(false);
           }
           else if (resData.status === 'Invalid credential') {
-            props.messageError('Invalid credential');
+              setMessageModal(true);
+              setMessageModalType('error');
+              setMessageModalText('Invalid credential');
           }
         })
     }
     catch (error) {
-      console.log('Error on login: ', error);
-      props.messageError('An error occurred');
+      () => {
+        console.log('Error on login: ', error);
+        setMessageModal(true);
+        setMessageModalType('error');
+        setMessageModalText('An error occurred');
+      }
     }
     finally {
       setEmail('');
@@ -88,7 +106,7 @@ export default function LoginModal(props: any) {
             : 'hidden'
         }`
       }
-      onClick={() => props.loginModalClose()}
+      onClick={() => setLoginModal(false)}
     >
       <div
         className={
@@ -105,9 +123,7 @@ export default function LoginModal(props: any) {
         <div className='w-6 h-6 absolute -top-5 -right-5 flex flex-col justify-center items-center rounded-full bg-white'>
           <i
             className='w-fit h-full text-gray-900 lg:text-gray-400 text-2xl lg:xl flex justify-center cursor-default lg:cursor-pointer lg:hover:text-gray-900'
-            onClick={() => {
-              props.loginModalClose()
-            }}
+            onClick={() => setLoginModal(false)}
           >
             <IconCancel />
           </i>
@@ -206,7 +222,10 @@ export default function LoginModal(props: any) {
               {/**link to forgot password */}
               <div className='w-full h-fit pt-5 flex flex-row justify-end items-center'>
                 <h5 className='w-fit h-fit text-gray-600 text-xs lg:text-sm lg:hover:text-green-400 font-medium leading-none cursor-default lg:cursor-pointer'
-                  onClick={props.passwordResetModalOpen}
+                  onClick={() => {
+                    setLoginModal(false);
+                    setPasswordResetModal(true);
+                  }}
                 >
                   Forgot password?
                 </h5>
@@ -251,7 +270,10 @@ export default function LoginModal(props: any) {
                 </h5>
                 <p
                   className='text-slate-600 lg:hover:text-green-400 text-xs lg:text-sm font-bold cursor-default lg:cursor-pointer'
-                  onClick={props.joinModalOpen}
+                  onClick={() => {
+                    setLoginModal(false);
+                    setJoinModal(true);
+                  }}
                 >
                   Register here
                 </p>

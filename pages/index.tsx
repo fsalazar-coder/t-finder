@@ -1,5 +1,14 @@
 "use client"
-import { useState, useEffect, useRef } from "react";
+import {
+  useState,
+  useEffect,
+  useRef
+} from "react";
+import {
+  useAuth,
+  useDropdown,
+  useHamburguerMenuActive
+} from "../context/authContext";
 import Navbar from './components/Navbar';
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -11,7 +20,7 @@ import Presentation from "./components/Presentation";
 import Blog from "./components/Blog";
 import Testimonials from "./components/Testimonials";
 import Data from './data/data.json';
-import { useAuth } from "../context/authContext";
+import Dropdown from "./components/Dropdown";
 
 
 
@@ -19,13 +28,8 @@ export default function Home() {
 
 
   const { auth } = useAuth();
-  const { setAuth } = useAuth();
-  const [loginModal, setLoginModal] = useState(false);
-  const [joinModal, setJoinModal] = useState(false);
-  const [messageModal, setMessageModal] = useState(false);
-  const [typeMessageModal, setTypeMessageModal] = useState(String);
-  const [descriptionMessageModal, setDescriptionMessageModal] = useState(String);
-  const [passwordResetModal, setPasswordResetModal] = useState(false);
+  const { setDropdown } = useDropdown();
+  const { setHamburguerMenuActive } = useHamburguerMenuActive();
   const [sectionActived, setSectionActived] = useState(String);                          /***State active section on viewport: string***/
   const [screenNarrow, setScreenNarrow] = useState(Boolean);                             /***State screen narrow: true or false***/
 
@@ -42,6 +46,15 @@ export default function Home() {
       setScreenNarrow(true)
       : setScreenNarrow(false);
   };
+
+  useEffect(() => {
+    if (!screenNarrow) {
+      setHamburguerMenuActive(false);
+      if (!auth) {
+        setDropdown(false);
+      }
+    }
+  }, [screenNarrow, auth])
 
   useEffect(() => {
     window.addEventListener('resize', screenNarrowHandle);
@@ -80,15 +93,6 @@ export default function Home() {
         <Navbar
           sectionActived={sectionActived}
           screenNarrow={screenNarrow}
-          loginModalOpen={() => setLoginModal(true)}
-          loginModalClose={() => setLoginModal(false)}
-          joinModalOpen={() => setJoinModal(true)}
-          joinModalClose={() => setJoinModal(false)}
-          messageLogout={(e: any) => {
-            setMessageModal(true);
-            setTypeMessageModal('logout');
-            setDescriptionMessageModal(e);
-          }}
         />
       </div>
 
@@ -100,14 +104,12 @@ export default function Home() {
       >
         <Header
           headerSectionActived={sectionActived === 'header-section'}
-          joinModalOpen={() => setJoinModal(true)}
-          joinModalClose={() => setJoinModal(false)}
         />
       </section>
 
       {/***talent section***/}
       <section
-        id='talent-section'
+        id='recruit-section'
         className='w-full h-auto py-8 lg:h-[615px] lg:py-0 bg-white'
         ref={talentSectionRef}
       >
@@ -118,7 +120,6 @@ export default function Home() {
           image={Data?.talent.image}
           description={Data?.talent.description}
           textButton='Search talents'
-          joinModalOpen={() => setJoinModal(true)}
         />
       </section>
 
@@ -135,7 +136,6 @@ export default function Home() {
           image={Data?.job.image}
           description={Data?.job.description}
           textButton='Search job'
-          joinModalOpen={() => setJoinModal(true)}
         />
       </section>
 
@@ -173,77 +173,25 @@ export default function Home() {
         className='w-full h-auto'
         ref={contactSectionRef}
       >
-        <Footer
-          joinModalOpen={() => setJoinModal(true)}
-          joinModalClose={() => setJoinModal(false)}
-        />
+        <Footer />
       </section>
 
       {/**Hidden-visible join modal */}
-      <JoinModal
-        joinModal={joinModal}
-        joinModalClose={() => setJoinModal(false)}
-        loginModalOpen={() => {
-          setLoginModal(true);
-          setJoinModal(false);
-        }}
-        messageSuccessful={(e: any) => {
-          setMessageModal(true);
-          setTypeMessageModal('successful');
-          setDescriptionMessageModal(e);
-        }}
-        messageError={(e: any) => {
-          setMessageModal(true);
-          setTypeMessageModal('error');
-          setDescriptionMessageModal(e);
-        }}
-      />
+      <JoinModal />
 
       {/**Hidden-visible login modal */}
-      <LoginModal
-        loginModal={loginModal}
-        loginModalClose={() => setLoginModal(false)}
-        passwordResetModalOpen={() => {
-          setPasswordResetModal(true);
-          setLoginModal(false);
-        }}
-        joinModalOpen={() => {
-          setLoginModal(false);
-          setJoinModal(true)
-        }}
-        messageError={(e: any) => {
-          setMessageModal(true);
-          setTypeMessageModal('error');
-          setDescriptionMessageModal(e);
-        }}
-      />
+      <LoginModal />
 
       {/**Hidden-visible password-reset modal */}
-      <PasswordResetModal
-        passwordResetModal={passwordResetModal}
-        passwordResetModalClose={() => setPasswordResetModal(false)}
-        messageSuccessful={(e: any) => {
-          setMessageModal(true);
-          setTypeMessageModal('successful');
-          setDescriptionMessageModal(e);
-        }}
-        messageError={(e: any) => {
-          setMessageModal(true);
-          setTypeMessageModal('error');
-          setDescriptionMessageModal(e);
-        }}
-      />
+      <PasswordResetModal />
 
       {/**Hidden-visible success modal (join & password-reset)*/}
-      <MessageModal
-        activedModal={messageModal}
-        typeMessageModal={typeMessageModal}
-        subtitle={descriptionMessageModal}
-        logout={() => {
-          setMessageModal(false);
-          setAuth(null);
-        }}
-        messageModalClose={() => setMessageModal(false) }
+      <MessageModal />
+
+      {/**dropdown */}
+      <Dropdown
+        imageUser={false}
+        screenNarrow={screenNarrow}
       />
     </main>
   )
