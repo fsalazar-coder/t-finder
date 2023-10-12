@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   useAuth,
   useDropdown,
+  useScreenNarrow,
   useAccountActived,
   useMessageModal,
   useMessageModalType,
@@ -10,11 +11,11 @@ import {
 import { IconUser } from '@/icons/icons';
 
 const navbarElementAuth = [
-  { title: 'Dashboard', accountModule: 'dashboard' },
-  { title: 'Profile', accountModule: 'profile' },
-  { title: 'Talent Request', accountModule: 'talent-request' },
-  { title: 'Job Request', accountModule: 'job-request' },
-  { title: 'Notifications', accountModule: 'notifications' }
+  { title: 'Dashboard', accountModule: 'Dashboard' },
+  { title: 'Profile', accountModule: 'Profile' },
+  { title: 'Talent Request', accountModule: 'Talent request' },
+  { title: 'Job Request', accountModule: 'Job request' },
+  { title: 'Notifications', accountModule: 'Notifications' }
 ];
 
 
@@ -24,12 +25,11 @@ export default function AccountNavbar(props: any) {
   const { auth } = useAuth();
   const { dropdown, setDropdown } = useDropdown();
   const { accountActived, setAccountActived } = useAccountActived();
+  const { screenNarrow } = useScreenNarrow();
   const { setMessageModal } = useMessageModal();
   const { setMessageModalType } = useMessageModalType();
-  const { setMessageModalText } = useMessageModalText();
-  const [navbarElementActive, setNavbarElementActive] = useState('Account');              /**navbar element to show on screen narrow */
+  const { setMessageModalText } = useMessageModalText();             /**navbar element to show on screen narrow */
 
-  const screenNarrow = props.screenNarrow;
 
   return (
     <div
@@ -54,7 +54,7 @@ export default function AccountNavbar(props: any) {
               <div className='relative flex flex-row justify-center items-center'>
                 <div className='py-1 flex flex-row justify-center items-center z-30'>
                   <h2 className='text-white'>
-                    {navbarElementActive}
+                    {accountActived}
                   </h2>
                 </div>
                 <i

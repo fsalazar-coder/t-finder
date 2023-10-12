@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect
+} from "react";
 
 
 
@@ -20,6 +26,8 @@ interface ContextProps {
   setDropdown: React.Dispatch<React.SetStateAction<Boolean>>;
   hamburguerMenuActive: Boolean;
   setHamburguerMenuActive: React.Dispatch<React.SetStateAction<Boolean>>;
+  screenNarrow: Boolean;
+  setScreenNarrow: React.Dispatch<React.SetStateAction<Boolean>>;
   loginModal: Boolean;
   setLoginModal: React.Dispatch<React.SetStateAction<Boolean>>;
   joinModal: Boolean;
@@ -59,6 +67,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
 export const Provider = ({ children }: ProviderProps): JSX.Element => {
   const [dropdown, setDropdown] = useState<Boolean>(false);
   const [hamburguerMenuActive, setHamburguerMenuActive] = useState<Boolean>(false);
+  const [screenNarrow, setScreenNarrow] = useState<Boolean>(Boolean);
   const [loginModal, setLoginModal] = useState<Boolean>(false);
   const [joinModal, setJoinModal] = useState<Boolean>(false);
   const [passwordResetModal, setPasswordResetModal] = useState<Boolean>(false);
@@ -67,11 +76,23 @@ export const Provider = ({ children }: ProviderProps): JSX.Element => {
   const [messageModalType, setMessageModalType] = useState<String>(String);
   const [messageModalText, setMessageModalText] = useState<String>(String);
 
+  const screenNarrowHandle: any = () => {
+    window.innerWidth < 768 ?
+      setScreenNarrow(true)
+      : setScreenNarrow(false);
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', screenNarrowHandle);
+    screenNarrowHandle()
+  });
+
   return (
     <Context.Provider value={
       {
         dropdown, setDropdown,
         hamburguerMenuActive, setHamburguerMenuActive,
+        screenNarrow, setScreenNarrow,
         loginModal, setLoginModal,
         joinModal, setJoinModal,
         passwordResetModal, setPasswordResetModal,
@@ -98,6 +119,11 @@ export function useDropdown(): ContextProps {
 }
 
 export function useHamburguerMenuActive(): ContextProps {
+  const context = useContext(Context)!;
+  return context;
+}
+
+export function useScreenNarrow(): ContextProps {
   const context = useContext(Context)!;
   return context;
 }

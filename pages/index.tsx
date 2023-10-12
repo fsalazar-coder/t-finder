@@ -7,7 +7,8 @@ import {
 import {
   useAuth,
   useDropdown,
-  useHamburguerMenuActive
+  useHamburguerMenuActive,
+  useScreenNarrow
 } from "../context/authContext";
 import Navbar from './components/Navbar';
 import Header from "./components/Header";
@@ -31,7 +32,7 @@ export default function Home() {
   const { setDropdown } = useDropdown();
   const { setHamburguerMenuActive } = useHamburguerMenuActive();
   const [sectionActived, setSectionActived] = useState(String);                          /***State active section on viewport: string***/
-  const [screenNarrow, setScreenNarrow] = useState(Boolean);                             /***State screen narrow: true or false***/
+  const { screenNarrow } = useScreenNarrow();
 
 
   const headerSectionRef: any = useRef(null),                                            /***Ref. to each section to animation and navbar-indicator position control***/
@@ -41,11 +42,6 @@ export default function Home() {
     blogSectionRef: any = useRef(null),
     contactSectionRef: any = useRef(null);
 
-  const screenNarrowHandle: any = () => {
-    window.innerWidth < 768 ?
-      setScreenNarrow(true)
-      : setScreenNarrow(false);
-  };
 
   useEffect(() => {
     if (!screenNarrow) {
@@ -56,10 +52,6 @@ export default function Home() {
     }
   }, [screenNarrow, auth])
 
-  useEffect(() => {
-    window.addEventListener('resize', screenNarrowHandle);
-    screenNarrowHandle()
-  });
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {                             /***Intersection observer function: section active***/
@@ -92,7 +84,6 @@ export default function Home() {
       <div className='w-auto h-auto'>
         <Navbar
           sectionActived={sectionActived}
-          screenNarrow={screenNarrow}
         />
       </div>
 
@@ -191,7 +182,7 @@ export default function Home() {
       {/**dropdown */}
       <Dropdown
         imageUser={false}
-        screenNarrow={screenNarrow}
+        sectionActived={sectionActived}
       />
     </main>
   )

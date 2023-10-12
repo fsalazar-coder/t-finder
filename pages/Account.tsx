@@ -3,19 +3,21 @@ import { useState, useEffect } from "react";
 import {
   useAuth,
   useDropdown,
+  useScreenNarrow,
   useAccountActived
-} from "../../context/authContext";
-import AccountNavbar from "./AccountNavbar";
-import MessageModal from '../components/MessageModal';
-import Dropdown from '../components/Dropdown';
-import Profile from "./Profile";
-import TalentRequest from "./TalentRequest";
-import JobRequest from "./JobRequest";
-import Notifications from "./Notifications";
+} from "../context/authContext";
+import AccountNavbar from "./account/AccountNavbar";
+import MessageModal from './components/MessageModal';
+import Dropdown from './components/Dropdown';
+import Dashboard from "./account/Dashboard";
+import Profile from "./account/Profile";
+import TalentRequest from "./account/TalentRequest";
+import JobRequest from "./account/JobRequest";
+import Notifications from "./account/Notifications";
 
 
 
-export default function Dashboard(props: any) {
+export default function Account(props: any) {
 
   const { auth } = useAuth();
   const { dropdown, setDropdown } = useDropdown();
@@ -23,19 +25,7 @@ export default function Dashboard(props: any) {
   const [messageModal, setMessageModal] = useState(false);
   const [typeMessageModal, setTypeMessageModal] = useState(String);
   const [descriptionMessageModal, setDescriptionMessageModal] = useState(String);
-  const [sectionActived, setSectionActived] = useState(String);                          /***State active section on viewport: string***/
-  const [screenNarrow, setScreenNarrow] = useState(Boolean);                             /***State screen narrow: true or false***/
-
-  const screenNarrowHandle: any = () => {
-    window.innerWidth < 768 ?
-      setScreenNarrow(true)
-      : setScreenNarrow(false);
-  };
-
-  useEffect(() => {
-    window.addEventListener('resize', screenNarrowHandle);
-    screenNarrowHandle()
-  });
+  const { screenNarrow } = useScreenNarrow();
 
 
   if (!auth) {
@@ -50,13 +40,9 @@ export default function Dashboard(props: any) {
 
   return (
     <main className='w-full h-full relative font-montserrat select-none overflow-hidden'>
-
       {/**navbar */}
       <div className='w-auto h-auto'>
-        <AccountNavbar
-          sectionActived={sectionActived}
-          screenNarrow={screenNarrow}
-        />
+        <AccountNavbar />
       </div>
       {/**dashboard */}
       <div className='w-full h-full lg:pl-1/6'>
@@ -78,11 +64,8 @@ export default function Dashboard(props: any) {
       <div className='w-full h-full lg:pl-1/6'>
         <Notifications />
       </div>
-
-
       {/**dropdown */}
       <Dropdown />
-
       {/**message error and successful modal*/}
       <MessageModal />
     </main>

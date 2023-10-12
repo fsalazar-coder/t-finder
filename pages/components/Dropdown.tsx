@@ -2,6 +2,7 @@ import {
   useAuth,
   useDropdown,
   useHamburguerMenuActive,
+  useScreenNarrow,
   useLoginModal,
   useJoinModal,
   useAccountActived,
@@ -9,15 +10,16 @@ import {
   useMessageModalType,
   useMessageModalText
 } from "../../context/authContext";
-import { IconUser } from '@/icons/icons';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation'
+import { IconUser } from '@/icons/icons';
 
 const navbarElementAuth = [
-  { title: 'Dashboard', accountModule: 'dashboard' },
-  { title: 'Profile', accountModule: 'profile' },
-  { title: 'Talent Request', accountModule: 'talent-request' },
-  { title: 'Job Request', accountModule: 'job-request' },
-  { title: 'Notifications', accountModule: 'notifications' }
+  { title: 'Dashboard', accountModule: 'Dashboard' },
+  { title: 'Profile', accountModule: 'Profile' },
+  { title: 'Talent Request', accountModule: 'Talent request' },
+  { title: 'Job Request', accountModule: 'Job request' },
+  { title: 'Notifications', accountModule: 'Notifications' }
 ];
 
 const navbarElementUnauth = [
@@ -48,18 +50,20 @@ export default function Dropdown(props: any) {
   const { auth, setAuth } = useAuth();
   const { dropdown, setDropdown } = useDropdown();
   const { setHamburguerMenuActive } = useHamburguerMenuActive();
+  const { screenNarrow } = useScreenNarrow();
   const { setLoginModal } = useLoginModal();
   const { setJoinModal } = useJoinModal();
   const { accountActived, setAccountActived } = useAccountActived();
   const { setMessageModal } = useMessageModal();
   const { setMessageModalType } = useMessageModalType();
   const { setMessageModalText } = useMessageModalText();
+  const router = useRouter();
 
   return (
     dropdown ?
       <ul className={
         `${!auth ?
-          props.screenNarrow ?
+          screenNarrow ?
             'w-52 h-full left-0'
             :
             ''
@@ -92,27 +96,22 @@ export default function Dropdown(props: any) {
                   return (
                     <li
                       key={index}
-                      className='w-full h-auto flex flex-row items-center hover:bg-slate-900'>
-                      <Link
-                        className='w-full py-2 px-4'
-                        href='/account/Account'
-                        scroll={false}
-                        onClick={() => {
-                          setDropdown(false);
-                          setHamburguerMenuActive(false);
-                          setAccountActived(item.accountModule);
-                        }}
+                      className='w-full h-auto flex flex-row items-center hover:bg-slate-900'
+                      onClick={() => {
+                        setDropdown(false);
+                        setAccountActived(item.accountModule);
+                        router.push('/Account')
+                      }}
+                    >
+                      <h3 className={
+                        `${accountActived === item.accountModule ?
+                          'text-fuchsia-600 font-semibold' :
+                          'text-slate-500 hover:text-white font-normal'
+                        } py-2 px-4 text-sm lg:text-base text-start`
+                      }
                       >
-                        <h3 className={
-                          `${accountActived === item.accountModule ?
-                            'text-fuchsia-600 font-semibold' :
-                            'text-slate-500 hover:text-white font-normal'
-                          } text-sm lg:text-base text-center`
-                        }
-                        >
-                          {item?.title}
-                        </h3>
-                      </Link>
+                        {item?.title}
+                      </h3>
                     </li>
                   )
                 })
@@ -142,7 +141,7 @@ export default function Dropdown(props: any) {
                 navbarElementUnauth.map((element: any, index: any) => {
                   return (
                     <li
-                      key={element.index}
+                      key={index}
                       className='w-full h-auto flex flex-row items-center hover:bg-slate-900'
                     >
                       <Link
@@ -154,8 +153,14 @@ export default function Dropdown(props: any) {
                           setHamburguerMenuActive(false);
                         }}
                       >
-                        <h3 className='w-full pr-4 text-slate-300 hover:text-white text-sm lg:text-base font-light text-end'>
-                          {element.title}
+                        <h3 className={
+                          `${props.sectionActived === element.linkTo ?
+                            'text-fuchsia-600 font-semibold' :
+                            'text-slate-500 hover:text-white font-normal'
+                          } w-full pr-4 text-sm lg:text-base text-end`
+                        }
+                        >
+                          {element?.title}
                         </h3>
                       </Link>
                     </li>

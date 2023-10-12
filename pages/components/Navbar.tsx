@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   useAuth,
   useDropdown,
+  useScreenNarrow,
   useLoginModal,
   useJoinModal
 } from "../../context/authContext";
@@ -14,12 +15,12 @@ export default function Navbar(props: any) {
 
   const { auth } = useAuth();
   const { dropdown, setDropdown } = useDropdown();
+  const { screenNarrow } = useScreenNarrow();
   const { setLoginModal } = useLoginModal();
   const { setJoinModal } = useJoinModal();
   const [transparentBackground, setTransparentBackground] = useState(true);              /***Transparent background state: boolean***/
   const [navbarFirstUse, setNavbarFirstUse] = useState(false);
 
-  const screenNarrow = props.screenNarrow;
 
   useEffect(() => {
     const backgroundScrollHandle = () => {
