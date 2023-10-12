@@ -4,6 +4,7 @@ import {
   useHamburguerMenuActive,
   useLoginModal,
   useJoinModal,
+  useAccountActived,
   useMessageModal,
   useMessageModalType,
   useMessageModalText
@@ -12,11 +13,11 @@ import { IconUser } from '@/icons/icons';
 import Link from 'next/link';
 
 const navbarElementAuth = [
-  { title: 'Account', href: '/Account' },
-  { title: 'Profile', href: '' },
-  { title: 'Job Request', href: '' },
-  { title: 'Talent Request', href: '' },
-  { title: 'Notifications', href: '' }
+  { title: 'Dashboard', accountModule: 'dashboard' },
+  { title: 'Profile', accountModule: 'profile' },
+  { title: 'Talent Request', accountModule: 'talent-request' },
+  { title: 'Job Request', accountModule: 'job-request' },
+  { title: 'Notifications', accountModule: 'notifications' }
 ];
 
 const navbarElementUnauth = [
@@ -49,6 +50,7 @@ export default function Dropdown(props: any) {
   const { setHamburguerMenuActive } = useHamburguerMenuActive();
   const { setLoginModal } = useLoginModal();
   const { setJoinModal } = useJoinModal();
+  const { accountActived, setAccountActived } = useAccountActived();
   const { setMessageModal } = useMessageModal();
   const { setMessageModalType } = useMessageModalType();
   const { setMessageModalText } = useMessageModalText();
@@ -93,13 +95,21 @@ export default function Dropdown(props: any) {
                       className='w-full h-auto flex flex-row items-center hover:bg-slate-900'>
                       <Link
                         className='w-full py-2 px-4'
-                        href={item.href}
+                        href='/account/Account'
                         scroll={false}
                         onClick={() => {
                           setDropdown(false);
                           setHamburguerMenuActive(false);
-                        }}>
-                        <h3 className='text-slate-500 hover:text-white text-sm lg:text-base font-light'>
+                          setAccountActived(item.accountModule);
+                        }}
+                      >
+                        <h3 className={
+                          `${accountActived === item.accountModule ?
+                            'text-fuchsia-600 font-semibold' :
+                            'text-slate-500 hover:text-white font-normal'
+                          } text-sm lg:text-base text-center`
+                        }
+                        >
                           {item?.title}
                         </h3>
                       </Link>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   useAuth,
   useDropdown,
+  useAccountActived,
   useMessageModal,
   useMessageModalType,
   useMessageModalText
@@ -9,11 +10,11 @@ import {
 import { IconUser } from '@/icons/icons';
 
 const navbarElementAuth = [
-  { title: 'Account', href: '/Account' },
-  { title: 'Profile', href: '' },
-  { title: 'Job Request', href: '' },
-  { title: 'Talent Request', href: '' },
-  { title: 'Notifications', href: '' }
+  { title: 'Dashboard', accountModule: 'dashboard' },
+  { title: 'Profile', accountModule: 'profile' },
+  { title: 'Talent Request', accountModule: 'talent-request' },
+  { title: 'Job Request', accountModule: 'job-request' },
+  { title: 'Notifications', accountModule: 'notifications' }
 ];
 
 
@@ -22,6 +23,7 @@ export default function AccountNavbar(props: any) {
 
   const { auth } = useAuth();
   const { dropdown, setDropdown } = useDropdown();
+  const { accountActived, setAccountActived } = useAccountActived();
   const { setMessageModal } = useMessageModal();
   const { setMessageModalType } = useMessageModalType();
   const { setMessageModalText } = useMessageModalText();
@@ -31,7 +33,7 @@ export default function AccountNavbar(props: any) {
 
   return (
     <div
-      className='w-full lg:w-1/6 h-auto lg:h-full fixed flex flex-row justify-center items-center bg-slate-950 z-50'>
+      className='w-full lg:w-60 h-10 lg:h-full fixed flex flex-row justify-center items-center bg-slate-950 z-50'>
       <div className='container w-full h-auto lg:h-full px-0 py-2 lg:py-0 flex flex-row lg:flex-col justify-between lg:justify-start items-center'>
         {/**Logo */}
         <div className='lg:w-full py-1 lg:py-4 flex flex-row justify-center items-center z-30'>
@@ -46,7 +48,7 @@ export default function AccountNavbar(props: any) {
           </h2>
         </div>
         {/**content */}
-        <div className='lg:w-full flex flex-row justify-center items-center lg:flex-col lg:justify-start lg:items-center z-30'>
+        <div className='lg:w-full flex flex-row justify-center items-center lg:flex-col lg:justify-start lg:items-center z-50'>
           {
             screenNarrow ?
               <div className='relative flex flex-row justify-center items-center'>
@@ -75,8 +77,16 @@ export default function AccountNavbar(props: any) {
                       return (
                         <li
                           key={index}
-                          className='w-full h-auto py-2 flex flex-row justify-center items-center hover:bg-slate-900 cursor-pointer'>
-                          <h3 className='text-slate-500 hover:text-white text-base text-center font-light'>
+                          className='w-full h-auto py-2 flex flex-row justify-center items-center hover:bg-slate-900 cursor-pointer'
+                          onClick={() => setAccountActived(item.accountModule)}
+                        >
+                          <h3 className={
+                            `${accountActived === item.accountModule ?
+                              'text-fuchsia-600 font-semibold' :
+                              'text-slate-500 hover:text-white font-normal'
+                            } text-base text-center`
+                          }
+                          >
                             {item?.title}
                           </h3>
                         </li>
@@ -84,9 +94,9 @@ export default function AccountNavbar(props: any) {
                     })
                   }
                   {/**logout button */}
-                  <li className='w-full h-auto py-2 flex flex-row justify-center items-center hover:bg-slate-900 cursor-pointer'>
+                  <li className='w-full h-1/2 py-20 px-8 flex flex-row justify-center items-center'>
                     <button
-                      className='w-full h-full flex flex-row justify-center items-center'
+                      className='w-full h-full py-2 flex flex-row justify-center items-center bg-fuchsia-600 hover:bg-fuchsia-400 border border-fuchsia-300 rounded-full transition-all'
                       onClick={() => {
                         setMessageModal(true);
                         setMessageModalType('logout');

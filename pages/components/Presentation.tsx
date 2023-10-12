@@ -1,4 +1,7 @@
-import { useAuth, useJoinModal } from "../../context/authContext";
+import { 
+  useAuth, 
+  useJoinModal 
+} from "../../context/authContext";
 import Image from 'next/image';
 import {
   IconCheckCircle,
