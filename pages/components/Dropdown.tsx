@@ -6,20 +6,23 @@ import {
   useLoginModal,
   useJoinModal,
   useAccountActived,
+  useAccountModule,
   useMessageModal,
   useMessageModalType,
   useMessageModalText
 } from "../../context/authContext";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'
-import { IconUser } from '@/icons/icons';
+import ImageIconUser from "../account/ImageIconUser";
 
 const navbarElementAuth = [
   { title: 'Dashboard', accountModule: 'Dashboard' },
   { title: 'Profile', accountModule: 'Profile' },
-  { title: 'Talent Request', accountModule: 'Talent request' },
-  { title: 'Job Request', accountModule: 'Job request' },
-  { title: 'Notifications', accountModule: 'Notifications' }
+  { title: 'Portfolio', accountModule: 'Portfolio' },
+  { title: 'Request', accountModule: 'Request' },
+  { title: 'Notifications', accountModule: 'Notifications' },
+  { title: 'Account Settings', accountModule: 'Account Settings' },
+  { title: 'Help & Support', accountModule: 'Help & Support' }
 ];
 
 const navbarElementUnauth = [
@@ -47,29 +50,30 @@ const navbarElementUnauth = [
 
 export default function Dropdown(props: any) {
 
-  const { auth, setAuth } = useAuth();
+  const { auth } = useAuth();
   const { dropdown, setDropdown } = useDropdown();
   const { setHamburguerMenuActive } = useHamburguerMenuActive();
   const { screenNarrow } = useScreenNarrow();
+  const { accountActived, setAccountActived } = useAccountActived();
+  const { accountModule, setAccountModule } = useAccountModule();
   const { setLoginModal } = useLoginModal();
   const { setJoinModal } = useJoinModal();
-  const { accountActived, setAccountActived } = useAccountActived();
   const { setMessageModal } = useMessageModal();
   const { setMessageModalType } = useMessageModalType();
   const { setMessageModalText } = useMessageModalText();
   const router = useRouter();
+
 
   return (
     dropdown ?
       <ul className={
         `${!auth ?
           screenNarrow ?
-            'w-52 h-full left-0'
+            'w-52 h-full left-0 animate-[appear-left_0.5s_ease] '
             :
             ''
           :
-          'w-64 right-0'
-
+          'w-64 right-0 animate-[appear-top_0.5s_ease]'
         } fixed top-0 pt-10 lg:pt-12 py-4 flex-col justify-start items-start bg-slate-950 rounded-sm transition-all z-40`}>
         {
           auth ?
@@ -77,14 +81,9 @@ export default function Dropdown(props: any) {
               {/**user icon-image */}
               <li className='w-full h-auto py-4 px-4 mb-4 flex flex-row items-center border-y border-slate-900'>
                 <div className='flex flex-row items-center'>
-                  {
-                    props.imageUser ?
-                      props.imageUser
-                      :
-                      <i className='w-10 h-10 text-white text-sm lg:text-base xl:text-lg font-light flex flex-row justify-center items-center border border-white rounded-full transition-all'>
-                        <IconUser />
-                      </i>
-                  }
+                  <div className='w-10 h-10 flex flex-col justify-center items-center'>
+                    <ImageIconUser size='small' />
+                  </div>
                   <h5 className='text-white pl-3 text-xs lg:text-sm xl:text-sm font-light'>
                     Hello, <br /> {auth?.email}
                   </h5>
@@ -99,12 +98,13 @@ export default function Dropdown(props: any) {
                       className='w-full h-auto flex flex-row items-center hover:bg-slate-900'
                       onClick={() => {
                         setDropdown(false);
-                        setAccountActived(item.accountModule);
+                        setAccountActived(true);
+                        setAccountModule(item.accountModule);
                         router.push('/Account')
                       }}
                     >
                       <h3 className={
-                        `${accountActived === item.accountModule ?
+                        `${accountModule === item.accountModule ?
                           'text-fuchsia-600 font-semibold' :
                           'text-slate-500 hover:text-white font-normal'
                         } py-2 px-4 text-sm lg:text-base text-start`
@@ -115,6 +115,25 @@ export default function Dropdown(props: any) {
                     </li>
                   )
                 })
+              }
+              {
+                accountActived ?
+                  <li
+                    key='home-link'
+                    className='w-full h-auto flex flex-row items-center hover:bg-slate-900'
+                    onClick={() => {
+                      setDropdown(false);
+                      setAccountModule('');
+                      setAccountActived(false);
+                      router.push('/');
+                    }}
+                  >
+                    <h3 className='py-2 px-4 text-slate-500 hover:text-white font-normal text-sm lg:text-base text-start'>
+                      Home
+                    </h3>
+                  </li>
+                  :
+                  ''
               }
               {/**logout button */}
               <li className='w-full h-auto mt-4 py-4 px-4 flex flex-row justify-center items-center hover:bg-slate-900 border-t border-slate-900'>

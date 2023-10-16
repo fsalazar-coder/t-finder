@@ -5,7 +5,8 @@ import {
   useLoginModal,
   useMessageModal,
   useMessageModalType,
-  useMessageModalText
+  useMessageModalText,
+  useLoadingSpinner
 } from "../../context/authContext";
 import axios from 'axios';
 import Image from 'next/image';
@@ -21,11 +22,11 @@ export default function JoinModal(props: any) {
   const { setMessageModal } = useMessageModal();
   const { setMessageModalType } = useMessageModalType();
   const { setMessageModalText } = useMessageModalText();
+  const { setLoading } = useLoadingSpinner();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailChange, setEmailChange] = useState(false);
   const [passwordChange, setPasswordChange] = useState(false);
-  const [loading, setLoading] = useState(false);       //AMPLIAR!!!  
 
   const modalCloseEscapeHandle = (e: any) => {
     if (joinModal) {
@@ -53,7 +54,7 @@ export default function JoinModal(props: any) {
       headers: {
         'Content-Type': 'application/json'
       },
-      withCredentials: true
+      withCredentials: false
     };
 
     try {

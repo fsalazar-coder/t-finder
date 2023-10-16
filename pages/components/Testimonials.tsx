@@ -87,6 +87,7 @@ export default function Testimonials(props: any) {
         <SectionTitles
           sectionTitle={props.sectionTitle}
           sectionSubtitle={props.sectionSubtitle}
+          sectionType={props.sectionType}
         />
         <div className='w-full h-full flex flex-row justify-between items-center'>
           {/***Carousel left arrow***/}

@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 import {
   useAuth,
+  useUserId,
+  useUserImageUrl,
+  useUserData,
+  useAccountActived,
+  useAccountModule,
   useMessageModal,
   useMessageModalType,
   useMessageModalText
@@ -12,6 +17,11 @@ import Link from 'next/link';
 export default function MessageModal(props: any) {
 
   const { setAuth } = useAuth();
+  const { setUserId } = useUserId();
+  const { setUserImageUrl } = useUserImageUrl();
+  const { setUserData } = useUserData();
+  const { setAccountActived } = useAccountActived();
+  const { setAccountModule } = useAccountModule();
   const { messageModal, setMessageModal } = useMessageModal();
   const { messageModalType } = useMessageModalType();
   const { messageModalText } = useMessageModalText();
@@ -222,6 +232,11 @@ export default function MessageModal(props: any) {
                     scroll={false} 
                     onClick={() => {
                       setMessageModal(false);
+                      setUserId('');
+                      setUserImageUrl('');
+                      setAccountActived(false);
+                      setAccountModule('');
+                      setUserData(null);
                       setAuth(null);
                     }}>
                       <h5 className='w-full text-sm lg:text-base font-bold leading-none'>

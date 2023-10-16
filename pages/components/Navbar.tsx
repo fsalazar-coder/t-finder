@@ -7,7 +7,7 @@ import {
   useJoinModal
 } from "../../context/authContext";
 import HamburguerMenu from './HamburguerMenu';
-import { IconUser } from '@/icons/icons';
+import ImageIconUser from '../account/ImageIconUser';
 
 
 
@@ -81,9 +81,9 @@ export default function Navbar(props: any) {
                 }
                 onClick={() => setDropdown(!dropdown)}
               >
-                <i className='w-7 h-7 text-slate-50 text-sm lg:text-base xl:text-lg font-light flex flex-row justify-center items-center border border-slate-50 rounded-full transition-all'>
-                  <IconUser />
-                </i>
+                <div className='w-7 h-7 flex flex-col justify-center items-center'>
+                  <ImageIconUser size='small' />
+                </div>
               </div>
               :
               screenNarrow ?

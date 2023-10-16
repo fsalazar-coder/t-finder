@@ -6,14 +6,17 @@ import {
   useScreenNarrow,
   useAccountActived
 } from "../context/authContext";
-import AccountNavbar from "./account/AccountNavbar";
-import MessageModal from './components/MessageModal';
 import Dropdown from './components/Dropdown';
+import AccountNavbar from "./account/AccountNavbar";
 import Dashboard from "./account/Dashboard";
 import Profile from "./account/Profile";
-import TalentRequest from "./account/TalentRequest";
-import JobRequest from "./account/JobRequest";
+import Portfolio from "./account/Portfolio";
+import Request from "./account/Requests";
 import Notifications from "./account/Notifications";
+import Settings from "./account/Settings";
+import HelpSupport from "./account/HelpSupport";
+import MessageModal from './components/MessageModal';
+import ProfileImageModal from "./account/ProfileImageModal";
 
 
 
@@ -26,6 +29,14 @@ export default function Account(props: any) {
   const [typeMessageModal, setTypeMessageModal] = useState(String);
   const [descriptionMessageModal, setDescriptionMessageModal] = useState(String);
   const { screenNarrow } = useScreenNarrow();
+
+  useEffect(() => {
+    if (accountActived) {
+      if (!screenNarrow) {
+          setDropdown(false);
+      }
+    }
+  }, [screenNarrow])
 
 
   if (!auth) {
@@ -48,25 +59,35 @@ export default function Account(props: any) {
       <div className='w-full h-full lg:pl-1/6'>
         <Dashboard />
       </div>
-      {/**profile */}
+      {/**account */}
       <div className='w-full h-full lg:pl-1/6'>
         <Profile />
       </div>
-      {/**talent request */}
+      {/**portfolio */}
       <div className='w-full h-full lg:pl-1/6'>
-        <TalentRequest />
+        <Portfolio />
       </div>
-      {/**job request */}
+      {/**requests */}
       <div className='w-full h-full lg:pl-1/6'>
-        <JobRequest />
+        <Request />
       </div>
       {/**notifications */}
       <div className='w-full h-full lg:pl-1/6'>
         <Notifications />
       </div>
+      {/**account settings */}
+      <div className='w-full h-full lg:pl-1/6'>
+        <Settings />
+      </div>
+      {/**help and support */}
+      <div className='w-full h-full lg:pl-1/6'>
+        <HelpSupport />
+      </div>
       {/**dropdown */}
       <Dropdown />
-      {/**message error and successful modal*/}
+      {/**profile image upload modal */}
+      <ProfileImageModal />
+      {/**message error and successful modal */}
       <MessageModal />
     </main>
   )

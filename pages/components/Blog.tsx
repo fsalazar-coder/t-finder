@@ -34,6 +34,7 @@ export default function Blog(props: any) {
         <SectionTitles
           sectionTitle={props.sectionTitle}
           sectionSubtitle={props.sectionSubtitle}
+          sectionType={props.sectionType}
         />
         {/**content */}
         <ul

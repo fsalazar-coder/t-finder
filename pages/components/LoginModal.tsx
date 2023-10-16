@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
 import {
   useAuth,
+  useUserData,
+  useUserId,
+  useUserImageUrl,
   useJoinModal,
   useLoginModal,
   usePasswordResetModal,
   useMessageModal,
   useMessageModalType,
-  useMessageModalText
+  useMessageModalText,
+  useLoadingSpinner
 } from "../../context/authContext";
 import axios from 'axios';
 import Image from 'next/image';
@@ -18,17 +22,20 @@ import { IconCancel } from '../../icons/icons';
 export default function LoginModal(props: any) {
 
   const { setAuth } = useAuth();
+  const { setUserData } = useUserData();
+  const { setUserId } = useUserId();
+  const { setUserImageUrl } = useUserImageUrl();
   const { setJoinModal } = useJoinModal();
   const { loginModal, setLoginModal } = useLoginModal();
   const { setPasswordResetModal } = usePasswordResetModal();
   const { setMessageModal } = useMessageModal();
   const { setMessageModalType } = useMessageModalType();
   const { setMessageModalText } = useMessageModalText();
+  const { setLoading } = useLoadingSpinner();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailChange, setEmailChange] = useState(false);
   const [passwordChange, setPasswordChange] = useState(false);
-  const [loading, setLoading] = useState(false);       //AMPLIAR!!!
 
   const modalCloseEscapeHandle = (e: any) => {
     if (loginModal) {
@@ -65,17 +72,22 @@ export default function LoginModal(props: any) {
         .then((response: any) => {
           let resData = response.data;
           if (resData.token) {
-            const token = response.data.token;
-            localStorage.setItem('token', token);
+            const token = resData.token;
+            const id = resData.id;
             setAuth({ email });
+            setUserData(resData.userData);
+            setUserId(id);
             setEmail('');
             setPassword('');
             setLoginModal(false);
+            if (resData.userData.profile_image_url) {
+              setUserImageUrl(resData.userData.profile_image_url);
+            }
           }
           else if (resData.status === 'Invalid credential') {
-              setMessageModal(true);
-              setMessageModalType('error');
-              setMessageModalText('Invalid credential');
+            setMessageModal(true);
+            setMessageModalType('error');
+            setMessageModalText('Invalid credential');
           }
         })
     }
@@ -93,7 +105,6 @@ export default function LoginModal(props: any) {
       setLoading(false);
     }
   }
-
 
   return (
     <div

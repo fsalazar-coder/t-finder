@@ -1,21 +1,27 @@
 import { useEffect, useState } from 'react';
 import {
   useAuth,
+  useUserData,
   useDropdown,
   useScreenNarrow,
   useAccountActived,
+  useAccountModule,
+  useProfileImageModal,
   useMessageModal,
   useMessageModalType,
   useMessageModalText
 } from "../../context/authContext";
-import { IconUser } from '@/icons/icons';
+import { useRouter } from 'next/navigation'
+import ImageIconUser from './ImageIconUser';
 
 const navbarElementAuth = [
   { title: 'Dashboard', accountModule: 'Dashboard' },
   { title: 'Profile', accountModule: 'Profile' },
-  { title: 'Talent Request', accountModule: 'Talent request' },
-  { title: 'Job Request', accountModule: 'Job request' },
-  { title: 'Notifications', accountModule: 'Notifications' }
+  { title: 'Portfolio', accountModule: 'Portfolio' },
+  { title: 'Request', accountModule: 'Request' },
+  { title: 'Notifications', accountModule: 'Notifications' },
+  { title: 'Account Settings', accountModule: 'Account Settings' },
+  { title: 'Help & Support', accountModule: 'Help & Support' }
 ];
 
 
@@ -23,13 +29,20 @@ const navbarElementAuth = [
 export default function AccountNavbar(props: any) {
 
   const { auth } = useAuth();
+  const { userData } = useUserData();
   const { dropdown, setDropdown } = useDropdown();
-  const { accountActived, setAccountActived } = useAccountActived();
   const { screenNarrow } = useScreenNarrow();
+  const { setAccountActived } = useAccountActived();
+  const { accountModule, setAccountModule } = useAccountModule();
+  const { setProfileImageModal } = useProfileImageModal();
   const { setMessageModal } = useMessageModal();
   const { setMessageModalType } = useMessageModalType();
   const { setMessageModalText } = useMessageModalText();             /**navbar element to show on screen narrow */
+  const router = useRouter();
 
+  useEffect(() => {
+    console.log('User image URL: ', userData);
+  })
 
   return (
     <div
@@ -54,34 +67,37 @@ export default function AccountNavbar(props: any) {
               <div className='relative flex flex-row justify-center items-center'>
                 <div className='py-1 flex flex-row justify-center items-center z-30'>
                   <h2 className='text-white'>
-                    {accountActived}
+                    {accountModule}
                   </h2>
                 </div>
-                <i
-                  className='w-7 h-7 mx-3 text-slate-50 text-base font-light flex flex-row justify-center items-center border border-slate-50 rounded-full cursor-pointer transition-all'
+                <div
+                  className='w-7 h-7 mx-3 flex flex-row justify-center items-center'
                   onClick={() => setDropdown(!dropdown)}
                 >
-                  <IconUser />
-                </i>
+                  <ImageIconUser size='small' />
+                </div>
               </div>
               :
-              <div className='w-full flex flex-col justify-center items-center'>
+              <div className='w-full flex flex-col items-center'>
                 <div className='py-4 flex flex-col justify-center items-center'>
-                  <i className='w-32 h-32 text-slate-50 text-6xl font-light flex flex-row justify-center items-center border border-slate-50 rounded-full cursor-pointer transition-all'>
-                    <IconUser />
-                  </i>
+                  <div
+                    className='w-32 h-32 flex flex-col justify-center items-center'
+                    onClick={() => setProfileImageModal(true)}
+                  >
+                    <ImageIconUser size='large' />
+                  </div>
                 </div>
-                <nav className='w-full flex flex-col justify-center items-center'>
+                <nav className='w-full h-full flex flex-col justify-start items-center'>
                   {
                     navbarElementAuth?.map((item: any, index: any) => {
                       return (
                         <li
                           key={index}
-                          className='w-full h-auto py-2 flex flex-row justify-center items-center hover:bg-slate-900 cursor-pointer'
-                          onClick={() => setAccountActived(item.accountModule)}
+                          className='w-full h-auto py-[0.3rem] flex flex-row justify-center items-center hover:bg-slate-900 cursor-pointer'
+                          onClick={() => setAccountModule(item.accountModule)}
                         >
                           <h3 className={
-                            `${accountActived === item.accountModule ?
+                            `${accountModule === item.accountModule ?
                               'text-fuchsia-600 font-semibold' :
                               'text-slate-500 hover:text-white font-normal'
                             } text-base text-center`
@@ -93,22 +109,35 @@ export default function AccountNavbar(props: any) {
                       )
                     })
                   }
-                  {/**logout button */}
-                  <li className='w-full h-1/2 py-20 px-8 flex flex-row justify-center items-center'>
-                    <button
-                      className='w-full h-full py-2 flex flex-row justify-center items-center bg-fuchsia-600 hover:bg-fuchsia-400 border border-fuchsia-300 rounded-full transition-all'
-                      onClick={() => {
-                        setMessageModal(true);
-                        setMessageModalType('logout');
-                        setMessageModalText('Logout your session with this action');
-                      }}
-                    >
-                      <h3 className='h-auto text-slate-200 hover:text-slate-50 text-base text-center font-light'>
-                        Log out
-                      </h3>
-                    </button>
+                  <li
+                    key='home-link'
+                    className='w-full h-auto py-[0.3rem] flex flex-row justify-center items-center hover:bg-slate-900 cursor-pointer'
+                    onClick={() => {
+                      setAccountModule('');
+                      setAccountActived(false);
+                      router.push('/');
+                    }}
+                  >
+                    <h3 className='text-slate-500 hover:text-white font-normal text-base text-center'>
+                      Home
+                    </h3>
                   </li>
                 </nav>
+                {/**logout button */}
+                <div className='w-full py-8 px-8 flex flex-row justify-center items-center'>
+                  <button
+                    className='w-full h-full py-2 flex flex-row justify-center items-center bg-fuchsia-600 hover:bg-fuchsia-400 border border-fuchsia-300 rounded-full transition-all'
+                    onClick={() => {
+                      setMessageModal(true);
+                      setMessageModalType('logout');
+                      setMessageModalText('Logout your session with this action');
+                    }}
+                  >
+                    <h3 className='h-auto text-slate-200 hover:text-slate-50 text-base text-center font-light'>
+                      Log out
+                    </h3>
+                  </button>
+                </div>
               </div>
           }
         </div>

@@ -11,10 +11,26 @@ import React, {
 interface AuthContextProps {
   auth: User | null;
   setAuth: React.Dispatch<React.SetStateAction<User | null>>;
+  userData: Object | null;
+  setUserData: React.Dispatch<React.SetStateAction<Object | null>>;
+  userId: Id | string;
+  setUserId: React.Dispatch<React.SetStateAction<Id | string>>;
+  userImageUrl: String;
+  setUserImageUrl: React.Dispatch<React.SetStateAction<String>>;
+  accountActived: Boolean;
+  setAccountActived: React.Dispatch<React.SetStateAction<Boolean>>;
+  accountModule: String;
+  setAccountModule: React.Dispatch<React.SetStateAction<String>>;
+  profileImageModal: Boolean;
+  setProfileImageModal: React.Dispatch<React.SetStateAction<Boolean>>;
 }
 
 interface User {
   email: string;
+}
+
+interface Id {
+  id: string;
 }
 
 interface AuthProviderProps {
@@ -28,14 +44,14 @@ interface ContextProps {
   setHamburguerMenuActive: React.Dispatch<React.SetStateAction<Boolean>>;
   screenNarrow: Boolean;
   setScreenNarrow: React.Dispatch<React.SetStateAction<Boolean>>;
+  loading: Boolean;
+  setLoading: React.Dispatch<React.SetStateAction<Boolean>>;
   loginModal: Boolean;
   setLoginModal: React.Dispatch<React.SetStateAction<Boolean>>;
   joinModal: Boolean;
   setJoinModal: React.Dispatch<React.SetStateAction<Boolean>>;
   passwordResetModal: Boolean;
   setPasswordResetModal: React.Dispatch<React.SetStateAction<Boolean>>;
-  accountActived: String;
-  setAccountActived: React.Dispatch<React.SetStateAction<String>>;
   messageModal: Boolean;
   setMessageModal: React.Dispatch<React.SetStateAction<Boolean>>;
   messageModalType: String;
@@ -56,9 +72,23 @@ const Context = createContext<ContextProps | undefined>(undefined);
 
 export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   const [auth, setAuth] = useState<null | { email: string }>(null);
+  const [userData, setUserData] = useState<null | Object>(null);
+  const [ userId, setUserId ] = useState<string | { id: string }>(String);
+  const [ userImageUrl, setUserImageUrl ] = useState<String>(String);
+  const [accountActived, setAccountActived] = useState<Boolean>(false);
+  const [accountModule, setAccountModule] = useState<String>(String);
+  const [profileImageModal, setProfileImageModal] = useState<Boolean>(false);
 
   return (
-    <AuthContext.Provider value={{ auth, setAuth }}>
+    <AuthContext.Provider value={{
+      auth, setAuth,
+      userData, setUserData,
+      userId, setUserId,
+      userImageUrl, setUserImageUrl,
+      accountActived, setAccountActived,
+      accountModule, setAccountModule,
+      profileImageModal, setProfileImageModal
+    }}>
       {children}
     </AuthContext.Provider>
   );
@@ -68,10 +98,10 @@ export const Provider = ({ children }: ProviderProps): JSX.Element => {
   const [dropdown, setDropdown] = useState<Boolean>(false);
   const [hamburguerMenuActive, setHamburguerMenuActive] = useState<Boolean>(false);
   const [screenNarrow, setScreenNarrow] = useState<Boolean>(Boolean);
+  const [loading, setLoading] = useState<Boolean>(false);
   const [loginModal, setLoginModal] = useState<Boolean>(false);
   const [joinModal, setJoinModal] = useState<Boolean>(false);
   const [passwordResetModal, setPasswordResetModal] = useState<Boolean>(false);
-  const [accountActived, setAccountActived] = useState<String>(String);
   const [messageModal, setMessageModal] = useState<Boolean>(false);
   const [messageModalType, setMessageModalType] = useState<String>(String);
   const [messageModalText, setMessageModalText] = useState<String>(String);
@@ -93,10 +123,10 @@ export const Provider = ({ children }: ProviderProps): JSX.Element => {
         dropdown, setDropdown,
         hamburguerMenuActive, setHamburguerMenuActive,
         screenNarrow, setScreenNarrow,
+        loading, setLoading,
         loginModal, setLoginModal,
         joinModal, setJoinModal,
         passwordResetModal, setPasswordResetModal,
-        accountActived, setAccountActived,
         messageModal, setMessageModal,
         messageModalType, setMessageModalType,
         messageModalText, setMessageModalText
@@ -109,6 +139,35 @@ export const Provider = ({ children }: ProviderProps): JSX.Element => {
 
 
 export function useAuth(): AuthContextProps {
+  const context = useContext(AuthContext)!;
+  return context;
+}
+
+export function useUserData(): AuthContextProps {
+  const context = useContext(AuthContext)!;
+  return context;
+}
+
+export function useUserId(): AuthContextProps {
+  const context = useContext(AuthContext)!;
+  return context;
+}
+
+export function useUserImageUrl(): AuthContextProps {
+  const context = useContext(AuthContext)!;
+  return context;
+}
+
+export function useAccountActived(): AuthContextProps {
+  const context = useContext(AuthContext)!;
+  return context;
+}
+export function useAccountModule(): AuthContextProps {
+  const context = useContext(AuthContext)!;
+  return context;
+}
+
+export function useProfileImageModal(): AuthContextProps {
   const context = useContext(AuthContext)!;
   return context;
 }
@@ -128,6 +187,11 @@ export function useScreenNarrow(): ContextProps {
   return context;
 }
 
+export function useLoadingSpinner(): ContextProps {
+  const context = useContext(Context)!;
+  return context;
+}
+
 export function useLoginModal(): ContextProps {
   const context = useContext(Context)!;
   return context;
@@ -139,11 +203,6 @@ export function useJoinModal(): ContextProps {
 }
 
 export function usePasswordResetModal(): ContextProps {
-  const context = useContext(Context)!;
-  return context;
-}
-
-export function useAccountActived(): ContextProps {
   const context = useContext(Context)!;
   return context;
 }

@@ -4,12 +4,14 @@ import jwt from 'jsonwebtoken';
 import Cors from 'cors';
 import initMiddleware from '../../lib/init-middleware';
 import dbConnect from "../../lib/mongodb";
+import { v4 as uuidv4 } from 'uuid';
 
 const cors = initMiddleware(
   Cors({
     methods: ['POST'],
   })
 );
+
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -27,8 +29,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { email, password, action } = req.body;
     const collection = db?.collection("users");
 
-    if (action === "register") {
-      //register
+    //register
+    if (action === 'register') {
       const existingUser = await collection?.findOne({ email });
 
       if (existingUser) {
@@ -36,16 +38,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       const hashedPassword = await bcrypt.hash(password, 12);
+      const idUnique = uuidv4();
 
       await collection?.insertOne({
+        _id: idUnique as any,
         email: email,
         password: hashedPassword,
       });
 
       return res.status(200).json({ status: 'Success register' });
     }
-    else {
-      //login
+    //login
+    else if (action === 'login') {
       const user = await collection?.findOne({ email });
       if (!user) {
         return res.status(200).json({ status: 'Invalid credential' });
@@ -59,13 +63,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (!process.env.SECRET_KEY) {
         throw new Error("SECRET_KEY environment variable is not defined");
       }
-      
+
       const token = jwt.sign({ email }, process.env.SECRET_KEY);
 
-      return res.status(200).json({ token: token });
+      return res.status(200).json({ token: token, userData: user, id: user._id });
     }
+    return;
   }
   catch (error) {
     console.error('An error occurred:', error);
+    res.status(500).json({ error: 'An internal error occurred' });
   }
 }

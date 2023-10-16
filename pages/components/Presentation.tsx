@@ -30,6 +30,7 @@ export default function Presentation(props: any) {
           <SectionTitles
             sectionTitle={props.sectionTitle}
             sectionSubtitle={props.sectionSubtitle}
+            sectionType={props.sectionType}
           />
         </div>
         {/**container content */}

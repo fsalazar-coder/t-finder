@@ -22,6 +22,7 @@ import Blog from "./components/Blog";
 import Testimonials from "./components/Testimonials";
 import Data from './data/data.json';
 import Dropdown from "./components/Dropdown";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 
 
@@ -41,7 +42,6 @@ export default function Home() {
     testimonialsSectionRef: any = useRef(null),
     blogSectionRef: any = useRef(null),
     contactSectionRef: any = useRef(null);
-
 
   useEffect(() => {
     if (!screenNarrow) {
@@ -108,6 +108,7 @@ export default function Home() {
           xDirectionReverse={true}
           sectionTitle='RECRUIT'
           sectionSubtitle='Empower your recruitment. Why recruiters choose t-finder'
+          sectionType='home'
           image={Data?.talent.image}
           description={Data?.talent.description}
           textButton='Search talents'
@@ -124,6 +125,7 @@ export default function Home() {
           xDirectionReverse={false}
           sectionTitle='JOB'
           sectionSubtitle='Say goodbye to resumes. We match you with jobs that truly fit'
+          sectionType='home'
           image={Data?.job.image}
           description={Data?.job.description}
           textButton='Search job'
@@ -139,6 +141,7 @@ export default function Home() {
         <Testimonials
           sectionTitle='TESTIMONIALS'
           sectionSubtitle='What our users say'
+          sectionType='home'
           data={Data?.testimonials}
           testimonialsSectionActived={sectionActived === 'testimonials-section'}
         />
@@ -153,6 +156,7 @@ export default function Home() {
         <Blog
           sectionTitle='BLOG'
           sectionSubtitle='Recent post'
+          sectionType='home'
           data={Data?.blog}
           blogSectionActived={sectionActived === 'blog-section'}
         />
@@ -184,6 +188,8 @@ export default function Home() {
         imageUser={false}
         sectionActived={sectionActived}
       />
+      {/**loading spinner */}
+      <LoadingSpinner />
     </main>
   )
 }
