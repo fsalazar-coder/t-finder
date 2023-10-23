@@ -14,7 +14,7 @@ export default function TemplateForm(props: any) {
       const changeValue = changeData[element.value];
       return (
         <div
-          key={index}
+          key={`${element.title}-${index}`}
           className='w-full h-fit pt-6 relative flex flex-col justify-start items-start'
         >
           {

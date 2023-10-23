@@ -50,7 +50,7 @@ export default function Home() {
         setDropdown(false);
       }
     }
-  }, [screenNarrow, auth])
+  })
 
 
   useEffect(() => {
