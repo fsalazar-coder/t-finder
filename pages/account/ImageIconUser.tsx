@@ -10,14 +10,14 @@ export default function ImageIconUser(props: any) {
 
   return (
     userImageUrl ?
-      <div className={
-        `${props.size === 'small' ?
-          'outline-2 border-2' :
-          props.size === 'large' ?
-            'outline-4 border-2' :
-            ''} w-full h-full flex flex-col justify-center items-center rounded-full outline outline-fuchsia-600 border-slate-50`}>
+      <div className='w-full h-full  flex flex-col justify-center items-center bg-gradient-to-br from-fuchsia-400 via-slate-300 to-fuchsia-600 rounded-full z-20'>
         <Image
-          className='w-full h-full rounded-full'
+          className={
+            `${props.size === 'small' ?
+              'border-[1px]' :
+              props.size === 'large' ?
+                'border-[3px]' :
+                ''} w-[93%] h-[93%] flex flex-col justify-center items-center rounded-full border-slate-300`}
           width={400}
           height={400}
           src={userImageUrl as string}

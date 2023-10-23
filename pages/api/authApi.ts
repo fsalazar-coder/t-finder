@@ -43,7 +43,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await collection?.insertOne({
         _id: idUnique as any,
         email: email,
-        password: hashedPassword,
+        password_hash: hashedPassword,
+        full_name: '',
+        profile_image_url: '',
+        profession: '',
+        preferred_language: '',
+        location: '',
+        personal_description: '',
+        availability_status: 'on',
+        created_at: '',
       });
 
       return res.status(200).json({ status: 'Success register' });

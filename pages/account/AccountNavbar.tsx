@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
 import {
   useAuth,
-  useUserData,
   useDropdown,
   useScreenNarrow,
   useAccountActived,
   useAccountModule,
-  useProfileImageModal,
   useMessageModal,
   useMessageModalType,
   useMessageModalText
@@ -29,20 +27,15 @@ const navbarElementAuth = [
 export default function AccountNavbar(props: any) {
 
   const { auth } = useAuth();
-  const { userData } = useUserData();
   const { dropdown, setDropdown } = useDropdown();
   const { screenNarrow } = useScreenNarrow();
   const { setAccountActived } = useAccountActived();
   const { accountModule, setAccountModule } = useAccountModule();
-  const { setProfileImageModal } = useProfileImageModal();
   const { setMessageModal } = useMessageModal();
   const { setMessageModalType } = useMessageModalType();
   const { setMessageModalText } = useMessageModalText();             /**navbar element to show on screen narrow */
   const router = useRouter();
 
-  useEffect(() => {
-    console.log('User image URL: ', userData);
-  })
 
   return (
     <div
@@ -80,10 +73,7 @@ export default function AccountNavbar(props: any) {
               :
               <div className='w-full flex flex-col items-center'>
                 <div className='py-4 flex flex-col justify-center items-center'>
-                  <div
-                    className='w-32 h-32 flex flex-col justify-center items-center'
-                    onClick={() => setProfileImageModal(true)}
-                  >
+                  <div className='w-32 h-32 flex flex-col justify-center items-center'>
                     <ImageIconUser size='large' />
                   </div>
                 </div>

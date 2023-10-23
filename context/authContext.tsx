@@ -23,6 +23,14 @@ interface AuthContextProps {
   setAccountModule: React.Dispatch<React.SetStateAction<String>>;
   profileImageModal: Boolean;
   setProfileImageModal: React.Dispatch<React.SetStateAction<Boolean>>;
+  personalInfoModal: Boolean;
+  setPersonalInfoModal: React.Dispatch<React.SetStateAction<Boolean>>;
+  educationModal: Boolean;
+  setEducationModal: React.Dispatch<React.SetStateAction<Boolean>>;
+  experienceModal: Boolean;
+  setExperienceModal: React.Dispatch<React.SetStateAction<Boolean>>;
+  requestModal: Boolean;
+  setRequestModal: React.Dispatch<React.SetStateAction<Boolean>>;
 }
 
 interface User {
@@ -78,6 +86,10 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   const [accountActived, setAccountActived] = useState<Boolean>(false);
   const [accountModule, setAccountModule] = useState<String>(String);
   const [profileImageModal, setProfileImageModal] = useState<Boolean>(false);
+  const [personalInfoModal, setPersonalInfoModal] = useState<Boolean>(false);
+  const [educationModal, setEducationModal] = useState<Boolean>(false);
+  const [experienceModal, setExperienceModal] = useState<Boolean>(false);
+  const [requestModal, setRequestModal] = useState<Boolean>(false);
 
   return (
     <AuthContext.Provider value={{
@@ -87,7 +99,11 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
       userImageUrl, setUserImageUrl,
       accountActived, setAccountActived,
       accountModule, setAccountModule,
-      profileImageModal, setProfileImageModal
+      profileImageModal, setProfileImageModal,
+      personalInfoModal, setPersonalInfoModal,
+      educationModal, setEducationModal,
+      experienceModal, setExperienceModal,
+      requestModal, setRequestModal
     }}>
       {children}
     </AuthContext.Provider>
@@ -148,6 +164,15 @@ export function useUserData(): AuthContextProps {
   return context;
 }
 
+export function useAccountActived(): AuthContextProps {
+  const context = useContext(AuthContext)!;
+  return context;
+}
+export function useAccountModule(): AuthContextProps {
+  const context = useContext(AuthContext)!;
+  return context;
+}
+
 export function useUserId(): AuthContextProps {
   const context = useContext(AuthContext)!;
   return context;
@@ -158,16 +183,27 @@ export function useUserImageUrl(): AuthContextProps {
   return context;
 }
 
-export function useAccountActived(): AuthContextProps {
-  const context = useContext(AuthContext)!;
-  return context;
-}
-export function useAccountModule(): AuthContextProps {
+export function useProfileImageModal(): AuthContextProps {
   const context = useContext(AuthContext)!;
   return context;
 }
 
-export function useProfileImageModal(): AuthContextProps {
+export function usePersonalInfoModal(): AuthContextProps {
+  const context = useContext(AuthContext)!;
+  return context;
+}
+
+export function useEducationModal(): AuthContextProps {
+  const context = useContext(AuthContext)!;
+  return context;
+}
+
+export function useExperienceModal(): AuthContextProps {
+  const context = useContext(AuthContext)!;
+  return context;
+}
+
+export function useRequestModal(): AuthContextProps {
   const context = useContext(AuthContext)!;
   return context;
 }

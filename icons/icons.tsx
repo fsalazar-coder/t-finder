@@ -98,6 +98,57 @@ export const IconCheckCircle = () => {
   )
 }
 
+export const IconAdd = () => {
+  return (
+    <div className='icons-container'>
+      <svg fill="none" viewBox="0 0 24 24" height="1em" width="1em">
+        <path
+          fill="currentColor"
+          fillRule="evenodd"
+          d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12zm10-8a8 8 0 100 16 8 8 0 000-16z"
+          clipRule="evenodd"
+        />
+        <path
+          fill="currentColor"
+          fillRule="evenodd"
+          d="M13 7a1 1 0 10-2 0v4H7a1 1 0 100 2h4v4a1 1 0 102 0v-4h4a1 1 0 100-2h-4V7z"
+          clipRule="evenodd"
+        />
+      </svg>
+    </div>
+  )
+}
+
+export const IconEdit = () => {
+  return (
+    <div className='icons-container'>
+      <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        height="1em"
+        width="1em"
+      >
+        <path d="M12 2A10 10 0 002 12a10 10 0 0010 10 10 10 0 0010-10h-2a8 8 0 01-8 8 8 8 0 01-8-8 8 8 0 018-8V2m6.78 1a.69.69 0 00-.48.2l-1.22 1.21 2.5 2.5L20.8 5.7c.26-.26.26-.7 0-.95L19.25 3.2c-.13-.13-.3-.2-.47-.2m-2.41 2.12L9 12.5V15h2.5l7.37-7.38-2.5-2.5z" />
+      </svg>
+    </div>
+  )
+}
+
+export const IconDelete = () => {
+  return (
+    <div className='icons-container'>
+      <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        height="1em"
+        width="1em"
+      >
+        <path d="M12 2a10 10 0 0110 10 10 10 0 01-10 10A10 10 0 012 12 10 10 0 0112 2m0 2a8 8 0 00-8 8 8 8 0 008 8 8 8 0 008-8 8 8 0 00-8-8m4 6v7a1 1 0 01-1 1H9a1 1 0 01-1-1v-7h8m-2.5-4l1 1H17v2H7V7h2.5l1-1h3z" />
+      </svg>
+    </div>
+  )
+}
+
 export const IconClockHistory = () => {
   return (
     <div
@@ -1435,17 +1486,17 @@ export const IconUCAB = () => {
           <path d="M2 1668 c4 -570 4 -584 26 -649 46 -137 147 -252 276 -314 106 -50 148 -59 281 -59 105 0 130 3 199 27 188 66 295 170 354 345 l27 77 3 578 3 578 -116 -3 -116 -3 -4 -540 c-4 -453 -7 -550 -20 -600 -29 -110 -90 -185 -184 -228 -66 -30 -204 -29 -282 1 -113 45 -187 144 -209 282 -6 38 -10 279 -10 578 l0 512 -116 0 -115 0 3 -582z" />
           <path d="M4660 1454 l0 -797 273 6 c203 4 287 10 331 22 239 64 372 279 323 525 -28 143 -105 240 -223 277 -30 9 -54 20 -54 25 0 4 4 8 8 8 19 0 94 75 114 114 67 131 62 287 -15 415 -66 110 -173 174 -322 191 -49 5 -168 10 -262 10 l-173 0 0 -796z m458 561 c201 -60 180 -389 -29 -445 -21 -6 -75 -12 -121 -13 l-83 -2 -3 238 -2 237 93 0 c54 0 115 -6 145 -15z m90 -670 c221 -66 228 -395 10 -460 -31 -9 -113 -18 -195 -22 l-143 -6 0 251 0 252 138 0 c96 0 154 -5 190 -15z" />
         </g>
-        <path 
+        <path
           fill="#eab308"
           stroke="none"
           d="M620,0 L626,0 L625,49 L665.5,98 L665.5,196 L626,245 L626,294 L620,294 L620,245 L580.5,196 L580.5,98 L620,49 Z"
         />
-        <path 
+        <path
           fill="#0ea5e9"
           stroke="none"
           d="M714,0 L720,0 L720,49 L759.5,98 L759.5,196 L720,245 L720,294 L714,294 L714,245 L674.5,196 L674.5,98 L714,49 Z"
         />
-        <path 
+        <path
           fill="green"
           stroke="none"
           d="M808,0 L814,0 L814,49 L853.5,98 L853.5,196 L814,245 L814,294 L808,294 L808,245 L768.5,196 L768.5,98 L808,49 Z"

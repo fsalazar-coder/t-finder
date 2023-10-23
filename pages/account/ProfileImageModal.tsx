@@ -72,7 +72,7 @@ export default function ProfileImageModal(props: any) {
 
     try {
       await axios
-        .post("/api/upload", formData, config)
+        .put("/api/profileImageApi", formData, config)
         .then((response: any) => {
           console.log('Status: ', response.data.status);
           console.log('File name: ', response.data.fileName);

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useScreenNarrow } from '@/context/authContext';
 import SectionTitles from './SectionTitles';
 import TestimonyElement from './TestimonyElement';
 import {
@@ -12,6 +13,7 @@ export default function Testimonials(props: any) {
 
 
   const carouselRef: any = useRef(null);                                                 /***Carousel Ref.***/
+  const { screenNarrow } = useScreenNarrow();
   const [testimonyActiveIndex, setTestimonyActiveIndex] = useState(Number);              /***State testimony active index***/
   const testimonialsActived = props.testimonialsSectionActived;                          /**To active animation on testimonials section: true or false***/
 
@@ -56,17 +58,8 @@ export default function Testimonials(props: any) {
     }
   }
 
-  useEffect(() => {                                                                      /***Inner width control***/
-    const screenWidth = window.innerWidth;
-    const mediaQueryChangeHandle = () => {
-      if (screenWidth >= 320 && screenWidth < 1280) {
-        setCarouselTranslateX(carouselPosition * 248);
-        return;
-      }
-      setCarouselTranslateX(carouselPosition * 382.4);
-    };
-    window.addEventListener('resize', mediaQueryChangeHandle);
-    mediaQueryChangeHandle();
+  useEffect(() => {
+    setCarouselTranslateX(carouselPosition * (screenNarrow ? 248 : 382.4));
   });
 
   useEffect(() => {                                                                      /***UseEffect to controller that animation occurs only once***/
@@ -118,7 +111,7 @@ export default function Testimonials(props: any) {
           {/***Carousel testimonials***/}
           <div className='w-full h-full flex flex-row justify-start items-center overflow-x-hidden transition-all z-0'>
             <ul
-              className='w-[9999px] h-auto my-4 flex flex-row justify-start items-center transition-all'
+              className='w-[9999px] h-auto my-4 flex flex-row justify-start items-center transform transition-all'
               onMouseEnter={() => { setHovered(true) }}
               onMouseLeave={() => { setHovered(false) }}
               ref={carouselRef}
