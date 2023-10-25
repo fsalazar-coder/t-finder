@@ -15,11 +15,11 @@ import ImageIconUser from './ImageIconUser';
 
 export default function PersonalInfo(props: any) {
 
-  const { 
-    auth, 
-    token, 
-    userId, 
-    userData, setUserData 
+  const {
+    auth,
+    token,
+    userId,
+    userData, setUserData
   } = useAuthData();
   const { setPersonalInfoModal, setProfileImageModal } = useAuthUI();
   const [userDataRender, setUserDataRender] = useState(false);
@@ -123,7 +123,7 @@ export default function PersonalInfo(props: any) {
                 className='w-full flex flex-row items-center'
               >
                 <h3 className='mr-2 text-base text-slate-950 font-semibold'>
-                  Profession-Occupation:
+                  Profession or occupation:
                 </h3>
                 <h4 className='text-md text-slate-600'>
                   {userData?.profession_occupation}
