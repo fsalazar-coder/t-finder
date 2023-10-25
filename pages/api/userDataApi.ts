@@ -23,9 +23,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     /**update user data */
     if (req.method === 'PUT') {
-      const { email, updates } = req.body;
+      const { id, updates } = req.body;
       const updatedUser = await collection?.findOneAndUpdate(
-        { email },
+        { _id: id as any },
         { $set: updates },
         { returnDocument: 'after' }
       );
@@ -45,8 +45,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const { email } = req.query;
       const user = await collection?.findOne({ email });
       if (user) {
-        return res.status(200).json({user});
-      } 
+        return res.status(200).json({ user });
+      }
       else {
         return res.status(404).json({ error: 'User not found' });
       }

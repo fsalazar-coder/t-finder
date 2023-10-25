@@ -58,7 +58,7 @@ export default function PersonalInfoModal(props: any) {
     };
     try {
       const response = await axios
-        .put('/api/userDataApi', { email: auth?.email, updates }, config)
+        .put('/api/userDataApi', { id: userId, updates }, config)
         .then((response) => {
           const updateUser = response.data.user;
           console.log(`Updaated user: `, updateUser);
