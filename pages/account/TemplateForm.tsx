@@ -14,7 +14,7 @@ export default function TemplateForm(props: any) {
       const changeValue = changeData[element.value];
       return (
         <div
-          key={`${element.title}-${index}`}
+          key={index}
           className='w-full h-fit pt-6 relative flex flex-col justify-start items-start'
         >
           {
@@ -44,7 +44,10 @@ export default function TemplateForm(props: any) {
                 >
                   {
                     element.options.map((option: any, index: any) => (
-                      <option value={option.value}>
+                      <option
+                        key={index}
+                        value={option.value}
+                      >
                         {option.title}
                       </option>
                     )

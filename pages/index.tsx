@@ -4,12 +4,7 @@ import {
   useEffect,
   useRef
 } from "react";
-import {
-  useAuth,
-  useDropdown,
-  useHamburguerMenuActive,
-  useScreenNarrow
-} from "../context/authContext";
+import { useAuthData, useUI } from "../context/authContext";
 import Navbar from './components/Navbar';
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -29,11 +24,14 @@ import LoadingSpinner from "./components/LoadingSpinner";
 export default function Home() {
 
 
-  const { auth } = useAuth();
-  const { setDropdown } = useDropdown();
-  const { setHamburguerMenuActive } = useHamburguerMenuActive();
+  const { auth } = useAuthData();
+  const {
+    screenNarrow,
+    setDropdown,
+    setHamburguerMenuActive
+  } = useUI();
   const [sectionActived, setSectionActived] = useState(String);                          /***State active section on viewport: string***/
-  const { screenNarrow } = useScreenNarrow();
+
 
 
   const headerSectionRef: any = useRef(null),                                            /***Ref. to each section to animation and navbar-indicator position control***/

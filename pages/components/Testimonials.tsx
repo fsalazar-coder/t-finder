@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useScreenNarrow } from '@/context/authContext';
+import { useUI } from '@/context/authContext';
 import SectionTitles from './SectionTitles';
 import TestimonyElement from './TestimonyElement';
 import {
@@ -13,7 +13,7 @@ export default function Testimonials(props: any) {
 
 
   const carouselRef: any = useRef(null);                                                 /***Carousel Ref.***/
-  const { screenNarrow } = useScreenNarrow();
+  const { screenNarrow } = useUI();
   const [testimonyActiveIndex, setTestimonyActiveIndex] = useState(Number);              /***State testimony active index***/
   const testimonialsActived = props.testimonialsSectionActived;                          /**To active animation on testimonials section: true or false***/
 

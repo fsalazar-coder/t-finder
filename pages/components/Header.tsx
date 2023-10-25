@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useAuth, useJoinModal } from "../../context/authContext";
+import { useAuthData, useUI } from "../../context/authContext";
 import { Typewriter } from 'react-simple-typewriter';
 import { IconArrowRight } from '../../icons/icons';
 
@@ -7,9 +7,8 @@ import { IconArrowRight } from '../../icons/icons';
 
 export default function Header(props: any) {
 
-  const { auth } = useAuth();
-  const { joinModal } = useJoinModal();
-  const { setJoinModal } = useJoinModal();
+  const { auth } = useAuthData();
+  const { joinModal, setJoinModal } = useUI();
   const [animationActived, setAnimationActived] = useState(false);
   const headerActived = props.headerSectionActived;                                      /**To active animation on header section: true or false***/
 
@@ -52,7 +51,7 @@ export default function Header(props: any) {
           Improving your experience with recruitment
         </h5>
       </div>
-          {/**button to open join modal (register) */}
+      {/**button to open join modal (register) */}
       < div className='w-full h-fit pt-10 flex justify-center items-center z-[35]'>
         <button
           className='w-fit h-fit px-8 py-3 text-slate-50 hover:text-white md:hover:font-bold bg-fuchsia-400 hover:bg-fuchsia-900 flex flex-row justify-center items-center rounded-full cursor-pointer transform hover:scale-[1.1] transition-all z-30'

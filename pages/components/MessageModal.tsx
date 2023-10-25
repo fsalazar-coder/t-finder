@@ -1,30 +1,18 @@
 import { useEffect, useState } from 'react';
-import {
-  useAuth,
-  useUserId,
-  useUserImageUrl,
-  useUserData,
-  useAccountActived,
-  useAccountModule,
-  useMessageModal,
-  useMessageModalType,
-  useMessageModalText
-} from "../../context/authContext";
+import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import Link from 'next/link';
 
 
 
 export default function MessageModal(props: any) {
 
-  const { setAuth } = useAuth();
-  const { setUserId } = useUserId();
-  const { setUserImageUrl } = useUserImageUrl();
-  const { setUserData } = useUserData();
-  const { setAccountActived } = useAccountActived();
-  const { setAccountModule } = useAccountModule();
-  const { messageModal, setMessageModal } = useMessageModal();
-  const { messageModalType } = useMessageModalType();
-  const { messageModalText } = useMessageModalText();
+  const { setAuth, setUserId, setUserImageUrl, setUserData } = useAuthData();
+  const { setAccountActived, setAccountModule } = useAuthUI();
+  const {
+    messageModal, setMessageModal,
+    typeMessageModal,
+    textMessageModal
+  } = useUI();
   const [circleAnimation, setCircleAnimation] = useState(false);
   const [symbolAnimation, setSymbolAnimation] = useState(false);
 
@@ -87,8 +75,8 @@ export default function MessageModal(props: any) {
               >
                 <circle
                   className={
-                    `${messageModalType === 'successful' ?
-                      'stroke-green-500' : messageModalType === 'error' ?
+                    `${typeMessageModal === 'successful' ?
+                      'stroke-green-500' : typeMessageModal === 'error' ?
                         'stroke-red-600' : 'stroke-yellow-300'
                     }
                   ${circleAnimation ?
@@ -107,7 +95,7 @@ export default function MessageModal(props: any) {
                 />
               </svg>
               {
-                messageModalType === 'successful' ?
+                typeMessageModal === 'successful' ?
                   /**successful SVG animation */
                   <svg
                     className='w-10 h-10 stroke-green-600'
@@ -141,7 +129,7 @@ export default function MessageModal(props: any) {
                     />
                   </svg>
                   :
-                  messageModalType === 'error' ?
+                  typeMessageModal === 'error' ?
                     /**error SVG animation */
                     <svg
                       className='w-10 lg:w-14 h-10 lg:h-14 stroke-red-600 flex'
@@ -213,17 +201,18 @@ export default function MessageModal(props: any) {
             </div>
             {/**message title */}
             <h2 className='w-full pt-4 text-xl lg:text-3xl text-slate-950 text-center flex flex-col justify-center items-center'>
-              {messageModalType === 'successful' ? 'Successful' :
-                messageModalType === 'error' ? 'Error' : 'Are you sure?'}
+              {typeMessageModal === 'successful' ? 'Successful' :
+                typeMessageModal === 'error' ? 'Error' : 'Are you sure?'}
             </h2>
             {/**message sub-title */}
             <h4 className='w-full pb-6 text-sm lg:text-base text-slate-600 text-center flex flex-col justify-center items-center'>
-              {messageModalText}
+              {textMessageModal}
+
             </h4>
             {/**buttons */}
             <div className='w-full flex flex-row justify-between items-center'>
               {
-                messageModalType === 'logout' ?
+                typeMessageModal === 'logout' ?
                   <>
                     {/**logout session button */}
                     <button className='w-[45%] text-slate-50 lg:hover:text-white lg:hover:font-bold py-2 flex flex-row justify-center items-center bg-green-400 lg:bg-green-300 lg:hover:bg-green-400 cursor-default lg:cursor-pointer rounded-md transition-all'>
@@ -264,7 +253,7 @@ export default function MessageModal(props: any) {
                     >
                       <h5 className='w-full text-sm lg:text-base font-bold leading-none'>
                         {
-                          messageModalType === 'successful' ?
+                          typeMessageModal === 'successful' ?
                             'Ok' : 'Try again'
                         }
                       </h5>

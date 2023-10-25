@@ -1,17 +1,5 @@
 import { useState, useEffect } from 'react';
-import {
-  useAuth,
-  useUserData,
-  useUserId,
-  useUserImageUrl,
-  useJoinModal,
-  useLoginModal,
-  usePasswordResetModal,
-  useMessageModal,
-  useMessageModalType,
-  useMessageModalText,
-  useLoadingSpinner
-} from "../../context/authContext";
+import { useAuthData, useUI } from "../../context/authContext";
 import axios from 'axios';
 import Image from 'next/image';
 import googleIcon from '../../public/images/google-icon.webp';
@@ -21,17 +9,22 @@ import { IconCancel } from '../../icons/icons';
 
 export default function LoginModal(props: any) {
 
-  const { setAuth } = useAuth();
-  const { setUserData } = useUserData();
-  const { setUserId } = useUserId();
-  const { setUserImageUrl } = useUserImageUrl();
-  const { setJoinModal } = useJoinModal();
-  const { loginModal, setLoginModal } = useLoginModal();
-  const { setPasswordResetModal } = usePasswordResetModal();
-  const { setMessageModal } = useMessageModal();
-  const { setMessageModalType } = useMessageModalType();
-  const { setMessageModalText } = useMessageModalText();
-  const { setLoading } = useLoadingSpinner();
+  const { 
+    setAuth, 
+    setToken, 
+    setUserId, 
+    setUserData, 
+    setUserImageUrl 
+  } = useAuthData();
+  const { 
+    setJoinModal, 
+    loginModal, setLoginModal, 
+    setPasswordResetModal, 
+    setMessageModal, 
+    setTypeMessageModal,
+    setTextMessageModal, 
+    setLoading
+   } = useUI();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailChange, setEmailChange] = useState(false);
@@ -39,7 +32,7 @@ export default function LoginModal(props: any) {
 
   const modalCloseEscapeHandle = (e: any) => {
     if (loginModal) {
-      if ((e.chartCode | e.keyCode) === 27) {
+      if ((e.charCode | e.keyCode) === 27) {
         setLoginModal(false);
       }
     }
@@ -47,6 +40,9 @@ export default function LoginModal(props: any) {
 
   useEffect(() => {
     document.addEventListener('keydown', modalCloseEscapeHandle);
+    return () => {
+      document.removeEventListener('keydown', modalCloseEscapeHandle);
+    };
   });
 
   useEffect(() => {
@@ -56,7 +52,7 @@ export default function LoginModal(props: any) {
   }, [loginModal]);
 
 
-  const loginSubmitHandle = async (e: any) => {
+  const loginSubmitHandle = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);     //Ampliar
 
@@ -74,11 +70,10 @@ export default function LoginModal(props: any) {
           if (resData.token) {
             const token = resData.token;
             const id = resData.id;
+            setToken(token);
             setAuth({ email });
-            setUserData(resData.userData);
             setUserId(id);
-            setEmail('');
-            setPassword('');
+            setUserData(resData.userData);
             setLoginModal(false);
             if (resData.userData.profile_image_url) {
               setUserImageUrl(resData.userData.profile_image_url);
@@ -86,8 +81,8 @@ export default function LoginModal(props: any) {
           }
           else if (resData.status === 'Invalid credential') {
             setMessageModal(true);
-            setMessageModalType('error');
-            setMessageModalText('Invalid credential');
+            setTypeMessageModal('error');
+            setTextMessageModal('Invalid credential');
           }
         })
     }
@@ -95,8 +90,8 @@ export default function LoginModal(props: any) {
       () => {
         console.log('Error on login: ', error);
         setMessageModal(true);
-        setMessageModalType('error');
-        setMessageModalText('An error occurred');
+        setTypeMessageModal('error');
+        setTextMessageModal('An error occurred');
       }
     }
     finally {

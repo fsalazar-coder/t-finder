@@ -1,14 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  useAuth,
-  useDropdown,
-  useScreenNarrow,
-  useAccountActived,
-  useAccountModule,
-  useMessageModal,
-  useMessageModalType,
-  useMessageModalText
-} from "../../context/authContext";
+import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import { useRouter } from 'next/navigation'
 import ImageIconUser from './ImageIconUser';
 
@@ -26,20 +17,26 @@ const navbarElementAuth = [
 
 export default function AccountNavbar(props: any) {
 
-  const { auth } = useAuth();
-  const { dropdown, setDropdown } = useDropdown();
-  const { screenNarrow } = useScreenNarrow();
-  const { setAccountActived } = useAccountActived();
-  const { accountModule, setAccountModule } = useAccountModule();
-  const { setMessageModal } = useMessageModal();
-  const { setMessageModalType } = useMessageModalType();
-  const { setMessageModalText } = useMessageModalText();             /**navbar element to show on screen narrow */
+  const { auth } = useAuthData();
+  
+  const {
+    setAccountActived,
+    accountModule, setAccountModule
+  } = useAuthUI();
+
+  const {
+    dropdown, setDropdown,
+    screenNarrow,
+    setMessageModal,
+    setTypeMessageModal,
+    setTextMessageModal
+  } = useUI();
   const router = useRouter();
 
 
   return (
     <div
-      className='w-full lg:w-60 h-10 lg:h-full fixed flex flex-row justify-center items-center bg-slate-950 z-50'>
+      className='w-full lg:w-60 h-10 lg:h-full fixed left-0 flex flex-row justify-center items-center bg-slate-950 z-50'>
       <div className='container w-full h-auto lg:h-full px-0 py-2 lg:py-0 flex flex-row lg:flex-col justify-between lg:justify-start items-center'>
         {/**Logo */}
         <div className='lg:w-full py-1 lg:py-4 flex flex-row justify-center items-center z-30'>
@@ -119,8 +116,8 @@ export default function AccountNavbar(props: any) {
                     className='w-full h-full py-2 flex flex-row justify-center items-center bg-fuchsia-600 hover:bg-fuchsia-400 border border-fuchsia-300 rounded-full transition-all'
                     onClick={() => {
                       setMessageModal(true);
-                      setMessageModalType('logout');
-                      setMessageModalText('Logout your session with this action');
+                      setTypeMessageModal('logout');
+                      setTextMessageModal('Logout your session with this action');
                     }}
                   >
                     <h3 className='h-auto text-slate-200 hover:text-slate-50 text-base text-center font-light'>

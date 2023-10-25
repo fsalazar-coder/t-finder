@@ -1,11 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  useAuth,
-  useDropdown,
-  useScreenNarrow,
-  useLoginModal,
-  useJoinModal
-} from "../../context/authContext";
+import { useAuthData, useUI } from "../../context/authContext";
 import HamburguerMenu from './HamburguerMenu';
 import ImageIconUser from '../account/ImageIconUser';
 
@@ -13,11 +7,13 @@ import ImageIconUser from '../account/ImageIconUser';
 
 export default function Navbar(props: any) {
 
-  const { auth } = useAuth();
-  const { dropdown, setDropdown } = useDropdown();
-  const { screenNarrow } = useScreenNarrow();
-  const { setLoginModal } = useLoginModal();
-  const { setJoinModal } = useJoinModal();
+  const { auth } = useAuthData();
+  const {
+    screenNarrow,
+    dropdown, setDropdown,
+    setLoginModal,
+    setJoinModal
+  } = useUI();
   const [transparentBackground, setTransparentBackground] = useState(true);              /***Transparent background state: boolean***/
   const [navbarFirstUse, setNavbarFirstUse] = useState(false);
 

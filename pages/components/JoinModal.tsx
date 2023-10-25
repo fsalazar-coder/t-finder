@@ -1,13 +1,5 @@
 import { useState, useEffect } from 'react';
-import {
-  useAuth,
-  useJoinModal,
-  useLoginModal,
-  useMessageModal,
-  useMessageModalType,
-  useMessageModalText,
-  useLoadingSpinner
-} from "../../context/authContext";
+import { useAuthData, useUI } from "../../context/authContext";
 import axios from 'axios';
 import Image from 'next/image';
 import googleIcon from '../../public/images/google-icon.webp';
@@ -17,12 +9,14 @@ import { IconCancel } from '../../icons/icons';
 
 export default function JoinModal(props: any) {
 
-  const { joinModal, setJoinModal } = useJoinModal();
-  const { setLoginModal } = useLoginModal();
-  const { setMessageModal } = useMessageModal();
-  const { setMessageModalType } = useMessageModalType();
-  const { setMessageModalText } = useMessageModalText();
-  const { setLoading } = useLoadingSpinner();
+  const { 
+    joinModal, setJoinModal,
+    setLoginModal,
+    setMessageModal,
+    setTypeMessageModal,
+    setTextMessageModal,
+    setLoading 
+  } = useUI();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailChange, setEmailChange] = useState(false);
@@ -30,14 +24,17 @@ export default function JoinModal(props: any) {
 
   const modalCloseEscapeHandle = (e: any) => {
     if (joinModal) {
-      if ((e.chartCode | e.keyCode) === 27) {
+      if ((e.charCode | e.keyCode) === 27) {
         setJoinModal(false);
       }
     }
   };
-
+  
   useEffect(() => {
     document.addEventListener('keydown', modalCloseEscapeHandle);
+    return () => {
+      document.removeEventListener('keydown', modalCloseEscapeHandle);
+    };
   });
 
   useEffect(() => {
@@ -46,9 +43,9 @@ export default function JoinModal(props: any) {
       : (document.body.style.overflowY = 'auto');
   }, [joinModal]);
 
-  const joinSubmitHandle = async (e: any) => {
+  const joinSubmitHandle = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);     //ampliar
+    setLoading(true);
 
     const config: any = {
       headers: {
@@ -65,13 +62,13 @@ export default function JoinModal(props: any) {
           if (res === 'Success register') {
             setJoinModal(false);
             setMessageModal(true);
-            setMessageModalType('successful');
-            setMessageModalText('Your user have been created');
+            setTypeMessageModal('successful');
+            setTextMessageModal('Your user have been created');
           }
           else if (res === 'User already exists') {
             setMessageModal(true);
-            setMessageModalType('error');
-            setMessageModalText('User already exists');
+            setTypeMessageModal('error');
+            setTextMessageModal('User already exists');
           }
         })
     }
@@ -79,8 +76,8 @@ export default function JoinModal(props: any) {
       () => {
         console.log('Error on register: ', error);
         setMessageModal(true);
-        setMessageModalType('error');
-        setMessageModalText('An error occurred');
+        setTypeMessageModal('error');
+        setTextMessageModal('An error occurred');
       }
     }
     finally {

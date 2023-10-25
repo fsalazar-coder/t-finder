@@ -1,10 +1,12 @@
-import { useHamburguerMenuActive, useDropdown } from "../../context/authContext";
+import { useUI } from "../../context/authContext";
 
 
 
 export default function HamburguerMenu(props: any) {
-  const { hamburguerMenuActive, setHamburguerMenuActive } = useHamburguerMenuActive();
-  const { dropdown, setDropdown } = useDropdown();
+  const {
+    hamburguerMenuActive, setHamburguerMenuActive,
+    dropdown, setDropdown
+  } = useUI();
 
   return (
     <div

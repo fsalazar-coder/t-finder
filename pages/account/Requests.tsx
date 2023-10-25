@@ -1,9 +1,5 @@
 import { useState } from "react";
-import {
-  useAuth,
-  useRequestModal,
-  useAccountModule
-} from "../../context/authContext";
+import { useAuthData, useAuthUI } from "../../context/authContext";
 import {
   IconAdd,
   IconEdit,
@@ -16,13 +12,12 @@ import SectionTitles from '../components/SectionTitles';
 
 export default function Request(props: any) {
 
-  const { auth } = useAuth();
-  const { setRequestModal } = useRequestModal();
-  const { accountModule } = useAccountModule();
+  const { auth } = useAuthData();
+  const { setRequestModal, accountModule } = useAuthUI();
 
   return (
     accountModule === 'Request' ?
-      <div className='w-full h-screen pl-0 lg:pl-60 flex flex-row justify-center items-center'>
+      <div className='w-full h-screen pl-0 lg:px-60 flex flex-row justify-center items-center'>
         <div className='container w-full h-full pt-14 lg:pt-10 p-5 lg:p-10 flex flex-col items-center transition-all'>
           {/**section title */}
           <div className="w-full p-2 lg:p-5 mb-2 lg:mb-5 bg-white border rounded-lg drop-shadow-md">

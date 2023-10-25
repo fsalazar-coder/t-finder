@@ -1,8 +1,4 @@
-import {
-  useAuth,
-  useAccountModule,
-  usePersonalInfoModal
-} from "../../context/authContext";
+import { useAuthData, useAuthUI } from "../../context/authContext";
 import {
   IconArrowRight,
   IconAdd,
@@ -18,15 +14,14 @@ import PersonalInfoModal from "./PersonalInfoModal";
 
 export default function Profile(props: any) {
 
-  const { auth } = useAuth();
-  const { accountModule } = useAccountModule();
-  const { setPersonalInfoModal } = usePersonalInfoModal();
+  const { auth } = useAuthData();
+  const { accountModule, setPersonalInfoModal } = useAuthUI();
 
   const sections = [
     {
       id: 'personal-information',
       title: 'PERSONAL INFORMATION',
-      comment: 'Comment IA!!!',
+      comment: 'Comment, comemnt comemnt comemnt comemnt IA!!!',
       clickAdd: () => setPersonalInfoModal(true),
       clickEdit: () => console.log('edit personal information'),
       clickDelete: () => console.log('delete personal information'),
@@ -35,7 +30,7 @@ export default function Profile(props: any) {
     {
       id: 'educational-information',
       title: 'EDUCATIONAL INFORMATION',
-      comment: 'Comment IA!!!',
+      comment: 'Comment,comemnt comemnt comemnt comemnt  IA!!!',
       clickAdd: () => setPersonalInfoModal(true),
       clickEdit: () => console.log('edit personal information'),
       clickDelete: () => console.log('delete personal information'),
@@ -44,7 +39,7 @@ export default function Profile(props: any) {
     {
       id: 'experience-information',
       title: 'EXPERIENCE INFORMATION',
-      comment: 'Comment IA!!!',
+      comment: 'Comment, comemnt comemnt comemnt comemnt  IA!!!',
       clickAdd: () => setPersonalInfoModal(true),
       clickEdit: () => console.log('edit personal information'),
       clickDelete: () => console.log('delete personal information'),
@@ -54,7 +49,7 @@ export default function Profile(props: any) {
 
   return (
     accountModule === 'Profile' ?
-      <div className='w-full h-screen pl-0 lg:pl-60 flex flex-row justify-center items-center'>
+      <div className='w-full h-screen pl-0 lg:px-60 flex flex-row justify-center items-center'>
         <ul className='container w-full h-full pt-14 lg:pt-10 p-5 lg:p-10 flex flex-col transition-all'>
           {
             /**sections: personal, educational and experience information */
@@ -63,7 +58,7 @@ export default function Profile(props: any) {
                 <li
                   key={section.id}
                   id={section.id}
-                  className="w-full p-2 lg:p-5 mb-2 lg:mb-5 flex flex-col bg-slate-50 border border-white rounded-md drop-shadow-md"
+                  className="w-full p-2 lg:p-5 mb-10 lg:mb-7 flex flex-col bg-slate-50 border border-white rounded-md drop-shadow-md"
                 >
                   {/**title */}
                   <div className='w-full flex flex-row'>
@@ -77,45 +72,9 @@ export default function Profile(props: any) {
                   <div className='w-full flex flex-col items-start list-none transition-all'>
                     {section.comment}
                   </div>
-                  {/**add information */}
-                  <div className="w-full flex flex-row justify-end items-center">
-                    <div className="flex-row items-center">
-                      <h3>Add personal information</h3>
-                    </div>
-                    <button className="ml-1 lg:ml-2 flex flex-row justify-center items-center">
-                      <i
-                        className='text-green-600 lg:text-gray-400 lg:hover:text-green-500 text-xl lg:text-2xl flex justify-center cursor-default lg:cursor-pointer'
-                        onClick={section.clickAdd}
-                      >
-                        <IconAdd />
-                      </i>
-                    </button>
-                  </div>
                   {/**showing information */}
-                  <div className='w-full mt-1 lg:mt-2 p-1 lg:p-2 flex flex-row bg-white border rounded-md'>
-                    {/**content information */}
-                    <div className="w-full flex-row">
-                      {section.content}
-                    </div>
-                    {/**edit and delete button */}
-                    <div className="flex flex-row justify-between items-center">
-                      <button className="flex flex-row justify-center items-center">
-                        <i
-                          className='text-green-600 lg:text-gray-400 lg:hover:text-green-500 text-xl lg:text-2xl flex justify-center cursor-default lg:cursor-pointer'
-                          onClick={section.clickEdit}
-                        >
-                          <IconEdit />
-                        </i>
-                      </button>
-                      <button className="flex flex-row justify-center items-center">
-                        <i
-                          className='text-green-600 lg:text-gray-400 lg:hover:text-red-500 text-xl lg:text-2xl flex justify-center cursor-default lg:cursor-pointer'
-                          onClick={section.clickDelete}
-                        >
-                          <IconDelete />
-                        </i>
-                      </button>
-                    </div>
+                  <div className='w-full mt-1 lg:mt-2 flex flex-col'>
+                    {section.content}
                   </div>
                 </li>
               )

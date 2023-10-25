@@ -1,24 +1,19 @@
 import { useState, useEffect } from 'react';
-import {
-  useJoinModal,
-  useLoginModal,
-  usePasswordResetModal,
-  useMessageModal,
-  useMessageModalType,
-  useMessageModalText
-} from "../../context/authContext";
+import { useUI } from "../../context/authContext";
 import { IconCancel } from '../../icons/icons';
 
 
 
 export default function PasswordReset(props: any) {
 
-  const { setJoinModal } = useJoinModal();
-  const { setLoginModal } = useLoginModal();
-  const { passwordResetModal, setPasswordResetModal } = usePasswordResetModal();
-  const { setMessageModal } = useMessageModal();
-  const { setMessageModalType } = useMessageModalType();
-  const { setMessageModalText } = useMessageModalText();
+  const {
+    setJoinModal,
+    setLoginModal,
+    passwordResetModal, setPasswordResetModal,
+    setMessageModal,
+    setTypeMessageModal,
+    setTextMessageModal
+  } = useUI();
   const [email, setEmail] = useState('');
   const [emailChange, setEmailChange] = useState(false);
 
@@ -46,8 +41,8 @@ export default function PasswordReset(props: any) {
     setEmail('');
     setPasswordResetModal(false);
     setMessageModal(true);
-    setMessageModalType('successful');
-    setMessageModalText('A recovery link has been sent to your email');
+    setTypeMessageModal('successful');
+    setTextMessageModal('A recovery link has been sent to your email');
   }
 
   return (

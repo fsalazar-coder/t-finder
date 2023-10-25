@@ -1,4 +1,4 @@
-import { useAuth, useJoinModal } from "../../context/authContext";
+import { useAuthData, useUI } from "../../context/authContext";
 import {
   IconArrowRight,
   IconBxlLinkedin,
@@ -11,8 +11,8 @@ import {
 
 export default function Footer(props: any) {
 
-  const { auth } = useAuth();
-  const { setJoinModal } = useJoinModal();
+  const { auth } = useAuthData();
+  const { setJoinModal } = useUI();
 
   const navegationA = [
     'Find Talent',

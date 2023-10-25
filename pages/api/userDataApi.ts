@@ -15,71 +15,48 @@ const cors = initMiddleware(
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-
   try {
     await cors(req, res);
-    const { db } = await dbConnect();
     const { method } = req;
-
-    if (req.method !== 'POST') {
-      return res.status(405).end(`Method ${method} not allowed`);
-    }
-
-    // Register or Login
-    const { email, password, action } = req.body;
+    const { db } = await dbConnect();
     const collection = db?.collection("users");
 
-    //register
-    if (action === 'register') {
-      const existingUser = await collection?.findOne({ email });
+    /**update user data */
+    if (req.method === 'PUT') {
+      const { email, updates } = req.body;
+      const updatedUser = await collection?.findOneAndUpdate(
+        { email },
+        { $set: updates },
+        { returnDocument: 'after' }
+      );
 
-      if (existingUser) {
-        return res.status(200).json({ status: 'User already exists' });
+      if (updatedUser?.value) {
+        return res.status(200).json({
+          status: 'User successfully updated',
+          user: updatedUser.value
+        });
       }
-
-      const hashedPassword = await bcrypt.hash(password, 12);
-      const idUnique = uuidv4();
-
-      await collection?.insertOne({
-        _id: idUnique as any,
-        email: email,
-        password_hash: hashedPassword,
-        full_name: '',
-        profile_image_url: '',
-        profession: '',
-        preferred_language: '',
-        location: '',
-        personal_description: '',
-        availability_status: 'on',
-        created_at: '',
-      });
-
-      return res.status(200).json({ status: 'Success register' });
+      else {
+        return res.status(404).json({ error: 'User not found' });
+      }
     }
-    //login
-    else if (action === 'login') {
+    /**get user data */
+    else if (req.method === 'GET') {
+      const { email } = req.query;
       const user = await collection?.findOne({ email });
-      if (!user) {
-        return res.status(200).json({ status: 'Invalid credential' });
+      if (user) {
+        return res.status(200).json({user});
+      } 
+      else {
+        return res.status(404).json({ error: 'User not found' });
       }
-
-      const isValidPassword = await bcrypt.compare(password, user.password);
-      if (!isValidPassword) {
-        return res.status(200).json({ status: 'Invalid credential' });
-      }
-
-      if (!process.env.SECRET_KEY) {
-        throw new Error("SECRET_KEY environment variable is not defined");
-      }
-
-      const token = jwt.sign({ email }, process.env.SECRET_KEY);
-
-      return res.status(200).json({ token: token, userData: user, id: user._id });
     }
-    return;
+    else {
+      return res.status(405).end(`Method ${method} not allowed`);
+    }
   }
   catch (error) {
     console.error('An error occurred:', error);
-    res.status(500).json({ error: 'An internal error occurred' });
+    return res.status(500).json({ error: 'An internal error occurred' });
   }
 }

@@ -1,13 +1,5 @@
 import { useState, useEffect } from 'react';
-import {
-  useAuth,
-  useUserId,
-  useProfileImageModal,
-  useMessageModal,
-  useMessageModalType,
-  useMessageModalText,
-  useLoadingSpinner
-} from "../../context/authContext";
+import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import axios from 'axios';
 import Image from 'next/image';
 import { IconCancel, IconUser } from '../../icons/icons';
@@ -16,18 +8,15 @@ import { IconCancel, IconUser } from '../../icons/icons';
 
 export default function ProfileImageModal(props: any) {
 
-  const { userId } = useUserId();
-  const { profileImageModal, setProfileImageModal } = useProfileImageModal();
-  const { setMessageModal } = useMessageModal();
-  const { setMessageModalType } = useMessageModalType();
-  const { setMessageModalText } = useMessageModalText();
-  const { setLoading } = useLoadingSpinner();
+  const { userId } = useAuthData();
+  const { profileImageModal, setProfileImageModal } = useAuthUI();
+  const { setMessageModal, setTypeMessageModal, setTextMessageModal, setLoading } = useUI();
   const [fileImage, setFileImage] = useState<File | null>(null);
-  const [previewImage, setPreviewImage] = useState('');
+  const [previewImage, setPreviewImage] = useState(''); 
 
   const modalCloseEscapeHandle = (e: any) => {
     if (profileImageModal) {
-      if ((e.chartCode | e.keyCode) === 27) {
+      if ((e.charCode | e.keyCode) === 27) {
         setProfileImageModal(false);
       }
     }
@@ -74,20 +63,17 @@ export default function ProfileImageModal(props: any) {
       await axios
         .put("/api/profileImageApi", formData, config)
         .then((response: any) => {
-          console.log('Status: ', response.data.status);
-          console.log('File name: ', response.data.fileName);
-          console.log('File path: ', response.data.filePath);
           let res = response.data.status;
           if (res === 'success') {
             setProfileImageModal(false);
             setMessageModal(true);
-            setMessageModalType('successful');
-            setMessageModalText('Your profile image have been uploaded');
+            setTypeMessageModal('successful');
+            setTextMessageModal('Your profile image have been uploaded');
           }
           else {
             setMessageModal(true);
-            setMessageModalType('error');
-            setMessageModalText('profile image not uploaded');
+            setTypeMessageModal('error');
+            setTextMessageModal('profile image not uploaded');
           }
         })
     }
@@ -95,8 +81,8 @@ export default function ProfileImageModal(props: any) {
       () => {
         console.log('Error on uploading: ', error);
         setMessageModal(true);
-        setMessageModalType('error');
-        setMessageModalText('An error occurred');
+        setTypeMessageModal('error');
+        setTextMessageModal('An error occurred');
       }
     }
     finally {

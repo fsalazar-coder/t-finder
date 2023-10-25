@@ -1,19 +1,12 @@
 "use client"
 import { useState, useEffect } from "react";
-import {
-  useAuth,
-  useDropdown,
-  useScreenNarrow,
-  useAccountActived
-} from "../context/authContext";
+import { useAuthData, useAuthUI, useUI } from "../context/authContext";
 import Dropdown from './components/Dropdown';
 import AccountNavbar from "./account/AccountNavbar";
 import Dashboard from "./account/Dashboard";
 import Profile from "./account/Profile";
-import ProfileImageModal from "./account/ProfileImageModal";
 import PersonalInfoModal from "./account/PersonalInfoModal";
-import EducationModal from "./account/EducationModal";
-import ExperienceModal from "./account/ExperienceModal";
+import ProfileImageModal from "./account/ProfileImageModal";
 import Portfolio from "./account/Portfolio";
 import Request from "./account/Requests";
 import RequestModal from "./account/RequestModal";
@@ -26,13 +19,15 @@ import MessageModal from './components/MessageModal';
 
 export default function Account(props: any) {
 
-  const { auth } = useAuth();
-  const { screenNarrow } = useScreenNarrow();
-  const { dropdown, setDropdown } = useDropdown();
-  const { accountActived } = useAccountActived();
-  const [messageModal, setMessageModal] = useState(false);
-  const [typeMessageModal, setTypeMessageModal] = useState(String);
-  const [descriptionMessageModal, setDescriptionMessageModal] = useState(String);
+  const { auth } = useAuthData();
+  const { accountActived } = useAuthUI();
+  const { 
+    screenNarrow, 
+    dropdown, setDropdown,
+    messageModal, setMessageModal,
+    typeMessageModal, setTypeMessageModal,
+    textMessageModal, setTextMessageModal
+  } = useUI();
 
   useEffect(() => {
     if (accountActived) {
@@ -54,7 +49,7 @@ export default function Account(props: any) {
   }
 
   return (
-    <main className='w-full h-full relative font-montserrat select-none'>
+    <main className='w-full h-full relative font-montserrat select-none flex flex-col items-center'>
       {/**navbar */}
       <div className='w-auto h-auto'>
         <AccountNavbar />
@@ -87,6 +82,10 @@ export default function Account(props: any) {
       <div className='w-full h-full lg:pl-1/6'>
         <HelpSupport />
       </div>
+      {/**sponsor banner */}
+      <div className="lg:w-60 h-screen fixed right-0 hidden lg:vissible lg:flex flex-col justify-center items-center bg-slate-50 border-l border-slate-100">
+        <h2>SPONSOR</h2>
+      </div>
 
       {/**dropdown */}
       <Dropdown />
@@ -98,10 +97,10 @@ export default function Account(props: any) {
       <PersonalInfoModal />
 
       {/**education modal */}
-      <EducationModal />
+      {/**<EducationModal />*/}
 
       {/**experience modal */}
-      <ExperienceModal />
+      {/**<ExperienceModal /> */}      
 
       {/**request modal */}
       <RequestModal />

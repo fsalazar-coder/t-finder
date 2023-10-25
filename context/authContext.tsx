@@ -8,29 +8,34 @@ import React, {
 
 
 
-interface AuthContextProps {
+interface AuthDataContextProps {
   auth: User | null;
   setAuth: React.Dispatch<React.SetStateAction<User | null>>;
-  userData: Object | null;
-  setUserData: React.Dispatch<React.SetStateAction<Object | null>>;
+  token: string | null;
+  setToken: React.Dispatch<React.SetStateAction<string | null>>;
+  userData: UserData | null;
+  setUserData: React.Dispatch<React.SetStateAction<UserData | null>>;
   userId: Id | string;
   setUserId: React.Dispatch<React.SetStateAction<Id | string>>;
-  userImageUrl: String;
-  setUserImageUrl: React.Dispatch<React.SetStateAction<String>>;
-  accountActived: Boolean;
-  setAccountActived: React.Dispatch<React.SetStateAction<Boolean>>;
-  accountModule: String;
-  setAccountModule: React.Dispatch<React.SetStateAction<String>>;
-  profileImageModal: Boolean;
-  setProfileImageModal: React.Dispatch<React.SetStateAction<Boolean>>;
-  personalInfoModal: Boolean;
-  setPersonalInfoModal: React.Dispatch<React.SetStateAction<Boolean>>;
-  educationModal: Boolean;
-  setEducationModal: React.Dispatch<React.SetStateAction<Boolean>>;
-  experienceModal: Boolean;
-  setExperienceModal: React.Dispatch<React.SetStateAction<Boolean>>;
-  requestModal: Boolean;
-  setRequestModal: React.Dispatch<React.SetStateAction<Boolean>>;
+  userImageUrl: string;
+  setUserImageUrl: React.Dispatch<React.SetStateAction<string>>;
+}
+
+interface AuthUIContextProps {
+  accountActived: boolean;
+  setAccountActived: React.Dispatch<React.SetStateAction<boolean>>;
+  accountModule: string;
+  setAccountModule: React.Dispatch<React.SetStateAction<string>>;
+  profileImageModal: boolean;
+  setProfileImageModal: React.Dispatch<React.SetStateAction<boolean>>;
+  personalInfoModal: boolean;
+  setPersonalInfoModal: React.Dispatch<React.SetStateAction<boolean>>;
+  educationModal: boolean;
+  setEducationModal: React.Dispatch<React.SetStateAction<boolean>>;
+  experienceModal: boolean;
+  setExperienceModal: React.Dispatch<React.SetStateAction<boolean>>;
+  requestModal: boolean;
+  setRequestModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface User {
@@ -41,86 +46,104 @@ interface Id {
   id: string;
 }
 
+interface UserData {
+  _id: string,
+  email: string,
+  password_hash: string,
+  full_name: string,
+  profile_image_url: string,
+  profession_occupation: string,
+  preferred_language: string,
+  location: string,
+  personal_description: string,
+  availability_status: string,
+  created_at: string,
+}
+
 interface AuthProviderProps {
   children: ReactNode;
 }
 
-interface ContextProps {
-  dropdown: Boolean;
-  setDropdown: React.Dispatch<React.SetStateAction<Boolean>>;
-  hamburguerMenuActive: Boolean;
-  setHamburguerMenuActive: React.Dispatch<React.SetStateAction<Boolean>>;
-  screenNarrow: Boolean;
-  setScreenNarrow: React.Dispatch<React.SetStateAction<Boolean>>;
-  loading: Boolean;
-  setLoading: React.Dispatch<React.SetStateAction<Boolean>>;
-  loginModal: Boolean;
-  setLoginModal: React.Dispatch<React.SetStateAction<Boolean>>;
-  joinModal: Boolean;
-  setJoinModal: React.Dispatch<React.SetStateAction<Boolean>>;
-  passwordResetModal: Boolean;
-  setPasswordResetModal: React.Dispatch<React.SetStateAction<Boolean>>;
-  messageModal: Boolean;
-  setMessageModal: React.Dispatch<React.SetStateAction<Boolean>>;
-  messageModalType: String;
-  setMessageModalType: React.Dispatch<React.SetStateAction<String>>;
-  messageModalText: String;
-  setMessageModalText: React.Dispatch<React.SetStateAction<String>>;
+interface UIContextProps {
+  dropdown: boolean;
+  setDropdown: React.Dispatch<React.SetStateAction<boolean>>;
+  hamburguerMenuActive: boolean;
+  setHamburguerMenuActive: React.Dispatch<React.SetStateAction<boolean>>;
+  screenNarrow: boolean;
+  setScreenNarrow: React.Dispatch<React.SetStateAction<boolean>>;
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  loginModal: boolean;
+  setLoginModal: React.Dispatch<React.SetStateAction<boolean>>;
+  joinModal: boolean;
+  setJoinModal: React.Dispatch<React.SetStateAction<boolean>>;
+  passwordResetModal: boolean;
+  setPasswordResetModal: React.Dispatch<React.SetStateAction<boolean>>;
+  messageModal: boolean;
+  setMessageModal: React.Dispatch<React.SetStateAction<boolean>>;
+  typeMessageModal: string;
+  setTypeMessageModal: React.Dispatch<React.SetStateAction<string>>;
+  textMessageModal: string;
+  setTextMessageModal: React.Dispatch<React.SetStateAction<string>>;
 }
 
 interface ProviderProps {
   children: ReactNode;
 }
 
-const AuthContext = createContext<AuthContextProps | undefined>(undefined);
-
-const Context = createContext<ContextProps | undefined>(undefined);
-
-
+const AuthDataContext = createContext<AuthDataContextProps | undefined>(undefined);
+const AuthUIContext = createContext<AuthUIContextProps | undefined>(undefined);
 
 export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   const [auth, setAuth] = useState<null | { email: string }>(null);
-  const [userData, setUserData] = useState<null | Object>(null);
-  const [ userId, setUserId ] = useState<string | { id: string }>(String);
-  const [ userImageUrl, setUserImageUrl ] = useState<String>(String);
-  const [accountActived, setAccountActived] = useState<Boolean>(false);
-  const [accountModule, setAccountModule] = useState<String>(String);
-  const [profileImageModal, setProfileImageModal] = useState<Boolean>(false);
-  const [personalInfoModal, setPersonalInfoModal] = useState<Boolean>(false);
-  const [educationModal, setEducationModal] = useState<Boolean>(false);
-  const [experienceModal, setExperienceModal] = useState<Boolean>(false);
-  const [requestModal, setRequestModal] = useState<Boolean>(false);
+  const [token, setToken] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | { id: string }>('');
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [userImageUrl, setUserImageUrl] = useState<string>('');
+  const [accountActived, setAccountActived] = useState<boolean>(false);
+  const [accountModule, setAccountModule] = useState<string>('');
+  const [profileImageModal, setProfileImageModal] = useState<boolean>(false);
+  const [personalInfoModal, setPersonalInfoModal] = useState<boolean>(false);
+  const [educationModal, setEducationModal] = useState<boolean>(false);
+  const [experienceModal, setExperienceModal] = useState<boolean>(false);
+  const [requestModal, setRequestModal] = useState<boolean>(false);
 
   return (
-    <AuthContext.Provider value={{
+    <AuthDataContext.Provider value={{
       auth, setAuth,
-      userData, setUserData,
+      token, setToken,
       userId, setUserId,
-      userImageUrl, setUserImageUrl,
-      accountActived, setAccountActived,
-      accountModule, setAccountModule,
-      profileImageModal, setProfileImageModal,
-      personalInfoModal, setPersonalInfoModal,
-      educationModal, setEducationModal,
-      experienceModal, setExperienceModal,
-      requestModal, setRequestModal
+      userData, setUserData,
+      userImageUrl, setUserImageUrl
     }}>
-      {children}
-    </AuthContext.Provider>
+      <AuthUIContext.Provider value={{
+        accountActived, setAccountActived,
+        accountModule, setAccountModule,
+        profileImageModal, setProfileImageModal,
+        personalInfoModal, setPersonalInfoModal,
+        educationModal, setEducationModal,
+        experienceModal, setExperienceModal,
+        requestModal, setRequestModal
+      }}>
+        {children}
+      </AuthUIContext.Provider>
+    </AuthDataContext.Provider>
   );
 }
 
+const UIContext = createContext<UIContextProps | undefined>(undefined);
+
 export const Provider = ({ children }: ProviderProps): JSX.Element => {
-  const [dropdown, setDropdown] = useState<Boolean>(false);
-  const [hamburguerMenuActive, setHamburguerMenuActive] = useState<Boolean>(false);
-  const [screenNarrow, setScreenNarrow] = useState<Boolean>(Boolean);
-  const [loading, setLoading] = useState<Boolean>(false);
-  const [loginModal, setLoginModal] = useState<Boolean>(false);
-  const [joinModal, setJoinModal] = useState<Boolean>(false);
-  const [passwordResetModal, setPasswordResetModal] = useState<Boolean>(false);
-  const [messageModal, setMessageModal] = useState<Boolean>(false);
-  const [messageModalType, setMessageModalType] = useState<String>(String);
-  const [messageModalText, setMessageModalText] = useState<String>(String);
+  const [screenNarrow, setScreenNarrow] = useState<boolean>(false);
+  const [dropdown, setDropdown] = useState<boolean>(false);
+  const [hamburguerMenuActive, setHamburguerMenuActive] = useState<boolean>(false);
+  const [loginModal, setLoginModal] = useState<boolean>(false);
+  const [joinModal, setJoinModal] = useState<boolean>(false);
+  const [passwordResetModal, setPasswordResetModal] = useState<boolean>(false);
+  const [messageModal, setMessageModal] = useState<boolean>(false);
+  const [typeMessageModal, setTypeMessageModal] = useState<string>('');
+  const [textMessageModal, setTextMessageModal] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   const screenNarrowHandle: any = () => {
     window.innerWidth < 768 ?
@@ -130,130 +153,45 @@ export const Provider = ({ children }: ProviderProps): JSX.Element => {
 
   useEffect(() => {
     window.addEventListener('resize', screenNarrowHandle);
-    screenNarrowHandle()
+    screenNarrowHandle();
+
+    return () => {
+      window.removeEventListener('resize', screenNarrowHandle);
+    };
   });
 
+
   return (
-    <Context.Provider value={
+    <UIContext.Provider value={
       {
+        screenNarrow, setScreenNarrow,
         dropdown, setDropdown,
         hamburguerMenuActive, setHamburguerMenuActive,
-        screenNarrow, setScreenNarrow,
-        loading, setLoading,
-        loginModal, setLoginModal,
         joinModal, setJoinModal,
+        loginModal, setLoginModal,
         passwordResetModal, setPasswordResetModal,
         messageModal, setMessageModal,
-        messageModalType, setMessageModalType,
-        messageModalText, setMessageModalText
+        typeMessageModal, setTypeMessageModal,
+        textMessageModal, setTextMessageModal,
+        loading, setLoading,
       }
     }>
       {children}
-    </Context.Provider>
+    </UIContext.Provider>
   );
 }
 
-
-export function useAuth(): AuthContextProps {
-  const context = useContext(AuthContext)!;
+export function useAuthData(): AuthDataContextProps {
+  const context = useContext(AuthDataContext)!;
   return context;
 }
 
-export function useUserData(): AuthContextProps {
-  const context = useContext(AuthContext)!;
+export function useAuthUI(): AuthUIContextProps {
+  const context = useContext(AuthUIContext)!;
   return context;
 }
 
-export function useAccountActived(): AuthContextProps {
-  const context = useContext(AuthContext)!;
-  return context;
-}
-export function useAccountModule(): AuthContextProps {
-  const context = useContext(AuthContext)!;
-  return context;
-}
-
-export function useUserId(): AuthContextProps {
-  const context = useContext(AuthContext)!;
-  return context;
-}
-
-export function useUserImageUrl(): AuthContextProps {
-  const context = useContext(AuthContext)!;
-  return context;
-}
-
-export function useProfileImageModal(): AuthContextProps {
-  const context = useContext(AuthContext)!;
-  return context;
-}
-
-export function usePersonalInfoModal(): AuthContextProps {
-  const context = useContext(AuthContext)!;
-  return context;
-}
-
-export function useEducationModal(): AuthContextProps {
-  const context = useContext(AuthContext)!;
-  return context;
-}
-
-export function useExperienceModal(): AuthContextProps {
-  const context = useContext(AuthContext)!;
-  return context;
-}
-
-export function useRequestModal(): AuthContextProps {
-  const context = useContext(AuthContext)!;
-  return context;
-}
-
-export function useDropdown(): ContextProps {
-  const context = useContext(Context)!;
-  return context;
-}
-
-export function useHamburguerMenuActive(): ContextProps {
-  const context = useContext(Context)!;
-  return context;
-}
-
-export function useScreenNarrow(): ContextProps {
-  const context = useContext(Context)!;
-  return context;
-}
-
-export function useLoadingSpinner(): ContextProps {
-  const context = useContext(Context)!;
-  return context;
-}
-
-export function useLoginModal(): ContextProps {
-  const context = useContext(Context)!;
-  return context;
-}
-
-export function useJoinModal(): ContextProps {
-  const context = useContext(Context)!;
-  return context;
-}
-
-export function usePasswordResetModal(): ContextProps {
-  const context = useContext(Context)!;
-  return context;
-}
-
-export function useMessageModal(): ContextProps {
-  const context = useContext(Context)!;
-  return context;
-}
-
-export function useMessageModalType(): ContextProps {
-  const context = useContext(Context)!;
-  return context;
-}
-
-export function useMessageModalText(): ContextProps {
-  const context = useContext(Context)!;
+export function useUI(): UIContextProps {
+  const context = useContext(UIContext)!;
   return context;
 }

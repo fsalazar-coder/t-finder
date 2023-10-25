@@ -1,7 +1,4 @@
-import { 
-  useAuth, 
-  useJoinModal 
-} from "../../context/authContext";
+import { useAuthData, useUI } from "../../context/authContext";
 import Image from 'next/image';
 import {
   IconCheckCircle,
@@ -13,8 +10,8 @@ import SectionTitles from './SectionTitles';
 
 export default function Presentation(props: any) {
 
-  const { auth } = useAuth();
-  const { setJoinModal } = useJoinModal();
+  const { auth } = useAuthData();
+  const { setJoinModal } = useUI();
 
 
   return (

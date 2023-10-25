@@ -1,10 +1,10 @@
-import { useLoadingSpinner } from "../../context/authContext";
+import { useUI } from "../../context/authContext";
 
 
 
 export default function LoadingSpinner() {
 
-  const { loading } = useLoadingSpinner();
+  const { loading } = useUI();
 
   return (
     <div

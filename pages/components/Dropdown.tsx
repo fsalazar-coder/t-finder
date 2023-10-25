@@ -1,16 +1,4 @@
-import {
-  useAuth,
-  useDropdown,
-  useHamburguerMenuActive,
-  useScreenNarrow,
-  useLoginModal,
-  useJoinModal,
-  useAccountActived,
-  useAccountModule,
-  useMessageModal,
-  useMessageModalType,
-  useMessageModalText
-} from "../../context/authContext";
+import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'
 import ImageIconUser from "../account/ImageIconUser";
@@ -50,17 +38,24 @@ const navbarElementUnauth = [
 
 export default function Dropdown(props: any) {
 
-  const { auth } = useAuth();
-  const { dropdown, setDropdown } = useDropdown();
-  const { setHamburguerMenuActive } = useHamburguerMenuActive();
-  const { screenNarrow } = useScreenNarrow();
-  const { accountActived, setAccountActived } = useAccountActived();
-  const { accountModule, setAccountModule } = useAccountModule();
-  const { setLoginModal } = useLoginModal();
-  const { setJoinModal } = useJoinModal();
-  const { setMessageModal } = useMessageModal();
-  const { setMessageModalType } = useMessageModalType();
-  const { setMessageModalText } = useMessageModalText();
+  const { auth } = useAuthData();
+  
+  const {
+    accountActived, setAccountActived,
+    accountModule, setAccountModule
+  } = useAuthUI();
+  
+  const {
+    screenNarrow,
+    dropdown, setDropdown,
+    setHamburguerMenuActive,
+    setLoginModal,
+    setJoinModal,
+    setMessageModal,
+    setTypeMessageModal,
+    setTextMessageModal
+  } = useUI();
+  
   const router = useRouter();
 
 
@@ -143,8 +138,8 @@ export default function Dropdown(props: any) {
                     setDropdown(false);
                     setHamburguerMenuActive(false);
                     setMessageModal(true);
-                    setMessageModalType('logout');
-                    setMessageModalText('Logout your session with this action');
+                    setTypeMessageModal('logout');
+                    setTextMessageModal('Logout your session with this action');
                   }}
                 >
                   <h3 className='h-auto text-slate-500 hover:text-white text-sm lg:text-base font-light'>

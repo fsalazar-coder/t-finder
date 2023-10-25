@@ -1,4 +1,4 @@
-import { useUserImageUrl } from "../../context/authContext";
+import { useAuthData } from "../../context/authContext";
 import Image from 'next/image';
 import { IconUser } from '@/icons/icons';
 
@@ -6,7 +6,7 @@ import { IconUser } from '@/icons/icons';
 
 export default function ImageIconUser(props: any) {
 
-  const { userImageUrl } = useUserImageUrl();
+  const { userImageUrl } = useAuthData();
 
   return (
     userImageUrl ?

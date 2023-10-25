@@ -73,8 +73,8 @@ const handler: NextApiHandler = async (req: NextApiRequest, res: NextApiResponse
       const { db } = await dbConnect();
       const collection = db?.collection("users");
 
-      await collection?.updateOne(
-        { _id: id as any},
+      await collection?.findOneAndUpdate(
+        { _id: id as any },
         { $set: { profile_image_url: filePath } }
       );
     }
