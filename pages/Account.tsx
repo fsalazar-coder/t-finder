@@ -35,7 +35,7 @@ export default function Account(props: any) {
         setDropdown(false);
       }
     }
-  }, [screenNarrow])
+  })
 
 
   if (!auth) {

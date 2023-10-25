@@ -49,7 +49,7 @@ export default function PersonalInfo(props: any) {
       }
     };
     fetchUserInfo();
-  }, []);
+  });
 
 
   return (

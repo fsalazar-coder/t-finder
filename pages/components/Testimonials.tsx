@@ -60,7 +60,7 @@ export default function Testimonials(props: any) {
 
   useEffect(() => {
     setCarouselTranslateX(carouselPosition * (screenNarrow ? 248 : 382.4));
-  });
+  }, [carouselPosition]);
 
   useEffect(() => {                                                                      /***UseEffect to controller that animation occurs only once***/
     if (portfolioActived === true) {

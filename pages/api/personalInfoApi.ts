@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { useUserId } from '@/context/authContext';
+import { useAuthData } from '@/context/authContext';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Cors from 'cors';
@@ -17,7 +17,7 @@ const cors = initMiddleware(
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
-  const { userId } = useUserId();
+  const { userId } = useAuthData();
 
   try {
     await cors(req, res);
