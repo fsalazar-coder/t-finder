@@ -9,7 +9,7 @@ export default function TemplateForm(props: any) {
 
 
   return (
-    inputData.map((element: any, index: any) => {
+    inputData?.map((element: any, index: any) => {
       const formValue = formData[element.value];
       const changeValue = changeData[element.value];
       return (
