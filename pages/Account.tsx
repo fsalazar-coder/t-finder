@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useAuthData, useAuthUI, useUI } from "../context/authContext";
 import Dropdown from './components/Dropdown';
 import AccountNavbar from "./account/AccountNavbar";
@@ -19,15 +19,9 @@ import MessageModal from './components/MessageModal';
 
 export default function Account(props: any) {
 
-  const { auth } = useAuthData();
+  const { token } = useAuthData();
   const { accountActived } = useAuthUI();
-  const { 
-    screenNarrow, 
-    dropdown, setDropdown,
-    messageModal, setMessageModal,
-    typeMessageModal, setTypeMessageModal,
-    textMessageModal, setTextMessageModal
-  } = useUI();
+  const { screenNarrow, setDropdown } = useUI();
 
   useEffect(() => {
     if (accountActived) {
@@ -38,7 +32,7 @@ export default function Account(props: any) {
   })
 
 
-  if (!auth) {
+  if (!token) {
     return (
       <main className='w-screen h-screen flex flex-col justify-center items-center bg-slate-100'>
         <h1 className="w-screen py-10 text-xl text-white text-center font-bold bg-slate-950">

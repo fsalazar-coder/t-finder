@@ -1,14 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import Cors from 'cors';
 import initMiddleware from '../../lib/init-middleware';
 import dbConnect from "../../lib/mongodb";
-import { v4 as uuidv4 } from 'uuid';
 
 const cors = initMiddleware(
   Cors({
-    methods: ['POST'],
+    methods: ['GET', 'PUT', 'PATCH'],
   })
 );
 
@@ -20,39 +17,69 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { method } = req;
     const { db } = await dbConnect();
     const collection = db?.collection("users");
+    const { id } = req.body;
 
-    /**update user data */
-    if (req.method === 'PUT') {
-      const { id, updates } = req.body;
-      const updatedUser = await collection?.findOneAndUpdate(
-        { _id: id as any },
-        { $set: updates },
-        { returnDocument: 'after' }
-      );
+    switch (req.method) {
+      /**get user data */
+      case 'GET':
+        const user = await collection?.findOne({ id });
+        if (user) {
+          return res.status(200).json({ user });
+        }
+        else {
+          return res.status(404).json({ error: 'User not found' });
+        }
+        break;
 
-      if (updatedUser?.value) {
-        return res.status(200).json({
-          status: 'User successfully updated',
-          user: updatedUser.value
-        });
-      }
-      else {
-        return res.status(404).json({ error: 'User not found' });
-      }
-    }
-    /**get user data */
-    else if (req.method === 'GET') {
-      const { email } = req.query;
-      const user = await collection?.findOne({ email });
-      if (user) {
-        return res.status(200).json({ user });
-      }
-      else {
-        return res.status(404).json({ error: 'User not found' });
-      }
-    }
-    else {
-      return res.status(405).end(`Method ${method} not allowed`);
+      /**update user data */
+      case 'PUT':
+        const { updates } = req.body;
+        const updatedUser = await collection?.findOneAndUpdate(
+          { _id: id as any },
+          { $set: updates },
+          { returnDocument: 'after' }
+        );
+
+        if (updatedUser?.value) {
+          return res.status(200).json({
+            status: 'User successfully updated',
+            user: updatedUser.value
+          });
+        }
+        else {
+          return res.status(404).json({ error: 'User not found' });
+        }
+        break;
+
+      /**delete user data */
+      case 'PATCH':
+        const { dataToDelete } = req.body;
+        const updateQuery: any = {};
+        for (const field of Object.keys(dataToDelete)) {
+          updateQuery[field] = "";
+        }
+
+        const deletedUser = await collection?.findOneAndUpdate(
+          { _id: id },
+          { $set: updateQuery },
+          { returnDocument: 'after' }
+        );
+
+        if (deletedUser?.value) {
+          return res.status(200).json({
+            status: 'Data deleted successfully',
+            user: deletedUser.value
+          });
+        }
+        else {
+          return res.status(404).json({ error: 'User not found' });
+        }
+        break;
+
+      default:
+        res.setHeader('Allow', ['PUT', 'GET', 'PATCH']);
+        res.status(405).end(`Method ${method} Not Allowed`);
+        break;
     }
   }
   catch (error) {

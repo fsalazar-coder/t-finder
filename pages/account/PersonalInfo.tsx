@@ -1,28 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useAuthData, useAuthUI } from "../../context/authContext";
+import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import {
-  IconArrowRight,
   IconAdd,
   IconEdit,
   IconDelete,
-  IconCheckCircle
 } from '../../icons/icons';
-import SectionTitles from '../components/SectionTitles';
 import ImageIconUser from './ImageIconUser';
 
 
 
 export default function PersonalInfo(props: any) {
 
-  const {
-    auth,
-    token,
-    userId,
-    userData, setUserData
-  } = useAuthData();
+  const { token, userId, userData, setUserData } = useAuthData();
   const { setPersonalInfoModal, setProfileImageModal } = useAuthUI();
-  const [userDataRender, setUserDataRender] = useState(false);
+  const { setMessageModal, setTypeMessageModal, setTextMessageModal, setLoading } = useUI();
+  const [personalInfo, setPersonalInfo] = useState(Object);
+  const [showPersonalInfo, setShowPersonalInfo] = useState(false);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -34,11 +28,31 @@ export default function PersonalInfo(props: any) {
 
       try {
         await axios
-          .get(`/api/userDataApi?email=${auth?.email}`, config)
+          .get(`/api/userDataApi?id=${userId}`, config)
           .then((response: any) => {
             if (response.data.user) {
-              setUserData(response.data.user)
-              console.log('User data: ', userData)
+              const resDataUser = response.data.user;
+              setUserData(resDataUser);
+              console.log('response data: ', resDataUser)
+              console.log('User data from personal info: ', userData)
+              setPersonalInfo([
+                { title: 'Fullname:', description: resDataUser?.full_name },
+                { title: 'Profession or ocupation:', description: resDataUser?.profession_occupation },
+                { title: 'Preferred language:', description: resDataUser?.preferred_language },
+                { title: 'Location:', description: resDataUser?.location },
+                { title: 'Personal description:', description: resDataUser?.personal_description },
+              ]);
+              console.log('Personal Info: ', personalInfo);
+              let dataProfileFilled = Object.values(personalInfo).some(value => value === '');
+              console.log('Data profile filled: ', dataProfileFilled)
+              if (!dataProfileFilled) {
+                setShowPersonalInfo(true);
+                console.log('Show personal Info: ', showPersonalInfo)
+              }
+              else {
+                setShowPersonalInfo(false);
+                console.log('Show personal Info: ', showPersonalInfo)
+              }
             }
           })
       }
@@ -49,7 +63,13 @@ export default function PersonalInfo(props: any) {
       }
     };
     fetchUserInfo();
-  });
+  }, []);
+
+  const handleDeletePersonalInfo = () => {
+    setMessageModal(true);
+    setTypeMessageModal('delete');
+    setTextMessageModal('Delete your personal information with this action');
+  }
 
 
   return (
@@ -82,97 +102,54 @@ export default function PersonalInfo(props: any) {
           availability
         </div>
       </div>
-      {
-        userDataRender ?
-          /**personal information */
-          <div className='w-full p-1 lg:p-2 lg:mr-1 flex flex-col bg-white rounded-md'>
-            {/**edit and delete button */}
-            <div className="w-full flex flex-row justify-end items-center">
-              <button className="flex flex-row justify-center items-center">
-                <i
-                  className='px-1 text-green-300 lg:text-slate-200 lg:hover:text-green-300 text-xl lg:text-2xl flex justify-center cursor-default lg:cursor-pointer'
-                  onClick={() => setPersonalInfoModal(true)}
-                >
-                  <IconEdit />
-                </i>
-              </button>
-              <button className="flex flex-row justify-center items-center">
-                <i
-                  className='px-1 text-green-300 lg:text-slate-200 lg:hover:text-red-300 text-xl lg:text-2xl flex justify-center cursor-default lg:cursor-pointer'
-                  onClick={() => setPersonalInfoModal(true)}              >
-                  <IconDelete />
-                </i>
-              </button>
-            </div>
-            <ul className='w-full px-2 flex flex-col'>
-              {/**full name */}
-              <li
-                key='full-name'
-                className='w-full flex flex-row items-center'
-              >
-                <h3 className='mr-2 text-base text-slate-950 font-semibold'>
-                  Fullname:
+      {/**personal information */}
+      <div className='w-full p-1 lg:p-2 lg:mr-1 flex flex-col bg-white rounded-md'>
+        {
+          showPersonalInfo ?
+            <>
+              {/**edit and delete button */}
+              <div className="w-full flex flex-row justify-end items-center">
+                <button className="flex flex-row justify-center items-center">
+                  <i
+                    className='px-1 text-green-300 lg:text-slate-200 lg:hover:text-green-300 text-xl lg:text-2xl flex justify-center cursor-default lg:cursor-pointer'
+                    onClick={() => setPersonalInfoModal(true)}>
+                    <IconEdit />
+                  </i>
+                </button>
+                <button className="flex flex-row justify-center items-center">
+                  <i
+                    className='px-1 text-green-300 lg:text-slate-200 lg:hover:text-red-300 text-xl lg:text-2xl flex justify-center cursor-default lg:cursor-pointer'
+                    onClick={() => handleDeletePersonalInfo()}>
+                    <IconDelete />
+                  </i>
+                </button>
+              </div>
+              {/**personal information */}
+              <ul className='w-full px-2 flex flex-col'>
+                {
+                  personalInfo.map((element: any, index: any) => {
+                    return (
+                      /**full name, profession or occupation, preferred language, location and personal description */
+                      <li
+                        key={index}
+                        className='w-full flex flex-row items-center'
+                      >
+                        <h3 className='text-sm lg:text-base text-slate-600'>
+                          <strong>{element.title}</strong>  {element.description}
+                        </h3>
+                      </li>
+                    )
+                  })
+                }
+              </ul>
+            </>
+            :
+            /**add information */
+            <div className="w-full flex flex-row justify-end">
+              <div className="px-1 flex flex-col justify-center">
+                <h3 className='text-[1rem]'>
+                  Add personal information
                 </h3>
-                <h4 className='text-md text-slate-600'>
-                  {userData?.full_name}
-                </h4>
-              </li>
-              {/**profession or occupation */}
-              <li
-                key='profession-occupation'
-                className='w-full flex flex-row items-center'
-              >
-                <h3 className='mr-2 text-base text-slate-950 font-semibold'>
-                  Profession or occupation:
-                </h3>
-                <h4 className='text-md text-slate-600'>
-                  {userData?.profession_occupation}
-                </h4>
-              </li>
-              {/**language */}
-              <li
-                key='full-name'
-                className='w-full flex flex-row items-center'
-              >
-                <h3 className='mr-2 text-base text-slate-950 font-semibold'>
-                  Preferred language:
-                </h3>
-                <h4 className='text-md text-slate-600'>
-                  {userData?.preferred_language}
-                </h4>
-              </li>
-              {/**location */}
-              <li
-                key='full-name'
-                className='w-full flex flex-row items-center'
-              >
-                <h3 className='mr-2 text-base text-slate-950 font-semibold'>
-                  Location:
-                </h3>
-                <h4 className='text-md text-slate-600'>
-                  {userData?.location}
-                </h4>
-              </li>
-              {/**personal description */}
-              <li
-                key='full-name'
-                className='w-full flex flex-row items-center'
-              >
-                <h3 className='mr-2 text-base text-slate-950 font-semibold'>
-                  Personal description:
-                </h3>
-                <h4 className='text-md text-slate-600'>
-                  {userData?.personal_description}
-                </h4>
-              </li>
-            </ul>
-          </div>
-          :
-          /**add information */
-          <div className="w-full p-1 lg:p-2 lg:mr-1 flex flex-col bg-white rounded-md">
-            <div className="w-full flex flex-row justify-end items-center">
-              <div className="flex-row items-center">
-                <h3>Add personal information</h3>
               </div>
               <button className="flex flex-row justify-center items-center">
                 <i
@@ -182,8 +159,8 @@ export default function PersonalInfo(props: any) {
                 </i>
               </button>
             </div>
-          </div>
-      }
+        }
+      </div>
     </div >
   )
 };

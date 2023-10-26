@@ -1,4 +1,4 @@
-import { useAuthData, useAuthUI } from "../../context/authContext";
+import { useAuthUI } from "../../context/authContext";
 import {
   IconCheckCircle,
   IconArrowRight
@@ -9,7 +9,6 @@ import SectionTitles from '../components/SectionTitles';
 
 export default function HelpSupport(props: any) {
 
-  const { auth } = useAuthData();
   const { accountModule } = useAuthUI();
 
   return (

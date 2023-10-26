@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
+import { useAuthUI, useUI } from "../../context/authContext";
 import { useRouter } from 'next/navigation'
 import ImageIconUser from './ImageIconUser';
 
@@ -16,13 +16,8 @@ const navbarElementAuth = [
 
 
 export default function AccountNavbar(props: any) {
-
-  const { auth } = useAuthData();
   
-  const {
-    setAccountActived,
-    accountModule, setAccountModule
-  } = useAuthUI();
+  const { setAccountActived, accountModule, setAccountModule } = useAuthUI();
 
   const {
     dropdown, setDropdown,

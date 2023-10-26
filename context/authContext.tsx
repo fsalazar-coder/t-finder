@@ -1,16 +1,8 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useEffect
-} from "react";
+import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
 
 
 interface AuthDataContextProps {
-  auth: User | null;
-  setAuth: React.Dispatch<React.SetStateAction<User | null>>;
   token: string | null;
   setToken: React.Dispatch<React.SetStateAction<string | null>>;
   userData: UserData | null;
@@ -95,7 +87,6 @@ const AuthDataContext = createContext<AuthDataContextProps | undefined>(undefine
 const AuthUIContext = createContext<AuthUIContextProps | undefined>(undefined);
 
 export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
-  const [auth, setAuth] = useState<null | { email: string }>(null);
   const [token, setToken] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | { id: string }>('');
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -110,7 +101,6 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
 
   return (
     <AuthDataContext.Provider value={{
-      auth, setAuth,
       token, setToken,
       userId, setUserId,
       userData, setUserData,

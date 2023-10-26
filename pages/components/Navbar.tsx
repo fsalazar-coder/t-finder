@@ -7,7 +7,7 @@ import ImageIconUser from '../account/ImageIconUser';
 
 export default function Navbar(props: any) {
 
-  const { auth } = useAuthData();
+  const { token } = useAuthData();
   const {
     screenNarrow,
     dropdown, setDropdown,
@@ -40,7 +40,7 @@ export default function Navbar(props: any) {
       }>
       <div className='container w-full h-full px-0 lg:px-5 flex flex-row justify-between items-center'>
         {
-          !auth ?
+          !token ?
             screenNarrow ?
               /**unauthenticated: navbar narrow, menu hamburguer */
               <div className='relative transition-all z-50'>
@@ -66,7 +66,7 @@ export default function Navbar(props: any) {
         {/**Navbar (right) */}
         <nav className='w-1/2 relative flex flex-row justify-end items-center'>
           {
-            auth ?
+            token ?
               /**authenticated: Icon-image user*/
               <div
                 className={

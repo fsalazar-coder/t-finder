@@ -24,7 +24,7 @@ import LoadingSpinner from "./components/LoadingSpinner";
 export default function Home() {
 
 
-  const { auth } = useAuthData();
+  const { token } = useAuthData();
   const {
     screenNarrow,
     setDropdown,
@@ -44,7 +44,7 @@ export default function Home() {
   useEffect(() => {
     if (!screenNarrow) {
       setHamburguerMenuActive(false);
-      if (!auth) {
+      if (!token) {
         setDropdown(false);
       }
     }

@@ -1,4 +1,4 @@
-import { useAuthData, useAuthUI } from "../../context/authContext";
+import { useAuthUI } from "../../context/authContext";
 import {
   IconArrowRight,
   IconAdd,
@@ -14,7 +14,6 @@ import PersonalInfoModal from "./PersonalInfoModal";
 
 export default function Profile(props: any) {
 
-  const { auth } = useAuthData();
   const { accountModule, setPersonalInfoModal } = useAuthUI();
 
   const sections = [

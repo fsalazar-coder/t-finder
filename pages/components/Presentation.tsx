@@ -10,7 +10,7 @@ import SectionTitles from './SectionTitles';
 
 export default function Presentation(props: any) {
 
-  const { auth } = useAuthData();
+  const { token } = useAuthData();
   const { setJoinModal } = useUI();
 
 

@@ -7,7 +7,7 @@ import { IconArrowRight } from '../../icons/icons';
 
 export default function Header(props: any) {
 
-  const { auth } = useAuthData();
+  const { token } = useAuthData();
   const { joinModal, setJoinModal } = useUI();
   const [animationActived, setAnimationActived] = useState(false);
   const headerActived = props.headerSectionActived;                                      /**To active animation on header section: true or false***/
@@ -44,7 +44,6 @@ export default function Header(props: any) {
           />
         </h1>
       </div>
-
       {/**Subtitle text */}
       <div className='w-full h-fit flex flex-col justify-center items-center z-[35]'>
         <h5 className='w-fit h-fit text-fuchsia-400 text-sm sm:text-xs md:text-sm lg:text-base xl:text-lg font-medium tracking-wider text-start py-1 flex flex-col justify-start'>
@@ -58,7 +57,7 @@ export default function Header(props: any) {
           onClick={() => setJoinModal(true)}
         >
           <h3 className='w-full h-2/3 text-sm lg:text-base xl:text-lg font-semibold tracking-wider flex flex-row justify-center items-center rounded-full transition-all'>
-            {auth ? 'Go to my account' : 'Get started'}
+            {token ? 'Go to my account' : 'Get started'}
           </h3>
           <i className='text-base xl:text-lg leading-none font-bold md:font-medium tracking-wider ml-1'>
             <IconArrowRight />

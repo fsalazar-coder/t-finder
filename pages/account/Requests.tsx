@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuthData, useAuthUI } from "../../context/authContext";
+import { useAuthUI } from "../../context/authContext";
 import {
   IconAdd,
   IconEdit,
@@ -12,7 +12,6 @@ import SectionTitles from '../components/SectionTitles';
 
 export default function Request(props: any) {
 
-  const { auth } = useAuthData();
   const { setRequestModal, accountModule } = useAuthUI();
 
   return (

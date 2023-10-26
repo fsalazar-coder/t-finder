@@ -10,10 +10,9 @@ import { IconCancel } from '../../icons/icons';
 export default function LoginModal(props: any) {
 
   const { 
-    setAuth, 
     setToken, 
     setUserId, 
-    setUserData, 
+    userData, setUserData, 
     setUserImageUrl 
   } = useAuthData();
   const { 
@@ -71,9 +70,7 @@ export default function LoginModal(props: any) {
             const token = resData.token;
             const id = resData.id;
             setToken(token);
-            setAuth({ email });
             setUserId(id);
-            setUserData(resData.userData);
             setLoginModal(false);
             if (resData.userData.profile_image_url) {
               setUserImageUrl(resData.userData.profile_image_url);

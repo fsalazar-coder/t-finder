@@ -8,7 +8,7 @@ import TemplateForm from './TemplateForm';
 
 export default function PersonalInfoModal(props: any) {
 
-  const { auth, token, userId } = useAuthData();
+  const { token, userId } = useAuthData();
   const { personalInfoModal, setPersonalInfoModal } = useAuthUI();
   const { setLoading, screenNarrow } = useUI();
   const [filledForm, setFilledForm] = useState(false);

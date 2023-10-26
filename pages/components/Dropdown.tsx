@@ -38,7 +38,7 @@ const navbarElementUnauth = [
 
 export default function Dropdown(props: any) {
 
-  const { auth } = useAuthData();
+  const { token, userData } = useAuthData();
   
   const {
     accountActived, setAccountActived,
@@ -62,7 +62,7 @@ export default function Dropdown(props: any) {
   return (
     dropdown ?
       <ul className={
-        `${!auth ?
+        `${!token ?
           screenNarrow ?
             'w-52 h-full left-0 animate-[appear-left_0.5s_ease] '
             :
@@ -71,7 +71,7 @@ export default function Dropdown(props: any) {
           'w-64 right-0 animate-[appear-top_0.5s_ease]'
         } fixed top-0 pt-10 lg:pt-12 py-4 flex-col justify-start items-start bg-slate-950 rounded-sm transition-all z-40`}>
         {
-          auth ?
+          token ?
             <>
               {/**user icon-image */}
               <li className='w-full h-auto py-4 px-4 mb-4 flex flex-row items-center border-y border-slate-900'>
@@ -80,7 +80,7 @@ export default function Dropdown(props: any) {
                     <ImageIconUser size='small' />
                   </div>
                   <h5 className='text-white pl-3 text-xs lg:text-sm xl:text-sm font-light'>
-                    Hello, <br /> {auth?.email}
+                    Hello, <br /> {userData?.email}
                   </h5>
                 </div>
               </li>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
+import { useAuthUI, useUI } from "../../context/authContext";
 import axios from 'axios';
 import { IconCancel, IconCheckCircle } from '../../icons/icons';
 import TemplateForm from './TemplateForm';
@@ -8,7 +8,6 @@ import TemplateForm from './TemplateForm';
 
 export default function RequestModal(props: any) {
 
-  const { auth } = useAuthData();
   const { requestModal, setRequestModal } = useAuthUI();
   const { screenNarrow } = useUI();
   const [requestType, setRequestType] = useState(String);

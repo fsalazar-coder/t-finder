@@ -1,18 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import Link from 'next/link';
+import axios from 'axios';
 
 
 
 export default function MessageModal(props: any) {
 
-  const { setAuth, setUserId, setUserImageUrl, setUserData } = useAuthData();
+  const { token, setToken, userId, setUserId, setUserImageUrl, setUserData } = useAuthData();
   const { setAccountActived, setAccountModule } = useAuthUI();
-  const {
-    messageModal, setMessageModal,
-    typeMessageModal,
-    textMessageModal
-  } = useUI();
+  const { messageModal, setMessageModal, typeMessageModal, textMessageModal, setLoading } = useUI();
   const [circleAnimation, setCircleAnimation] = useState(false);
   const [symbolAnimation, setSymbolAnimation] = useState(false);
 
@@ -42,6 +39,44 @@ export default function MessageModal(props: any) {
       (document.body.style.overflowY = 'hidden')
       : (document.body.style.overflowY = 'auto');
   }, [messageModal]);
+
+
+  const handleDelete = async () => {
+    setLoading(true);
+    const dataToDelete = {
+      full_name: '',
+      profession_occupation: '',
+      preferred_language: '',
+      location: '',
+      personal_description: ''
+    };
+
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    };
+
+    try {
+      await axios
+        .patch('/api/userDataApi', { id: userId, dataToDelete }, config)
+        .then((response: any) => {
+          if (response.status === 200) {
+            console.log('Data deleted successfully');
+          }
+          else {
+            console.log('Failed to delete data');
+          }
+        })
+    }
+    catch (error) {
+      console.error('An error occurred:', error);
+    }
+    finally {
+      setMessageModal(false);
+      setLoading(false);
+    }
+  };
 
 
   return (
@@ -227,7 +262,7 @@ export default function MessageModal(props: any) {
                           setAccountActived(false);
                           setAccountModule('');
                           setUserData(null);
-                          setAuth(null);
+                          setToken(null);
                         }}>
                         <h5 className='w-full text-sm lg:text-base font-bold leading-none'>
                           Logout
@@ -245,20 +280,43 @@ export default function MessageModal(props: any) {
                     </button>
                   </>
                   :
-                  <>
-                    {/**OK or try-again button */}
-                    <button
-                      className='w-full text-slate-50 lg:hover:text-white lg:hover:font-bold py-2 flex flex-row justify-center items-center bg-green-400 lg:bg-green-300 lg:hover:bg-green-400 cursor-default lg:cursor-pointer rounded-md transition-all'
-                      onClick={() => setMessageModal(false)}
-                    >
-                      <h5 className='w-full text-sm lg:text-base font-bold leading-none'>
-                        {
-                          typeMessageModal === 'successful' ?
-                            'Ok' : 'Try again'
-                        }
-                      </h5>
-                    </button>
-                  </>
+                  typeMessageModal === 'delete' ?
+                    <>
+                      {/**delete button */}
+                      <button className='w-[45%] text-slate-50 lg:hover:text-white lg:hover:font-bold py-2 flex flex-row justify-center items-center bg-green-400 lg:bg-green-300 lg:hover:bg-green-400 cursor-default lg:cursor-pointer rounded-md transition-all'>
+                        <div
+                          className='w-full'
+                          onClick={() => handleDelete()}>
+                          <h5 className='w-full text-sm lg:text-base font-bold leading-none'>
+                            Delete
+                          </h5>
+                        </div>
+                      </button>
+                      {/**Cancel delete button */}
+                      <button
+                        className='w-[45%] text-slate-50 lg:hover:text-white lg:hover:font-bold py-2 flex flex-row justify-center items-center bg-red-400 lg:bg-red-300 lg:hover:bg-red-400 cursor-default lg:cursor-pointer rounded-md transition-all'
+                        onClick={() => setMessageModal(false)}
+                      >
+                        <h5 className='w-full text-sm lg:text-base font-bold leading-none'>
+                          Cancel
+                        </h5>
+                      </button>
+                    </>
+                    :
+                    <>
+                      {/**OK or try-again button */}
+                      <button
+                        className='w-full text-slate-50 lg:hover:text-white lg:hover:font-bold py-2 flex flex-row justify-center items-center bg-green-400 lg:bg-green-300 lg:hover:bg-green-400 cursor-default lg:cursor-pointer rounded-md transition-all'
+                        onClick={() => setMessageModal(false)}
+                      >
+                        <h5 className='w-full text-sm lg:text-base font-bold leading-none'>
+                          {
+                            typeMessageModal === 'successful' ?
+                              'Ok' : 'Try again'
+                          }
+                        </h5>
+                      </button>
+                    </>
               }
             </div>
           </div>

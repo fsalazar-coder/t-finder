@@ -51,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         location: '',
         personal_description: '',
         availability_status: 'on',
-        created_at: '',
+        created_at: new Date().toISOString(),
       });
 
       return res.status(201).json({ status: 'Success register' });

@@ -25,7 +25,7 @@ export default function ImageIconUser(props: any) {
         />
       </div>
       :
-      <i className='w-full h-full text-slate-50 text-6xl font-light flex flex-row justify-center items-center border border-slate-50 rounded-full cursor-pointer transition-all'>
+      <i className='w-full h-full text-slate-50 text-6xl font-light flex flex-row justify-center items-center border border-slate-50 rounded-full transition-all'>
         <IconUser />
       </i>
   )
