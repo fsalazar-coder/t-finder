@@ -7,7 +7,7 @@ import axios from 'axios';
 
 export default function MessageModal(props: any) {
 
-  const { token, setToken, userId, setUserId, setUserImageUrl, setUserData } = useAuthData();
+  const { token, setToken, userId, setUserId, updateUserImageUrl, updateUserProfileInfo } = useAuthData();
   const { setAccountActived, setAccountModule } = useAuthUI();
   const { messageModal, setMessageModal, typeMessageModal, textMessageModal, setLoading } = useUI();
   const [circleAnimation, setCircleAnimation] = useState(false);
@@ -259,8 +259,8 @@ export default function MessageModal(props: any) {
                           setMessageModal(false);
                           setAccountActived(false);
                           setAccountModule('');
-                          setUserImageUrl('');
-                          setUserData(null);
+                          updateUserImageUrl('');
+                          /** updateUserProfileInfo(); ???*/
                           setUserId('');
                           setToken(null);
                         }}>
