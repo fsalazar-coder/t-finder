@@ -9,21 +9,22 @@ import { IconCancel } from '../../icons/icons';
 
 export default function LoginModal(props: any) {
 
-  const { 
-    setToken, 
-    setUserId, 
-    userData, setUserData, 
-    setUserImageUrl 
+  const {
+    setToken,
+    setUserId,
+    setUserEmail,
+    updateUserProfileInfo,
+    updateUserImageUrl
   } = useAuthData();
-  const { 
-    setJoinModal, 
-    loginModal, setLoginModal, 
-    setPasswordResetModal, 
-    setMessageModal, 
+  const {
+    setJoinModal,
+    loginModal, setLoginModal,
+    setPasswordResetModal,
+    setMessageModal,
     setTypeMessageModal,
-    setTextMessageModal, 
+    setTextMessageModal,
     setLoading
-   } = useUI();
+  } = useUI();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailChange, setEmailChange] = useState(false);
@@ -65,18 +66,17 @@ export default function LoginModal(props: any) {
     try {
       await axios.post("/api/authApi", { email, password, action: "login" }, config)
         .then((response: any) => {
-          let resData = response.data;
-          if (resData.token) {
-            const token = resData.token;
-            const id = resData.id;
+          let token = response.data.token;
+          let user = response.data.user;
+          if (token) {
             setToken(token);
-            setUserId(id);
+            setUserId(user._id);
+            setUserEmail(user.email);
+            updateUserProfileInfo(user.profile_info);
+            updateUserImageUrl(user.profile_image_url);
             setLoginModal(false);
-            if (resData.userData.profile_image_url) {
-              setUserImageUrl(resData.userData.profile_image_url);
-            }
           }
-          else if (resData.status === 'Invalid credential') {
+          else if (response.data.status === 'Invalid credential') {
             setMessageModal(true);
             setTypeMessageModal('error');
             setTextMessageModal('Invalid credential');

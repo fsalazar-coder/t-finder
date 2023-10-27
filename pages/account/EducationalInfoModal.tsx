@@ -6,21 +6,21 @@ import TemplateForm from './TemplateForm';
 
 
 
-export default function PersonalInfoModal(props: any) {
+export default function EducacionalInfoModal(props: any) {
 
-  const { token, userId, updateUserProfileInfo } = useAuthData();
-  const { personalInfoModal, setPersonalInfoModal } = useAuthUI();
+  const { token, userId, updateUserEducationalInfo } = useAuthData();
+  const { educationalInfoModal, setEducationalInfoModal } = useAuthUI();
   const { setLoading, screenNarrow } = useUI();
   const [filledForm, setFilledForm] = useState(false);
 
-  const [personalInfo, setPersonalInfo] = useState({
+  const [educationalInfo, setEducationalInfo] = useState({
     fullName: '',
     professionOccupation: '',
     preferredLanguage: '',
     location: '',
     personalDescription: ''
   });
-  const [changePersonalInfo, setChangePersonalInfo] = useState({
+  const [changeEducationalInfo, setChangeEducationalInfo] = useState({
     fullName: false,
     professionOccupation: false,
     preferredLanguage: false,
@@ -31,25 +31,25 @@ export default function PersonalInfoModal(props: any) {
 
   const handleChangeData = (e: any) => {
     const { name, value } = e.target;
-    setPersonalInfo({ ...personalInfo, [name]: value });
+    setEducationalInfo({ ...educationalInfo, [name]: value });
   };
 
   const handleCloseModal = () => {
-    setPersonalInfoModal(false);
+    setEducationalInfoModal(false);
     setFilledForm(false);
   }
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoading(true);
-    setPersonalInfoModal(false);
+    setEducationalInfoModal(false);
     setFilledForm(false);
-    const data = {
-      full_name: personalInfo.fullName,
-      profession_occupation: personalInfo.professionOccupation,
-      preferred_language: personalInfo.preferredLanguage,
-      location: personalInfo.location,
-      personal_description: personalInfo.personalDescription
+    const education = {
+      full_name: educationalInfo.fullName,
+      profession_occupation: educationalInfo.professionOccupation,
+      preferred_language: educationalInfo.preferredLanguage,
+      location: educationalInfo.location,
+      personal_description: educationalInfo.personalDescription
     };
     const config = {
       headers: {
@@ -59,14 +59,14 @@ export default function PersonalInfoModal(props: any) {
 
     try {
       await axios
-        .post(`/api/userDataApi?id=${userId}`, { data }, config)
+        .post(`/api/userDataApi?id=${userId}`, { education }, config)
         .then((response) => {
-          const profileInfo = response.data.user.profile_info;
-          updateUserProfileInfo(profileInfo);
+          const educationInfo = response.data.user.education_info;
+          updateUserEducationalInfo(educationInfo);
         })
     }
     catch (error) {
-      console.error(`Error saving profile: `, error);
+      console.error(`Error saving education information: `, error);
     }
     finally {
       setLoading(false);
@@ -75,8 +75,8 @@ export default function PersonalInfoModal(props: any) {
 
   /**fill form control */
   useEffect(() => {
-    let personalInfoFilled = Object.values(personalInfo).some(value => value === '');
-    if (!personalInfoFilled) {
+    let educationalInfoFilled = Object.values(educationalInfo).some(value => value === '');
+    if (!educationalInfoFilled) {
       setFilledForm(true);
     }
     else {
@@ -84,8 +84,8 @@ export default function PersonalInfoModal(props: any) {
     }
   });
 
-  /**inputs for profile form */
-  const personalInfoInput = [
+  /**inputs for educational form */
+  const educationalInfoInput = [
     { type: 'text', title: 'Full name', value: 'fullName' },
     { type: 'text', title: 'Profession or occupation', value: 'professionOccupation' },
     { type: 'text', title: 'Preferred language', value: 'preferredLanguage' },
@@ -95,10 +95,10 @@ export default function PersonalInfoModal(props: any) {
 
 
   return (
-    personalInfoModal ?
+    educationalInfoModal ?
       <div
         className={
-          `${personalInfoModal ? 'scale-100 animate-[fade-in_0.50s]'
+          `${educationalInfoModal ? 'scale-100 animate-[fade-in_0.50s]'
             : 'hidden'
           } w-full h-full fixed top-0 flex flex-col justify-center items-center bg-black bg-opacity-75 z-[60]`
         }
@@ -107,7 +107,7 @@ export default function PersonalInfoModal(props: any) {
         <div
           className={
             `${screenNarrow ? 'h-[85%]' : 'h-[90%]'}
-            ${personalInfoModal ?
+            ${educationalInfoModal ?
               'scale-100 animate-[zoom-in_0.50s]'
               : 'scale-0 animate-[zoom-out_0.30s]'
             }  container w-[16rem] lg:w-[31rem] relative flex flex-col justify-center items-center list-none rounded-md shadow-lg transform`
@@ -138,12 +138,12 @@ export default function PersonalInfoModal(props: any) {
               <div className='w-full h-full flex flex-col items-center'>
                 {/**profile form */}
                 <TemplateForm
-                  inputData={personalInfoInput}
-                  formData={personalInfo}
-                  changeData={changePersonalInfo}
+                  inputData={educationalInfoInput}
+                  formData={educationalInfo}
+                  changeData={changeEducationalInfo}
                   onChange={(e: any) => handleChangeData(e)}
-                  onFocus={(e: any) => setChangePersonalInfo({ ...changePersonalInfo, [e.target.name]: true })}
-                  onBlur={(e: any) => setChangePersonalInfo({ ...changePersonalInfo, [e.target.name]: false })}
+                  onFocus={(e: any) => setChangeEducationalInfo({ ...changeEducationalInfo, [e.target.name]: true })}
+                  onBlur={(e: any) => setChangeEducationalInfo({ ...changeEducationalInfo, [e.target.name]: false })}
                 />
               </div>
               {/**submit button */}

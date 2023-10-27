@@ -1,6 +1,4 @@
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
-import Cors from 'cors';
-import initMiddleware from '../../lib/init-middleware';
 import dbConnect from "../../lib/mongodb";
 import path from "path";
 import fs from "fs/promises";
@@ -11,15 +9,12 @@ interface UploadedFiles {
   image: {
     path: string;
     name: string;
-    // Add other properties as needed
   };
-  // Add other uploaded files here
 }
 
 interface FormidableOptions {
   uploadDir?: string;
   maxFileSize?: number;
-  // add other properties here
 }
 
 
@@ -55,46 +50,56 @@ const readFile = (req: NextApiRequest, saveLocally?: boolean):
 };
 
 const handler: NextApiHandler = async (req: NextApiRequest, res: NextApiResponse) => {
-  try {
-    await fs.readdir(path.join(process.cwd() + "/public/users/images"));
-  }
-  catch (error) {
-    await fs.mkdir(path.join(process.cwd() + "/public/users/images"));
-  }
-  const { fields, files } = await readFile(req, true);
-  const id = Array.isArray(fields.id) && fields.id.length > 0 ? fields.id[0] : null;
 
-  if (files.image) {
-    const fileSize = files.image[0].size;
-    const fileName = files.image[0].newFilename;
-    const filePath = `/users/images/${fileName}`;
+  const { method } = req;
+  const { db } = await dbConnect();
+  const collection = db?.collection("users");
+  const { id } = req.query;
 
-    try {
-      const { db } = await dbConnect();
-      const collection = db?.collection("users");
+  if (req.method === 'POST') {
 
-      await collection?.findOneAndUpdate(
-        { _id: id as any },
-        { $set: { profile_image_url: filePath } }
-      );
-    }
-    catch (error) {
-      console.error('An error occurred:', error);
-      res.status(500).json({ error: 'An internal error occurred' });
-    }
+      try {
+        await fs.readdir(path.join(process.cwd() + "/public/users/images"));
+      }
+      catch (error) {
+        await fs.mkdir(path.join(process.cwd() + "/public/users/images"));
+      }
 
-    return res.status(200).json({
-      status: 'success',
-      fileName,
-      filePath,
-      fileSize
-    });
-  }
-  else {
-    res.json({
-      status: "failure",
-      message: "No file uploaded",
-    });
+      const { fields, files } = await readFile(req, true);
+
+      if (files.image) {
+        const fileSize = files.image[0].size;
+        const fileName = files.image[0].newFilename;
+        const filePath = `/users/images/${fileName}`;
+
+        try {
+          const postedImageUserURL = await collection?.findOneAndUpdate(
+            { _id: id as any },
+            { $set: { profile_image_url: filePath } },
+            { returnDocument: 'after', upsert: true }
+          );
+
+          if (postedImageUserURL?.value) {
+            return res.status(200).json({
+              status: 'success',
+              fileName,
+              filePath,
+              fileSize,
+              imageUserURL: postedImageUserURL.value
+            });
+          }
+        }
+        catch (error) {
+          console.error('An error occurred:', error);
+          res.status(500).json({ error: 'An internal error occurred' });
+        }
+      }
+      else {
+        res.json({
+          status: "failure",
+          message: "No file uploaded",
+        });
+      }
   }
 };
 

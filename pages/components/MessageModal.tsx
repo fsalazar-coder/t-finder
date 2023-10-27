@@ -257,11 +257,11 @@ export default function MessageModal(props: any) {
                         scroll={false}
                         onClick={() => {
                           setMessageModal(false);
-                          setUserId('');
-                          setUserImageUrl('');
                           setAccountActived(false);
                           setAccountModule('');
+                          setUserImageUrl('');
                           setUserData(null);
+                          setUserId('');
                           setToken(null);
                         }}>
                         <h5 className='w-full text-sm lg:text-base font-bold leading-none'>

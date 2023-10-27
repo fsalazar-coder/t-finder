@@ -38,7 +38,7 @@ const navbarElementUnauth = [
 
 export default function Dropdown(props: any) {
 
-  const { token, userData } = useAuthData();
+  const { token, userEmail } = useAuthData();
   
   const {
     accountActived, setAccountActived,
@@ -80,7 +80,7 @@ export default function Dropdown(props: any) {
                     <ImageIconUser size='small' />
                   </div>
                   <h5 className='text-white pl-3 text-xs lg:text-sm xl:text-sm font-light'>
-                    Hello, <br /> {userData?.email}
+                    Hello, <br /> {userEmail}
                   </h5>
                 </div>
               </li>

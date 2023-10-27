@@ -8,16 +8,17 @@ import { IconCancel, IconUser } from '../../icons/icons';
 
 export default function ProfileImageModal(props: any) {
 
-  const { userId } = useAuthData();
+  const { userId, updateUserImageUrl, userImageUrl } = useAuthData();
   const { profileImageModal, setProfileImageModal } = useAuthUI();
   const { setMessageModal, setTypeMessageModal, setTextMessageModal, setLoading } = useUI();
   const [fileImage, setFileImage] = useState<File | null>(null);
-  const [previewImage, setPreviewImage] = useState(''); 
+  const [previewImage, setPreviewImage] = useState(userImageUrl);
 
   const modalCloseEscapeHandle = (e: any) => {
     if (profileImageModal) {
       if ((e.charCode | e.keyCode) === 27) {
         setProfileImageModal(false);
+        setPreviewImage(userImageUrl);
       }
     }
   };
@@ -50,7 +51,6 @@ export default function ProfileImageModal(props: any) {
     if (!fileImage) return;
     const formData = new FormData();
     formData.append('image', fileImage);
-    formData.append('id', userId);
 
     const config: any = {
       headers: {
@@ -61,10 +61,11 @@ export default function ProfileImageModal(props: any) {
 
     try {
       await axios
-        .put("/api/profileImageApi", formData, config)
+        .post(`/api/profileImageApi?id=${userId}`, formData, config)
         .then((response: any) => {
           let res = response.data.status;
           if (res === 'success') {
+            updateUserImageUrl(response.data.filePath)
             setProfileImageModal(false);
             setMessageModal(true);
             setTypeMessageModal('successful');
@@ -104,7 +105,10 @@ export default function ProfileImageModal(props: any) {
             : 'hidden'
         }`
       }
-      onClick={() => setProfileImageModal(false)}
+      onClick={() => {
+        setProfileImageModal(false);
+        setPreviewImage(userImageUrl);
+      }}
     >
       <div
         className={
@@ -120,7 +124,10 @@ export default function ProfileImageModal(props: any) {
         <div className='w-6 h-6 absolute -top-5 -right-5 flex flex-col justify-center items-center rounded-full bg-white'>
           <i
             className='w-fit h-full text-gray-900 lg:text-gray-400 text-2xl lg:xl flex justify-center cursor-default lg:cursor-pointer lg:hover:text-gray-900'
-            onClick={() => setProfileImageModal(false)}
+            onClick={() => {
+              setProfileImageModal(false);
+              setPreviewImage(userImageUrl);
+            }}
           >
             <IconCancel />
           </i>
@@ -148,9 +155,18 @@ export default function ProfileImageModal(props: any) {
                   alt='profile-image'
                 />
                 :
-                <i className='w-full h-full text-slate-300 text-7xl font-light flex flex-row justify-center items-center border border-slate-300 rounded-full cursor-pointer transition-all'>
-                  <IconUser />
-                </i>
+                userImageUrl ?
+                  <Image
+                    className='w-full h-full rounded-full'
+                    width={400}
+                    height={400}
+                    src={userImageUrl}
+                    alt='profile-image'
+                  />
+                  :
+                  <i className='w-full h-full text-slate-300 text-7xl font-light flex flex-row justify-center items-center border border-slate-300 rounded-full cursor-pointer transition-all'>
+                    <IconUser />
+                  </i>
             }
           </div>
           {/**form container */}

@@ -44,13 +44,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         _id: idUnique as any,
         email: email,
         password_hash: hashedPassword,
-        full_name: '',
-        profile_image_url: '',
-        profession_occupation: '',
-        preferred_language: '',
-        location: '',
-        personal_description: '',
-        availability_status: 'on',
         created_at: new Date().toISOString(),
       });
 
@@ -60,12 +53,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     else if (action === 'login') {
       const user = await collection?.findOne({ email });
       if (!user) {
-        return res.status(401).json({ status: 'Invalid credential' }); 
+        return res.status(401).json({ status: 'Invalid credential' });
       }
 
       const isValidPassword = await bcrypt.compare(password, user.password_hash);
       if (!isValidPassword) {
-        return res.status(401).json({ status: 'Invalid credential' }); 
+        return res.status(401).json({ status: 'Invalid credential' });
       }
 
       if (!process.env.SECRET_KEY) {
@@ -74,7 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       const token = jwt.sign({ email }, process.env.SECRET_KEY);
 
-      return res.status(200).json({ token: token, userData: user, id: user._id });
+      return res.status(200).json({ token: token, user: user });
     }
     return;
   }

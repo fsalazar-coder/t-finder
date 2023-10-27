@@ -7,6 +7,7 @@ import {
   IconCheckCircle
 } from '../../icons/icons';
 import SectionTitles from '../components/SectionTitles';
+import EducationalInfo from "./EducationalInfo";
 import PersonalInfo from "./PersonalInfo";
 import PersonalInfoModal from "./PersonalInfoModal";
 
@@ -21,28 +22,61 @@ export default function Profile(props: any) {
       id: 'personal-information',
       title: 'PERSONAL INFORMATION',
       comment: 'Comment, comemnt comemnt comemnt comemnt IA!!!',
-      clickAdd: () => setPersonalInfoModal(true),
-      clickEdit: () => console.log('edit personal information'),
-      clickDelete: () => console.log('delete personal information'),
       content: <PersonalInfo />
     },
     {
-      id: 'educational-information',
-      title: 'EDUCATIONAL INFORMATION',
+      id: 'education',
+      title: 'EDUCATION',
       comment: 'Comment,comemnt comemnt comemnt comemnt  IA!!!',
-      clickAdd: () => setPersonalInfoModal(true),
-      clickEdit: () => console.log('edit personal information'),
-      clickDelete: () => console.log('delete personal information'),
-      content: <PersonalInfo />
+      content: <EducationalInfo />
     },
     {
-      id: 'experience-information',
-      title: 'EXPERIENCE INFORMATION',
+      id: 'course',
+      title: 'COURSES',
       comment: 'Comment, comemnt comemnt comemnt comemnt  IA!!!',
-      clickAdd: () => setPersonalInfoModal(true),
-      clickEdit: () => console.log('edit personal information'),
-      clickDelete: () => console.log('delete personal information'),
-      content: <PersonalInfo />
+      content: <EducationalInfo />
+    },
+    {
+      id: 'experience',
+      title: 'EXPERIENCE',
+      comment: 'Comment, comemnt comemnt comemnt comemnt  IA!!!',
+      content: <EducationalInfo />
+    },
+    {
+      id: 'project',
+      title: 'PROJECTS',
+      comment: 'Comment, comemnt comemnt comemnt comemnt  IA!!!',
+      content: <EducationalInfo />
+    },
+    {
+      id: 'publication',
+      title: 'PUBLICATIONS',
+      comment: 'Comment, comemnt comemnt comemnt comemnt  IA!!!',
+      content: <EducationalInfo />
+    },
+    {
+      id: 'conference',
+      title: 'CONFERENCES',
+      comment: 'Comment, comemnt comemnt comemnt comemnt  IA!!!',
+      content: <EducationalInfo />
+    },
+    {
+      id: 'certification',
+      title: 'CERTIFICATIONS',
+      comment: 'Comment, comemnt comemnt comemnt comemnt  IA!!!',
+      content: <EducationalInfo />
+    },
+    {
+      id: 'honors-awards',
+      title: 'HONOR AND AWARDS',
+      comment: 'Comment, comemnt comemnt comemnt comemnt  IA!!!',
+      content: <EducationalInfo />
+    },
+    {
+      id: 'recommendations',
+      title: 'RECOMMENDATIONS',
+      comment: 'Comment, comemnt comemnt comemnt comemnt  IA!!!',
+      content: <EducationalInfo />
     }
   ]
 

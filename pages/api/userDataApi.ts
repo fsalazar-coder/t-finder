@@ -5,7 +5,7 @@ import dbConnect from "../../lib/mongodb";
 
 const cors = initMiddleware(
   Cors({
-    methods: ['GET', 'PUT', 'PATCH'],
+    methods: ['POST', 'GET', 'PUT', 'PATCH'],
   })
 );
 
@@ -17,34 +17,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { method } = req;
     const { db } = await dbConnect();
     const collection = db?.collection("users");
-    const { id } = req.body;
+    const { id } = req.query;
 
     switch (req.method) {
-      /**get user data */
-      case 'GET':
-        const user = await collection?.findOne({ id });
-        if (user) {
-          return res.status(200).json({ user });
+      /**post and update user data */
+      case 'POST':
+        const { data } = req.body;
+        const postedUser = await collection?.findOneAndUpdate(
+          { _id: id as any },
+          { $set: { profile_info: data } },
+          { returnDocument: 'after', upsert: true }
+        );
+
+        if (postedUser?.value) {
+          return res.status(200).json({
+            status: 'User successfully updated',
+            user: postedUser.value
+          });
         }
         else {
           return res.status(404).json({ error: 'User not found' });
         }
         break;
 
-      /**update user data */
-      case 'PUT':
-        const { updates } = req.body;
-        const updatedUser = await collection?.findOneAndUpdate(
-          { _id: id as any },
-          { $set: updates },
-          { returnDocument: 'after' }
-        );
-
-        if (updatedUser?.value) {
-          return res.status(200).json({
-            status: 'User successfully updated',
-            user: updatedUser.value
-          });
+      /**get user data */
+      case 'GET':
+        const user = await collection?.findOne({ _id: id as any });
+        if (user) {
+          return res.status(200).json({ userPersonalInfo: user.profile_info });
         }
         else {
           return res.status(404).json({ error: 'User not found' });
@@ -60,7 +60,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         const deletedUser = await collection?.findOneAndUpdate(
-          { _id: id },
+          { _id: id as any },
           { $set: updateQuery },
           { returnDocument: 'after' }
         );
@@ -77,7 +77,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         break;
 
       default:
-        res.setHeader('Allow', ['PUT', 'GET', 'PATCH']);
+        res.setHeader('Allow', ['POST', 'GET', 'PATCH']);
         res.status(405).end(`Method ${method} Not Allowed`);
         break;
     }

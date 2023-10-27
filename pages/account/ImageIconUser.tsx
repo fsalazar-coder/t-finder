@@ -8,6 +8,7 @@ export default function ImageIconUser(props: any) {
 
   const { userImageUrl } = useAuthData();
 
+
   return (
     userImageUrl ?
       <div className='w-full h-full  flex flex-col justify-center items-center bg-gradient-to-br from-fuchsia-400 via-slate-300 to-fuchsia-600 rounded-full z-20'>
@@ -25,7 +26,13 @@ export default function ImageIconUser(props: any) {
         />
       </div>
       :
-      <i className='w-full h-full text-slate-50 text-6xl font-light flex flex-row justify-center items-center border border-slate-50 rounded-full transition-all'>
+      <i className={
+        `${props.size === 'small' ?
+          'text-2xl' :
+          props.size === 'large' ?
+            'text-6xl' :
+            ''} w-full h-full text-slate-50 font-light flex flex-row justify-center items-center border border-slate-50 rounded-full transition-all`
+      }>
         <IconUser />
       </i>
   )
