@@ -101,7 +101,7 @@ export default function ProfileSectionCard({ id, key, title, value, sectionName,
         <div className='w-full flex flex-col lg:flex-row-reverse lg:justify-between'>
           <ul className='w-full flex flex-col'>
             {
-              data.map((element: any, index: any) => {
+              data?.map((element: any, index: any) => {
                 return (
                   <li key={element._id}
                     className={

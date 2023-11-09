@@ -133,7 +133,7 @@ export default function Profile() {
         <ProfilePersonalInfoCard />
         {
           /**others section card: experience, education, courses, projects, publications, conferences, certifications and recommendatiosn */
-          sections.map((section: any) => (
+          sections?.map((section: any) => (
             <ProfileSectionCard
               id={section.id}
               key={section.id}
