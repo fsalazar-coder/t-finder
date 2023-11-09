@@ -67,14 +67,12 @@ export default function ProfileSectionCard({ id, key, title, value, sectionName,
           className='flex flex-col justify-center items-center transition-all'>
           <button
             className="w-full flex flex-row justify-center items-center hover:cursor-default"
-            data-value={value}
-            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-              const sectionValue = e.currentTarget.dataset.value;
-              sectionValue && (() => {
+            onClick={() => {
+              value && (() => {
                 setProfileModal(true);
                 setProfileModalAction('post');
-                setProfileModalType(sectionValue);
-                setCollectionToChange(sectionValue);
+                setProfileModalType(value);
+                setCollectionToChange(value);
               })
             }}
           >
@@ -97,48 +95,48 @@ export default function ProfileSectionCard({ id, key, title, value, sectionName,
       </div>
       {/**showing information */}
       <div className='w-full mt-1 lg:mt-2 flex flex-col'>
-        shouldRender && (
-        <div className='w-full flex flex-col lg:flex-row-reverse lg:justify-between'>
-          <ul className='w-full flex flex-col'>
-            {
-              data?.map((element: any, index: any) => {
-                return (
-                  <li key={element._id}
-                    className={
-                      `${listHover && (itemHover === index ? 'hover:scale-[1.02]' : 'opacity-25')
-                      } w-full relative p-1 lg:p-2 my-2 flex flex-col bg-white rounded-md transform transition-all`
-                    }
-                    onMouseEnter={() => { setItemHover(index); setListHover(true); }}
-                    onMouseLeave={() => { setItemHover(null); setListHover(false); }}
-                  >
-                    <div className="w-full absolute top-0 right-0 p-2 flex flex-row justify-end items-center transition-all z-20">
-                      {
-                        (listHover) && (itemHover === index) && (
-                          buttons.map((button: any) => {
-                            return (
-                              <EditDeleteButtons
-                                id={button.id}
-                                key={button.key}
-                                icon={button.icon}
-                                elementId={element._id}
-                                sectionValue={value}
-                                handleClick={button.click}
-                              />
-                            )
-                          })
-                        )
+        {shouldRender && (
+          <div className='w-full flex flex-col lg:flex-row-reverse lg:justify-between'>
+            <ul className='w-full flex flex-col'>
+              {
+                data?.map((element: any, index: any) => {
+                  return (
+                    <li key={element._id}
+                      className={
+                        `${listHover && (itemHover === index ? 'hover:scale-[1.02]' : 'opacity-25')
+                        } w-full relative p-1 lg:p-2 my-2 flex flex-col bg-white rounded-md transform transition-all`
                       }
-                    </div>
-                    <ItemContent
-                      element={element as any}
-                    />
-                  </li>
-                )
-              })
-            }
-          </ul>
-        </div>
-        )
+                      onMouseEnter={() => { setItemHover(index); setListHover(true); }}
+                      onMouseLeave={() => { setItemHover(null); setListHover(false); }}
+                    >
+                      <div className="w-full absolute top-0 right-0 p-2 flex flex-row justify-end items-center transition-all z-20">
+                        {
+                          (listHover) && (itemHover === index) && (
+                            buttons.map((button: any) => {
+                              return (
+                                <EditDeleteButtons
+                                  id={button.id}
+                                  key={button.key}
+                                  icon={button.icon}
+                                  elementId={element._id}
+                                  sectionValue={value}
+                                  handleClick={button.click}
+                                />
+                              )
+                            })
+                          )
+                        }
+                      </div>
+                      <ItemContent
+                        element={element as any}
+                      />
+                    </li>
+                  )
+                })
+              }
+            </ul>
+          </div>
+        )}
       </div>
     </li>
   )
