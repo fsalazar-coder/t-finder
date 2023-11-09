@@ -1,16 +1,58 @@
+import { useEffect } from 'react';
 import { useAuthData } from "../../context/authContext";
 import Image from 'next/image';
 import { IconUser } from '@/icons/icons';
+import axios from 'axios';
 
 
 
 export default function ImageIconUser(props: any) {
 
-  const { userImageUrl } = useAuthData();
+  const { token, userId, userProfileImage, setUserProfileImage, update, setUpdate } = useAuthData();
 
+
+  const fetchData = async () => {
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    };
+
+    try {
+      const response = await axios.post('/api/profileApi',
+        {
+          id: userId,
+          collectionName: 'profile_image',
+          action: 'get',
+          data: ''
+        },
+        config
+      );
+      const { status, actionResponse } = response.data;
+      if (status === 'success') {
+        setUserProfileImage(actionResponse);
+      }
+    }
+    catch (error: any) {
+      console.log('An error occurred fetch data: ', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (update === 'profile_image') {
+      fetchData();
+      setUpdate('');
+    }
+  }, [update]);
+
+  const profileImage = userProfileImage?.image_url;
 
   return (
-    userImageUrl ?
+    profileImage ?
       <div className='w-full h-full  flex flex-col justify-center items-center bg-gradient-to-br from-fuchsia-400 via-slate-300 to-fuchsia-600 rounded-full z-20'>
         <Image
           className={
@@ -19,9 +61,9 @@ export default function ImageIconUser(props: any) {
               props.size === 'large' ?
                 'border-[3px]' :
                 ''} w-[93%] h-[93%] flex flex-col justify-center items-center rounded-full border-slate-300`}
-          width={400}
-          height={400}
-          src={userImageUrl as string}
+          width={800}
+          height={800}
+          src={profileImage as string}
           alt='profile-image'
         />
       </div>

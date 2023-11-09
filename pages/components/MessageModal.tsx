@@ -7,9 +7,11 @@ import axios from 'axios';
 
 export default function MessageModal(props: any) {
 
-  const { token, setToken, userId, setUserId, updateUserImageUrl, updateUserProfileInfo } = useAuthData();
-  const { setAccountActived, setAccountModule } = useAuthUI();
-  const { messageModal, setMessageModal, typeMessageModal, textMessageModal, setLoading } = useUI();
+  const { token, userId, setUserProfilePersonalInfo, setUserProfileExperience, setUserProfileEducation,
+    collectionToChange, setCollectionToChange, itemIdToChange, setItemIdToChange, update, setUpdate, logout } = useAuthData();
+  const { setAccountActived, setAccountModule, setProfileModalAction } = useAuthUI();
+  const { messageModal, setMessageModal, typeMessageModal,
+    setTypeMessageModal, textMessageModal, setTextMessageModal, setLoading } = useUI();
   const [circleAnimation, setCircleAnimation] = useState(false);
   const [symbolAnimation, setSymbolAnimation] = useState(false);
 
@@ -23,16 +25,15 @@ export default function MessageModal(props: any) {
   }, [messageModal]);
 
   const modalCloseEscapeHandle = (e: any) => {
-    if (messageModal) {
-      if ((e.chartCode | e.keyCode) === 27) {
-        setMessageModal(false);
-      }
-    }
+    (messageModal && ((e.charCode || e.keyCode) === 27)) && setMessageModal(false);
   };
 
   useEffect(() => {
     document.addEventListener('keydown', modalCloseEscapeHandle);
-  });
+    return () => {
+      document.removeEventListener('keydown', modalCloseEscapeHandle);
+    };
+  }, []);
 
   useEffect(() => {
     messageModal ?
@@ -41,56 +42,70 @@ export default function MessageModal(props: any) {
   }, [messageModal]);
 
 
-  const handleDelete = async () => {
+  const deleteDataHandle = async () => {
     setLoading(true);
-    const dataToDelete = {
-      full_name: '',
-      profession_occupation: '',
-      preferred_language: '',
-      location: '',
-      personal_description: ''
-    };
-
     const config = {
       headers: {
         'Authorization': `Bearer ${token}`
       }
     };
-
     try {
-      await axios
-        .patch('/api/userDataApi', { id: userId, dataToDelete }, config)
-        .then((response: any) => {
-          if (response.status === 200) {
-            console.log('Data deleted successfully');
-          }
-          else {
-            console.log('Failed to delete data');
-          }
-        })
+      const response = await axios.post('/api/profileApi',
+        {
+          id: collectionToChange === 'personal_info' ? userId : itemIdToChange,
+          collectionName: collectionToChange,
+          action: 'delete',
+          data: '',
+        },
+        config
+      );
+      const { status, message } = response.data;
+      if (status === 'success') {
+        setMessageModal(false);
+        setTimeout(() => {
+          setMessageModal(true);
+          setTypeMessageModal('successful');
+          setTextMessageModal(message);
+          setUpdate(collectionToChange);
+          collectionToChange === 'personal_info' && setUserProfilePersonalInfo(null);
+        }, 500);
+      }
     }
-    catch (error) {
-      console.error('An error occurred:', error);
+    catch (error: any) {
+      if (error.response) {
+        let statusError = error.response.status;
+        let messageError = error.response.data.message;
+        setMessageModal(true);
+        switch (statusError) {
+          case 404:
+            setTypeMessageModal('error');
+            setTextMessageModal(messageError || 'User information not found');
+            break;
+          default:
+            setTypeMessageModal('error');
+            setTextMessageModal('An unexpected error occurred.');
+        }
+      }
     }
     finally {
-      setMessageModal(false);
       setLoading(false);
+      setProfileModalAction('');
+      setItemIdToChange('');
     }
   };
 
 
   return (
     messageModal ?
-      <div
-        className={
-          `w-screen h-screen fixed top-0 flex flex-col justify-center items-center bg-black bg-opacity-75 transform z-[60]
+      <div className={
+        `w-screen h-screen fixed top-0 flex flex-col justify-center items-center bg-black bg-opacity-75 transform z-[60]
       ${messageModal ?
-            'scale-100 animate-[fade-in_0.50s]'
-            : props.messageModalAnimationClose ?
-              'scale-0 animate-[fade-out_0.30s]'
-              : 'hidden'
-          }`
-        }
+          'scale-100 animate-[fade-in_0.50s]'
+          : props.messageModalAnimationClose ?
+            'scale-0 animate-[fade-out_0.30s]'
+            : 'hidden'
+        }`
+      }
       >
         {/**box */}
         <div className={
@@ -101,7 +116,6 @@ export default function MessageModal(props: any) {
           }`
         }>
           <div className='w-full flex flex-col justify-start items-center'>
-
             {/**SVG: animation circle: successful, error & alert */}
             <div className='w-full h-20 lg:h-28 relative flex flex-col justify-center items-center rounded-t-md animate-[appear_1.0s]'>
               <svg
@@ -242,7 +256,6 @@ export default function MessageModal(props: any) {
             {/**message sub-title */}
             <h4 className='w-full pb-6 text-sm lg:text-base text-slate-600 text-center flex flex-col justify-center items-center'>
               {textMessageModal}
-
             </h4>
             {/**buttons */}
             <div className='w-full flex flex-row justify-between items-center'>
@@ -259,10 +272,7 @@ export default function MessageModal(props: any) {
                           setMessageModal(false);
                           setAccountActived(false);
                           setAccountModule('');
-                          updateUserImageUrl('');
-                          /** updateUserProfileInfo(); ???*/
-                          setUserId('');
-                          setToken(null);
+                          logout();
                         }}>
                         <h5 className='w-full text-sm lg:text-base font-bold leading-none'>
                           Logout
@@ -286,7 +296,7 @@ export default function MessageModal(props: any) {
                       <button className='w-[45%] text-slate-50 lg:hover:text-white lg:hover:font-bold py-2 flex flex-row justify-center items-center bg-green-400 lg:bg-green-300 lg:hover:bg-green-400 cursor-default lg:cursor-pointer rounded-md transition-all'>
                         <div
                           className='w-full'
-                          onClick={() => handleDelete()}>
+                          onClick={() => deleteDataHandle()}>
                           <h5 className='w-full text-sm lg:text-base font-bold leading-none'>
                             Delete
                           </h5>
@@ -295,7 +305,10 @@ export default function MessageModal(props: any) {
                       {/**Cancel delete button */}
                       <button
                         className='w-[45%] text-slate-50 lg:hover:text-white lg:hover:font-bold py-2 flex flex-row justify-center items-center bg-red-400 lg:bg-red-300 lg:hover:bg-red-400 cursor-default lg:cursor-pointer rounded-md transition-all'
-                        onClick={() => setMessageModal(false)}
+                        onClick={() => {
+                          setCollectionToChange('');
+                          setMessageModal(false);
+                        }}
                       >
                         <h5 className='w-full text-sm lg:text-base font-bold leading-none'>
                           Cancel

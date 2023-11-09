@@ -9,18 +9,33 @@ interface AuthDataContextProps {
   setUserId: React.Dispatch<React.SetStateAction<Id | string>>;
   userEmail: string | null;
   setUserEmail: React.Dispatch<React.SetStateAction<string | null>>;
-  userImageUrl: string;
-  setUserImageUrl: React.Dispatch<React.SetStateAction<string>>;
-  updateUserImageUrl: (imageUrl: string) => void;
-  userProfileInfo: UserProfileInfo | null;
-  setUserProfileInfo: React.Dispatch<React.SetStateAction<UserProfileInfo | null>>;
-  updateUserProfileInfo: (profileInfo: UserProfileInfo) => void;
-  userEducationalInfo: UserEducationalInfo | null;
-  setUserEducationalInfo: React.Dispatch<React.SetStateAction<UserEducationalInfo | null>>;
-  updateUserEducationalInfo: (educationalInfo: UserEducationalInfo) => void;
-  userExperienceInfo: UserExperienceInfo | null;
-  setUserExperienceInfo: React.Dispatch<React.SetStateAction<UserExperienceInfo | null>>;
-  updateUserExperienceInfo: (experienceInfo: UserExperienceInfo) => void;
+  userProfileImage: UserProfileImage | null;
+  setUserProfileImage: React.Dispatch<React.SetStateAction<UserProfileImage | null>>;
+  userProfilePersonalInfo: UserProfilePersonalInfo | null;
+  setUserProfilePersonalInfo: React.Dispatch<React.SetStateAction<UserProfilePersonalInfo | null>>;
+  userProfileExperience: UserProfileExperience[] | [];
+  setUserProfileExperience: React.Dispatch<React.SetStateAction<UserProfileExperience[] | []>>;
+  userProfileEducation: UserProfileEducation[] | [];
+  setUserProfileEducation: React.Dispatch<React.SetStateAction<UserProfileEducation[] | []>>;
+  userProfileCourses: UserProfileCourses[] | [];
+  setUserProfileCourses: React.Dispatch<React.SetStateAction<UserProfileCourses[] | []>>;
+  userProfileProjects: UserProfileProjects[] | [];
+  setUserProfileProjects: React.Dispatch<React.SetStateAction<UserProfileProjects[] | []>>;
+  userProfilePublications: UserProfilePublications[] | [];
+  setUserProfilePublications: React.Dispatch<React.SetStateAction<UserProfilePublications[] | []>>;
+  userProfileConferences: UserProfileConferences[] | [];
+  setUserProfileConferences: React.Dispatch<React.SetStateAction<UserProfileConferences[] | []>>;
+  userProfileCertifications: UserProfileCertifications[] | [];
+  setUserProfileCertifications: React.Dispatch<React.SetStateAction<UserProfileCertifications[] | []>>;
+  userProfileRecommendations: UserProfileRecommendations[] | [];
+  setuserProfileRecommendations: React.Dispatch<React.SetStateAction<UserProfileRecommendations[] | []>>;
+  collectionToChange: string;
+  setCollectionToChange: React.Dispatch<React.SetStateAction<string>>;
+  itemIdToChange: string;
+  setItemIdToChange: React.Dispatch<React.SetStateAction<string>>;
+  update: string;
+  setUpdate: React.Dispatch<React.SetStateAction<string>>;
+  logout: () => void;
 }
 
 interface AuthUIContextProps {
@@ -28,27 +43,25 @@ interface AuthUIContextProps {
   setAccountActived: React.Dispatch<React.SetStateAction<boolean>>;
   accountModule: string;
   setAccountModule: React.Dispatch<React.SetStateAction<string>>;
-  profileImageModal: boolean;
-  setProfileImageModal: React.Dispatch<React.SetStateAction<boolean>>;
-  personalInfoModal: boolean;
-  setPersonalInfoModal: React.Dispatch<React.SetStateAction<boolean>>;
-  educationalInfoModal: boolean;
-  setEducationalInfoModal: React.Dispatch<React.SetStateAction<boolean>>;
-  experienceInfoModal: boolean;
-  setExperienceInfoModal: React.Dispatch<React.SetStateAction<boolean>>;
+  profileModal: boolean;
+  setProfileModal: React.Dispatch<React.SetStateAction<boolean>>;
+  profileModalAction: string;
+  setProfileModalAction: React.Dispatch<React.SetStateAction<string>>;
+  profileModalType: string;
+  setProfileModalType: React.Dispatch<React.SetStateAction<string>>;
   requestModal: boolean;
   setRequestModal: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-interface User {
-  email: string;
 }
 
 interface Id {
   id: string;
 }
 
-interface UserProfileInfo {
+interface UserProfileImage {
+  image_url: string,
+}
+
+interface UserProfilePersonalInfo {
   full_name: string,
   profession_occupation: string,
   preferred_language: string,
@@ -57,31 +70,21 @@ interface UserProfileInfo {
   availability_status: string,
 }
 
-interface UserEducationalInfo {   
+interface UserProfileEducation {
   degree: string,
   major_field_study: string,
   university_school: string,
   graduation_year: string,
 }
 
-
-interface UserCoursesInfo {   
-  courses: string,
+interface UserProfileCourses {
+  course_title: string,
+  institution: string,
+  skills_acquired: string,
+  year_completed: number,
 }
 
-interface UserProjectsInfo {   
-  projects: string,
-}
-
-interface UserHonorsInfo {   
-  honors: string,
-}
-
-interface UserCertificationsInfo {   
-  certifications: string,
-}
-
-interface UserExperienceInfo {
+interface UserProfileExperience {
   company_organization: string,
   role_title: string,
   duration: string,
@@ -89,7 +92,44 @@ interface UserExperienceInfo {
   achievements: string,
   technologies_used: string,
   team_size: string,
-  references: string,
+}
+
+interface UserProfileProjects {
+  project_name: string,
+  role: string,
+  technologies_used: string,
+  description: string,
+  project_url: string,
+}
+
+interface UserProfilePublications {
+  publication_title: string,
+  authors: string,
+  journal_name: string,
+  year_published: number,
+}
+
+interface UserProfileConferences {
+  presentation_title: string,
+  conference_name: string,
+  location: string,
+  year: number,
+}
+
+interface UserProfileCertifications {
+  certification_name: string,
+  issuing_organization: string,
+  license_number: number,
+  year_issued: number,
+}
+
+interface UserProfileRecommendations {
+  recommender_title: string,
+  recommender_name: string,
+  recommender_organization: string,
+  recommendation: string,
+  recommender_email: string,
+  recommender_phone: string,
 }
 
 interface AuthProviderProps {
@@ -130,32 +170,44 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   const [token, setToken] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | { id: string }>('');
   const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [userImageUrl, setUserImageUrl] = useState<string>('');
-  const [userProfileInfo, setUserProfileInfo] = useState<UserProfileInfo | null>(null);
-  const [userEducationalInfo, setUserEducationalInfo] = useState<UserEducationalInfo | null>(null);
-  const [userExperienceInfo, setUserExperienceInfo] = useState<UserExperienceInfo | null>(null);
+  const [userProfileImage, setUserProfileImage] = useState<UserProfileImage | null>(null);
+  const [userProfilePersonalInfo, setUserProfilePersonalInfo] = useState<UserProfilePersonalInfo | null>(null);
+  const [userProfileExperience, setUserProfileExperience] = useState<UserProfileExperience[] | []>([]);
+  const [userProfileEducation, setUserProfileEducation] = useState<UserProfileEducation[] | []>([]);
+  const [userProfileCourses, setUserProfileCourses] = useState<UserProfileCourses[] | []>([]);
+  const [userProfileProjects, setUserProfileProjects] = useState<UserProfileProjects[] | []>([]);
+  const [userProfilePublications, setUserProfilePublications] = useState<UserProfilePublications[] | []>([]);
+  const [userProfileConferences, setUserProfileConferences] = useState<UserProfileConferences[] | []>([]);
+  const [userProfileCertifications, setUserProfileCertifications] = useState<UserProfileCertifications[] | []>([]);
+  const [userProfileRecommendations, setuserProfileRecommendations] = useState<UserProfileRecommendations[] | []>([]);
+  const [collectionToChange, setCollectionToChange] = useState<string>('');
+  const [itemIdToChange, setItemIdToChange] = useState<string>('');
+  const [update, setUpdate] = useState<string>('')
   const [accountActived, setAccountActived] = useState<boolean>(false);
   const [accountModule, setAccountModule] = useState<string>('');
-  const [profileImageModal, setProfileImageModal] = useState<boolean>(false);
-  const [personalInfoModal, setPersonalInfoModal] = useState<boolean>(false);
-  const [educationalInfoModal, setEducationalInfoModal] = useState<boolean>(false);
-  const [experienceInfoModal, setExperienceInfoModal] = useState<boolean>(false);
-  const [requestModal, setRequestModal] = useState<boolean>(false);
+  const [profileModal, setProfileModal] = useState<boolean>(false);
+  const [profileModalAction, setProfileModalAction] = useState<string>('');
+  const [profileModalType, setProfileModalType] = useState<string>('');
+  const [requestModal, setRequestModal] = useState<boolean>(false);;
 
-  const updateUserImageUrl = (imageUrl: string) => {
-    setUserImageUrl(imageUrl);
-  };
-
-  const updateUserProfileInfo = (profileInfo: UserProfileInfo) => {
-    setUserProfileInfo(profileInfo);
-  };
-
-  const updateUserEducationalInfo = (educationalInfo: UserEducationalInfo) => {
-    setUserEducationalInfo(educationalInfo);
-  };
-
-  const updateUserExperienceInfo = (experienceInfo: UserExperienceInfo) => {
-    setUserExperienceInfo(experienceInfo);
+  const logout = () => {
+    setToken(null);
+    setUserId('');
+    setUserEmail(null);
+    setUserProfileImage(null);
+    setUserProfilePersonalInfo(null);
+    setUserProfileExperience([]);
+    setUserProfileEducation([]);
+    setUserProfileCourses([]);
+    setUserProfileProjects([]);
+    setUserProfilePublications([]);
+    setUserProfileConferences([]);
+    setUserProfileCertifications([]);
+    setuserProfileRecommendations([]);
+    setCollectionToChange('');
+    setItemIdToChange('');
+    setProfileModalAction('');
+    setProfileModalType('');
   };
 
 
@@ -164,23 +216,28 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
       token, setToken,
       userId, setUserId,
       userEmail, setUserEmail,
-      userProfileInfo, setUserProfileInfo,
-      updateUserProfileInfo,
-      userEducationalInfo, setUserEducationalInfo,
-      updateUserEducationalInfo,
-      userExperienceInfo, setUserExperienceInfo,
-      updateUserExperienceInfo,
-      userImageUrl, setUserImageUrl,
-      updateUserImageUrl
+      userProfileImage, setUserProfileImage,
+      userProfilePersonalInfo, setUserProfilePersonalInfo,
+      userProfileEducation, setUserProfileEducation,
+      userProfileCourses, setUserProfileCourses,
+      userProfileExperience, setUserProfileExperience,
+      userProfileProjects, setUserProfileProjects,
+      userProfilePublications, setUserProfilePublications,
+      userProfileConferences, setUserProfileConferences,
+      userProfileCertifications, setUserProfileCertifications,
+      userProfileRecommendations, setuserProfileRecommendations,
+      collectionToChange, setCollectionToChange,
+      itemIdToChange, setItemIdToChange,
+      update, setUpdate,
+      logout
     }}>
       <AuthUIContext.Provider value={{
         accountActived, setAccountActived,
         accountModule, setAccountModule,
-        profileImageModal, setProfileImageModal,
-        personalInfoModal, setPersonalInfoModal,
-        educationalInfoModal, setEducationalInfoModal,
-        experienceInfoModal, setExperienceInfoModal,
-        requestModal, setRequestModal
+        profileModal, setProfileModal,
+        profileModalAction, setProfileModalAction,
+        profileModalType, setProfileModalType,
+        requestModal, setRequestModal,
       }}>
         {children}
       </AuthUIContext.Provider>

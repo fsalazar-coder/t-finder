@@ -5,8 +5,7 @@ import Dropdown from './components/Dropdown';
 import AccountNavbar from "./account/AccountNavbar";
 import Dashboard from "./account/Dashboard";
 import Profile from "./account/Profile";
-import PersonalInfoModal from "./account/PersonalInfoModal";
-import ProfileImageModal from "./account/ProfileImageModal";
+import ProfileModal from "./account/ProfileModal";
 import Portfolio from "./account/Portfolio";
 import Request from "./account/Requests";
 import RequestModal from "./account/RequestModal";
@@ -15,21 +14,36 @@ import Settings from "./account/Settings";
 import HelpSupport from "./account/HelpSupport";
 import MessageModal from './components/MessageModal';
 
+// Define a type for the modules object
+type ModuleComponents = {
+  [key: string]: React.ComponentType<any>;
+};
+
 
 
 export default function Account(props: any) {
 
   const { token } = useAuthData();
-  const { accountActived } = useAuthUI();
+  const { accountActived, accountModule } = useAuthUI();
   const { screenNarrow, setDropdown } = useUI();
 
   useEffect(() => {
-    if (accountActived) {
-      if (!screenNarrow) {
-        setDropdown(false);
-      }
+    if (accountActived && !screenNarrow) {
+      setDropdown(false);
     }
-  })
+  }, [accountActived, screenNarrow, setDropdown]);
+
+  const modules: ModuleComponents = {
+    'Profile': Profile,
+    'Portfolio': Portfolio,
+    'Request': Request,
+    'Notifications': Notifications,
+    'Account Settings': Settings,
+    'Help & Support': HelpSupport,
+    'Dashboard': Dashboard,
+  };
+
+  const ActiveModule = modules[accountModule as keyof ModuleComponents] || Dashboard;
 
 
   if (!token) {
@@ -44,37 +58,12 @@ export default function Account(props: any) {
 
   return (
     <main className='w-full h-full relative font-montserrat select-none flex flex-col items-center'>
-      {/**navbar */}
       <div className='w-auto h-auto'>
         <AccountNavbar />
       </div>
-      {/**dashboard */}
+      {/**dashboard, profile, requests, notifications, account settings, help and support */}
       <div className='w-full h-full lg:pl-1/6'>
-        <Dashboard />
-      </div>
-      {/**account */}
-      <div className='w-full h-full lg:pl-1/6'>
-        <Profile />
-      </div>
-      {/**portfolio */}
-      <div className='w-full h-full lg:pl-1/6'>
-        <Portfolio />
-      </div>
-      {/**requests */}
-      <div className='w-full h-full pl-0 lg:pl-1/6'>
-        <Request />
-      </div>
-      {/**notifications */}
-      <div className='w-full h-full lg:pl-1/6'>
-        <Notifications />
-      </div>
-      {/**account settings */}
-      <div className='w-full h-full lg:pl-1/6'>
-        <Settings />
-      </div>
-      {/**help and support */}
-      <div className='w-full h-full lg:pl-1/6'>
-        <HelpSupport />
+        <ActiveModule />
       </div>
       {/**sponsor banner */}
       <div className="lg:w-60 h-screen fixed right-0 hidden lg:vissible lg:flex flex-col justify-center items-center bg-slate-50 border-l border-slate-100">
@@ -84,17 +73,14 @@ export default function Account(props: any) {
       {/**dropdown */}
       <Dropdown />
 
-      {/**profile image upload modal */}
-      <ProfileImageModal />
-
-      {/**personal information modal */}
-      <PersonalInfoModal />
+      {/**profile modal */}
+      <ProfileModal />
 
       {/**education modal */}
       {/**<EducationModal />*/}
 
       {/**experience modal */}
-      {/**<ExperienceModal /> */}      
+      {/**<ExperienceModal /> */}
 
       {/**request modal */}
       <RequestModal />

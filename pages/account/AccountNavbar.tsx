@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useAuthUI, useUI } from "../../context/authContext";
+import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import { useRouter } from 'next/navigation'
 import ImageIconUser from './ImageIconUser';
 
@@ -16,7 +16,8 @@ const navbarElementAuth = [
 
 
 export default function AccountNavbar(props: any) {
-  
+
+  const { userEmail } = useAuthData();
   const { setAccountActived, accountModule, setAccountModule } = useAuthUI();
 
   const {
@@ -64,12 +65,17 @@ export default function AccountNavbar(props: any) {
               </div>
               :
               <div className='w-full flex flex-col items-center'>
-                <div className='py-4 flex flex-col justify-center items-center'>
+                <div className='w-full py-4 flex flex-col justify-center items-center border-y border-slate-900'>
                   <div className='w-32 h-32 flex flex-col justify-center items-center'>
                     <ImageIconUser size='large' />
                   </div>
                 </div>
-                <nav className='w-full h-full flex flex-col justify-start items-center'>
+                <div className='w-full flex flex-row justify-center items-center'>
+                  <h3 className='w-full py-3 text-slate-100 text-base text-center'>
+                    {userEmail}
+                  </h3>
+                </div>
+                <nav className='w-full h-full flex flex-col justify-start items-center border-y border-slate-900'>
                   {
                     navbarElementAuth?.map((item: any, index: any) => {
                       return (

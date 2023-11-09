@@ -5,6 +5,7 @@ import Cors from 'cors';
 import initMiddleware from '../../lib/init-middleware';
 import dbConnect from "../../lib/mongodb";
 import { v4 as uuidv4 } from 'uuid';
+import e from 'cors';
 
 const cors = initMiddleware(
   Cors({
@@ -34,31 +35,42 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const existingUser = await collection?.findOne({ email });
 
       if (existingUser) {
-        return res.status(409).json({ status: 'User already exists' }); // Changed status code
+        return res.status(409).json({
+          status: 409,
+          message: 'Email already exists'
+        });
       }
 
       const hashedPassword = await bcrypt.hash(password, 12);
-      const idUnique = uuidv4();
 
       await collection?.insertOne({
-        _id: idUnique as any,
+        _id: uuidv4() as any,
         email: email,
         password_hash: hashedPassword,
         created_at: new Date().toISOString(),
       });
 
-      return res.status(201).json({ status: 'Success register' });
+      return res.status(201).json({
+        status: 201,
+        message: 'Email successfully registered'
+      });
     }
     //login
     else if (action === 'login') {
       const user = await collection?.findOne({ email });
       if (!user) {
-        return res.status(401).json({ status: 'Invalid credential' });
+        return res.status(401).json({
+          status: 401,
+          message: 'Invalid credential'
+        });
       }
 
       const isValidPassword = await bcrypt.compare(password, user.password_hash);
       if (!isValidPassword) {
-        return res.status(401).json({ status: 'Invalid credential' });
+        return res.status(401).json({
+          status: 401,
+          message: 'Invalid credential'
+        });
       }
 
       if (!process.env.SECRET_KEY) {
@@ -67,7 +79,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       const token = jwt.sign({ email }, process.env.SECRET_KEY);
 
-      return res.status(200).json({ token: token, user: user });
+      return res.status(200).json({
+        token: token,
+        user: user
+      });
     }
     return;
   }

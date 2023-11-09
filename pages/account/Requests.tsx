@@ -12,93 +12,134 @@ import SectionTitles from '../components/SectionTitles';
 
 export default function Request(props: any) {
 
-  const { setRequestModal, accountModule } = useAuthUI();
+  const { setRequestModal } = useAuthUI();
+
+  const requests = [
+    {
+      id: '01-request',
+      key: '01-request',
+      title: 'Talent request',
+      comment: 'Your request is been processed',
+      content: ''
+    },
+    {
+      id: '02-request',
+      key: '02-request',
+      title: 'Job request',
+      comment: 'Your request is been processed',
+      content: ''
+    },
+  ];
+
+  const buttons = [
+    {
+      id: 'add-item-profile',
+      key: 'add-item-profile',
+      title: 'Add',
+      value: 'add',
+      icon: <IconAdd />,
+      click: () => setRequestModal(true)
+    },
+    {
+      id: 'edit-item-profile',
+      key: 'edit-item-profile',
+      title: 'Edit',
+      value: 'edit',
+      icon: <IconEdit />,
+      click: ''
+    },
+    {
+      id: 'delete-item-profile',
+      key: 'delete-item-profile',
+      title: 'Delete',
+      value: 'delete',
+      icon: <IconDelete />,
+      click: ''
+    },
+  ];
 
   return (
-    accountModule === 'Request' ?
-      <div className='w-full h-screen pl-0 lg:px-60 flex flex-row justify-center items-center'>
-        <div className='container w-full h-full pt-14 lg:pt-10 p-5 lg:p-10 flex flex-col items-center transition-all'>
-          {/**section title */}
-          <div className="w-full p-2 lg:p-5 mb-2 lg:mb-5 bg-white border rounded-lg drop-shadow-md">
-            <div className='w-full flex flex-row'>
-              <SectionTitles
-                sectionTitle='TALENT AND JOB REQUEST'
-                sectionSubtitle=''
-                sectionType='account'
-              />
-            </div>
-            {/**container content */}
-            <div className='w-full flex flex-col items-start list-none transition-all'>
-              Your have one talent request and one job request
-            </div>
+    <div className='w-full h-screen pl-0 lg:px-60 flex flex-row justify-center items-center'>
+      <ul className='container w-full h-full pt-14 lg:pt-10 p-5 lg:p-10 flex flex-col items-center transition-all'>
+        {/**title principal*/}
+        <li
+          key='title-profile'
+          id='title-profile'
+          className="w-full p-2 lg:p-5 mb-10 lg:mb-7 flex flex-row justify-between items-center bg-slate-50 border border-white rounded-md drop-shadow-md"
+        >
+          <div className='w-full flex flex-row'>
+            <SectionTitles
+              sectionTitle='TALENT AND JOB REQUEST'
+              sectionSubtitle=''
+              sectionType='account'
+            />
           </div>
-          {/**section content */}
-          <div className="w-full h-full flex flex-col">
-            {/**add new request */}
-            <div className='w-full p-2 lg:p-4 my-1 lg:my-2 flex flex-row items-center bg-white border rounded-md drop-shadow-md'>
-              <button className="mr-2 lg:mr-4 flex flex-row justify-center items-center">
-                <i
-                  className='text-green-600 lg:text-gray-400 lg:hover:text-green-500 text-xl lg:text-2xl flex justify-center cursor-default lg:cursor-pointer'
-                  onClick={() => setRequestModal(true)}
-                >
-                  <IconAdd />
-                </i>
-              </button>
-              <h3 className="w-full h-full text-gray-900 text-sm lg:text-base font-normal">
-                New Request
-              </h3>
-            </div>
-            {/**active talent request */}
-            <div className='w-full p-2 lg:p-4 my-1 lg:my-2 flex flex-row bg-white border rounded-md drop-shadow-md'>
-              <div className="h-full mr-2 lg:mr-4 flex flex-col items-center">
-                <button className="my-1 flex flex-row justify-center items-center">
-                  <i
-                    className='text-green-600 lg:text-gray-400 lg:hover:text-green-500 text-xl lg:text-2xl flex justify-center cursor-default lg:cursor-pointer'
-                    onClick={() => console.log('Editar talent Request')}
-                  >
-                    <IconEdit />
-                  </i>
-                </button>
-                <button className="my-1 flex flex-row justify-center items-center">
-                  <i
-                    className='text-green-600 lg:text-gray-400 lg:hover:text-red-500 text-xl lg:text-2xl flex justify-center cursor-default lg:cursor-pointer'
-                    onClick={() => console.log('borrar talent Request')}
-                  >
-                    <IconDelete />
-                  </i>
-                </button>
-              </div>
-              <h3 className="w-full flex-row">
-                Talen Request (title)
-              </h3>
-            </div>
-            {/**active job request */}
-            <div className='w-full p-2 lg:p-4 my-1 lg:my-2 flex flex-row bg-white border rounded-md drop-shadow-md'>
-              <div className="mr-2 lg:mr-4 flex flex-col items-center">
-                <button className="my-1 flex flex-row justify-center items-center">
-                  <i
-                    className='text-green-600 lg:text-gray-400 lg:hover:text-green-500 text-xl lg:text-2xl flex justify-center cursor-default lg:cursor-pointer'
-                    onClick={() => console.log('Editar job Request')}
-                  >
-                    <IconEdit />
-                  </i>
-                </button>
-                <button className="my-1 flex flex-row justify-center items-center">
-                  <i
-                    className='text-green-600 lg:text-gray-400 lg:hover:text-red-500 text-xl lg:text-2xl flex justify-center cursor-default lg:cursor-pointer'
-                    onClick={() => console.log('borrar job Request')}>
-                    <IconDelete />
-                  </i>
-                </button>
-              </div>
-              <h3 className="w-full flex-row">
-                Job Request (title)
-              </h3>
-            </div>
-          </div>
-        </div>
-      </div>
-      :
-      ''
+          {/**add, edit and delete button */}
+          <ul className="flex flex-row justify-end items-center">
+            {
+              buttons.map((button: any, index: any) => {
+                return (
+                  <li
+                    key={button.key}
+                    id={button.id}
+                    value={button.value}
+                    className={
+                      `${index !== 2 ?
+                        'border-r-2 border-slate-200' :
+                        ''} w-16 flex flex-col justify-center items-center`
+                    }>
+                    <button
+                      className="w-full flex flex-row justify-center items-center"
+                      onClick={button.click}
+                    >
+                      <i className={
+                        `${button.value === 'delete' ?
+                          'text-red-300 lg:hover:text-red-300' :
+                          'text-green-300 lg:hover:text-green-300'
+                        } w-full px-1 lg:text-slate-200 text-2xl lg:text-3xl flex flex-row justify-center cursor-default lg:cursor-pointer`
+                      }>
+                        {button.icon}
+                      </i>
+                    </button>
+                    <h3 className="w-full text-sm text-slate-400 font-bold text-center">
+                      {button.title}
+                    </h3>
+                  </li>
+                )
+              })
+            }
+          </ul>
+        </li>
+        {
+          /**talent and job requests */
+          requests.map((request: any) => {
+            return (
+              <li
+                key={request.id}
+                id={request.id}
+                className="w-full p-2 lg:p-5 mb-10 lg:mb-7 flex flex-col bg-slate-50 border border-white rounded-md drop-shadow-md"
+              >
+                {/**title */}
+                <div className='w-full flex flex-row'>
+                  <SectionTitles
+                    sectionTitle={request.title}
+                    sectionSubtitle=''
+                    sectionType='account'
+                  />
+                </div>
+                {/**IA comment */}
+                <div className='w-full flex flex-col items-start list-none transition-all'>
+                  {request.comment}
+                </div>
+                {/**showing content */}
+                <div className='w-full mt-1 lg:mt-2 flex flex-col'>
+                  {request.content}
+                </div>
+              </li>
+            )
+          })
+        }
+      </ul>
+    </div>
   )
 };

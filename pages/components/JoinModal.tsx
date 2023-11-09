@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAuthData, useUI } from "../../context/authContext";
+import { useUI } from "../../context/authContext";
 import axios from 'axios';
 import Image from 'next/image';
 import googleIcon from '../../public/images/google-icon.webp';
@@ -9,13 +9,13 @@ import { IconCancel } from '../../icons/icons';
 
 export default function JoinModal(props: any) {
 
-  const { 
+  const {
     joinModal, setJoinModal,
     setLoginModal,
     setMessageModal,
     setTypeMessageModal,
     setTextMessageModal,
-    setLoading 
+    setLoading
   } = useUI();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,7 +29,7 @@ export default function JoinModal(props: any) {
       }
     }
   };
-  
+
   useEffect(() => {
     document.addEventListener('keydown', modalCloseEscapeHandle);
     return () => {
@@ -55,29 +55,38 @@ export default function JoinModal(props: any) {
     };
 
     try {
-      await axios
-        .post("/api/authApi", { email, password, action: "register" }, config)
-        .then((response: any) => {
-          let res = response.data.status;
-          if (res === 'Success register') {
-            setJoinModal(false);
-            setMessageModal(true);
-            setTypeMessageModal('successful');
-            setTextMessageModal('Your user have been created');
-          }
-          else if (res === 'User already exists') {
-            setMessageModal(true);
-            setTypeMessageModal('error');
-            setTextMessageModal('User already exists');
-          }
-        })
-    }
-    catch (error) {
-      () => {
-        console.log('Error on register: ', error);
+      const response = await axios.post("/api/authApi", 
+      { 
+        email, 
+        password, 
+        action: "register" 
+      }, config);
+      const { status, message } = response.data;
+      if (status === 201) {
+        setJoinModal(false);
         setMessageModal(true);
-        setTypeMessageModal('error');
-        setTextMessageModal('An error occurred');
+        setTypeMessageModal('successful');
+        setTextMessageModal(message);
+      }
+    }
+    catch (error: any) {
+      if (error.response) {
+        let statusError = error.response.status;
+        let messageError = error.response.data.message;
+        setMessageModal(true);
+        switch (statusError) {
+          case 401:
+            setTypeMessageModal('error');
+            setTextMessageModal(messageError || 'Unauthorized access.');
+            break;
+          case 409:
+            setTypeMessageModal('error');
+            setTextMessageModal(messageError || 'Email already exists.');
+            break;
+          default:
+            setTypeMessageModal('error');
+            setTextMessageModal('An unexpected error occurred.');
+        }
       }
     }
     finally {
@@ -86,6 +95,7 @@ export default function JoinModal(props: any) {
       setLoading(false);
     }
   };
+
 
 
   return (

@@ -13,8 +13,6 @@ export default function LoginModal(props: any) {
     setToken,
     setUserId,
     setUserEmail,
-    updateUserProfileInfo,
-    updateUserImageUrl
   } = useAuthData();
   const {
     setJoinModal,
@@ -64,31 +62,30 @@ export default function LoginModal(props: any) {
     };
 
     try {
-      await axios.post("/api/authApi", { email, password, action: "login" }, config)
-        .then((response: any) => {
-          let token = response.data.token;
-          let user = response.data.user;
-          if (token) {
-            setToken(token);
-            setUserId(user._id);
-            setUserEmail(user.email);
-            updateUserProfileInfo(user.profile_info);
-            updateUserImageUrl(user.profile_image_url);
-            setLoginModal(false);
-          }
-          else if (response.data.status === 'Invalid credential') {
-            setMessageModal(true);
-            setTypeMessageModal('error');
-            setTextMessageModal('Invalid credential');
-          }
-        })
+      const response = await axios.post("/api/authApi", { email, password, action: "login" }, config);
+      const { status } = response;
+      const { token, user } = response.data;
+      if (status === 200) {
+        setToken(token);
+        setUserId(user._id);
+        setUserEmail(user.email);
+        setLoginModal(false);
+      }
     }
-    catch (error) {
-      () => {
-        console.log('Error on login: ', error);
+    catch (error: any) {
+      if (error.response) {
+        let statusError = error.response.status;
+        let messageError = error.response.data.message;
         setMessageModal(true);
-        setTypeMessageModal('error');
-        setTextMessageModal('An error occurred');
+        switch (statusError) {
+          case 401:
+            setTypeMessageModal('error');
+            setTextMessageModal(messageError || 'Unauthorized access.');
+            break;
+          default:
+            setTypeMessageModal('error');
+            setTextMessageModal('An unexpected error occurred.');
+        }
       }
     }
     finally {

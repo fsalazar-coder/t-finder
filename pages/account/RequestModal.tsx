@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuthUI, useUI } from "../../context/authContext";
 import axios from 'axios';
 import { IconCancel, IconCheckCircle } from '../../icons/icons';
-import TemplateForm from './TemplateForm';
+import FormTemplate from './FormTemplate';
 
 
 
@@ -105,7 +105,7 @@ export default function RequestModal(props: any) {
 
   /**carousel transition effect control */
   useEffect(() => {
-    setCarouselTranslateX(carouselFormPosition * (screenNarrow ? 260 : 500));
+    setCarouselTranslateX(carouselFormPosition * (screenNarrow ? 256 : 352));
     if (carouselFormSelected) {
       carouselFormSelected.style.transition = 'all 1s ease';
       carouselFormSelected.style.transform = `translateX(-${carouselTranslateX}px)`;
@@ -216,7 +216,7 @@ export default function RequestModal(props: any) {
             ${requestModal ?
               'scale-100 animate-[zoom-in_0.50s]'
               : 'scale-0 animate-[zoom-out_0.30s]'
-            }  container w-[16rem] lg:w-[31rem] relative flex flex-col justify-center items-center list-none rounded-md shadow-lg transform`
+            }  container w-64 lg:w-[22rem] relative flex flex-col justify-center items-center list-none rounded-md shadow-lg transform`
           }
           onClick={(e) => e.stopPropagation()}
         >
@@ -232,7 +232,7 @@ export default function RequestModal(props: any) {
           {/**header form */}
           <div className='w-full px-4 lg:px-8 py-1 lg:py-2 flex flex-col bg-slate-950 rounded-t-md z-50'>
             <h2 className='w-full h-fit py-1 text-white text-xl lg:text-3xl font-bold transition-all z-10'>
-              {`NEW REQUEST ${requestType.toUpperCase()}`}
+              {`REQUEST ${requestType.toUpperCase()}`}
             </h2>
             {/**steps indicator */}
             <div className='w-full py-1 px-4 flex flex-row justify-between'>
@@ -294,7 +294,7 @@ export default function RequestModal(props: any) {
               {/**step 1-2: select request type */}
               <li
                 key='new-request-selection'
-                className='w-[16rem] lg:w-[31rem] h-full px-2 lg:px-8 flex flex-col justify-center items-center transition-all'
+                className='w-64 lg:w-[22rem] h-full px-2 lg:px-8 flex flex-col justify-center items-center transition-all'
               >
                 <button
                   className='w-full p-5 lg:p-10 my-2 lg:my-3 bg-white border lg:hover:border-green-300 rounded-md drop-shadow-md'
@@ -318,7 +318,7 @@ export default function RequestModal(props: any) {
               {/**step 3: complete talent or job request form */}
               <li
                 key='new-request-filling'
-                className='w-[16rem] lg:w-[31rem] h-full px-2 lg:px-8 flex flex-col justify-between items-center transition-all'
+                className='w-64 lg:w-[22rem] h-full px-2 lg:px-8 flex flex-col justify-between items-center transition-all'
               >
                 {/**form I */}
                 <form
@@ -329,7 +329,7 @@ export default function RequestModal(props: any) {
                     {
                       requestType === 'talent' ?
                         /**talent request I */
-                        <TemplateForm
+                        <FormTemplate
                           inputData={talentInput.slice(0, 5)}
                           formData={formDataTalent}
                           changeData={changeDataTalent}
@@ -339,7 +339,7 @@ export default function RequestModal(props: any) {
                         />
                         :
                         /**job request I */
-                        <TemplateForm
+                        <FormTemplate
                           inputData={jobInput.slice(0, 5)}
                           formData={formDataJob}
                           changeData={changeDataJob}
@@ -378,7 +378,7 @@ export default function RequestModal(props: any) {
               {/**step 4: complete and submit talent or job request talent form */}
               <li
                 key='new-request-sending'
-                className='w-[16rem] lg:w-[31rem] h-full px-2 lg:px-8 flex flex-col justify-between items-center transition-all'
+                className='w-64 lg:w-[22rem] h-full px-2 lg:px-8 flex flex-col justify-between items-center transition-all'
               >
                 {/**form II */}
                 <form
@@ -389,7 +389,7 @@ export default function RequestModal(props: any) {
                     {
                       requestType === 'talent' ?
                         /**talent request II */
-                        <TemplateForm
+                        <FormTemplate
                           inputData={talentInput.slice(5)}
                           formData={formDataTalent}
                           changeData={changeDataTalent}
@@ -399,7 +399,7 @@ export default function RequestModal(props: any) {
                         />
                         :
                         /**job request II */
-                        <TemplateForm
+                        <FormTemplate
                           formData={formDataJob}
                           inputData={jobInput.slice(5)}
                           changeData={changeDataJob}
