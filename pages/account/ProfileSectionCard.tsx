@@ -68,12 +68,10 @@ export default function ProfileSectionCard({ id, key, title, value, sectionName,
           <button
             className="w-full flex flex-row justify-center items-center hover:cursor-default"
             onClick={() => {
-              value && (() => {
-                setProfileModal(true);
-                setProfileModalAction('post');
-                setProfileModalType(value);
-                setCollectionToChange(value);
-              })
+              setProfileModal(true);
+              setProfileModalAction('post');
+              setProfileModalType(value);
+              setCollectionToChange(value);
             }}
           >
             <h3 className='pr-2 text-sm text-slate-400 transition-all'>
