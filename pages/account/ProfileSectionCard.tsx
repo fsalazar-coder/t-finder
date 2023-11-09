@@ -1,21 +1,24 @@
 import { useState } from "react";
 import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
-import { IconEdit, IconDelete } from '../../icons/icons';
+import SectionTitles from '../components/SectionTitles';
+import { IconAdd, IconEdit, IconDelete } from '../../icons/icons';
 
 
 interface ProfileSectionProps {
-  sectionValue: string,
-  sectionData: [];
+  id: string,
+  key: string,
+  title: string,
+  value: string,
+  sectionName: string,
   collectionName: string,
+  data: [],
   shouldRender: boolean,
-  editButtonActived: boolean;
-  deleteButtonActived: boolean;
 }
 
 
-export default function ProfileSectionCard({ sectionValue, sectionData, collectionName, shouldRender, editButtonActived, deleteButtonActived }: ProfileSectionProps) {
+export default function ProfileSectionCard({ id, key, title, value, sectionName, collectionName, data, shouldRender }: ProfileSectionProps) {
 
-  const { collectionToChange, setCollectionToChange, setItemIdToChange } = useAuthData();
+  const { setCollectionToChange, setItemIdToChange } = useAuthData();
   const { setProfileModal, setProfileModalAction, setProfileModalType } = useAuthUI();
   const { setMessageModal, setTypeMessageModal, setTextMessageModal } = useUI();
   const [itemHover, setItemHover] = useState(null);
@@ -49,48 +52,95 @@ export default function ProfileSectionCard({ sectionValue, sectionData, collecti
 
 
   return (
-    shouldRender && (
-      <div className='w-full flex flex-col lg:flex-row-reverse lg:justify-between'>
-        <ul className='w-full flex flex-col'>
-          {
-            sectionData.map((element: any, index: any) => {
-              return (
-                <li key={element._id}
-                  className={
-                    `${listHover && (itemHover === index ? 'hover:scale-[1.02]' : 'opacity-25')
-                    } w-full relative p-1 lg:p-2 my-2 flex flex-col bg-white rounded-md transform transition-all`
-                  }
-                  onMouseEnter={() => { setItemHover(index); setListHover(true); }}
-                  onMouseLeave={() => { setItemHover(null); setListHover(false); }}
-                >
-                  <div className="w-full absolute top-0 right-0 p-2 flex flex-row justify-end items-center transition-all z-20">
-                    {
-                      (listHover) && (itemHover === index) && (
-                        buttons.map((button: any) => {
-                          return (
-                            <EditDeleteButtons
-                              id={button.id}
-                              key={button.key}
-                              icon={button.icon}
-                              elementId={element._id}
-                              sectionValue={sectionValue}
-                              handleClick={button.click}
-                            />
-                          )
-                        })
-                      )
-                    }
-                  </div>
-                  <ItemContent
-                    element={element as any}
-                  />
-                </li>
-              )
-            })
-          }
-        </ul>
+    <li
+      id={id}
+      key={key}
+      className='w-full relative p-2 lg:p-5 my-3 lg:my-2 flex flex-col bg-slate-50 border border-white rounded-md drop-shadow-md'
+    >
+      {/**add button */}
+      <div className={
+        `${!shouldRender ? 'h-full' : 'h-fit'
+        } absolute right-0 top-0 p-2 flex flex-row justify-end items-center z-20`
+      }>
+        <div
+          id='post-item-profile'
+          className='flex flex-col justify-center items-center transition-all'>
+          <button
+            className="w-full flex flex-row justify-center items-center hover:cursor-default"
+            data-value={value}
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+              const sectionValue = e.currentTarget.dataset.value;
+              sectionValue && (() => {
+                setProfileModal(true);
+                setProfileModalAction('post');
+                setProfileModalType(sectionValue);
+                setCollectionToChange(sectionValue);
+              })
+            }}
+          >
+            <h3 className='pr-2 text-sm text-slate-400 transition-all'>
+              {shouldRender ? 'Add' : 'Add information'}
+            </h3>
+            <i className='p-[2px] text-slate-300 lg:hover:text-green-500 text-xl lg:text-2xl flex flex-row justify-center bg-white rounded-full cursor-default lg:cursor-pointer transition-all'>
+              <IconAdd />
+            </i>
+          </button>
+        </div>
       </div>
-    )
+      {/**section title */}
+      <div className='w-full flex flex-row'>
+        <SectionTitles
+          sectionTitle={title}
+          sectionSubtitle=''
+          sectionType='account'
+        />
+      </div>
+      {/**showing information */}
+      <div className='w-full mt-1 lg:mt-2 flex flex-col'>
+        shouldRender && (
+        <div className='w-full flex flex-col lg:flex-row-reverse lg:justify-between'>
+          <ul className='w-full flex flex-col'>
+            {
+              data.map((element: any, index: any) => {
+                return (
+                  <li key={element._id}
+                    className={
+                      `${listHover && (itemHover === index ? 'hover:scale-[1.02]' : 'opacity-25')
+                      } w-full relative p-1 lg:p-2 my-2 flex flex-col bg-white rounded-md transform transition-all`
+                    }
+                    onMouseEnter={() => { setItemHover(index); setListHover(true); }}
+                    onMouseLeave={() => { setItemHover(null); setListHover(false); }}
+                  >
+                    <div className="w-full absolute top-0 right-0 p-2 flex flex-row justify-end items-center transition-all z-20">
+                      {
+                        (listHover) && (itemHover === index) && (
+                          buttons.map((button: any) => {
+                            return (
+                              <EditDeleteButtons
+                                id={button.id}
+                                key={button.key}
+                                icon={button.icon}
+                                elementId={element._id}
+                                sectionValue={value}
+                                handleClick={button.click}
+                              />
+                            )
+                          })
+                        )
+                      }
+                    </div>
+                    <ItemContent
+                      element={element as any}
+                    />
+                  </li>
+                )
+              })
+            }
+          </ul>
+        </div>
+        )
+      </div>
+    </li>
   )
 };
 
