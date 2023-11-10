@@ -1,57 +1,50 @@
-import type { PutBlobResult } from '@vercel/blob';
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
+import axios from 'axios';
 import Image from 'next/image';
 import { IconUser } from '../../icons/icons';
-import axios from 'axios';
 
 
 
-export default function ProfileModalImage(props: any) {
+export default function ProfileModalImageVieja() {
 
   const { userId, userProfileImage, setUserProfileImage, collectionToChange, setUpdate } = useAuthData();
   const { setProfileModal, profileModalAction, setProfileModalAction, setProfileModalType } = useAuthUI();
   const { setMessageModal, setTypeMessageModal, setTextMessageModal, setLoading } = useUI();
+  const [fileImage, setFileImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState(userProfileImage?.image_url);
-  const [blob, setBlob] = useState<PutBlobResult | null>(null);
-  const inputFileRef = useRef<HTMLInputElement>(null);
-
 
   const imageHandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const file = e.target.files[0];
+      setFileImage(file);
       setPreviewImage(URL.createObjectURL(file));
     }
-  };
+  }
 
-  const profileimageHandleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const profileimageHandleSubmit = async (e: any, userId: string) => {
     e.preventDefault();
     setProfileModal(false);
     setLoading(true);
-
-    const file = inputFileRef.current?.files?.[0];
-
-    if (!file) {
-      throw new Error('No file selected');
-    }
-    
+    if (!fileImage) return;
     const formData = new FormData();
-    formData.append('image', file);
+    formData.append('image', fileImage);
+
+    const config: any = {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      withCredentials: true
+    };
 
     try {
-      const response = await fetch(`/api/profileImageVercelApi?id=${userId}`, {
-        method: 'POST',
-        body: formData,
-      });
-
-      const result = await response.json();
-      const newBlob = (await response.json()) as PutBlobResult;
-
-      if (response.ok) {
-        setBlob(newBlob);
-        console.log('new blob: ', newBlob);
-        setUserProfileImage(result.url); // Set the new image in the state
-        setPreviewImage(result.url); // Update the preview image
+      const response = await axios.post(`/api/profileImageApi?id=${userId}`,
+        formData,
+        config
+      );
+      const { status, actionResponse } = response.data;
+      if (status === 'success') {
+        setUserProfileImage(actionResponse);
         setUpdate(collectionToChange)
         setMessageModal(true);
         setTypeMessageModal('successful');
@@ -61,11 +54,9 @@ export default function ProfileModalImage(props: any) {
         setMessageModal(true);
         setTypeMessageModal('error');
         setTextMessageModal('Profile image not uploaded');
-        throw new Error(result.error || 'Upload failed');
       }
     }
     catch (error: any) {
-      console.error('Upload error:', error);
       if (error.response) {
         let statusError = error.response.status;
         let messageError = error.response.data.message;
@@ -82,6 +73,7 @@ export default function ProfileModalImage(props: any) {
       }
     }
     finally {
+      setFileImage(null);
       setPreviewImage('');
       setLoading(false);
       setProfileModalAction('');
@@ -89,12 +81,7 @@ export default function ProfileModalImage(props: any) {
     }
   };
 
-  useEffect(() => {
-    console.log('blob: ', blob);
-  }, [blob])
-
   const profileImage = userProfileImage?.image_url;
-
 
   return (
     <div className='w-full h-full flex flex-col justify-between items-center'>
@@ -102,7 +89,7 @@ export default function ProfileModalImage(props: any) {
       <div className='w-full h-full flex flex-col justify-center items-center'>
         <div className='w-72 h-72 flex flex-row justify-center items-center'>
           {
-            previewImage ?
+            fileImage ?
               <Image
                 className='w-full h-full rounded-full'
                 width={400}
@@ -131,7 +118,7 @@ export default function ProfileModalImage(props: any) {
         {/**form-box */}
         <form
           className='w-full flex flex-col'
-          onSubmit={profileimageHandleSubmit}
+          onSubmit={(e: any) => profileimageHandleSubmit(e, userId as string)}
         >
           {/**profile image input */}
           <div className='w-full h-fit relative flex flex-col justify-start items-start'>
@@ -142,8 +129,7 @@ export default function ProfileModalImage(props: any) {
               className='w-full h-fit py-1 text-sm lg:text-base rounded-md outline-none shadow-input transition-all z-10'
               accept='image/*'
               required
-              ref={inputFileRef}
-              onChange={imageHandleChange}
+              onChange={(e: any) => imageHandleChange(e)}
             />
           </div>
           {/**button submit form */}
@@ -151,12 +137,12 @@ export default function ProfileModalImage(props: any) {
             <button
               type='submit'
               className={
-                `${previewImage ?
+                `${fileImage ?
                   'font-bold bg-green-400 lg:bg-green-300 lg:hover:bg-green-400 cursor-default lg:cursor-pointer' :
                   'bg-slate-400 cursor-default'
                 } w-full text-slate-50 lg:hover:text-white lg:hover:font-bold px-6 py-2 flex flex-row justify-center items-center rounded-md transition-all z-30`
               }
-              disabled={!previewImage ? true : false}
+              disabled={!fileImage ? true : false}
             >
               <h5 className='w-full h-fit text-sm lg:text-base leading-none tracking-wider'>
                 Upload
