@@ -34,24 +34,27 @@ export default function ProfileModalImage(props: any) {
     if (!file) {
       throw new Error('No file selected');
     }
-    
+
     const formData = new FormData();
     formData.append('image', file);
 
     try {
-      const response = await fetch(`/api/profileImageVercelApi?id=${userId}`, {
-        method: 'POST',
-        body: formData,
-      });
+      const response = await axios.post(
+        `/api/profileImageVercelApi?id=${userId}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
 
-      const result = await response.json();
-      const newBlob = (await response.json()) as PutBlobResult;
-
-      if (response.ok) {
-        setBlob(newBlob);
-        console.log('new blob: ', newBlob);
-        setUserProfileImage(result.url); // Set the new image in the state
-        setPreviewImage(result.url); // Update the preview image
+      const { status, imageUrl, dbResult } = response.data;
+      if (status === 'success') {
+        setBlob(imageUrl);
+        console.log('Image Url: ', imageUrl);
+        setUserProfileImage(imageUrl); // Set the new image in the state
+        setPreviewImage(imageUrl); // Update the preview image
         setUpdate(collectionToChange)
         setMessageModal(true);
         setTypeMessageModal('successful');
@@ -61,7 +64,6 @@ export default function ProfileModalImage(props: any) {
         setMessageModal(true);
         setTypeMessageModal('error');
         setTextMessageModal('Profile image not uploaded');
-        throw new Error(result.error || 'Upload failed');
       }
     }
     catch (error: any) {
