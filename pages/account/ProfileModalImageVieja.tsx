@@ -12,7 +12,7 @@ export default function ProfileModalImageVieja() {
   const { setProfileModal, profileModalAction, setProfileModalAction, setProfileModalType } = useAuthUI();
   const { setMessageModal, setTypeMessageModal, setTextMessageModal, setLoading } = useUI();
   const [fileImage, setFileImage] = useState<File | null>(null);
-  const [previewImage, setPreviewImage] = useState(userProfileImage?.url);
+  const [previewImage, setPreviewImage] = useState(userProfileImage?.image_url);
 
   const imageHandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -81,7 +81,7 @@ export default function ProfileModalImageVieja() {
     }
   };
 
-  const profileImage = userProfileImage?.url;
+  const profileImage = userProfileImage?.image_url;
 
   return (
     <div className='w-full h-full flex flex-col justify-between items-center'>

@@ -16,7 +16,7 @@ export default function ProfileModalImage() {
   const { userId, userProfileImage, setUserProfileImage, collectionToChange, setUpdate } = useAuthData();
   const { setProfileModal, profileModalAction, setProfileModalAction, setProfileModalType } = useAuthUI();
   const { setMessageModal, setTypeMessageModal, setTextMessageModal, setLoading } = useUI();
-  const [previewImage, setPreviewImage] = useState(userProfileImage?.url);
+  const [previewImage, setPreviewImage] = useState(userProfileImage?.image_url);
   const [fileImage, setFileImage] = useState<File | undefined>(undefined);
 
   const imageHandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,13 +43,13 @@ export default function ProfileModalImage() {
         );
 
         const newBlob = (await response.json()) as PutBlobResult;
+        console.log('new Blob before: ', newBlob);
 
         if (newBlob) {
-          console.log('new Blob: ', newBlob);
+          console.log('new Blob after: ', newBlob);
           console.log('new Blob: ', newBlob.url);
           console.log('new Blob: ', newBlob.pathname);
           setBlob(newBlob);
-          setUserProfileImage(newBlob); // Set the new image in the state
           setUpdate(collectionToChange)
           setMessageModal(true);
           setTypeMessageModal('successful');
@@ -90,7 +90,7 @@ export default function ProfileModalImage() {
     }
   };
 
-  const profileImage = userProfileImage?.url;
+  const profileImage = userProfileImage?.image_url;
 
 
   return (
