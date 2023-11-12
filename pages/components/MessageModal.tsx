@@ -33,7 +33,7 @@ export default function MessageModal(props: any) {
     return () => {
       document.removeEventListener('keydown', modalCloseEscapeHandle);
     };
-  }, []);
+  });
 
   useEffect(() => {
     messageModal ?

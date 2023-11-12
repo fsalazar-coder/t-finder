@@ -49,7 +49,7 @@ export default function ImageIconUser(props: any) {
     }
   }, [update]);
 
-  const profileImage = userProfileImage?.image_url;
+  const profileImage = userProfileImage?.url;
 
   return (
     profileImage ?
