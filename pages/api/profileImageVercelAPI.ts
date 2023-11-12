@@ -1,82 +1,55 @@
 import { put } from '@vercel/blob';
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "../../lib/mongodb";
-import formidable from "formidable";
-import fs from "fs/promises";
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
 
-const readFile = (req: NextApiRequest): Promise<{ fields: formidable.Fields; files: formidable.Files }> => {
-  const form = new formidable.IncomingForm();
-  const options: formidable.Options = {};
-  options.maxFileSize = 4000 * 1024 * 1024;     /// esto hay que CAMBIARLO!!
-
-  return new Promise((resolve, reject) => {
-    form.parse(req, (err, fields, files) => {
-      if (err) reject(err);
-      resolve({ fields, files });
-    });
-  });
-};
 
 const handler: NextApiHandler = async (req: NextApiRequest, res: NextApiResponse) => {
 
-  const { method } = req;
-  const { db } = await dbConnect();
-  const collection = db.collection("profile_images");
-  const { fields, files } = await readFile(req);
+  if (req.method === 'POST') {
+    if (!req.url) {
+      res.status(400).json({ error: 'Request URL is missing' });
+      return;
+    }
 
-  if (files.image) {
-    const imageFile = files.image[0];
-    const filename = imageFile.newFilename;
-    const buffer = await fs.readFile(imageFile.filepath);
-    const contentType = imageFile.mimetype || 'application/octet-stream';
+    const baseUrl = `http://${req.headers.host}`;
+    const fullUrl = new URL(req.url, baseUrl);
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get('id');
+    const { db } = await dbConnect();
+    const collection = db.collection("profile_image");
 
-    if (req.method === 'POST') {
+    if (userId) {
       try {
-        const blob = await put(filename, buffer, {
-          contentType: contentType,
+        // Convert ReadableStream to Buffer
+        const buffer = await req.body?.getReader().read().then(({ value }: any) => value);
+
+        if (!buffer) {
+          throw new Error('Buffer is null or undefined');
+        }
+
+        const blob = await put(userId, buffer, {
           access: 'public',
         });
 
-        const imageUrl = blob.url;
-        const userId = fields.userId;
-
-        const updateResult = await collection.updateOne(
-          { _id: userId as any },
-          { $set: { image_url: imageUrl } },
-          { upsert: true }
-        );
-
         return res.status(200).json({
           status: 'success',
-          imageUrl: imageUrl,
-          dbResult: updateResult,
+          actionResponse: blob
         });
       }
       catch (error) {
         console.error('An error occurred:', error);
-        res.status(500).json({ error: 'An internal error occurred' });
+        return res.status(500).json({ error: 'Failed to process the image upload.' });
       }
     }
     else {
-      return res.status(400).json({
-        status: 'failure',
-        message: 'No file uploaded',
-      });
+      return res.status(400).json({ error: 'User ID is missing.' });
     }
   }
-
   else {
-    return res.status(405).json({
-      status: 'failure',
-      message: 'Method not allowed',
-    });
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 };
+
 
 export default handler;

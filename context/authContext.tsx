@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import type { PutBlobResult } from '@vercel/blob';
 
 
 
@@ -9,8 +10,8 @@ interface AuthDataContextProps {
   setUserId: React.Dispatch<React.SetStateAction<Id | string>>;
   userEmail: string | null;
   setUserEmail: React.Dispatch<React.SetStateAction<string | null>>;
-  userProfileImage: UserProfileImage | null;
-  setUserProfileImage: React.Dispatch<React.SetStateAction<UserProfileImage | null>>;
+  userProfileImage: PutBlobResult | null;
+  setUserProfileImage: React.Dispatch<React.SetStateAction<PutBlobResult | null>>;
   userProfilePersonalInfo: UserProfilePersonalInfo | null;
   setUserProfilePersonalInfo: React.Dispatch<React.SetStateAction<UserProfilePersonalInfo | null>>;
   userProfileExperience: UserProfileExperience[] | [];
@@ -55,10 +56,6 @@ interface AuthUIContextProps {
 
 interface Id {
   id: string;
-}
-
-interface UserProfileImage {
-  image_url: string,
 }
 
 interface UserProfilePersonalInfo {
@@ -170,7 +167,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   const [token, setToken] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | { id: string }>('');
   const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [userProfileImage, setUserProfileImage] = useState<UserProfileImage | null>(null);
+  const [userProfileImage, setUserProfileImage] = useState<PutBlobResult | null>(null);
   const [userProfilePersonalInfo, setUserProfilePersonalInfo] = useState<UserProfilePersonalInfo | null>(null);
   const [userProfileExperience, setUserProfileExperience] = useState<UserProfileExperience[] | []>([]);
   const [userProfileEducation, setUserProfileEducation] = useState<UserProfileEducation[] | []>([]);

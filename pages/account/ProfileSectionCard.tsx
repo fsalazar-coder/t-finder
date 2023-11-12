@@ -145,10 +145,7 @@ const EditDeleteButtons = ({ id, icon, elementId, sectionValue, handleClick }: a
   <button
     id={id}
     className="pl-1 flex flex-row justify-center items-center hover:cursor-default transition-all"
-    onClick={() => {
-      handleClick(elementId, sectionValue);
-      console.log('Section value: ', sectionValue)
-    }}
+    onClick={() => handleClick(elementId, sectionValue)}
   >
     <i className={
       `${id === 'edit-item-profile' ?
@@ -192,13 +189,13 @@ const ItemContent = ({ element, itemHover, buttonHidden }: any) => {
         Object.entries(newElement).map(([key, value]) => (
           key !== ' id' && key !== 'User id' && (
             <li key={key}
-              className=""
+              className="w-full"
             >
               <h3 className='text-sm lg:text-base text-slate-600'>
                 <strong>{key}:</strong> {typeof value === 'string' ? value : ''}
               </h3>
-            </li>)
-        ))
+            </li>
+          )))
       }
     </ul>
   )

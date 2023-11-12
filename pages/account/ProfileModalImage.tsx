@@ -1,3 +1,5 @@
+'use client';
+
 import type { PutBlobResult } from '@vercel/blob';
 import { useState, useRef, useEffect } from 'react';
 import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
@@ -7,20 +9,21 @@ import axios from 'axios';
 
 
 
-export default function ProfileModalImage(props: any) {
+export default function ProfileModalImage() {
+  const inputFileRef = useRef<HTMLInputElement>(null);
+  const [blob, setBlob] = useState<PutBlobResult | null>(null);
 
   const { userId, userProfileImage, setUserProfileImage, collectionToChange, setUpdate } = useAuthData();
   const { setProfileModal, profileModalAction, setProfileModalAction, setProfileModalType } = useAuthUI();
   const { setMessageModal, setTypeMessageModal, setTextMessageModal, setLoading } = useUI();
-  const [previewImage, setPreviewImage] = useState(userProfileImage?.image_url);
-  const [blob, setBlob] = useState<PutBlobResult | null>(null);
-  const inputFileRef = useRef<HTMLInputElement>(null);
-
+  const [previewImage, setPreviewImage] = useState(userProfileImage?.url);
+  const [fileImage, setFileImage] = useState<File | undefined>(undefined);
 
   const imageHandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const file = e.target.files[0];
+    if (inputFileRef.current?.files) {
+      const file = inputFileRef.current.files[0];
       setPreviewImage(URL.createObjectURL(file));
+      setFileImage(file);
     }
   };
 
@@ -29,73 +32,65 @@ export default function ProfileModalImage(props: any) {
     setProfileModal(false);
     setLoading(true);
 
-    const file = inputFileRef.current?.files?.[0];
-
-    if (!file) {
-      throw new Error('No file selected');
-    }
-
-    const formData = new FormData();
-    formData.append('image', file);
-
-    try {
-      const response = await axios.post(
-        `/api/profileImageVercelApi?id=${userId}`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
+    if (fileImage) {
+      try {
+        const response = await fetch(
+          `/api/profileImageVercelAPI?id=${userId}`,
+          {
+            method: 'POST',
+            body: fileImage,
           },
-        }
-      );
+        );
 
-      const { status, imageUrl, dbResult } = response.data;
-      if (status === 'success') {
-        setBlob(imageUrl);
-        console.log('Image Url: ', imageUrl);
-        setUserProfileImage(imageUrl); // Set the new image in the state
-        setPreviewImage(imageUrl); // Update the preview image
-        setUpdate(collectionToChange)
-        setMessageModal(true);
-        setTypeMessageModal('successful');
-        setTextMessageModal(`Your profile image have been ${profileModalAction === 'post' ? 'posted' : 'updated'}`);
-      }
-      else {
-        setMessageModal(true);
-        setTypeMessageModal('error');
-        setTextMessageModal('Profile image not uploaded');
-      }
-    }
-    catch (error: any) {
-      console.error('Upload error:', error);
-      if (error.response) {
-        let statusError = error.response.status;
-        let messageError = error.response.data.message;
-        setMessageModal(true);
-        switch (statusError) {
-          case 500:
-            setTypeMessageModal('error');
-            setTextMessageModal(messageError || 'An error occurred');
-            break;
-          default:
-            setTypeMessageModal('error');
-            setTextMessageModal('An unexpected error occurred.');
+        const newBlob = (await response.json()) as PutBlobResult;
+
+        if (newBlob) {
+          console.log('new Blob: ', newBlob);
+          console.log('new Blob: ', newBlob.url);
+          console.log('new Blob: ', newBlob.pathname);
+          setBlob(newBlob);
+          setUserProfileImage(newBlob); // Set the new image in the state
+          setUpdate(collectionToChange)
+          setMessageModal(true);
+          setTypeMessageModal('successful');
+          setTextMessageModal(`Your profile image have been ${profileModalAction === 'post' ? 'posted' : 'updated'}`);
+        }
+        else {
+          setMessageModal(true);
+          setTypeMessageModal('error');
+          setTextMessageModal('Profile image not uploaded');
         }
       }
+      catch (error: any) {
+        console.error('Upload error:', error);
+        if (error.response) {
+          let statusError = error.response.status;
+          let messageError = error.response.data.message;
+          setMessageModal(true);
+          switch (statusError) {
+            case 500:
+              setTypeMessageModal('error');
+              setTextMessageModal(messageError || 'An error occurred');
+              break;
+            default:
+              setTypeMessageModal('error');
+              setTextMessageModal('An unexpected error occurred.');
+          }
+        }
+      }
+      finally {
+        setPreviewImage('');
+        setLoading(false);
+        setProfileModalAction('');
+        setProfileModalType('');
+      }
     }
-    finally {
-      setPreviewImage('');
-      setLoading(false);
-      setProfileModalAction('');
-      setProfileModalType('');
+    else {
+      throw new Error('No file selected');
     }
   };
 
-  useEffect(() => {
-    console.log('blob: ', blob);
-  }, [blob])
-
-  const profileImage = userProfileImage?.image_url;
+  const profileImage = userProfileImage?.url;
 
 
   return (
