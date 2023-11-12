@@ -21,7 +21,7 @@ type ModuleComponents = {
 
 
 
-export default function Account(props: any) {
+export default function Account() {
 
   const { token } = useAuthData();
   const { accountActived, accountModule } = useAuthUI();
@@ -70,19 +70,10 @@ export default function Account(props: any) {
         <h2>SPONSOR</h2>
       </div>
 
-      {/**dropdown */}
       <Dropdown />
 
-      {/**profile modal */}
       <ProfileModal />
 
-      {/**education modal */}
-      {/**<EducationModal />*/}
-
-      {/**experience modal */}
-      {/**<ExperienceModal /> */}
-
-      {/**request modal */}
       <RequestModal />
 
       {/**message error and successful modal */}
