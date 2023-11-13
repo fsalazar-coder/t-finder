@@ -63,8 +63,6 @@ export default function ProfileModalImage() {
         .then(async (response) => {
           const { url } = (await response.json()) as PutBlobResult;
           if (url) {
-            console.log('status success URL: ', url);
-            console.log('URL: ', url);
             const config = {
               headers: {
                 'Authorization': `Bearer ${token}`
@@ -79,8 +77,11 @@ export default function ProfileModalImage() {
                 config)
               .then((response) => {
                 const { status, actionResponse } = response.data;
+                console.log('Axios response: ', actionResponse);
                 if (status === 'success') {
-                  setUserProfileImage(actionResponse);
+                  console.log('Success, action response: ', actionResponse);
+                  console.log('Success, action response: ', actionResponse.image_url);
+                  setUserProfileImage(actionResponse.image_url);
                   setUpdate(collectionToChange)
                   setMessageModal(true);
                   setTypeMessageModal('successful');
