@@ -30,7 +30,7 @@ export default function ImageIconUser(props: any) {
       );
       const { status, actionResponse } = response.data;
       if (status === 'success') {
-        setUserProfileImage(actionResponse);
+        setUserProfileImage(actionResponse.image_url);
       }
     }
     catch (error: any) {
@@ -49,10 +49,9 @@ export default function ImageIconUser(props: any) {
     }
   }, [update]);
 
-  const profileImage = userProfileImage?.image_url;
 
   return (
-    profileImage ?
+    userProfileImage ?
       <div className='w-full h-full  flex flex-col justify-center items-center bg-gradient-to-br from-fuchsia-400 via-slate-300 to-fuchsia-600 rounded-full z-20'>
         <Image
           className={
@@ -63,7 +62,7 @@ export default function ImageIconUser(props: any) {
                 ''} w-[93%] h-[93%] flex flex-col justify-center items-center rounded-full border-slate-300`}
           width={800}
           height={800}
-          src={profileImage as string}
+          src={userProfileImage}
           alt='profile-image'
         />
       </div>

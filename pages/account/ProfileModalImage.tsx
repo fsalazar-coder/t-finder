@@ -15,7 +15,7 @@ export default function ProfileModalImage() {
   const { token, userId, userProfileImage, setUserProfileImage, collectionToChange, setUpdate } = useAuthData();
   const { setProfileModal, profileModalAction, setProfileModalAction, setProfileModalType } = useAuthUI();
   const { setMessageModal, setTypeMessageModal, setTextMessageModal, loading, setLoading } = useUI();
-  const [previewImage, setPreviewImage] = useState<string | null>(userProfileImage?.image_url || null);
+  const [previewImage, setPreviewImage] = useState<string | null>(userProfileImage || null);
 
 
   const onChangePicture = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -109,8 +109,6 @@ export default function ProfileModalImage() {
     }
   };
 
-  const profileImage = userProfileImage?.image_url;
-
 
   return (
     <div className='w-full h-full flex flex-col justify-between items-center'>
@@ -127,12 +125,12 @@ export default function ProfileModalImage() {
                 alt='profile-image'
               />
               :
-              profileImage ?
+              userProfileImage ?
                 <Image
                   className='w-full h-full rounded-full'
                   width={400}
                   height={400}
-                  src={profileImage as string}
+                  src={userProfileImage}
                   alt='profile-image'
                 />
                 :
