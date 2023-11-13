@@ -61,11 +61,10 @@ export default function ProfileModalImage() {
           body: fileImage,
         })
         .then(async (response) => {
-          console.log('Response Vercel Blob: ', response);
-          console.log('Vercel Blob URL: ', (await response.json()) as PutBlobResult);
-          if (response.status === 200) {
-            const { url } = (await response.json()) as PutBlobResult;
+          const { url } = (await response.json()) as PutBlobResult;
+          if (url) {
             console.log('status success URL: ', url);
+            console.log('URL: ', url);
             const config = {
               headers: {
                 'Authorization': `Bearer ${token}`
