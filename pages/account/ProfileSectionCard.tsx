@@ -84,7 +84,7 @@ export default function ProfileSectionCard({ id, key, title, value, data, should
       {/**section title */}
       <div className='w-full flex flex-row'>
         <SectionTitles
-          sectionTitle={title.toUpperCase()}
+          sectionTitle={title?.toUpperCase()}
           sectionSubtitle=''
           sectionType='account'
         />
