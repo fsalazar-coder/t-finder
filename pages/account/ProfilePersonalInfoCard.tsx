@@ -38,7 +38,7 @@ export default function PersonalInfo() {
           setUserProfilePersonalInfo(actionResponse);
         }
         else if (collection === 'profile_image') {
-          setUserProfileImage(actionResponse);
+          setUserProfileImage(actionResponse.image_url);
         }
       }
     }
@@ -119,6 +119,7 @@ export default function PersonalInfo() {
             {/**image */}
             <div className='w-full p-1 lg:p-2 mb-1 flex flex-col justify-between items-center bg-white rounded-md'>
               <div className='w-40 h-40 relative flex flex-col justify-center items-center'>
+                {/**image button add or edit */}
                 <div className='absolute top-0 right-0 flex flex-col justify-center items-center z-30'>
                   <button
                     className="w-full p-[2px] flex flex-row justify-center items-center bg-white rounded-full"
