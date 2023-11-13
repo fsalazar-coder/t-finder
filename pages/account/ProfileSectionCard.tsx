@@ -9,14 +9,12 @@ interface ProfileSectionProps {
   key: string,
   title: string,
   value: string,
-  sectionName: string,
-  collectionName: string,
   data: [],
   shouldRender: boolean,
 }
 
 
-export default function ProfileSectionCard({ id, key, title, value, sectionName, collectionName, data, shouldRender }: ProfileSectionProps) {
+export default function ProfileSectionCard({ id, key, title, value, data, shouldRender }: ProfileSectionProps) {
 
   const { setCollectionToChange, setItemIdToChange } = useAuthData();
   const { setProfileModal, setProfileModalAction, setProfileModalType } = useAuthUI();
@@ -86,7 +84,7 @@ export default function ProfileSectionCard({ id, key, title, value, sectionName,
       {/**section title */}
       <div className='w-full flex flex-row'>
         <SectionTitles
-          sectionTitle={title}
+          sectionTitle={title.toUpperCase()}
           sectionSubtitle=''
           sectionType='account'
         />
@@ -159,7 +157,7 @@ const EditDeleteButtons = ({ id, icon, elementId, sectionValue, handleClick }: a
   </button>
 );
 
-const ItemContent = ({ element, itemHover, buttonHidden }: any) => {
+const ItemContent = ({ element }: any) => {
 
   function formatKeys(element: any) {
     const formattedElement: Record<string, any> = {};

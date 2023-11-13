@@ -5,7 +5,7 @@ import Cors from 'cors';
 import initMiddleware from '../../lib/init-middleware';
 import dbConnect from "../../lib/mongodb";
 import { v4 as uuidv4 } from 'uuid';
-import e from 'cors';
+
 
 const cors = initMiddleware(
   Cors({

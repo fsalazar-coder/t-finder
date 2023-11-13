@@ -12,12 +12,10 @@ import axios from 'axios';
 export default function ProfileModalImage() {
   const [data, setData] = useState<{ image: string | null }>({ image: null });
   const [fileImage, setFileImage] = useState<File | null>(null);
+  const { token, userId, userProfileImage, setUserProfileImage, collectionToChange, setUpdate } = useAuthData();
   const { setProfileModal, profileModalAction, setProfileModalAction, setProfileModalType } = useAuthUI();
   const { setMessageModal, setTypeMessageModal, setTextMessageModal, loading, setLoading } = useUI();
-  const { token, userId, userProfileImage, setUserProfileImage, collectionToChange, setUpdate } = useAuthData();
   const [previewImage, setPreviewImage] = useState<string | null>(userProfileImage?.image_url || null);
-
-  const [blob, setBlob] = useState<PutBlobResult | null>(null);
 
 
   const onChangePicture = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -63,43 +61,44 @@ export default function ProfileModalImage() {
           body: fileImage,
         })
         .then(async (response) => {
+          console.log('Response Vercel Blob: ', response);
+          console.log('Vercel Blob URL: ', (await response.json()) as PutBlobResult);
           if (response.status === 200) {
             const { url } = (await response.json()) as PutBlobResult;
-            console.log('Url: ', url);
+            console.log('status success URL: ', url);
             const config = {
               headers: {
                 'Authorization': `Bearer ${token}`
               }
             };
             axios
-              .post('/api/profileImageMongoApi',
+              .post(`/api/profileImageMongoApi`,
                 {
                   id: userId,
-                  data: url,
+                  data: url
                 },
-                config
-              )
+                config)
               .then((response) => {
                 const { status, actionResponse } = response.data;
                 if (status === 'success') {
-                  setUpdate(collectionToChange);
                   setUserProfileImage(actionResponse);
+                  setUpdate(collectionToChange)
                   setMessageModal(true);
                   setTypeMessageModal('successful');
-                  setTextMessageModal(`Your information have been ${profileModalAction === 'post' ? 'posted' : 'uploaded'}`);
+                  setTextMessageModal(`Your profile image have been ${profileModalAction === 'post' ? 'posted' : 'updated'}`);
                 }
                 else {
                   setMessageModal(true);
                   setTypeMessageModal('error');
                   setTextMessageModal('Profile image not uploaded');
                 }
-              });
+              })
           }
           else {
             const error = await response.text();
             setMessageModal(true);
             setTypeMessageModal('error');
-            setTextMessageModal(error);
+            setTextMessageModal('An error ocurred');
           }
           setPreviewImage('');
           setProfileModalAction('');
@@ -124,7 +123,7 @@ export default function ProfileModalImage() {
                 className='w-full h-full rounded-full'
                 width={400}
                 height={400}
-                src={data.image as string}
+                src={previewImage as string}
                 alt='profile-image'
               />
               :
@@ -133,7 +132,7 @@ export default function ProfileModalImage() {
                   className='w-full h-full rounded-full'
                   width={400}
                   height={400}
-                  src={data.image as string}
+                  src={profileImage as string}
                   alt='profile-image'
                 />
                 :

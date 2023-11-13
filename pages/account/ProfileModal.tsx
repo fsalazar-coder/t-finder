@@ -9,20 +9,36 @@ import axios from 'axios';
 
 export default function ProfileModal(props: any) {
 
-  const { token, userId, collectionToChange, itemIdToChange, setCollectionToChange, update, setUpdate } = useAuthData();
+  const {
+    token, userId,
+    userProfilePersonalInfo, setUserProfilePersonalInfo,
+    userProfileExperience, setUserProfileExperience,
+    userProfileEducation, setUserProfileEducation,
+    userProfileCourses, setUserProfileCourses,
+    userProfileProjects, setUserProfileProjects,
+    userProfilePublications, setUserProfilePublications,
+    userProfileConferences, setUserProfileConferences,
+    userProfileCertifications, setUserProfileCertifications,
+    userProfileRecommendations, setuserProfileRecommendations,
+    collectionToChange, setCollectionToChange, itemIdToChange, setUpdate } = useAuthData();
   const { profileModal, setProfileModal, setProfileModalType, profileModalAction, setProfileModalAction } = useAuthUI();
   const { setMessageModal, setTypeMessageModal, setTextMessageModal, setLoading } = useUI();
   const [filledForm, setFilledForm] = useState(true);
   const { screenNarrow } = useUI();
 
 
+  const isPersonalInfo = collectionToChange === 'personal_info';
+  const isProfileImageModal = collectionToChange === 'profile_image';
+  const isEditAction = profileModalAction === 'edit';
+  const isPostAction = profileModalAction === 'post';
+
   const [profileInfo, setProfileInfo] = useState({
     /**personal information: */
-    fullName: '',
-    professionOccupation: '',
-    preferredLanguage: '',
-    personalLocation: '',
-    personalDescription: '',
+    fullName: isEditAction ? userProfilePersonalInfo?.full_name : '',
+    professionOccupation: isEditAction ? userProfilePersonalInfo?.profession_occupation : '',
+    preferredLanguage: isEditAction ? userProfilePersonalInfo?.preferred_language : '',
+    personalLocation: isEditAction ? userProfilePersonalInfo?.location : '',
+    personalDescription: isEditAction ? userProfilePersonalInfo?.personal_description : '',
     /**experience: */
     companyOrganization: '',
     roleTitle: '',
@@ -173,7 +189,7 @@ export default function ProfileModal(props: any) {
         duration: profileInfo.monthsDuration,
         team_size: profileInfo.teamSize,
       },
-      educationInfo: {
+      education: {
         university_school: profileInfo.universitySchool,
         degree: profileInfo.degree,
         major_field_study: profileInfo.majorFieldStudy,
@@ -185,32 +201,32 @@ export default function ProfileModal(props: any) {
         year_completed: profileInfo.yearCompleted,
         skills_acquired: profileInfo.skillsAcquired,
       },
-      project: {
+      projects: {
         project_name: profileInfo.projectName,
         role: profileInfo.role,
         technologies_used: profileInfo.technologiesUsedProject,
         description: profileInfo.description,
         project_url: profileInfo.projectUrl,
       },
-      publication: {
+      publications: {
         publication_title: profileInfo.publicationTitle,
         co_authors: profileInfo.coAuthors,
         journal_conference: profileInfo.journalConference,
         year_published: profileInfo.yearPublished,
       },
-      conference: {
+      conferences: {
         presentation_title: profileInfo.presentationTitle,
         conference_name: profileInfo.conferenceName,
         location: profileInfo.conferenceLocation,
         year: profileInfo.year,
       },
-      certification: {
+      certifications: {
         certification_name: profileInfo.certificationName,
         issuing_organization: profileInfo.issuingOrganization,
         license_number: profileInfo.licenseNumber,
         year_issued: profileInfo.yearIssued,
       },
-      recommendation: {
+      recommendations: {
         recommender_title: profileInfo.recommenderTitle,
         recommender_name: profileInfo.recommenderName,
         recommender_organization: profileInfo.recommenderOrganization,
@@ -222,6 +238,31 @@ export default function ProfileModal(props: any) {
     const dataToApi = data[nameProfileSelected as keyof typeof data];
     return dataToApi;
   };
+
+  const setUserProfile = (userProfile: string, data: any) => {
+    switch (userProfile) {
+      case 'personal_info':
+        return setUserProfilePersonalInfo(data);
+      case 'experience':
+        return setUserProfileExperience(data);
+      case 'education':
+        return setUserProfileEducation(data);
+      case 'courses':
+        return setUserProfileCourses(data);
+      case 'projects':
+        return setUserProfileProjects(data);
+      case 'publications':
+        return setUserProfilePublications(data);
+      case 'conferences':
+        return setUserProfileConferences(data);
+      case 'certifications':
+        return setUserProfileCertifications(data);
+      case 'recommendations':
+        return setuserProfileRecommendations(data);
+      default:
+        break;
+    }
+  }
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -235,9 +276,6 @@ export default function ProfileModal(props: any) {
       }
     };
 
-    const isPersonalInfo = collectionToChange === 'personal_info';
-    const isPostAction = profileModalAction === 'post';
-
     try {
       const response = await axios.post('/api/profileApi',
         {
@@ -248,8 +286,9 @@ export default function ProfileModal(props: any) {
         },
         config
       );
-      const { status } = response.data;
+      const { status, actionResponse } = response.data;
       if (status === 'success') {
+        setUserProfile(collectionToChange, actionResponse);
         setUpdate(collectionToChange);
         setMessageModal(true);
         setTypeMessageModal('successful');
@@ -282,7 +321,7 @@ export default function ProfileModal(props: any) {
   const modal = [
     {
       collectionName: 'personal_info',
-      title: 'Personal Information',
+      title: 'Personal information',
       name: 'personalInfo',
       inputs: [
         { type: 'text', title: 'Full name', value: 'fullName' },
@@ -306,9 +345,9 @@ export default function ProfileModal(props: any) {
       ],
     },
     {
-      collectionName: 'education_info',
+      collectionName: 'education',
       title: 'Education',
-      name: 'educationInfo',
+      name: 'education',
       inputs: [
         { type: 'text', title: 'University school', value: 'universitySchool' },
         { type: 'text', title: 'Degree', value: 'degree' },
@@ -330,7 +369,7 @@ export default function ProfileModal(props: any) {
     {
       collectionName: 'projects',
       title: 'Project',
-      name: 'project',
+      name: 'projects',
       inputs: [
         { type: 'text', title: 'Project Name', value: 'projectName' },
         { type: 'text', title: 'Role', value: 'role' },
@@ -342,7 +381,7 @@ export default function ProfileModal(props: any) {
     {
       collectionName: 'publications',
       title: 'Publication',
-      name: 'publication',
+      name: 'publications',
       inputs: [
         { type: 'text', title: 'Publication Title', value: 'publicationTitle' },
         { type: 'text', title: 'Co-authors', value: 'coAuthors' },
@@ -353,7 +392,7 @@ export default function ProfileModal(props: any) {
     {
       collectionName: 'conferences',
       title: 'Conference',
-      name: 'conference',
+      name: 'conferences',
       inputs: [
         { type: 'text', title: 'Presentation Title', value: 'presentationTitle' },
         { type: 'text', title: 'Conference Name', value: 'conferenceName' },
@@ -364,7 +403,7 @@ export default function ProfileModal(props: any) {
     {
       collectionName: 'certifications',
       title: 'Certification',
-      name: 'certification',
+      name: 'certifications',
       inputs: [
         { type: 'text', title: 'Certification Name', value: 'certificationName' },
         { type: 'text', title: 'Issuing Organization', value: 'issuingOrganization' },
@@ -375,7 +414,7 @@ export default function ProfileModal(props: any) {
     {
       collectionName: 'recommendations',
       title: 'Recomendation',
-      name: 'recommendation',
+      name: 'recommendations',
       inputs: [
         { type: 'text', title: 'Recommender title', value: 'recommenderTitle' },
         { type: 'text', title: 'Recommender name', value: 'recommenderName' },
@@ -401,8 +440,6 @@ export default function ProfileModal(props: any) {
       setFilledForm(profileInfoSelectedUnfilled ? false : true);
     }
   });
-
-  const isProfileImageModal = collectionToChange === 'profile_image';
 
 
   return (
