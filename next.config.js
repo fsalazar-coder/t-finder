@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  images: {
+    domains: ['m8zdl4ngov2wwphn.public.blob.vercel-storage.com'],
+  },
   env: {
     DB_URI: process.env.DB_URI,
     SECRET_KEY: process.env.SECRET_KEY,
