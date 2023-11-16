@@ -59,13 +59,13 @@ export default function Request(props: any) {
   ];
 
   return (
-    <div className='w-full h-screen pl-0 lg:px-60 flex flex-row justify-center items-center'>
+    <div className='w-full h-screen pl-0 lg:px-60 flex flex-row justify-center items-center bg-slate-50'>
       <ul className='container w-full h-full pt-14 lg:pt-10 p-5 lg:p-10 flex flex-col items-center transition-all'>
         {/**title principal*/}
         <li
           key='title-profile'
           id='title-profile'
-          className="w-full p-2 lg:p-5 mb-10 lg:mb-7 flex flex-row justify-between items-center bg-slate-50 border border-white rounded-md drop-shadow-md"
+          className="w-full p-2 lg:p-5 mb-10 lg:mb-7 flex flex-row justify-between items-center bg-white border border-slate-200 rounded-md"
         >
           <div className='w-full flex flex-row'>
             <SectionTitles
@@ -85,7 +85,7 @@ export default function Request(props: any) {
                     value={button.value}
                     className={
                       `${index !== 2 ?
-                        'border-r-2 border-slate-200' :
+                        'border-r border-slate-100' :
                         ''} w-16 flex flex-col justify-center items-center`
                     }>
                     <button
@@ -117,7 +117,7 @@ export default function Request(props: any) {
               <li
                 key={request.id}
                 id={request.id}
-                className="w-full p-2 lg:p-5 mb-10 lg:mb-7 flex flex-col bg-slate-50 border border-white rounded-md drop-shadow-md"
+                className="w-full p-2 lg:p-5 mb-10 lg:mb-7 flex flex-col bg-white border border-slate-200 rounded-lg"
               >
                 {/**title */}
                 <div className='w-full flex flex-row'>

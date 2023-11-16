@@ -77,7 +77,7 @@ export default function Navbar(props: any) {
                 }
                 onClick={() => setDropdown(!dropdown)}
               >
-                <div className='w-7 h-7 flex flex-col justify-center items-center'>
+                <div className='w-8 h-8 flex flex-col justify-center items-center'>
                   <ImageIconUser size='small' />
                 </div>
               </div>

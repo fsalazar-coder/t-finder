@@ -6,7 +6,7 @@ import { IconAdd, IconEdit, IconDelete } from '../../icons/icons';
 
 interface ProfileSectionProps {
   id: string,
-  key: string,
+  index: number,
   title: string,
   value: string,
   data: [],
@@ -14,11 +14,11 @@ interface ProfileSectionProps {
 }
 
 
-export default function ProfileSectionCard({ id, key, title, value, data, shouldRender }: ProfileSectionProps) {
+export default function ProfileSectionCard({ id, index, title, value, data, shouldRender }: ProfileSectionProps) {
 
   const { setCollectionToChange, setItemIdToChange } = useAuthData();
   const { setProfileModal, setProfileModalAction, setProfileModalType } = useAuthUI();
-  const { setMessageModal, setTypeMessageModal, setTextMessageModal } = useUI();
+  const { screenNarrow, setMessageModal, setTypeMessageModal, setTextMessageModal } = useUI();
   const [itemHover, setItemHover] = useState(null);
   const [listHover, setListHover] = useState(false);
 
@@ -52,17 +52,24 @@ export default function ProfileSectionCard({ id, key, title, value, data, should
   return (
     <li
       id={id}
-      key={key}
-      className='w-full relative p-2 lg:p-5 my-3 lg:my-2 flex flex-col bg-slate-50 border border-white rounded-md drop-shadow-md'
+      key={`${index}-${title}`}
+      className='w-full relative my-1 flex flex-col bg-white border border-slate-200 rounded-lg'
     >
-      {/**add button */}
+      {/**section title */}
       <div className={
-        `${!shouldRender ? 'h-full' : 'h-fit'
-        } absolute right-0 top-0 p-2 flex flex-row justify-end items-center z-20`
+        `${shouldRender ?
+          'border-b border-slate-200' :
+          ''} w-full px-5 py-1 lg:py-2 flex flex-row items-center`
       }>
-        <div
-          id='post-item-profile'
-          className='flex flex-col justify-center items-center transition-all'>
+        <SectionTitles
+          sectionTitle={title}
+          sectionType='account'
+        />
+        {/**add button */}
+        <div className={
+          `${!shouldRender ? 'h-full' : 'h-fit'
+          } absolute right-0 top-0 px-5 py-1 lg:py-2 flex flex-row justify-end items-center z-20`
+        }>
           <button
             className="w-full flex flex-row justify-center items-center hover:cursor-default"
             onClick={() => {
@@ -73,7 +80,7 @@ export default function ProfileSectionCard({ id, key, title, value, data, should
             }}
           >
             <h3 className='pr-2 text-sm text-slate-400 transition-all'>
-              {shouldRender ? 'Add' : 'Add information'}
+              {screenNarrow ? 'Add' : 'Add information'}
             </h3>
             <i className='p-[2px] text-slate-300 lg:hover:text-green-500 text-xl lg:text-2xl flex flex-row justify-center bg-white rounded-full cursor-default lg:cursor-pointer transition-all'>
               <IconAdd />
@@ -81,59 +88,55 @@ export default function ProfileSectionCard({ id, key, title, value, data, should
           </button>
         </div>
       </div>
-      {/**section title */}
-      <div className='w-full flex flex-row'>
-        <SectionTitles
-          sectionTitle={title?.toUpperCase()}
-          sectionSubtitle=''
-          sectionType='account'
-        />
-      </div>
-      {/**showing information */}
-      <div className='w-full mt-1 lg:mt-2 flex flex-col'>
-        {shouldRender && (
-          <div className='w-full flex flex-col lg:flex-row-reverse lg:justify-between'>
-            <ul className='w-full flex flex-col'>
-              {
-                data?.map((element: any, index: any) => {
-                  return (
-                    <li key={element._id}
-                      className={
-                        `${listHover && (itemHover === index ? 'hover:scale-[1.02]' : 'opacity-25')
-                        } w-full relative p-1 lg:p-2 my-2 flex flex-col bg-white rounded-md transform transition-all`
-                      }
-                      onMouseEnter={() => { setItemHover(index); setListHover(true); }}
-                      onMouseLeave={() => { setItemHover(null); setListHover(false); }}
-                    >
-                      <div className="w-full absolute top-0 right-0 p-2 flex flex-row justify-end items-center transition-all z-20">
-                        {
-                          (listHover) && (itemHover === index) && (
-                            buttons.map((button: any) => {
-                              return (
-                                <EditDeleteButtons
-                                  id={button.id}
-                                  key={button.key}
-                                  icon={button.icon}
-                                  elementId={element._id}
-                                  sectionValue={value}
-                                  handleClick={button.click}
-                                />
-                              )
-                            })
-                          )
+      {/**showing section information */}
+      {
+        shouldRender && (
+          <div className='w-full px-5 py-1 flex flex-col'>
+            <div className='w-full flex flex-col lg:flex-row-reverse lg:justify-between'>
+              <ul className='w-full flex flex-col'>
+                {
+                  data?.map((element: any, index: any) => {
+                    return (
+                      <li key={element._id}
+                        className={
+                          `${listHover && (itemHover === index ? '' : 'opacity-25')
+                          } 
+                        ${index === data.length - 1 ? '' : 'border-b border-slate-200'}
+                        w-full relative py-3 flex flex-col bg-white transform transition-all`
                         }
-                      </div>
-                      <ItemContent
-                        element={element as any}
-                      />
-                    </li>
-                  )
-                })
-              }
-            </ul>
+                        onMouseEnter={() => { setItemHover(index); setListHover(true); }}
+                        onMouseLeave={() => { setItemHover(null); setListHover(false); }}
+                      >
+                        <div className="w-full absolute top-0 right-0 p-2 flex flex-row justify-end items-center transition-all z-20">
+                          {
+                            (listHover) && (itemHover === index) && (
+                              buttons.map((button: any) => {
+                                return (
+                                  <EditDeleteButtons
+                                    id={button.id}
+                                    key={button.key}
+                                    icon={button.icon}
+                                    elementId={element._id}
+                                    sectionValue={value}
+                                    handleClick={button.click}
+                                  />
+                                )
+                              })
+                            )
+                          }
+                        </div>
+                        <ItemContent
+                          element={element as any}
+                        />
+                      </li>
+                    )
+                  })
+                }
+              </ul>
+            </div>
           </div>
-        )}
-      </div>
+        )
+      }
     </li>
   )
 };
@@ -178,11 +181,10 @@ const ItemContent = ({ element }: any) => {
     return formattedElement;
   }
 
-
   let newElement = formatKeys(element)
 
   return (
-    <ul className='w-full p-2 flex flex-col cursor-default lg:hover:cursor-pointer'>
+    <ul className='w-full flex flex-col cursor-default lg:hover:cursor-pointer'>
       {
         Object.entries(newElement).map(([key, value]) => (
           key !== ' id' && key !== 'User id' && (

@@ -12,10 +12,10 @@ export default function SectionTitles(props: any) {
     }>
       <h1 className={
         `${props.sectionType === 'account' ?
-          'text-lg lg:text-2xl' :
+          'text-base lg:text-xl font-bold' :
           props.sectionType === 'home' ?
-            'text-2xl lg:text-6xl' :
-            ''} text-transparent bg-slate-600 bg-clip-text font-extrabold text-start z-0`
+            'text-2xl lg:text-6xl font-extrabold' :
+            ''} text-transparent bg-slate-600 bg-clip-text text-start z-0`
       }>
         {props.sectionTitle}
       </h1>

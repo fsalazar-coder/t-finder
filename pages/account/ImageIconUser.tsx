@@ -52,14 +52,14 @@ export default function ImageIconUser(props: any) {
 
   return (
     userProfileImage ?
-      <div className='w-full h-full  flex flex-col justify-center items-center bg-gradient-to-br from-fuchsia-400 via-slate-300 to-fuchsia-600 rounded-full z-20'>
+      <div className='w-full h-full  flex flex-col justify-center items-center bg-gradient-to-br from-slate-50 via-fuchsia-400 to-fuchsia-950 rounded-full z-20'>
         <Image
           className={
             `${props.size === 'small' ?
               'border-[1px]' :
               props.size === 'large' ?
-                'border-[3px]' :
-                ''} w-[93%] h-[93%] flex flex-col justify-center items-center rounded-full border-slate-300`}
+                'border-[2px]' :
+                ''} w-[95%] h-[95%] flex flex-col justify-center items-center rounded-full border-white`}
           width={800}
           height={800}
           src={userProfileImage}

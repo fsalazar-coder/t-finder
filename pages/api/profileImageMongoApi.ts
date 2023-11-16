@@ -10,33 +10,16 @@ const handler: NextApiHandler = async (req: NextApiRequest, res: NextApiResponse
   const { id, data } = req.body;
 
   if (req.method === 'POST') {
-    try {
-      const filePath = data;
-      const existingUser = await collection?.findOne({ _id: id as any });
+    await collection.updateOne(
+      { _id: id },
+      { $set: { image_url: data } },
+      { upsert: true }
+    );
 
-      if (existingUser) {
-        await collection?.updateOne(
-          { _id: id as any },
-          { $set: { image_url: filePath } }
-        );
-      }
-      else {
-        await collection?.insertOne({
-          _id: id as any,
-          image_url: filePath
-        });
-      }
-
-      const getPath = await collection?.findOne({ _id: id as any });
-      return res.status(200).json({
-        status: 'success',
-        actionResponse: getPath
-      });
-    }
-    catch (error) {
-      console.error('An error occurred:', error);
-      res.status(500).json({ error: 'An internal error occurred' });
-    }
+    return res.status(200).json({
+      status: 'success',
+      imageUrl: data
+    });
   }
   else {
     res.json({

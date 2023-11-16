@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 import ImageIconUser from './ImageIconUser';
+import { IconDashboard, IconUserTie, IconRequest, IconBxsBellRing, IconHelpCircle, IconGear, IconHome } from '@/icons/icons';
 
 const navbarElementAuth = [
-  { title: 'Dashboard', accountModule: 'Dashboard' },
-  { title: 'Profile', accountModule: 'Profile' },
-  { title: 'Portfolio', accountModule: 'Portfolio' },
-  { title: 'Request', accountModule: 'Request' },
-  { title: 'Notifications', accountModule: 'Notifications' },
-  { title: 'Account Settings', accountModule: 'Account Settings' },
-  { title: 'Help & Support', accountModule: 'Help & Support' }
+  { title: 'Dashboard', accountModule: 'Dashboard', icon: <IconDashboard /> },
+  { title: 'Profile', accountModule: 'Profile', icon: <IconUserTie /> },
+  { title: 'Request', accountModule: 'Request', icon: <IconRequest /> },
+  { title: 'Notifications', accountModule: 'Notifications', icon: <IconBxsBellRing /> },
+  { title: 'Account Settings', accountModule: 'Account Settings', icon: <IconGear /> },
+  { title: 'Help & Support', accountModule: 'Help & Support', icon: <IconHelpCircle /> }
 ];
 
 
@@ -81,9 +81,12 @@ export default function AccountNavbar(props: any) {
                       return (
                         <li
                           key={index}
-                          className='w-full h-auto py-[0.3rem] flex flex-row justify-center items-center hover:bg-slate-900 cursor-pointer'
+                          className='w-full h-auto py-[0.3rem] flex flex-row items-center hover:bg-slate-900 cursor-pointer'
                           onClick={() => setAccountModule(item.accountModule)}
                         >
+                          <i className='text-slate-500 pl-8 pr-3'>
+                            {item.icon}
+                          </i>
                           <h3 className={
                             `${accountModule === item.accountModule ?
                               'text-fuchsia-600 font-semibold' :
@@ -99,13 +102,16 @@ export default function AccountNavbar(props: any) {
                   }
                   <li
                     key='home-link'
-                    className='w-full h-auto py-[0.3rem] flex flex-row justify-center items-center hover:bg-slate-900 cursor-pointer'
+                    className='w-full h-auto py-[0.3rem] flex flex-row items-center hover:bg-slate-900 cursor-pointer'
                     onClick={() => {
                       setAccountModule('');
                       setAccountActived(false);
                       router.push('/');
                     }}
                   >
+                    <i className='text-slate-500 pl-8 pr-3'>
+                      <IconHome />
+                    </i>
                     <h3 className='text-slate-500 hover:text-white font-normal text-base text-center'>
                       Home
                     </h3>

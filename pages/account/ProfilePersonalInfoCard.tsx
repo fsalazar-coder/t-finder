@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
-import { IconAdd, IconEdit, IconDelete } from '../../icons/icons';
+import { IconUser, IconCamera, IconAdd, IconEdit, IconDelete } from '../../icons/icons';
 import ImageIconUser from './ImageIconUser';
 import SectionTitles from '../components/SectionTitles';
 import axios from 'axios';
@@ -12,7 +12,9 @@ export default function PersonalInfo() {
   const { token, userId, userProfilePersonalInfo, setUserProfilePersonalInfo,
     userProfileImage, setUserProfileImage, setCollectionToChange, update, setUpdate } = useAuthData();
   const { setProfileModal, setProfileModalAction, setProfileModalType } = useAuthUI();
-  const { setMessageModal, setTypeMessageModal, setTextMessageModal } = useUI();
+  const { screenNarrow, setMessageModal, setTypeMessageModal, setTextMessageModal } = useUI();
+  const [imageHover, setImageHover] = useState(false);
+  const [listHover, setListHover] = useState(false);
   const [available, setAvailable] = useState(false);
 
 
@@ -77,10 +79,10 @@ export default function PersonalInfo() {
     {
       id: 'post-item-profile',
       key: 'post-item-profile',
-      icon: userProfilePersonalInfo ? <IconEdit /> : <IconAdd />,
+      icon: <IconEdit />,
       click: () => {
         setProfileModal(true);
-        setProfileModalAction(userProfilePersonalInfo ? 'edit' : 'post');
+        setProfileModalAction('edit');
         setProfileModalType('personal_info');
         setCollectionToChange('personal_info')
       },
@@ -100,44 +102,76 @@ export default function PersonalInfo() {
 
 
   return (
-    <li
-      key='personal-information'
-      id='personal-information'
-      className='w-full relative p-2 lg:p-5 my-3 lg:my-2 flex flex-col justify-center bg-slate-50 border border-white rounded-md drop-shadow-md'
-    >
-      <div className='w-full flex flex-row'>
+    <>
+      {/**title */}
+      <div className='w-full relative px-5 py-1 lg:py-2 flex flex-row items-center border-b border-slate-200'>
         <SectionTitles
-          sectionTitle='PERSONAL INFORMATION'
-          sectionSubtitle=''
+          sectionTitle='Personal information'
           sectionType='account'
         />
+        {/**add button */}
+        <div className={
+          `${!userProfilePersonalInfo ? 'h-full visible' : 'hidden'
+          } absolute right-0 top-0 px-5 py-1 lg:py-2 flex flex-row justify-end items-center z-20`
+        }>
+          <div
+            id='post-item-profile'
+            className='flex flex-col justify-center items-center transition-all'>
+            <button
+              className="w-full flex flex-row justify-center items-center hover:cursor-default"
+              onClick={() => {
+                setProfileModal(true);
+                setProfileModalAction('post');
+                setProfileModalType('personal information');
+                setCollectionToChange('personal_info');
+              }}
+            >
+              <h3 className='pr-2 text-sm text-slate-400 transition-all'>
+                {!userProfilePersonalInfo ? screenNarrow ? 'Add' : 'Add information' : ''}
+              </h3>
+              <i className='p-[2px] text-slate-300 lg:hover:text-green-500 text-xl lg:text-2xl flex flex-row justify-center bg-white rounded-full cursor-default lg:cursor-pointer transition-all'>
+                <IconAdd />
+              </i>
+            </button>
+          </div>
+        </div>
       </div>
-      <div className='w-full mt-1 lg:mt-2 flex flex-col'>
+      {/**content */}
+      <div className='w-full px-5 py-1 flex flex-col'>
         <div className='w-full flex flex-col lg:flex-row-reverse lg:justify-between'>
           {/**profile image */}
-          <div className='w-full lg:w-60 mb-1 lg:mb-0 flex flex-col justify-between items-center'>
+          <div className={`${!screenNarrow && 'border-l border-slate-100'} w-full lg:w-60 pl-5 mb-1 lg:mb-0 flex flex-col justify-between items-center`}>
             {/**image */}
-            <div className='w-full p-1 lg:p-2 mb-1 flex flex-col justify-between items-center bg-white rounded-md'>
-              <div className='w-40 h-40 relative flex flex-col justify-center items-center'>
-                {/**image button add or edit */}
-                <div className='absolute top-0 right-0 flex flex-col justify-center items-center z-30'>
-                  <button
-                    className="w-full p-[2px] flex flex-row justify-center items-center bg-white rounded-full"
-                    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                      setProfileModal(true);
-                      setProfileModalAction(userProfileImage ? 'edit' : 'post');
-                      setCollectionToChange('profile_image');
-                    }}
-                  >
-                    <i className='text-green-300 lg:hover:text-green-300 lg:text-slate-300 text-xl lg:text-2xl flex flex-row justify-center cursor-default lg:cursor-pointer'>
-                      {userProfileImage ? <IconEdit /> : <IconAdd />}
-                    </i>
-                  </button>
-                </div>
+            <div className='w-full relative p-1 lg:p-2 mb-1 flex flex-col justify-between items-center'>
+              {/**image effect-button add or edit */}
+              <div
+                className={
+                  `${imageHover ?
+                    'bg-black bg-opacity-60' : ''
+                  } w-40 h-40 absolute flex flex-col justify-center items-center rounded-full hover:cursor-pointer transition-all`
+                }
+                onMouseEnter={() => setImageHover(true)}
+                onMouseLeave={() => setImageHover(false)}
+                onClick={(e: any) => {
+                  setProfileModal(true);
+                  setProfileModalAction(userProfileImage ? 'edit' : 'post');
+                  setCollectionToChange('profile_image');
+                }}
+              >
+                <i className={
+                  `${userProfileImage ?
+                    imageHover ? 'visible text-white' : 'hidden' :
+                    'visible text-slate-300'} text-7xl flex flex-row justify-center cursor-default lg:cursor-pointer transition-all`}>
+                  {imageHover && <IconCamera />}
+                </i>
+              </div>
+              {/**profile image */}
+              <div className='w-40 h-40'>
                 <ImageIconUser size='large' />
               </div>
             </div>
-            <div className='w-full p-1 lg:p-2 flex flex-row items-center bg-white rounded-md'>
+            {/**Availability */}
+            <div className='w-full p-1 lg:p-2 flex flex-row items-center'>
               <h3 className='w-fit px-2 text-xs text-start transition-all'>
                 Availability
               </h3>
@@ -154,65 +188,63 @@ export default function PersonalInfo() {
             </div>
           </div>
           {/**personal information */}
-          <div className='w-full relative p-1 lg:p-2 lg:mr-1 flex flex-col bg-white rounded-md'>
-            {/**add, edit and delete button */}
-            <ul className="w-full absolute top-0 right-0 p-2 flex flex-row justify-end items-center z-20">
-              {
-                buttons.map((button: any, index: any) => {
-                  return (
-                    <li
-                      key={button.key}
-                      id={button.id}
-                      className={
-                        `${!userProfilePersonalInfo ? index > 0 ?
-                          'hidden' : 'visible' : 'visible'} flex flex-col justify-center items-center`
-                      }>
-                      <button className="flex flex-row justify-center items-center hover:cursor-default">
-                        <h3 className='pr-2 text-sm text-slate-400'>
-                          {userProfilePersonalInfo ? '' : 'Add information'}
-                        </h3>
-                        <i className={
-                          `${index === 1 ?
-                            'lg:hover:text-red-500' :
-                            'lg:hover:text-green-500'
-                          } p-[2px] text-slate-300 text-xl lg:text-2xl flex flex-row justify-center bg-white rounded-full cursor-default lg:cursor-pointer`
-                        }
-                          onClick={button.click}
-                        >
-                          {button.icon}
-                        </i>
-                      </button>
-                    </li>
-                  )
-                })
-              }
-            </ul>
-            {
-              userProfilePersonalInfo ?
-                /**personal information */
-                <ul className='w-full p-2 flex flex-col'>
+          <div
+            className='w-full relative py-3 lg:mr-1 flex flex-col transform transition-all'
+            onMouseEnter={() => setListHover(true)}
+            onMouseLeave={() => setListHover(false)}
+          >
+            {/**edit and delete button */}
+            <div className="w-full absolute top-0 right-0 p-2 flex flex-row justify-end items-center z-20">
+              {userProfilePersonalInfo && listHover &&
+                <ul className="w-full h-fit flex flex-row justify-end items-center transition-all">
                   {
-                    personalInfo?.map((element: any, index: any) => {
+                    buttons.map((button: any, index: any) => {
                       return (
-                        /**full name, profession or occupation, preferred language, location and personal description */
                         <li
-                          key={index}
-                          className='w-full flex flex-row items-center'
-                        >
-                          <h3 className='text-sm lg:text-base text-slate-600'>
-                            <strong>{element.title}</strong>  {element.description}
-                          </h3>
+                          key={button.key}
+                          id={button.id}
+                          className='flex flex-col justify-center items-center transition-all'>
+                          <button className="flex flex-row justify-center items-center hover:cursor-default">
+                            <i className={
+                              `${index === 1 ? 'lg:hover:text-red-500' : 'lg:hover:text-green-500'} 
+                              p-[2px] text-slate-300 text-xl lg:text-2xl flex flex-row justify-center bg-white rounded-full cursor-default lg:cursor-pointer animate-[appear_0.7s_ease] transition-all`
+                            }
+                              onClick={button.click}
+                            >
+                              {button.icon}
+                            </i>
+                          </button>
                         </li>
                       )
                     })
                   }
                 </ul>
-                :
-                ''
+              }
+            </div>
+            {
+              userProfilePersonalInfo &&
+              /**personal information */
+              <ul className='w-full flex flex-col'>
+                {
+                  personalInfo?.map((element: any, index: any) => {
+                    return (
+                      /**full name, profession or occupation, preferred language, location and personal description */
+                      <li
+                        key={index}
+                        className='w-full flex flex-row items-center'
+                      >
+                        <h3 className='text-sm lg:text-base text-slate-600'>
+                          <strong>{element.title}</strong>  {element.description}
+                        </h3>
+                      </li>
+                    )
+                  })
+                }
+              </ul>
             }
           </div>
         </div>
       </div>
-    </li>
+    </>
   )
 };

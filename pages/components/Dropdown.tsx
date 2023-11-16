@@ -6,7 +6,6 @@ import ImageIconUser from "../account/ImageIconUser";
 const navbarElementAuth = [
   { title: 'Dashboard', accountModule: 'Dashboard' },
   { title: 'Profile', accountModule: 'Profile' },
-  { title: 'Portfolio', accountModule: 'Portfolio' },
   { title: 'Request', accountModule: 'Request' },
   { title: 'Notifications', accountModule: 'Notifications' },
   { title: 'Account Settings', accountModule: 'Account Settings' },

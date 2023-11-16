@@ -1,7 +1,7 @@
 'use client';
 
 import type { PutBlobResult } from '@vercel/blob';
-import { useState, useRef, useCallback, useMemo, ChangeEvent } from 'react';
+import { useState, useCallback, ChangeEvent } from 'react';
 import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import Image from 'next/image';
 import { IconUser } from '../../icons/icons';
@@ -10,16 +10,15 @@ import axios from 'axios';
 
 
 export default function ProfileModalImage() {
-  const [data, setData] = useState<{ image: string | null }>({ image: null });
-  const [fileImage, setFileImage] = useState<File | null>(null);
   const { token, userId, userProfileImage, setUserProfileImage, collectionToChange, setUpdate } = useAuthData();
   const { setProfileModal, profileModalAction, setProfileModalAction, setProfileModalType } = useAuthUI();
-  const { setMessageModal, setTypeMessageModal, setTextMessageModal, loading, setLoading } = useUI();
+  const { setMessageModal, setTypeMessageModal, setTextMessageModal, setLoading } = useUI();
   const [previewImage, setPreviewImage] = useState<string | null>(userProfileImage || null);
+  const [fileImage, setFileImage] = useState<File | null>(null);
 
 
   const onChangePicture = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.currentTarget.files && e.currentTarget.files[0];
+    const file = e.currentTarget.files?.[0];
     if (file) {
       if (file.size / 1024 / 1024 > 50) {
         setMessageModal(true);
@@ -29,34 +28,21 @@ export default function ProfileModalImage() {
       else {
         setFileImage(file);
         setPreviewImage(URL.createObjectURL(file));
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          setData((prev) => ({ ...prev, image: e.target?.result as string }));
-        }
-        reader.readAsDataURL(file)
       }
     }
-  },
-    [setData]
-  );
-
-  setLoading(false);
-  const saveDisabled = useMemo(() => {
-    return !data.image || loading
-  }, [data.image, loading])
-
+  }, [setFileImage]);
 
   const profileimageHandleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setProfileModal(false);
     setLoading(true);
 
-    if (fileImage) {
-      fetch(`/api/profileImageVercelBlobApi`,
+    if (fileImage && userId) {
+      fetch(`/api/profileImageVercelBlobApi?id=${userId}`,
         {
           method: 'POST',
           headers: {
-            'content-type': fileImage?.type || 'application/octet-strem'
+            'Authorization': `Bearer ${token}`
           },
           body: fileImage,
         })
@@ -76,12 +62,9 @@ export default function ProfileModalImage() {
                 },
                 config)
               .then((response) => {
-                const { status, actionResponse } = response.data;
-                console.log('Axios response: ', actionResponse);
+                const { status, imageUrl } = response.data;
                 if (status === 'success') {
-                  console.log('Success, action response: ', actionResponse);
-                  console.log('Success, action response: ', actionResponse.image_url);
-                  setUserProfileImage(actionResponse.image_url);
+                  setUserProfileImage(imageUrl);
                   setUpdate(collectionToChange)
                   setMessageModal(true);
                   setTypeMessageModal('successful');
@@ -92,20 +75,26 @@ export default function ProfileModalImage() {
                   setTypeMessageModal('error');
                   setTextMessageModal('Profile image not uploaded');
                 }
-              })
+              });
           }
           else {
-            const error = await response.text();
             setMessageModal(true);
             setTypeMessageModal('error');
-            setTextMessageModal('An error ocurred');
+            setTextMessageModal('Url image not formed');
           }
+        })
+        .finally(() => {
           setPreviewImage('');
           setProfileModalAction('');
           setProfileModalType('');
           setFileImage(null);
           setLoading(false);
         });
+    }
+    else {
+      setMessageModal(true);
+      setTypeMessageModal('error');
+      setTextMessageModal('Profile image not founded');
     }
   };
 
