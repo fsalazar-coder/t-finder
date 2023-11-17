@@ -4,7 +4,8 @@ import SectionTitles from '../components/SectionTitles';
 import { IconAdd, IconEdit, IconDelete } from '../../icons/icons';
 
 
-interface ProfileSectionProps {
+interface RequestProps {
+  id: string,
   title: string,
   value: string,
   data: [],
@@ -12,10 +13,10 @@ interface ProfileSectionProps {
 }
 
 
-export default function ProfileSectionCard({ title, value, data, shouldRender }: ProfileSectionProps) {
+export default function RequestCard({ id, title, value, data, shouldRender }: RequestProps) {
 
   const { setCollectionToChange, setItemIdToChange } = useAuthData();
-  const { setProfileModal, setProfileModalAction, setProfileModalType } = useAuthUI();
+  const { setRequestModal, setRequestModalAction } = useAuthUI();
   const { screenNarrow, setMessageModal, setTypeMessageModal, setTextMessageModal } = useUI();
   const [itemHover, setItemHover] = useState(null);
   const [listHover, setListHover] = useState(false);
@@ -25,23 +26,22 @@ export default function ProfileSectionCard({ title, value, data, shouldRender }:
     {
       id: 'edit-item-profile',
       icon: <IconEdit />,
-      click: (elementId: string, sectionValue: string) => {
-        setProfileModal(true);
-        setProfileModalAction('edit');
-        setProfileModalType(sectionValue);
-        setCollectionToChange(sectionValue);
+      click: (requestType: string, elementId: string, value: string) => {
+        setRequestModal(requestType);
+        setRequestModalAction('edit');
+        setCollectionToChange(value);
         setItemIdToChange(elementId);
       },
     },
     {
       id: 'delete-item-profile',
       icon: <IconDelete />,
-      click: (elementId: string, sectionValue: string) => {
+      click: (elementId: string, value: string) => {
         setMessageModal(true);
         setTypeMessageModal('delete');
-        setCollectionToChange(sectionValue);
+        setCollectionToChange(value);
         setItemIdToChange(elementId);
-        setTextMessageModal(`Delete this ${sectionValue} information with this action`);
+        setTextMessageModal(`Delete this ${value} information with this action`);
       }
     },
   ];
@@ -50,11 +50,7 @@ export default function ProfileSectionCard({ title, value, data, shouldRender }:
   return (
     <>
       {/**section title */}
-      <div className={
-        `${shouldRender ?
-          'border-b border-slate-200' :
-          ''} w-full px-5 py-1 lg:py-2 flex flex-row items-center`
-      }>
+      <div className={`${shouldRender && 'border-b border-slate-200'} w-full px-5 py-1 lg:py-2 flex flex-row items-center`}>
         <SectionTitles
           sectionTitle={title}
           sectionType='account'
@@ -67,14 +63,13 @@ export default function ProfileSectionCard({ title, value, data, shouldRender }:
           <button
             className="w-full flex flex-row justify-center items-center hover:cursor-default"
             onClick={() => {
-              setProfileModal(true);
-              setProfileModalAction('post');
-              setProfileModalType(value);
+              setRequestModal(id);
+              setRequestModalAction('post');
               setCollectionToChange(value);
             }}
           >
             <h3 className='pr-2 text-sm text-slate-400 transition-all'>
-              {screenNarrow ? 'Add' : 'Add information'}
+              {screenNarrow ? 'Add' : 'New request'}
             </h3>
             <i className='p-[2px] text-slate-300 lg:hover:text-green-500 text-xl lg:text-2xl flex flex-row justify-center bg-white rounded-full cursor-default lg:cursor-pointer transition-all'>
               <IconAdd />
@@ -112,6 +107,7 @@ export default function ProfileSectionCard({ title, value, data, shouldRender }:
                                     elementId={element._id}
                                     sectionValue={value}
                                     handleClick={button.click}
+                                    requestType={id}
                                   />
                                 )
                               })
@@ -153,8 +149,8 @@ const EditDeleteButtons = ({ id, icon, elementId, sectionValue, handleClick }: a
   </button>
 );
 
-const ItemContent = ({ element }: any) => {
 
+const ItemContent = ({ element }: any) => {
   function formatKeys(element: any) {
     const formattedElement: Record<string, any> = {};
     for (const key in element) {
@@ -180,7 +176,7 @@ const ItemContent = ({ element }: any) => {
     <ul className='w-full flex flex-col cursor-default lg:hover:cursor-pointer'>
       {
         Object.entries(newElement).map(([key, value]) => (
-          key !== ' id' && key !== 'User id' && key !== 'Created at' && (
+          key !== ' id' && key !== 'User id' && (
             <li key={key}
               className="w-full"
             >

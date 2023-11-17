@@ -2,14 +2,15 @@ import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'
 import ImageIconUser from "../account/ImageIconUser";
+import { IconDashboard, IconUserTie, IconRequest, IconBxsBellRing, IconHelpCircle, IconGear, IconHome, IconBxPowerOff } from '@/icons/icons';
 
 const navbarElementAuth = [
-  { title: 'Dashboard', accountModule: 'Dashboard' },
-  { title: 'Profile', accountModule: 'Profile' },
-  { title: 'Request', accountModule: 'Request' },
-  { title: 'Notifications', accountModule: 'Notifications' },
-  { title: 'Account Settings', accountModule: 'Account Settings' },
-  { title: 'Help & Support', accountModule: 'Help & Support' }
+  { title: 'Dashboard', accountModule: 'Dashboard', icon: <IconDashboard /> },
+  { title: 'Profile', accountModule: 'Profile', icon: <IconUserTie /> },
+  { title: 'Request', accountModule: 'Request', icon: <IconRequest /> },
+  { title: 'Notifications', accountModule: 'Notifications', icon: <IconBxsBellRing /> },
+  { title: 'Settings', accountModule: 'Settings', icon: <IconGear /> },
+  { title: 'Help & Support', accountModule: 'Help & Support', icon: <IconHelpCircle /> }
 ];
 
 const navbarElementUnauth = [
@@ -38,23 +39,10 @@ const navbarElementUnauth = [
 export default function Dropdown(props: any) {
 
   const { token, userEmail } = useAuthData();
-  
-  const {
-    accountActived, setAccountActived,
-    accountModule, setAccountModule
-  } = useAuthUI();
-  
-  const {
-    screenNarrow,
-    dropdown, setDropdown,
-    setHamburguerMenuActive,
-    setLoginModal,
-    setJoinModal,
-    setMessageModal,
-    setTypeMessageModal,
-    setTextMessageModal
-  } = useUI();
-  
+  const { accountActived, setAccountActived, accountModule, setAccountModule } = useAuthUI();
+  const { screenNarrow, dropdown, setDropdown, setHamburguerMenuActive,
+    setLoginModal, setJoinModal, setMessageModal, setTypeMessageModal, setTextMessageModal } = useUI();
+
   const router = useRouter();
 
 
@@ -68,7 +56,7 @@ export default function Dropdown(props: any) {
             ''
           :
           'w-64 right-0 animate-[appear-top_0.5s_ease]'
-        } fixed top-0 pt-10 lg:pt-12 py-4 flex-col justify-start items-start bg-slate-950 rounded-sm transition-all z-40`}>
+        } fixed top-0 pt-10 lg:pt-12 flex-col justify-start items-start bg-slate-950 rounded-sm transition-all z-40`}>
         {
           token ?
             <>
@@ -97,6 +85,9 @@ export default function Dropdown(props: any) {
                         router.push('/Account')
                       }}
                     >
+                      <i className='text-base text-slate-500 pl-8 pr-3'>
+                        {item.icon}
+                      </i>
                       <h3 className={
                         `${accountModule === item.accountModule ?
                           'text-fuchsia-600 font-semibold' :
@@ -111,26 +102,27 @@ export default function Dropdown(props: any) {
                 })
               }
               {
-                accountActived ?
-                  <li
-                    key='home-link'
-                    className='w-full h-auto flex flex-row items-center hover:bg-slate-900'
-                    onClick={() => {
-                      setDropdown(false);
-                      setAccountModule('');
-                      setAccountActived(false);
-                      router.push('/');
-                    }}
-                  >
-                    <h3 className='py-2 px-4 text-slate-500 hover:text-white font-normal text-sm lg:text-base text-start'>
-                      Home
-                    </h3>
-                  </li>
-                  :
-                  ''
+                accountActived &&
+                <li
+                  key='home-link'
+                  className='w-full h-auto flex flex-row items-center hover:bg-slate-900'
+                  onClick={() => {
+                    setDropdown(false);
+                    setAccountModule('');
+                    setAccountActived(false);
+                    router.push('/');
+                  }}
+                >
+                  <i className='text-slate-500 pl-8 pr-3'>
+                    <IconHome />
+                  </i>
+                  <h3 className='py-2 px-4 text-slate-500 hover:text-white font-normal text-sm lg:text-base text-start'>
+                    Home
+                  </h3>
+                </li>
               }
               {/**logout button */}
-              <li className='w-full h-auto mt-4 py-4 px-4 flex flex-row justify-center items-center hover:bg-slate-900 border-t border-slate-900'>
+              <li className='w-full h-auto mt-4 py-4 flex flex-row justify-center items-center hover:bg-slate-900 border-t border-slate-900'>
                 <button
                   className='w-full h-full flex flex-row items-center'
                   onClick={() => {
@@ -141,7 +133,10 @@ export default function Dropdown(props: any) {
                     setTextMessageModal('Logout your session with this action');
                   }}
                 >
-                  <h3 className='h-auto text-slate-500 hover:text-white text-sm lg:text-base font-light'>
+                  <i className='text-lg text-slate-500 pl-8 pr-3'>
+                    <IconBxPowerOff />
+                  </i>
+                  <h3 className='h-auto text-slate-500 hover:text-white text-sm lg:text-base px-4 text-start font-light'>
                     Log out
                   </h3>
                 </button>

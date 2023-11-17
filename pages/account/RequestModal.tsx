@@ -1,25 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useAuthUI, useUI } from "../../context/authContext";
+import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import axios from 'axios';
-import { IconCancel, IconCheckCircle } from '../../icons/icons';
+import { IconCancel } from '../../icons/icons';
 import FormTemplate from './FormTemplate';
 
 
 
 export default function RequestModal(props: any) {
 
-  const { requestModal, setRequestModal } = useAuthUI();
+  const { token, userId, setUserRequestTalent, setUserRequestJob, collectionToChange, itemIdToChange, setUpdate } = useAuthData();
+  const { requestModal, setRequestModal, requestModalAction, setRequestModalAction } = useAuthUI();
+  const { setMessageModal, setTypeMessageModal, setTextMessageModal, setLoading } = useUI();
   const { screenNarrow } = useUI();
-  const [requestType, setRequestType] = useState(String);
   const [filledForm, setFilledForm] = useState(false);
-  const [onClickSubmit, setOnClickSubmit] = useState(false);
   const carouselFormRef: any = useRef(null);
   const carouselFormSelected: any = carouselFormRef.current;
   const [carouselFormPosition, setCarouselFormPosition] = useState(Number);
   const [carouselTranslateX, setCarouselTranslateX] = useState(Number);
 
   {/**talent request form constants*/ }
-  const [formDataTalent, setFormDataTalent] = useState({
+  const [requestTalentData, setRequestTalentData] = useState({
     jobTitle: '',
     jobCategory: '',
     skillsRequired: '',
@@ -31,7 +31,7 @@ export default function RequestModal(props: any) {
     companyInfo: '',
     additionalPerks: '',
   });
-  const [changeDataTalent, setChangeDataTalent] = useState({
+  const [changeRequestTalentData, setChangeRequestTalentData] = useState({
     jobTitle: false,
     jobCategory: false,
     skillsRequired: false,
@@ -47,7 +47,7 @@ export default function RequestModal(props: any) {
   {/** */ }
 
   {/**job request form constants */ }
-  const [formDataJob, setFormDataJob] = useState({
+  const [requestJobData, setRequestJobData] = useState({
     talentTitle: '',
     talentCategory: '',
     skillsOffered: '',
@@ -59,7 +59,7 @@ export default function RequestModal(props: any) {
     rates: '',
     additionalRequirements: ''
   });
-  const [changeDataJob, setChangeDataJob] = useState({
+  const [changeRequestJobData, setChangeRequestJobData] = useState({
     talentTitle: false,
     talentCategory: false,
     skillsOffered: false,
@@ -75,31 +75,112 @@ export default function RequestModal(props: any) {
 
   const handleChangeData = (e: any) => {
     const { name, value } = e.target;
-    if (requestType === 'talent') {
-      setFormDataTalent({ ...formDataTalent, [name]: value });
+    if (requestModal === 'talent') {
+      setRequestTalentData({ ...requestTalentData, [name]: value });
     }
     else {
-      setFormDataJob({ ...formDataJob, [name]: value });
+      setRequestJobData({ ...requestJobData, [name]: value });
     }
   };
 
   const handleCloseModal = (e: any) => {
-    setRequestModal(false);
+    setRequestModal('');
     setCarouselFormPosition(0);
-    setRequestType('');
     setFilledForm(false);
-    setOnClickSubmit(false);
+  }
+
+  const dataUpdate = (requestToChange: string) => {
+    const data = {
+      requestTalent: {
+        job_title: requestTalentData.jobTitle,
+        job_category: requestTalentData.jobCategory,
+        skills_required: requestTalentData.skillsRequired,
+        job_description: requestTalentData.jobDescription,
+        experience_needed: requestTalentData.experienceNeeded,
+        location: requestTalentData.location,
+        compensation: requestTalentData.compensation,
+        application_deadline: requestTalentData.applicationDeadline,
+        company_info: requestTalentData.companyInfo,
+        additional_perks: requestTalentData.additionalPerks,
+      },
+      requestJob: {
+        talent_title: requestJobData.talentTitle,
+        talent_category: requestJobData.talentCategory,
+        skills_offered: requestJobData.skillsOffered,
+        talent_description: requestJobData.talentDescription,
+        experience_level: requestJobData.experienceLevel,
+        location_preference: requestJobData.locationPreference,
+        availability: requestJobData.availability,
+        duration: requestJobData.duration,
+        rates: requestJobData.rates,
+        additional_requirements: requestJobData.additionalRequirements
+      },
+    };
+    let dataToApi;
+    requestToChange === 'request_talent' ?
+      dataToApi = data['requestTalent' as keyof typeof data] : dataToApi = data['requestJob' as keyof typeof data]
+    return dataToApi;
+  };
+
+  const setUserRequest = (userRequest: string, data: any) => {
+    switch (userRequest) {
+      case 'request_talent':
+        return setUserRequestTalent(data);
+      case 'request_job':
+        return setUserRequestJob(data);
+      default:
+        break;
+    }
   }
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    };
+
     try {
-      const response = await axios
-        .post(`/api/${requestType}Request`, requestType === 'talent' ? formDataTalent : formDataJob);
-      console.log(`${requestType} request saved: `, response.data);
+      const response = await axios.post('/api/profileApi',
+        {
+          id: requestModalAction === 'post' ? userId : itemIdToChange,
+          collectionName: collectionToChange,
+          action: requestModalAction,
+          data: dataUpdate(collectionToChange),
+        },
+        config
+      );
+      const { status, actionResponse } = response.data;
+
+      if (status === 'success') {
+        setUserRequest(collectionToChange, actionResponse);
+        setUpdate(collectionToChange);
+        setMessageModal(true);
+        setTypeMessageModal('successful');
+        setTextMessageModal(`Your request have been ${requestModalAction === 'post' ? 'posted' : 'uploaded'}`);
+      }
     }
-    catch (error) {
-      console.error(`Error saving ${requestType} request: `, error);
+    catch (error: any) {
+      if (error.response) {
+        let statusError = error.response.status;
+        let messageError = error.response.data.message;
+        setMessageModal(true);
+        switch (statusError) {
+          case 404:
+            setTypeMessageModal('error');
+            setTextMessageModal(messageError || 'User not found');
+            break;
+          default:
+            setTypeMessageModal('error');
+            setTextMessageModal('An unexpected error occurred.');
+        }
+      }
+    }
+    finally {
+      setLoading(false);
+      setRequestModal('');
+      setRequestModalAction('');
     }
   };
 
@@ -112,35 +193,28 @@ export default function RequestModal(props: any) {
     }
   });
 
+
   /**fill form control */
   useEffect(() => {
-    let dataTalentFilled = Object.values(formDataTalent).some(value => value === '');
-    let dataJobFilled = Object.values(formDataJob).some(value => value === '');
-    if (requestType === 'talent' && !dataTalentFilled) {
-      setFilledForm(true);
+    let dataTalentUnfilled = Object.values(requestTalentData).some(value => value === '');
+    let dataJobUnfilled = Object.values(requestJobData).some(value => value === '');
+    if (requestModal === 'talent' && dataTalentUnfilled) {
+      setFilledForm(false);
     }
-    else if (requestType === 'job' && !dataJobFilled) {
-      setFilledForm(true);
+    else if (requestModal === 'job' && dataJobUnfilled) {
+      setFilledForm(false);
     }
     else {
-      setFilledForm(false);
+      setFilledForm(true);
     }
   });
 
-  /**header steps indicator */
-  const stepsIndicator: any = [
-    { step: 1, title: 'Add ', condition: true },
-    { step: 2, title: 'Type', condition: carouselFormPosition > 0 },
-    { step: 3, title: 'Fill', condition: filledForm },
-    { step: 4, title: 'Send', condition: onClickSubmit },
-  ];
-  
   /**inputs for talent form */
   const talentInput = [
+    { type: 'text', title: 'Job Title', value: 'jobTitle' },
     { type: 'text', title: 'Job Category', value: 'jobCategory' },
     { type: 'text', title: 'Skills Required', value: 'skillsRequired' },
     { type: 'text', title: 'Job Description', value: 'jobDescription' },
-    { type: 'text', title: 'Job Title', value: 'jobTitle' },
     {
       type: 'select',
       title: 'Experience Needed',
@@ -152,12 +226,12 @@ export default function RequestModal(props: any) {
       ]
     },
     { type: 'text', title: 'Location', value: 'location' },
-    { type: 'number', title: 'Compensation (USD)', value: 'compensation' },
+    { type: 'text', title: 'Compensation (USD)', value: 'compensation' },
     { type: 'date', title: 'Application Deadline', value: 'applicationDeadline' },
     { type: 'text', title: 'Company Info', value: 'companyInfo' },
     { type: 'text', title: 'Additional Perks', value: 'additionalPerks' }
   ];
-  
+
   /**inputs for job form */
   const jobInput = [
     { type: 'text', title: 'Talent Title', value: 'talentTitle' },
@@ -191,261 +265,170 @@ export default function RequestModal(props: any) {
       options: [
         { value: 'full-time', title: 'Full time' },
         { value: 'part-time', title: 'Part time' },
-        { value: 'frelance', title: 'Frelance' },
+        { value: 'freelance', title: 'Freelance' },
       ]
     },
-    { type: 'number', title: 'Rates', value: 'rates' },
-    { type: 'number', title: 'Duration (months)', value: 'duration' },
+    { type: 'text', title: 'Rates', value: 'rates' },
+    { type: 'text', title: 'Duration (months)', value: 'duration' },
     { type: 'text', title: 'Additional Requirements', value: 'additionalRequirements' }
   ];
 
+  const showRequestModal = requestModal !== '';
 
   return (
-    requestModal ?
+    showRequestModal &&
+    <div
+      className={
+        `${showRequestModal ? 'scale-100 animate-[fade-in_0.50s]'
+          : 'hidden'
+        } w-full h-full fixed top-0 flex flex-col justify-center items-center bg-black bg-opacity-75 z-50`
+      }
+      onClick={(e: any) => handleCloseModal(e)}
+    >
       <div
         className={
-          `${requestModal ? 'scale-100 animate-[fade-in_0.50s]'
-            : 'hidden'
-          } w-full h-full fixed top-0 flex flex-col justify-center items-center bg-black bg-opacity-75 z-50`
+          `${screenNarrow ? 'h-[85%]' : 'h-[90%]'}
+            ${showRequestModal ?
+            'scale-100 animate-[zoom-in_0.50s]'
+            : 'scale-0 animate-[zoom-out_0.30s]'
+          }  container w-64 lg:w-[22rem] relative flex flex-col justify-center items-center list-none rounded-md shadow-lg transform`
         }
-        onClick={(e: any) => handleCloseModal(e)}
+        onClick={(e) => e.stopPropagation()}
       >
-        <div
-          className={
-            `${screenNarrow ? 'h-[85%]' : 'h-[90%]'}
-            ${requestModal ?
-              'scale-100 animate-[zoom-in_0.50s]'
-              : 'scale-0 animate-[zoom-out_0.30s]'
-            }  container w-64 lg:w-[22rem] relative flex flex-col justify-center items-center list-none rounded-md shadow-lg transform`
-          }
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/**icon-cancel to close modal */}
-          <div className='w-6 h-6 absolute -top-5 -right-5 flex flex-col justify-center items-center rounded-full bg-white'>
-            <i
-              className='w-full h-full text-gray-900 lg:text-gray-400 text-2xl lg:xl flex justify-center cursor-default lg:cursor-pointer lg:hover:text-gray-900'
-              onClick={(e: any) => handleCloseModal(e)}
+        {/**icon-cancel to close modal */}
+        <div className='w-6 h-6 absolute -top-5 -right-5 flex flex-col justify-center items-center rounded-full bg-white'>
+          <i
+            className='w-full h-full text-gray-900 lg:text-gray-400 text-2xl lg:xl flex justify-center cursor-default lg:cursor-pointer lg:hover:text-gray-900'
+            onClick={(e: any) => handleCloseModal(e)}
+          >
+            <IconCancel />
+          </i>
+        </div>
+        {/**header form */}
+        <div className='w-full px-4 lg:px-8 py-1 lg:py-2 flex flex-col bg-slate-950 rounded-t-md z-50'>
+          <h2 className='w-full h-fit py-1 text-white text-xl lg:text-3xl font-bold transition-all z-10'>
+            {`Request ${requestModal}`}
+          </h2>
+        </div>
+        <div className='w-full h-full flex flex-row items-center bg-white rounded-b-md overflow-x-hidden'>
+          {/***carousel form***/}
+          <ul
+            className='w-[9999px] flex flex-row items-center transform transition-all list-none'
+            ref={carouselFormRef}
+          >
+            {/**step 1-2: complete talent or job request form */}
+            <li
+              key='new-request-filling'
+              className='w-64 lg:w-[22rem] h-full px-2 lg:px-8 flex flex-col justify-between items-center transition-all'
             >
-              <IconCancel />
-            </i>
-          </div>
-          {/**header form */}
-          <div className='w-full px-4 lg:px-8 py-1 lg:py-2 flex flex-col bg-slate-950 rounded-t-md z-50'>
-            <h2 className='w-full h-fit py-1 text-white text-xl lg:text-3xl font-bold transition-all z-10'>
-              {`REQUEST ${requestType.toUpperCase()}`}
-            </h2>
-            {/**steps indicator */}
-            <div className='w-full py-1 px-4 flex flex-row justify-between'>
-              {
-                stepsIndicator.map((element: any, index: any) => (
-                  <>
-                    {/**steps: add, type selection, form filling and sending */}
-                    <div
-                      key={index}
-                      className='w-[24px] lg:w-[30px] h-[48px] lg:h-[60px] flex flex-col items-center z-10'
-                    >
-                      <div className={
-                        `${element.condition ?
-                          '' :
-                          'border-2 border-green-300 opacity-25'} w-full h-1/2 flex flex-row justify-center items-center bg-transparent rounded-full`}
-                      >
-                        {
-                          element.condition ?
-                            <i className='text-green-400 text-2xl lg:text-3xl flex justify-center items-center bg-slate-950'>
-                              <IconCheckCircle />
-                            </i>
-                            :
-                            <h5 className='w-5 h-5 lg:w-6 lg:h-6 text-green-300 text-xs lg:text-sm font-bold text-center flex flex-row justify-center items-center'>
-                              {element.step}
-                            </h5>
-                        }
-                      </div>
-                      <div className='w-full h-1/2 flex flex-col items-center'>
-                        <h5 className='w-full text-slate-50 text-xs lg:text-sm text-center flex flex-row justify-center items-center'>
-                          {element.title}
-                        </h5>
-                      </div>
-                    </div>
-                    {
-                      index < 3 ?
-                        /**line */
-                        <div className='w-full h-1/2 flex flex-row items-center'>
-                          <div className={
-                            `${element.condition ?
-                              'opacity-25 animate-[width-change_1.0s_ease]' :
-                              'opacity-0'} w-full h-0 flex border border-green-300 transform transition-all`
-                          }
-                          />
-                        </div>
-                        :
-                        ''
-                    }
-                  </>
-                ))
-              }
-            </div>
-          </div>
-          <div className='w-full h-full flex flex-row items-center bg-white rounded-b-md overflow-x-hidden'>
-            {/***carousel form***/}
-            <ul
-              className='w-[9999px] flex flex-row items-center transform transition-all list-none'
-              ref={carouselFormRef}
+              {/**form I */}
+              <div className='w-full h-full flex flex-col justify-between items-center transition-all z-0'>
+                <div className='w-full h-full flex flex-col items-center'>
+                  {
+                    requestModal === 'talent' ?
+                      /**talent request I */
+                      <FormTemplate
+                        inputData={talentInput.slice(0, 5)}
+                        formData={requestTalentData}
+                        changeData={changeRequestTalentData}
+                        onChange={(e: any) => handleChangeData(e)}
+                        onFocus={(e: any) => setChangeRequestTalentData({ ...changeRequestTalentData, [e.target.name]: true })}
+                        onBlur={(e: any) => setChangeRequestTalentData({ ...changeRequestTalentData, [e.target.name]: false })}
+                      />
+                      :
+                      /**job request I */
+                      <FormTemplate
+                        inputData={jobInput.slice(0, 5)}
+                        formData={requestJobData}
+                        changeData={changeRequestJobData}
+                        onChange={(e: any) => handleChangeData(e)}
+                        onFocus={(e: any) => setChangeRequestJobData({ ...changeRequestJobData, [e.target.name]: true })}
+                        onBlur={(e: any) => setChangeRequestJobData({ ...changeRequestJobData, [e.target.name]: false })}
+                      />
+                  }
+                </div>
+                {/**next button */}
+                <div className='w-full py-7 flex flex-row justify-center items-center'>
+                  {/**next button */}
+                  <button
+                    className='w-full px-6 py-2 text-slate-50 lg:hover:text-white font-bold  flex flex-row justify-center items-center bg-green-500 lg:bg-green-300 lg:hover:bg-green-500 cursor-default lg:cursor-pointer rounded-md transition-all'
+                    onClick={() => setCarouselFormPosition(1)}
+                  >
+                    <h5 className='w-full h-fit text-sm lg:text-base leading-none tracking-wider'>
+                      Next
+                    </h5>
+                  </button>
+                </div>
+              </div>
+            </li>
+            {/**step 4: complete and submit talent or job request talent form */}
+            <li
+              key='new-request-sending'
+              className='w-64 lg:w-[22rem] h-full px-2 lg:px-8 flex flex-col justify-between items-center transition-all'
             >
-              {/**step 1-2: select request type */}
-              <li
-                key='new-request-selection'
-                className='w-64 lg:w-[22rem] h-full px-2 lg:px-8 flex flex-col justify-center items-center transition-all'
+              {/**form II */}
+              <form
+                className='w-full h-full flex flex-col justify-between items-center transition-all z-0'
+                onSubmit={(e: any) => handleSubmit(e)}
               >
-                <button
-                  className='w-full p-5 lg:p-10 my-2 lg:my-3 bg-white border lg:hover:border-green-300 rounded-md drop-shadow-md'
-                  onClick={() => {
-                    setRequestType('talent');
-                    setCarouselFormPosition(1);
-                  }}
-                >
-                  <h3>Talent Request</h3>
-                </button>
-                <button
-                  className='w-full p-5 lg:p-10 my-2 lg:my-3 bg-white border lg:hover:border-green-300 rounded-md drop-shadow-md'
-                  onClick={() => {
-                    setRequestType('job');
-                    setCarouselFormPosition(1);
-                  }}
-                >
-                  <h3>Job Request</h3>
-                </button>
-              </li>
-              {/**step 3: complete talent or job request form */}
-              <li
-                key='new-request-filling'
-                className='w-64 lg:w-[22rem] h-full px-2 lg:px-8 flex flex-col justify-between items-center transition-all'
-              >
-                {/**form I */}
-                <form
-                  className='w-full h-full flex flex-col justify-between items-center transition-all z-0'
-                  onSubmit={(e: any) => handleSubmit(e)}
-                >
-                  <div className='w-full h-full flex flex-col items-center'>
-                    {
-                      requestType === 'talent' ?
-                        /**talent request I */
-                        <FormTemplate
-                          inputData={talentInput.slice(0, 5)}
-                          formData={formDataTalent}
-                          changeData={changeDataTalent}
-                          onChange={(e: any) => handleChangeData(e)}
-                          onFocus={(e: any) => setChangeDataTalent({ ...changeDataTalent, [e.target.name]: true })}
-                          onBlur={(e: any) => setChangeDataTalent({ ...changeDataTalent, [e.target.name]: false })}
-                        />
-                        :
-                        /**job request I */
-                        <FormTemplate
-                          inputData={jobInput.slice(0, 5)}
-                          formData={formDataJob}
-                          changeData={changeDataJob}
-                          onChange={(e: any) => handleChangeData(e)}
-                          onFocus={(e: any) => setChangeDataJob({ ...changeDataJob, [e.target.name]: true })}
-                          onBlur={(e: any) => setChangeDataJob({ ...changeDataJob, [e.target.name]: false })}
-                        />
+                <div className='w-full h-full flex flex-col items-center'>
+                  {
+                    requestModal === 'talent' ?
+                      /**talent request II */
+                      <FormTemplate
+                        inputData={talentInput.slice(5)}
+                        formData={requestTalentData}
+                        changeData={changeRequestTalentData}
+                        onChange={(e: any) => handleChangeData(e)}
+                        onFocus={(e: any) => setChangeRequestTalentData({ ...changeRequestTalentData, [e.target.value]: true })}
+                        onBlur={(e: any) => setChangeRequestTalentData({ ...changeRequestTalentData, [e.target.value]: false })}
+                      />
+                      :
+                      /**job request II */
+                      <FormTemplate
+                        formData={requestJobData}
+                        inputData={jobInput.slice(5)}
+                        changeData={changeRequestJobData}
+                        onChange={(e: any) => handleChangeData(e)}
+                        onFocus={(e: any) => setChangeRequestJobData({ ...changeRequestJobData, [e.target.value]: true })}
+                        onBlur={(e: any) => setChangeRequestJobData({ ...changeRequestJobData, [e.target.value]: false })}
+                      />
+                  }
+                </div>
+                <div className='w-full py-7 flex flex-row justify-between items-center'>
+                  {/**back button */}
+                  <button
+                    className='w-[45%] text-slate-50 lg:hover:text-white lg:hover:font-bold px-6 py-2 flex flex-row justify-center items-center bg-slate-400 cursor-default lg:cursor-pointer rounded-md transition-all'
+                    onClick={() => setCarouselFormPosition(0)}
+                  >
+                    <h5 className='w-full h-fit text-sm lg:text-base leading-none tracking-wider'>
+                      Back
+                    </h5>
+                  </button>
+                  {/**button submit form */}
+                  <button
+                    type='submit'
+                    className={
+                      `${filledForm ?
+                        'font-bold bg-green-400 lg:bg-green-30 lg:hover:bg-green-400 cursor-default lg:cursor-pointer' :
+                        'bg-slate-400 cursor-default'
+                      } w-[45%] text-slate-50 lg:hover:text-white lg:hover:font-bold px-6 py-2 flex flex-row justify-center items-center rounded-md transition-all z-30`
                     }
-                  </div>
-                  {/**back and next button */}
-                  <div className='w-full py-7 flex flex-row justify-between items-center'>
-                    {/**back button */}
-                    <button
-                      className='w-[45%] text-slate-50 lg:hover:text-white lg:hover:font-bold px-6 py-2 flex flex-row justify-center items-center bg-slate-400 cursor-default lg:cursor-pointer rounded-md transition-all'
-                      onClick={() => {
-                        setRequestType('');
-                        setCarouselFormPosition(0);
-                      }}
-                    >
-                      <h5 className='w-full h-fit text-sm lg:text-base leading-none tracking-wider'>
-                        Back
-                      </h5>
-                    </button>
-                    {/**next button */}
-                    <button
-                      className='w-[45%] px-6 py-2 text-slate-50 lg:hover:text-white font-bold  flex flex-row justify-center items-center bg-green-500 lg:bg-green-300 lg:hover:bg-green-500 cursor-default lg:cursor-pointer rounded-md transition-all'
-                      onClick={() => setCarouselFormPosition(2)}
-                    >
-                      <h5 className='w-full h-fit text-sm lg:text-base leading-none tracking-wider'>
-                        Next
-                      </h5>
-                    </button>
-                  </div>
-                </form>
-              </li>
-              {/**step 4: complete and submit talent or job request talent form */}
-              <li
-                key='new-request-sending'
-                className='w-64 lg:w-[22rem] h-full px-2 lg:px-8 flex flex-col justify-between items-center transition-all'
-              >
-                {/**form II */}
-                <form
-                  className='w-full h-full flex flex-col justify-between items-center transition-all z-0'
-                  onSubmit={(e: any) => handleSubmit(e)}
-                >
-                  <div className='w-full h-full flex flex-col items-center'>
-                    {
-                      requestType === 'talent' ?
-                        /**talent request II */
-                        <FormTemplate
-                          inputData={talentInput.slice(5)}
-                          formData={formDataTalent}
-                          changeData={changeDataTalent}
-                          onChange={(e: any) => handleChangeData(e)}
-                          onFocus={(e: any) => setChangeDataTalent({ ...changeDataTalent, [e.target.value]: true })}
-                          onBlur={(e: any) => setChangeDataTalent({ ...changeDataTalent, [e.target.value]: false })}
-                        />
-                        :
-                        /**job request II */
-                        <FormTemplate
-                          formData={formDataJob}
-                          inputData={jobInput.slice(5)}
-                          changeData={changeDataJob}
-                          onChange={(e: any) => handleChangeData(e)}
-                          onFocus={(e: any) => setChangeDataJob({ ...changeDataJob, [e.target.value]: true })}
-                          onBlur={(e: any) => setChangeDataJob({ ...changeDataJob, [e.target.value]: false })}
-                        />
-                    }
-                  </div>
-                  <div className='w-full py-7 flex flex-row justify-between items-center'>
-                    {/**back button */}
-                    <button
-                      className='w-[45%] text-slate-50 lg:hover:text-white lg:hover:font-bold px-6 py-2 flex flex-row justify-center items-center bg-slate-400 cursor-default lg:cursor-pointer rounded-md transition-all'
-                      onClick={() => setCarouselFormPosition(1)}
-                    >
-                      <h5 className='w-full h-fit text-sm lg:text-base leading-none tracking-wider'>
-                        Back
-                      </h5>
-                    </button>
-                    {/**button submit form */}
-                    <button
-                      type='submit'
-                      className={
-                        `${filledForm ?
-                          'font-bold bg-green-400 lg:bg-green-30 lg:hover:bg-green-400 cursor-default lg:cursor-pointer' :
-                          'bg-slate-400 cursor-default'
-                        } w-[45%] text-slate-50 lg:hover:text-white lg:hover:font-bold px-6 py-2 flex flex-row justify-center items-center rounded-md transition-all z-30`
-                      }
-                      disabled={!filledForm}
-                      onClick={() => {
-                        setOnClickSubmit(true);
-                        setTimeout((e: any) => { handleCloseModal(e) }, 1000);
-                      }}
-                    >
-                      <h5 className='w-full h-fit text-sm lg:text-base leading-none tracking-wider'>
-                        Send
-                      </h5>
-                    </button>
-                  </div>
-                </form>
-              </li>
-            </ul>
-          </div>
+                    disabled={!filledForm}
+                    onClick={() => {
+                      setTimeout((e: any) => { handleCloseModal(e) }, 1000);
+                    }}
+                  >
+                    <h5 className='w-full h-fit text-sm lg:text-base leading-none tracking-wider'>
+                      Send
+                    </h5>
+                  </button>
+                </div>
+              </form>
+            </li>
+          </ul>
         </div>
       </div>
-      :
-      ''
+    </div>
   )
 }

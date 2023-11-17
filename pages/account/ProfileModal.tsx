@@ -19,7 +19,7 @@ export default function ProfileModal(props: any) {
     userProfilePublications, setUserProfilePublications,
     userProfileConferences, setUserProfileConferences,
     userProfileCertifications, setUserProfileCertifications,
-    userProfileRecommendations, setuserProfileRecommendations,
+    userProfileRecommendations, setUserProfileRecommendations,
     collectionToChange, setCollectionToChange, itemIdToChange, setUpdate } = useAuthData();
   const { profileModal, setProfileModal, setProfileModalType, profileModalAction, setProfileModalAction } = useAuthUI();
   const { setMessageModal, setTypeMessageModal, setTextMessageModal, setLoading } = useUI();
@@ -258,7 +258,7 @@ export default function ProfileModal(props: any) {
       case 'certifications':
         return setUserProfileCertifications(data);
       case 'recommendations':
-        return setuserProfileRecommendations(data);
+        return setUserProfileRecommendations(data);
       default:
         break;
     }

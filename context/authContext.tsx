@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
-import type { PutBlobResult } from '@vercel/blob';
 
 
 
@@ -29,7 +28,11 @@ interface AuthDataContextProps {
   userProfileCertifications: UserProfileCertifications[] | [];
   setUserProfileCertifications: React.Dispatch<React.SetStateAction<UserProfileCertifications[] | []>>;
   userProfileRecommendations: UserProfileRecommendations[] | [];
-  setuserProfileRecommendations: React.Dispatch<React.SetStateAction<UserProfileRecommendations[] | []>>;
+  setUserProfileRecommendations: React.Dispatch<React.SetStateAction<UserProfileRecommendations[] | []>>;
+  userRequestTalent: UserRequestTalent[] | [];
+  setUserRequestTalent: React.Dispatch<React.SetStateAction<UserRequestTalent[] | []>>;
+  userRequestJob: UserRequestJob[] | [];
+  setUserRequestJob: React.Dispatch<React.SetStateAction<UserRequestJob[] | []>>;
   collectionToChange: string;
   setCollectionToChange: React.Dispatch<React.SetStateAction<string>>;
   itemIdToChange: string;
@@ -50,8 +53,10 @@ interface AuthUIContextProps {
   setProfileModalAction: React.Dispatch<React.SetStateAction<string>>;
   profileModalType: string;
   setProfileModalType: React.Dispatch<React.SetStateAction<string>>;
-  requestModal: boolean;
-  setRequestModal: React.Dispatch<React.SetStateAction<boolean>>;
+  requestModal: string;
+  setRequestModal: React.Dispatch<React.SetStateAction<string>>;
+  requestModalAction: string;
+  setRequestModalAction: React.Dispatch<React.SetStateAction<string>>;
 }
 
 interface Id {
@@ -129,6 +134,33 @@ interface UserProfileRecommendations {
   recommender_phone: string,
 }
 
+
+interface UserRequestTalent {    
+  job_title: string,
+  job_category: string,
+  skills_required: string,
+  job_description: string,
+  experience_needed: string,
+  location: string,
+  compensation: string,
+  application_deadline: string,
+  company_info: string,
+  additional_perks: string,
+}
+
+interface UserRequestJob {
+  talent_title: string,
+  talent_category: string,
+  skills_offered: string,
+  talent_description: string,
+  experience_level: string,
+  location_preference: string,
+  availability: string,
+  duration: string,
+  rates: string,
+  additional_requirements: string
+}
+
 interface AuthProviderProps {
   children: ReactNode;
 }
@@ -167,6 +199,8 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   const [token, setToken] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | { id: string }>('');
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [accountActived, setAccountActived] = useState<boolean>(false);
+  const [accountModule, setAccountModule] = useState<string>('');
   const [userProfileImage, setUserProfileImage] = useState<string | null>(null);
   const [userProfilePersonalInfo, setUserProfilePersonalInfo] = useState<UserProfilePersonalInfo | null>(null);
   const [userProfileExperience, setUserProfileExperience] = useState<UserProfileExperience[] | []>([]);
@@ -176,16 +210,17 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   const [userProfilePublications, setUserProfilePublications] = useState<UserProfilePublications[] | []>([]);
   const [userProfileConferences, setUserProfileConferences] = useState<UserProfileConferences[] | []>([]);
   const [userProfileCertifications, setUserProfileCertifications] = useState<UserProfileCertifications[] | []>([]);
-  const [userProfileRecommendations, setuserProfileRecommendations] = useState<UserProfileRecommendations[] | []>([]);
-  const [collectionToChange, setCollectionToChange] = useState<string>('');
-  const [itemIdToChange, setItemIdToChange] = useState<string>('');
-  const [update, setUpdate] = useState<string>('')
-  const [accountActived, setAccountActived] = useState<boolean>(false);
-  const [accountModule, setAccountModule] = useState<string>('');
+  const [userProfileRecommendations, setUserProfileRecommendations] = useState<UserProfileRecommendations[] | []>([]);
   const [profileModal, setProfileModal] = useState<boolean>(false);
   const [profileModalAction, setProfileModalAction] = useState<string>('');
   const [profileModalType, setProfileModalType] = useState<string>('');
-  const [requestModal, setRequestModal] = useState<boolean>(false);;
+  const [userRequestTalent, setUserRequestTalent] = useState<UserRequestTalent[] | []>([]);
+  const [userRequestJob, setUserRequestJob] = useState<UserRequestJob[] | []>([]);
+  const [requestModal, setRequestModal] = useState<string>('');
+  const [requestModalAction, setRequestModalAction] = useState<string>('');
+  const [collectionToChange, setCollectionToChange] = useState<string>('');
+  const [itemIdToChange, setItemIdToChange] = useState<string>('');
+  const [update, setUpdate] = useState<string>('')
 
   const logout = () => {
     setToken(null);
@@ -200,11 +235,13 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
     setUserProfilePublications([]);
     setUserProfileConferences([]);
     setUserProfileCertifications([]);
-    setuserProfileRecommendations([]);
+    setUserProfileRecommendations([]);
     setCollectionToChange('');
     setItemIdToChange('');
     setProfileModalAction('');
     setProfileModalType('');
+    setRequestModal('');
+    setRequestModalAction('');
   };
 
 
@@ -222,7 +259,9 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
       userProfilePublications, setUserProfilePublications,
       userProfileConferences, setUserProfileConferences,
       userProfileCertifications, setUserProfileCertifications,
-      userProfileRecommendations, setuserProfileRecommendations,
+      userProfileRecommendations, setUserProfileRecommendations,
+      userRequestTalent, setUserRequestTalent,
+      userRequestJob, setUserRequestJob,
       collectionToChange, setCollectionToChange,
       itemIdToChange, setItemIdToChange,
       update, setUpdate,
@@ -235,6 +274,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
         profileModalAction, setProfileModalAction,
         profileModalType, setProfileModalType,
         requestModal, setRequestModal,
+        requestModalAction, setRequestModalAction,
       }}>
         {children}
       </AuthUIContext.Provider>

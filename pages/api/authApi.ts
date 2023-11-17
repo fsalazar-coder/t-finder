@@ -13,6 +13,11 @@ const cors = initMiddleware(
   })
 );
 
+const today = new Date();
+const day = String(today.getDate()).padStart(2, '0');
+const month = String(today.getMonth() + 1).padStart(2, '0'); // +1 porque los meses comienzan en 0
+const year = today.getFullYear();
+const dateString = `${day} ${month} ${year}`;
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -47,7 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         _id: uuidv4() as any,
         email: email,
         password_hash: hashedPassword,
-        created_at: new Date().toISOString(),
+        created_at: dateString,                                 // or use: new Date().toISOString(),
       });
 
       return res.status(201).json({

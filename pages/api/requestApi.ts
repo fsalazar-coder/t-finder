@@ -17,7 +17,6 @@ const year = today.getFullYear();
 const dateString = `${day} ${month} ${year}`;
 
 
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     await cors(req, res);
@@ -28,63 +27,36 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     switch (action) {
       /**add user information */
       case 'post':
-        let addition;
-        let allDataAdd;
-        if (collectionName === 'personal_info') {
-          addition = await collection?.insertOne({
-            _id: id,
-            ...data
-          });
+        const addition = await collection?.insertOne({
+          created_at: dateString,
+          _id: uuidv4(),
+          user_id: id,
+          ...data
+        });
 
-          if (addition) {
-            allDataAdd = await collection?.find({ _id: id });
-            return res.status(200).json({
-              status: 'success',
-              actionResponse: allDataAdd
-            });
-          }
-          else {
-            return res.status(404).json({ error: 'User not found' });
-          }
+        if (addition) {
+          const allDataAdd = await collection?.find({ user_id: id }).toArray();
+          return res.status(200).json({
+            status: 'success',
+            actionResponse: allDataAdd
+          });
         }
         else {
-          addition = await collection?.insertOne({
-            created_at: dateString,
-            _id: uuidv4(),
-            user_id: id,
-            ...data
-          });
-
-          if (addition) {
-            allDataAdd = await collection?.find({ user_id: id }).toArray();
-            return res.status(200).json({
-              status: 'success',
-              actionResponse: allDataAdd
-            });
-          }
-          else {
-            return res.status(404).json({ error: 'User not found' });
-          }
+          return res.status(404).json({ error: 'User not found' });
         }
 
         break;
 
       /**get user data */
       case 'get':
-        let getData;
-        if (collectionName === 'personal_info' || collectionName === 'profile_image') {
-          getData = await collection?.findOne({ _id: id as any });
-        }
-        else {
-          getData = await collection?.find({ user_id: id }).toArray();
-        }
+        const getData = await collection?.find({ user_id: id }).toArray();
 
         if (getData) {
           return res.status(200).json({
             status: 'success',
             actionResponse: getData
           });
-        }     
+        }
         break;
 
       /**update user information */
@@ -106,7 +78,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
         break;
 
-      /**delete user profile information */
+      /**delete request information */
       case 'delete':
         const deleted = await collection?.findOneAndDelete(
           { _id: id as any }
@@ -115,12 +87,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (deleted?.value) {
           return res.status(200).json({
             status: 'success',
-            message: 'Your information was successfully deleted',
+            message: 'Your request was successfully deleted',
             deletedDocument: deleted.value // optional, include if useful
           });
         }
         else {
-          return res.status(404).json({ error: 'User information not found' });
+          return res.status(404).json({ error: 'User request not found' });
         }
         break;
 

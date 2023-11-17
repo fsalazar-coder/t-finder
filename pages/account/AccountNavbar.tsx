@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import { useRouter } from 'next/navigation';
 import ImageIconUser from './ImageIconUser';
@@ -9,7 +8,7 @@ const navbarElementAuth = [
   { title: 'Profile', accountModule: 'Profile', icon: <IconUserTie /> },
   { title: 'Request', accountModule: 'Request', icon: <IconRequest /> },
   { title: 'Notifications', accountModule: 'Notifications', icon: <IconBxsBellRing /> },
-  { title: 'Account Settings', accountModule: 'Account Settings', icon: <IconGear /> },
+  { title: 'Settings', accountModule: 'Settings', icon: <IconGear /> },
   { title: 'Help & Support', accountModule: 'Help & Support', icon: <IconHelpCircle /> }
 ];
 

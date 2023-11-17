@@ -116,16 +116,22 @@ export default function Profile() {
         </li>
         {
           /**others section card: experience, education, courses, projects, publications, conferences, certifications and recommendatiosn */
-          sections?.map((section: any, index: any) => (
-            <ProfileSectionCard
-              id={section.id}
-              index={index}
-              title={section.title}
-              value={section.id}
-              data={section.data}
-              shouldRender={section.shouldRender}
-            />
-          ))
+          sections?.map((section: any, index: any) => {
+            return (
+              <li
+                id={section.id}
+                key={`${index}-${section.title}`}
+                className='w-full relative my-1 flex flex-col bg-white border border-slate-200 rounded-lg'
+              >
+                <ProfileSectionCard
+                  title={section.title}
+                  value={section.id}
+                  data={section.data}
+                  shouldRender={section.shouldRender}
+                />
+              </li>
+            )
+          })
         }
       </ul>
     </div>

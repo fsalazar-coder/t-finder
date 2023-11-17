@@ -49,7 +49,7 @@ export default function Account() {
     'Profile': Profile,
     'Request': Request,
     'Notifications': Notifications,
-    'Account Settings': Settings,
+    'Settings': Settings,
     'Help & Support': HelpSupport,
   };
 
@@ -67,7 +67,7 @@ export default function Account() {
   }
 
   return (
-    <main className='w-full h-full relative font-montserrat select-none flex flex-col items-center'>
+    <main className='w-full h-screen relative font-montserrat select-none flex flex-col items-center'>
       <div className='w-auto h-auto'>
         <AccountNavbar />
       </div>
