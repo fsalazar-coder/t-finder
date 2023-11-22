@@ -18,7 +18,7 @@ export const fetchDataApi = async ({ token, userId, collectionName, onSuccess, o
   };
 
   try {
-    const response = await axios.post('/api/profileApi', {
+    const response = await axios.post('/api/userApi', {
       id: userId,
       collectionName: collectionName,
       action: 'get',

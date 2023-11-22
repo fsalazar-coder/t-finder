@@ -64,7 +64,7 @@ export default function Request(props: any) {
 
 
   return (
-    <div className='w-full h-full pl-0 lg:px-60 flex flex-row bg-slate-50'>
+    <div className='w-full h-full pl-0 lg:px-60 flex flex-row'>
       <ul className='container w-full py-12 px-2 pb-2 lg:p-8 flex flex-col transition-all'>
         {
           /**request card: talent & job */

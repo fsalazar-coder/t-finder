@@ -7,11 +7,11 @@ import axios from 'axios';
 
 
 
-export default function PersonalInfo() {
+export default function ProfilePersonalInfoCard() {
 
   const { token, userId, userProfilePersonalInfo, setUserProfilePersonalInfo,
     userProfileImage, setUserProfileImage, setCollectionToChange, update, setUpdate } = useAuthData();
-  const { setProfileModal, setProfileModalAction, setProfileModalType } = useAuthUI();
+  const { accountModule, setProfileModal, setProfileModalAction, setProfileModalType } = useAuthUI();
   const { screenNarrow, setMessageModal, setTypeMessageModal, setTextMessageModal } = useUI();
   const [imageHover, setImageHover] = useState(false);
   const [listHover, setListHover] = useState(false);
@@ -25,7 +25,7 @@ export default function PersonalInfo() {
       }
     };
     try {
-      const response = await axios.post('/api/profileApi',
+      const response = await axios.post('/api/userApi',
         {
           id: userId,
           collectionName: collection,
@@ -68,11 +68,11 @@ export default function PersonalInfo() {
   }, [update])
 
   let personalInfo = [
-    { title: 'Fullname:', description: userProfilePersonalInfo?.full_name },
-    { title: 'Profession or occupation:', description: userProfilePersonalInfo?.profession_occupation },
-    { title: 'Preferred language:', description: userProfilePersonalInfo?.preferred_language },
-    { title: 'Location:', description: userProfilePersonalInfo?.location },
-    { title: 'Personal description:', description: userProfilePersonalInfo?.personal_description }
+    { title: 'Fullname', description: userProfilePersonalInfo?.full_name },
+    { title: 'Profession or occupation', description: userProfilePersonalInfo?.profession_occupation },
+    { title: 'Preferred language', description: userProfilePersonalInfo?.preferred_language },
+    { title: 'Location', description: userProfilePersonalInfo?.location },
+    { title: 'Personal description', description: userProfilePersonalInfo?.personal_description }
   ];
 
   const buttons = [
@@ -99,6 +99,8 @@ export default function PersonalInfo() {
       },
     },
   ];
+
+  const isDashboard = accountModule === 'Dashboard';
 
 
   return (
@@ -138,9 +140,16 @@ export default function PersonalInfo() {
       </div>
       {/**content */}
       <div className='w-full px-5 py-1 flex flex-col'>
-        <div className='w-full flex flex-col lg:flex-row-reverse lg:justify-between'>
+        <div className={
+          `${isDashboard ?
+            'flex-col items-center' :
+            'flex-col lg:flex-row-reverse lg:justify-between'} w-full flex`
+        }>
           {/**profile image */}
-          <div className={`${!screenNarrow && 'border-l border-slate-100'} w-full lg:w-60 pl-5 mb-1 lg:mb-0 flex flex-col justify-between items-center`}>
+          <div className={
+            `${(!screenNarrow && !isDashboard) && 'border-l border-slate-100'} 
+            w-full lg:w-60 ${!isDashboard && 'pl-5'} mb-1 lg:mb-0 px-2 flex flex-col justify-between items-center`
+          }>
             {/**image */}
             <div className='w-full relative p-1 lg:p-2 mb-1 flex flex-col justify-between items-center'>
               {/**image effect-button add or edit */}
@@ -171,17 +180,17 @@ export default function PersonalInfo() {
               </div>
             </div>
             {/**Availability */}
-            <div className='w-full p-1 lg:p-2 flex flex-row items-center'>
-              <h3 className='w-fit px-2 text-xs text-start transition-all'>
+            <div className='w-full p-1 lg:p-2 flex flex-row items-center border-y border-slate-100'>
+              <h3 className='w-24 px-2 text-xs text-start transition-all'>
                 Availability
               </h3>
-              <div className='w-14 relative py-1 flex flex-row justify-center items-center rounded-full'>
+              <div className='w-32 relative py-1 flex flex-row justify-center items-center rounded-full'>
                 <button
-                  className={`${available ? 'bg-green-300' : 'bg-slate-100'} w-20 h-3 rounded-full transition-all`}
+                  className={`${available ? 'bg-green-300' : 'bg-slate-100'} w-32 h-3 rounded-full transition-all`}
                   onClick={() => setAvailable(!available)}
                 />
                 <div className={
-                  `${available ? 'bg-green-400 outline-green-400 translate-x-[2.2rem]'
+                  `${available ? 'bg-green-400 outline-green-400 translate-x-[6.7rem]'
                     : 'bg-slate-300 outline-slate-300 translate-x-0'} w-5 h-5 absolute left-0 border-2 border-white outline-1 outline rounded-full transform transition-transform`
                 } />
               </div>
@@ -189,12 +198,12 @@ export default function PersonalInfo() {
           </div>
           {/**personal information */}
           <div
-            className='w-full relative py-3 lg:mr-1 flex flex-col transform transition-all'
+            className='w-full relative py-3 flex flex-col transform transition-all'
             onMouseEnter={() => setListHover(true)}
             onMouseLeave={() => setListHover(false)}
           >
             {/**edit and delete button */}
-            <div className="w-full absolute top-0 right-0 p-2 flex flex-row justify-end items-center z-20">
+            <div className="w-full absolute top-0 right-0 py-2 flex flex-row justify-end items-center z-20">
               {userProfilePersonalInfo && listHover &&
                 <ul className="w-full h-fit flex flex-row justify-end items-center transition-all">
                   {
@@ -207,7 +216,7 @@ export default function PersonalInfo() {
                           <button className="flex flex-row justify-center items-center hover:cursor-default">
                             <i className={
                               `${index === 1 ? 'lg:hover:text-red-500' : 'lg:hover:text-green-500'} 
-                              p-[2px] text-slate-300 text-xl lg:text-2xl flex flex-row justify-center bg-white rounded-full cursor-default lg:cursor-pointer animate-[appear_0.7s_ease] transition-all`
+                              py-[2px] pl-1 text-slate-300 text-xl lg:text-2xl flex flex-row justify-center bg-white rounded-full cursor-default lg:cursor-pointer animate-[appear_0.7s_ease] transition-all`
                             }
                               onClick={button.click}
                             >
@@ -228,14 +237,16 @@ export default function PersonalInfo() {
                 {
                   personalInfo?.map((element: any, index: any) => {
                     return (
-                      /**full name, profession or occupation, preferred language, location and personal description */
-                      <li
-                        key={index}
-                        className='w-full flex flex-row items-center'
+                      /**fullname, profession or occupation, preferred language, location and personal description */
+                      <li key={index}
+                        className='w-full pb-2 flex flex-col'
                       >
-                        <h3 className='text-sm lg:text-base text-slate-600'>
-                          <strong>{element.title}</strong>  {element.description}
-                        </h3>
+                        <h4 className='w-full text-slate-700 text-sm font-semibold'>
+                          {element.description}
+                        </h4>
+                        <h5 className='w-full text-slate-200 text-xs'>
+                          {element.title}
+                        </h5>
                       </li>
                     )
                   })

@@ -277,7 +277,7 @@ export default function ProfileModal(props: any) {
     };
 
     try {
-      const response = await axios.post('/api/profileApi',
+      const response = await axios.post('/api/userApi',
         {
           id: isPersonalInfo || isPostAction ? userId : itemIdToChange,
           collectionName: collectionToChange,

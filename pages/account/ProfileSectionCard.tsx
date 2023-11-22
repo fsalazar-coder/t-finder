@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import SectionTitles from '../components/SectionTitles';
 import { IconAdd, IconEdit, IconDelete } from '../../icons/icons';
+import ItemContent from "./ItemContent";
+import EditDeleteButtons from "./EditDeleteButtons";
+
 
 
 interface ProfileSectionProps {
@@ -118,9 +121,7 @@ export default function ProfileSectionCard({ title, value, data, shouldRender }:
                             )
                           }
                         </div>
-                        <ItemContent
-                          element={element as any}
-                        />
+                        <ItemContent element={element as any} />
                       </li>
                     )
                   })
@@ -131,65 +132,5 @@ export default function ProfileSectionCard({ title, value, data, shouldRender }:
         )
       }
     </>
-  )
-};
-
-
-const EditDeleteButtons = ({ id, icon, elementId, sectionValue, handleClick }: any) => (
-  <button
-    id={id}
-    className="pl-1 flex flex-row justify-center items-center hover:cursor-default transition-all"
-    onClick={() => handleClick(elementId, sectionValue)}
-  >
-    <i className={
-      `${id === 'edit-item-profile' ?
-        'text-green-300 lg:text-slate-300 lg:hover:text-green-500' :
-        'text-red-300 lg:text-slate-300 lg:hover:text-red-500'
-      } text-xl lg:text-2xl flex flex-row justify-center bg-white rounded-full cursor-default lg:cursor-pointer animate-[appear_0.7s_ease] transition-all`
-    }
-    >
-      {icon}
-    </i>
-  </button>
-);
-
-const ItemContent = ({ element }: any) => {
-
-  function formatKeys(element: any) {
-    const formattedElement: Record<string, any> = {};
-    for (const key in element) {
-      const formattedKey = key
-        .split('_')
-        .map((word, index) => {
-          if (index === 0) {
-            return word.charAt(0).toUpperCase() + word.slice(1); // Capitaliza la primera palabra
-          }
-          else {
-            return word.charAt(0).toLowerCase() + word.slice(1); // Mantén las otras palabras en minúscula
-          }
-        })
-        .join(' ');
-      formattedElement[formattedKey] = element[key];
-    }
-    return formattedElement;
-  }
-
-  let newElement = formatKeys(element)
-
-  return (
-    <ul className='w-full flex flex-col cursor-default lg:hover:cursor-pointer'>
-      {
-        Object.entries(newElement).map(([key, value]) => (
-          key !== ' id' && key !== 'User id' && key !== 'Created at' && (
-            <li key={key}
-              className="w-full"
-            >
-              <h3 className='text-sm lg:text-base text-slate-600'>
-                <strong>{key}:</strong> {typeof value === 'string' ? value : ''}
-              </h3>
-            </li>
-          )))
-      }
-    </ul>
   )
 };

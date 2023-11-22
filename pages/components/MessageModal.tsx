@@ -50,7 +50,7 @@ export default function MessageModal(props: any) {
       }
     };
     try {
-      const response = await axios.post('/api/profileApi',
+      const response = await axios.post('/api/userApi',
         {
           id: collectionToChange === 'personal_info' ? userId : itemIdToChange,
           collectionName: collectionToChange,

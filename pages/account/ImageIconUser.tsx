@@ -19,7 +19,7 @@ export default function ImageIconUser(props: any) {
     };
 
     try {
-      const response = await axios.post('/api/profileApi',
+      const response = await axios.post('/api/userApi',
         {
           id: userId,
           collectionName: 'profile_image',

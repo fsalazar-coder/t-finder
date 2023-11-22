@@ -19,7 +19,6 @@
     "dotenv": "^16.3.1",
     "eslint": "8.48.0",
     "eslint-config-next": "13.4.19",
-    "formidable": "^3.5.1",
     "jsonwebtoken": "^9.0.1",
     "mongodb": "^5.8.1",
     "next": "13.4.19",

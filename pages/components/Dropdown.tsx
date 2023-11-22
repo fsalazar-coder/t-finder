@@ -75,29 +75,30 @@ export default function Dropdown(props: any) {
                 /**authenticated: dropdown options */
                 navbarElementAuth.map((item: any, index: any) => {
                   return (
-                    <li
-                      key={index}
-                      className='w-full h-auto flex flex-row items-center hover:bg-slate-900'
-                      onClick={() => {
-                        setDropdown(false);
-                        setAccountActived(true);
-                        setAccountModule(item.accountModule);
-                        router.push('/Account')
-                      }}
-                    >
-                      <i className='text-base text-slate-500 pl-8 pr-3'>
-                        {item.icon}
-                      </i>
-                      <h3 className={
-                        `${accountModule === item.accountModule ?
-                          'text-fuchsia-600 font-semibold' :
-                          'text-slate-500 hover:text-white font-normal'
-                        } py-2 px-4 text-sm lg:text-base text-start`
-                      }
+                    screenNarrow && item.title === 'Dashboard' ? '' :
+                      <li
+                        key={index}
+                        className='w-full h-auto flex flex-row items-center hover:bg-slate-900'
+                        onClick={() => {
+                          setDropdown(false);
+                          setAccountActived(true);
+                          setAccountModule(item.accountModule);
+                          router.push('/Account')
+                        }}
                       >
-                        {item?.title}
-                      </h3>
-                    </li>
+                        <i className='text-base text-slate-500 pl-8 pr-3'>
+                          {item.icon}
+                        </i>
+                        <h3 className={
+                          `${accountModule === item.accountModule ?
+                            'text-fuchsia-600 font-semibold' :
+                            'text-slate-500 hover:text-white font-normal'
+                          } py-2 px-4 text-sm lg:text-base text-start`
+                        }
+                        >
+                          {item?.title}
+                        </h3>
+                      </li>
                   )
                 })
               }
