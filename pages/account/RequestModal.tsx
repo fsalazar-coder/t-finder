@@ -23,26 +23,23 @@ export default function RequestModal(props: any) {
     jobTitle: '',
     jobCategory: '',
     skillsRequired: '',
-    jobDescription: '',
-    experienceNeeded: '',
+    experienceLevel: '',
+    experienceYears: '',
     location: '',
+    modalityWork: '',
     compensation: '',
-    applicationDeadline: '',
     companyInfo: '',
-    additionalPerks: '',
   });
   const [changeRequestTalentData, setChangeRequestTalentData] = useState({
     jobTitle: false,
     jobCategory: false,
     skillsRequired: false,
-    jobDescription: false,
-    experienceNeeded: false,
+    experienceLevel: false,
+    experienceYears: false,
     location: false,
-    jobType: false,
+    modalityWork: false,
     compensation: false,
-    applicationDeadline: false,
     companyInfo: false,
-    additionalPerks: false,
   });
   {/** */ }
 
@@ -51,25 +48,19 @@ export default function RequestModal(props: any) {
     talentTitle: '',
     talentCategory: '',
     skillsOffered: '',
-    talentDescription: '',
     experienceLevel: '',
-    locationPreference: '',
+    modalityWork: '',
     availability: '',
-    duration: '',
     rates: '',
-    additionalRequirements: ''
   });
   const [changeRequestJobData, setChangeRequestJobData] = useState({
     talentTitle: false,
     talentCategory: false,
     skillsOffered: false,
-    talentDescription: false,
     experienceLevel: false,
-    locationPreference: false,
+    modalityWork: false,
     availability: false,
-    duration: false,
     rates: false,
-    additionalRequirements: false
   });
   {/** */ }
 
@@ -95,25 +86,21 @@ export default function RequestModal(props: any) {
         job_title: requestTalentData.jobTitle,
         job_category: requestTalentData.jobCategory,
         skills_required: requestTalentData.skillsRequired,
-        job_description: requestTalentData.jobDescription,
-        experience_needed: requestTalentData.experienceNeeded,
+        experience_level: requestTalentData.experienceLevel,
+        experience_years: requestTalentData.experienceYears,
         location: requestTalentData.location,
+        modality_work: requestTalentData.modalityWork,
         compensation: requestTalentData.compensation,
-        application_deadline: requestTalentData.applicationDeadline,
         company_info: requestTalentData.companyInfo,
-        additional_perks: requestTalentData.additionalPerks,
       },
       requestJob: {
         talent_title: requestJobData.talentTitle,
         talent_category: requestJobData.talentCategory,
         skills_offered: requestJobData.skillsOffered,
-        talent_description: requestJobData.talentDescription,
         experience_level: requestJobData.experienceLevel,
-        location_preference: requestJobData.locationPreference,
+        modality_work: requestJobData.modalityWork,
         availability: requestJobData.availability,
-        duration: requestJobData.duration,
         rates: requestJobData.rates,
-        additional_requirements: requestJobData.additionalRequirements
       },
     };
     let dataToApi;
@@ -212,50 +199,101 @@ export default function RequestModal(props: any) {
   /**inputs for talent form */
   const talentInput = [
     { type: 'text', title: 'Job Title', value: 'jobTitle' },
-    { type: 'text', title: 'Job Category', value: 'jobCategory' },
-    { type: 'text', title: 'Skills Required', value: 'skillsRequired' },
-    { type: 'text', title: 'Job Description', value: 'jobDescription' },
     {
       type: 'select',
-      title: 'Experience Needed',
-      value: 'experienceNeeded',
+      title: 'Job Category',
+      value: 'jobCategory',
       options: [
-        { value: 'entry', title: 'Entry Level' },
-        { value: 'mid', title: 'Mid Level' },
-        { value: 'senior', title: 'Senior Level' },
+        { value: 'Administrator', title: 'Administrator' },
+        { value: 'Lawyer', title: 'Lawyer' },
+        { value: 'Designer', title: 'Designer' },
+        { value: 'Programmer', title: 'Programmer' },
+        { value: 'Chemical', title: 'Chemical' },
+        { value: 'Industrial engineer', title: 'Industrial engineer' },
+        { value: 'Electrician', title: 'Electrician' },
+        { value: 'Plumber', title: 'Plumber' },
+        { value: 'Driver', title: 'Driver' },
+        { value: 'Construction worker', title: 'Construction worker' },
+        { value: 'Gardener', title: 'Gardener' },
       ]
     },
-    { type: 'text', title: 'Location', value: 'location' },
-    { type: 'text', title: 'Compensation (USD)', value: 'compensation' },
-    { type: 'date', title: 'Application Deadline', value: 'applicationDeadline' },
-    { type: 'text', title: 'Company Info', value: 'companyInfo' },
-    { type: 'text', title: 'Additional Perks', value: 'additionalPerks' }
-  ];
-
-  /**inputs for job form */
-  const jobInput = [
-    { type: 'text', title: 'Talent Title', value: 'talentTitle' },
-    { type: 'text', title: 'Talent Category', value: 'talentCategory' },
-    { type: 'text', title: 'Skills Offered', value: 'skillsOffered' },
-    { type: 'text', title: 'Talent Description', value: 'talentDescription' },
     {
       type: 'select',
       title: 'Experience Level',
       value: 'experienceLevel',
       options: [
-        { value: 'entry', title: 'Entry Level' },
-        { value: 'mid', title: 'Mid Level' },
-        { value: 'senior', title: 'Senior Level' },
+        { value: 'Junior', title: 'Junior' },
+        { value: 'Mid', title: 'Mid' },
+        { value: 'Senior', title: 'Senior' },
       ]
     },
     {
       type: 'select',
-      title: 'Location Preference',
-      value: 'locationPreference',
+      title: 'Experience years',
+      value: 'experienceYears',
       options: [
-        { value: 'remote', title: 'Remote' },
-        { value: 'on-site', title: 'On-site' },
-        { value: 'flexible', title: 'Flexible' },
+        { value: '0-2', title: '0-2' },
+        { value: '2-5', title: '2-5' },
+        { value: '5-10', title: '5-10' },
+        { value: '+10', title: '+10' },
+      ]
+    },
+    { type: 'text', title: 'Skills Required', value: 'skillsRequired' },
+    { type: 'text', title: 'Location', value: 'location' },
+    {
+      type: 'select',
+      title: 'Modality Work',
+      value: 'modalityWork',
+      options: [
+        { value: 'Remote', title: 'Remote' },
+        { value: 'On-site', title: 'On-site' },
+        { value: 'Flexible', title: 'Flexible' },
+      ]
+    },
+    { type: 'text', title: 'Compensation (USD)', value: 'compensation' },
+    { type: 'text', title: 'Company Info', value: 'companyInfo' }
+  ];
+
+  /**inputs for job form */
+  const jobInput = [
+    { type: 'text', title: 'Talent Title', value: 'talentTitle' },
+    {
+      type: 'select',
+      title: 'Talent Category',
+      value: 'talentCategory',
+      options: [
+        { value: 'Administrator', title: 'Administrator' },
+        { value: 'Lawyer', title: 'Lawyer' },
+        { value: 'Designer', title: 'Designer' },
+        { value: 'Programmer', title: 'Programmer' },
+        { value: 'Chemical', title: 'Chemical' },
+        { value: 'Industrial engineer', title: 'Industrial engineer' },
+        { value: 'Electrician', title: 'Electrician' },
+        { value: 'Plumber', title: 'Plumber' },
+        { value: 'Driver', title: 'Driver' },
+        { value: 'Construction worker', title: 'Construction worker' },
+        { value: 'Gardener', title: 'Gardener' },
+      ]
+    },
+    { type: 'text', title: 'Skills Offered', value: 'skillsOffered' },
+    {
+      type: 'select',
+      title: 'Experience Level',
+      value: 'experienceLevel',
+      options: [
+        { value: 'Entry', title: 'Entry' },
+        { value: 'Mid', title: 'Mid' },
+        { value: 'Senior', title: 'Senior' },
+      ]
+    },
+    {
+      type: 'select',
+      title: 'Modality Work',
+      value: 'modalityWork',
+      options: [
+        { value: 'Remote', title: 'Remote' },
+        { value: 'On-site', title: 'On-site' },
+        { value: 'Flexible', title: 'Flexible' },
       ]
     },
     {
@@ -263,17 +301,16 @@ export default function RequestModal(props: any) {
       title: 'Availability',
       value: 'availability',
       options: [
-        { value: 'full-time', title: 'Full time' },
-        { value: 'part-time', title: 'Part time' },
-        { value: 'freelance', title: 'Freelance' },
+        { value: 'Full-time', title: 'Full-time' },
+        { value: 'Part-time', title: 'Part-time' },
+        { value: 'Freelance', title: 'Freelance' },
       ]
     },
     { type: 'text', title: 'Rates', value: 'rates' },
-    { type: 'text', title: 'Duration (months)', value: 'duration' },
-    { type: 'text', title: 'Additional Requirements', value: 'additionalRequirements' }
   ];
 
   const showRequestModal = requestModal !== '';
+
 
   return (
     showRequestModal &&

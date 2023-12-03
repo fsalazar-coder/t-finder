@@ -12,10 +12,9 @@ export default function SectionTitles(props: any) {
     }>
       <h1 className={
         `${props.sectionType === 'account' ?
-          'text-base lg:text-xl font-semibold' :
-          props.sectionType === 'home' ?
-            'text-2xl lg:text-6xl font-bold' :
-            ''} text-transparent bg-slate-600 bg-clip-text text-start z-0`
+          'bg-color-text-secondary text-base lg:text-lg font-semibold' :
+          props.sectionType === 'home' && 'bg-color-text-secondary text-2xl lg:text-6xl font-bold'
+        } text-transparent bg-clip-text text-start z-0`
       }>
         {props.sectionTitle}
       </h1>
@@ -23,8 +22,8 @@ export default function SectionTitles(props: any) {
         `${props.sectionType === 'account' ?
           'text-sm lg:base font-medium' :
           props.sectionType === 'home' ?
-            'text-base lg:text-xl tracking-wide font-bold' :
-            ''} w-fit h-fit text-fuchsia-400`
+            'text-base lg:text-xl tracking-wide font-semibold' :
+            ''} w-fit h-fit text-color-secondary-clear`
       }>
         {props.sectionSubtitle}
       </h2>

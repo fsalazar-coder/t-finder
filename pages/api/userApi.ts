@@ -84,7 +84,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             status: 'success',
             actionResponse: getData
           });
-        }     
+        }
         break;
 
       /**update user information */

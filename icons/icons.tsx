@@ -1,12 +1,4 @@
 
-export const IconAccount = () => {
-}
-
-export const IconAccountClock = () => {
-}
-
-export const IconAccountEditOutline = () => {
-}
 
 export const IconBxErrorCircle = () => {
   return (
@@ -62,6 +54,45 @@ export const IconCamera = () => {
   )
 }
 
+export const IconMenuI = () => {
+  return (
+    <div
+      className='icons-container'
+    >
+      <svg
+        viewBox="0 0 21 21"
+        fill="currentColor"
+        height="1em"
+        width="1em"
+      >
+        <g fill="currentColor" fillRule="evenodd">
+          <path d="M11.5 10.5 A1 1 0 0 1 10.5 11.5 A1 1 0 0 1 9.5 10.5 A1 1 0 0 1 11.5 10.5 z" />
+          <path d="M11.5 5.5 A1 1 0 0 1 10.5 6.5 A1 1 0 0 1 9.5 5.5 A1 1 0 0 1 11.5 5.5 z" />
+          <path d="M11.5 15.5 A1 1 0 0 1 10.5 16.5 A1 1 0 0 1 9.5 15.5 A1 1 0 0 1 11.5 15.5 z" />
+        </g>
+      </svg>
+    </div>
+  )
+}
+
+export const IconMenuII = () => {
+  return (
+    <div className='icons-container'>
+      <svg
+        fill="none"
+        viewBox="0 0 24 24"
+        height="1em"
+        width="1em"
+      >
+        <path
+          fill="currentColor"
+          d="M2 6a1 1 0 011-1h18a1 1 0 110 2H3a1 1 0 01-1-1zM2 12.032a1 1 0 011-1h18a1 1 0 110 2H3a1 1 0 01-1-1zM3 17.064a1 1 0 100 2h18a1 1 0 000-2H3z"
+        />
+      </svg>
+    </div>
+  )
+}
+
 export const IconDashboard = () => {
   return (
     <div
@@ -102,7 +133,6 @@ export const IconHome = () => {
     </div>
   )
 }
-
 
 export const IconRequest = () => {
   return (
@@ -176,6 +206,29 @@ export const IconCheckCircle = () => {
   )
 }
 
+export const IconCircle = () => {
+  return (
+    <div className='icons-container'>
+      <svg
+        height="1em"
+        width="1em"
+        fill="none"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          cx='12'
+          cy='12'
+          r='10'
+        />
+      </svg>
+    </div>
+  )
+}
+
 export const IconAdd = () => {
   return (
     <div className='icons-container'>
@@ -222,6 +275,26 @@ export const IconDelete = () => {
         width="1em"
       >
         <path d="M12 2a10 10 0 0110 10 10 10 0 01-10 10A10 10 0 012 12 10 10 0 0112 2m0 2a8 8 0 00-8 8 8 8 0 008 8 8 8 0 008-8 8 8 0 00-8-8m4 6v7a1 1 0 01-1 1H9a1 1 0 01-1-1v-7h8m-2.5-4l1 1H17v2H7V7h2.5l1-1h3z" />
+      </svg>
+    </div>
+  )
+}
+
+export const IconAlert = () => {
+  return (
+    <div className='icons-container'>
+      <svg
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        viewBox="0 0 24 24"
+        height="1em"
+        width="1em"
+      >
+        <path d="M22 12 A10 10 0 0 1 12 22 A10 10 0 0 1 2 12 A10 10 0 0 1 22 12 z" />
+        <path d="M12 8v4M12 16h.01" />
       </svg>
     </div>
   )
@@ -911,25 +984,6 @@ export const IconWebResponsive = () => {
   )
 }
 
-
-export const IconMenu = () => {
-  return (
-    <div className='icons-container'>
-      <svg
-        fill="none"
-        viewBox="0 0 24 24"
-        height="1em"
-        width="1em"
-      >
-        <path
-          fill="currentColor"
-          d="M2 6a1 1 0 011-1h18a1 1 0 110 2H3a1 1 0 01-1-1zM2 12.032a1 1 0 011-1h18a1 1 0 110 2H3a1 1 0 01-1-1zM3 17.064a1 1 0 100 2h18a1 1 0 000-2H3z"
-        />
-      </svg>
-    </div>
-  )
-}
-
 /**Icons skills */
 export const IconHTML = () => {
   return (
@@ -1019,7 +1073,6 @@ export const IconSASS = () => {
   )
 }
 
-
 export const IconBootstrap = () => {
   return (
     <div className='icons-container'>
@@ -1036,7 +1089,6 @@ export const IconBootstrap = () => {
   )
 }
 
-
 export const IconTailwind = () => {
   return (
     <div className='icons-container'>
@@ -1051,7 +1103,6 @@ export const IconTailwind = () => {
     </div>
   )
 }
-
 
 export const IconJquery = () => {
   return (
@@ -1528,8 +1579,6 @@ export const IconGraduateWoman = () => {
     </div>
   )
 }
-
-
 
 export const IconUCAB = () => {
   return (

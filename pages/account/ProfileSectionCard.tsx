@@ -55,7 +55,7 @@ export default function ProfileSectionCard({ title, value, data, shouldRender }:
       {/**section title */}
       <div className={
         `${shouldRender ?
-          'border-b border-slate-200' :
+          'border-b border-color-border-clear' :
           ''} w-full px-5 py-1 lg:py-2 flex flex-row items-center`
       }>
         <SectionTitles
@@ -76,10 +76,10 @@ export default function ProfileSectionCard({ title, value, data, shouldRender }:
               setCollectionToChange(value);
             }}
           >
-            <h3 className='pr-2 text-sm text-slate-400 transition-all'>
+            <h3 className='pr-2 text-sm text-color-text-tertiary transition-all'>
               {screenNarrow ? 'Add' : 'Add information'}
             </h3>
-            <i className='p-[2px] text-slate-300 lg:hover:text-green-500 text-xl lg:text-2xl flex flex-row justify-center bg-white rounded-full cursor-default lg:cursor-pointer transition-all'>
+            <i className='p-[2px] text-color-text-tertiary lg:hover:text-green-500 text-xl lg:text-2xl flex flex-row justify-center rounded-full cursor-default lg:cursor-pointer transition-all'>
               <IconAdd />
             </i>
           </button>
@@ -97,13 +97,13 @@ export default function ProfileSectionCard({ title, value, data, shouldRender }:
                         className={
                           `${listHover && (itemHover === index ? '' : 'opacity-25')
                           } 
-                        ${index === data.length - 1 ? '' : 'border-b border-slate-200'}
-                        w-full relative py-3 flex flex-col bg-white transform transition-all`
+                        ${index === data.length - 1 ? '' : 'border-b border-color-border-clear'}
+                        w-full relative py-3 flex flex-col bg-color-clear transform transition-all`
                         }
                         onMouseEnter={() => { setItemHover(index); setListHover(true); }}
                         onMouseLeave={() => { setItemHover(null); setListHover(false); }}
                       >
-                        <div className="w-full absolute top-0 right-0 p-2 flex flex-row justify-end items-center transition-all z-20">
+                        <div className="w-full absolute top-0 right-0 py-2 flex flex-row justify-end items-center transition-all z-20">
                           {
                             (listHover) && (itemHover === index) && (
                               buttons.map((button: any) => {

@@ -1,7 +1,8 @@
 
 
 
-export default function ItemContent ({ element }: any) {
+export default function ItemContent({ element }: any) {
+  
   function formatKeys(element: any) {
     const formattedElement: Record<string, any> = {};
     for (const key in element) {
@@ -29,14 +30,14 @@ export default function ItemContent ({ element }: any) {
         Object.entries(newElement).map(([key, value]) => (
           key !== ' id' && key !== 'User id' && (
             <li key={key}
-              className='w-full flex flex-row items-center'
+              className='w-full pb-2 flex flex-col'
             >
-              <h3 className='pr-2 text-sm lg:text-base text-slate-700 font-semibold'>
-                {key === 'Created at' ? 'Request date' : key}:
-              </h3>
-              <h3 className='text-sm lg:text-base text-slate-500'>
+              <h4 className='w-full text-color-text-secondary text-sm font-semibold'>
                 {typeof value === 'string' ? value : ''}
-              </h3>
+              </h4>
+              <h5 className='w-full text-color-text-tertiary text-xs'>
+                {key === 'Created at' ? 'Request date' : key}
+              </h5>
             </li>
           )))
       }

@@ -1,25 +1,24 @@
 import { useState, useEffect } from 'react';
 import { useAuthData, useAuthUI } from "../../context/authContext";
 import { fetchDataApi } from '../api/fetchDataApi';
-import ProfilePersonalInfoCard from "./ProfilePersonalInfoCard";
 import ProfileSectionCard from './ProfileSectionCard';
 import SectionTitles from '../components/SectionTitles';
 import CircleProgressBar from './CircleProgressBar';
-import { IconAdd, IconUserGraduate, IconBxsBellRing, IconBxErrorCircle, IconCheckCircle, IconCancelCircle } from '@/icons/icons';
-
+import { IconCircle, IconAlert, IconAdd, IconMenuI, IconUserGraduate, IconBxsBellRing, IconBxErrorCircle, IconCheckCircle, IconCancelCircle, IconEdit } from '@/icons/icons';
+import ProfileDashboard from './ProfileDashboard';
 
 
 
 export default function Profile() {
 
-  const { token, userId, collectionToChange, setCollectionToChange, update, setUpdate } = useAuthData();
-  const { accountModule } = useAuthUI();
+  const { token, userId, userScore, setUserScore, collectionToChange, setCollectionToChange, update, setUpdate } = useAuthData();
+  const { accountModule, setAccountModule } = useAuthUI();
+  const [listHover, setListHover] = useState(false);
 
   const [profileData, setProfileData] = useState({
     experience: [],
     education: [],
     courses: [],
-    projects: [],
     publications: [],
     conferences: [],
     certifications: [],
@@ -32,7 +31,7 @@ export default function Profile() {
       title: 'Experience',
       data: profileData.experience,
       shouldRender: profileData.experience.length > 0,
-      length: profileData.experience.length
+      length: profileData.experience.length,
     },
     {
       id: 'education',
@@ -47,13 +46,6 @@ export default function Profile() {
       data: profileData.courses,
       shouldRender: profileData.courses.length > 0,
       length: profileData.courses.length
-    },
-    {
-      id: 'projects',
-      title: 'Projects',
-      data: profileData.projects,
-      shouldRender: profileData.projects.length > 0,
-      length: profileData.projects.length
     },
     {
       id: 'publications',
@@ -84,6 +76,7 @@ export default function Profile() {
       length: profileData.recommendations.length
     }
   ];
+
   const totalSections = sections.length;
   const sectionsCompleted = sections.filter(section => section.shouldRender).length;
   const percentageProfileFilled = Math.round((sectionsCompleted / totalSections) * 100);
@@ -118,64 +111,85 @@ export default function Profile() {
     }
   }, [token, userId, update, setUpdate, collectionToChange, setCollectionToChange]);
 
+
+  useEffect(() => {
+    let score = 0;
+
+    const experiencePoints = {
+      'Junior': 5,
+      'Mid': 10,
+      'Senior': 15
+    };
+
+    const experienceYearsPoints = {
+      '0-2': 10,
+      '2-5': 20,
+      '5-10': 30,
+      '+10': 40
+    };
+
+    const educationDegreePoints = {
+      'High school': 10,
+      'Bachelor': 20,
+      'Master': 30,
+      'Doctorate': 40
+    };
+
+    const calculateScore = (sectionLength: any, pointsPerItem: any, maxPoints: any) => {
+      return Math.min(sectionLength * pointsPerItem, maxPoints);
+    };
+
+    sections.forEach((section) => {
+      let sectionData = section.data;
+      switch (section.id) {
+        case 'experience':
+          if (section.length > 0) {
+            sectionData.map((experience) => {
+              score += experiencePoints[experience['experience_level']] || 0;
+              score += experienceYearsPoints[experience['experience_years']] || 0;
+            })
+          }
+          break;
+        case 'education':
+          if (section.length > 0) {
+            sectionData.map((education) => {
+              score += educationDegreePoints[education['degree']] || 0;
+            })
+          }
+          break;
+        case 'courses':
+          score += calculateScore(section.length, 5, 30);
+          break;
+        case 'publications':
+        case 'conferences':
+          score += calculateScore(section.length, 4, 20);
+          break;
+        case 'certifications':
+          score += calculateScore(section.length, 6, 30);
+          break;
+        case 'recommendations':
+          score += calculateScore(section.length, 3, 15);
+          break;
+        default:
+          break;
+      }
+    });
+    setUserScore(score);
+  }, [sections]);
+
   const isDashboard = accountModule === 'Dashboard';
 
 
   return (
     isDashboard ?
-      <>
-        {/**title */}
-        <div className='w-full relative px-5 py-1 lg:py-2 flex flex-row items-center border-b border-slate-200'>
-          <SectionTitles
-            sectionTitle='Profile'
-            sectionType='account'
-          />
-        </div>
-        <div className='w-full px-5 flex flex-row items-center'>
-          {/**graphycal abstract */}
-          <div className='w-40 pr-4 py-2 flex flex-col items-center transition-all'>
-            <div className="w-40 h-40">
-              <CircleProgressBar
-                percentage={percentageProfileFilled}
-                circleWidth='160'
-              />
-            </div>
-          </div>
-          {/**items profile */}
-          <ul className='py-2 flex flex-wrap'>
-            {
-              sections?.map((element: any, index: any) => {
-                return (
-                  /**fullname, profession or occupation, preferred language, location and personal description */
-                  <li key={index}
-                    className='w-1/2 pb-2 flex flex-row items-start'
-                  >
-                    <div className='w-full flex flex-col'>
-                      <h4 className='w-full text-slate-700 text-sm font-semibold'>
-                        {element.title}
-                      </h4>
-                      <h5 className={`${element.length > 0 ? 'text-slate-200' : 'text-red-300'} w-full text-xs`}>
-                        {element.shouldRender ? `${element.length} item${element.length > 1 ? 's' : ''}` : 'empty'}
-                      </h5>
-                    </div>
-                  </li>
-                )
-              })
-            }
-          </ul>
-        </div>
-      </>
+      <ProfileDashboard
+        percentage={percentageProfileFilled}
+        data={sections}
+        userScore={userScore}
+      />
       :
       <div className='w-full pl-0 lg:px-60 flex flex-row justify-center items-center'>
-        <ul className='container w-full pt-12 px-2 pb-2 lg:p-8 flex flex-col transition-all'>
-          {/* Personal information card */}
-          <li
-            key='personal-information'
-            id='personal-information'
-            className='w-full my-1 flex flex-col justify-center bg-white border border-slate-200 rounded-lg'
-          >
-            <ProfilePersonalInfoCard />
-          </li>
+        <ul className='w-full pt-12 px-2 pb-2 lg:p-8 flex flex-col transition-all'>
           {
             /**others section card: experience, education, courses, projects, publications, conferences, certifications and recommendatiosn */
             sections?.map((section: any, index: any) => {
@@ -183,7 +197,7 @@ export default function Profile() {
                 <li
                   id={section.id}
                   key={`${index}-${section.title}`}
-                  className='w-full relative my-1 flex flex-col bg-white border border-slate-200 rounded-lg'
+                  className='w-full relative my-1 flex flex-col bg-color-clear border border-color-border-clear shadow-md rounded-lg'
                 >
                   <ProfileSectionCard
                     title={section.title}

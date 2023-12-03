@@ -9,8 +9,22 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'pink': '#ff49db',
-        'rose': '#fa0f5e',
+        'color': {
+          'primary': '#020617',     // slate-950 (Fondo principal, barra de navegación, texto de énfasis...)
+          'primary-clear': '#0f172a',     // slate-900 (bordes internos sobre Fondo principal...)
+          'secondary': '#c026d3',   // fuchsia-600 (Botones, enlaces hover, elementos interactivos...)
+          'secondary-clear': '#e879f9',   // fuchsia-400 (subtitulos pagina principal...)
+          'tertiary': '#f8fafc',    // slate-50 (Fondo general)
+          'border-clear': '#e2e8f0',       // slate-200 (bordes claros)
+          'clear': '#ffffff',       // white (Fondo de tarjetas, fondo de modal...)
+          'text': {
+            'primary': '#0f172a',   // slate-900
+            'secondary': '#475569', // slate-600
+            'tertiary': '#94a3b8',  // slate-400
+            'quaternary': '#cbd5e1',  // slate-300
+            'clear': '#ffffff',     // white
+          }
+        },
       },
       fontSize: {
         'ss': '0.35rem'

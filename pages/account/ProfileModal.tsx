@@ -5,9 +5,57 @@ import { IconCancel } from '../../icons/icons';
 import ProfileModalImage from './ProfileModalImage';
 import axios from 'axios';
 
+const initialProfileInfo = {
+  /**personal information: */
+  fullName: '',
+  professionOccupation: '',
+  preferredLanguage: '',
+  personalLocation: '',
+  /**experience: */
+  roleTitle: '',
+  companyOrganization: '',
+  responsibilities: '',
+  experienceLevel: '',
+  experienceYears: '',
+  technologiesUsed: '',
+  teamSize: '',
+  /**education: */
+  degree: '',
+  universitySchool: '',
+  majorFieldStudy: '',
+  graduationYear: '',
+  /**courses: */
+  courseTitle: '',
+  institution: '',
+  yearCompleted: '',
+  skillsAcquired: '',
+  /**publications */
+  publicationTitle: '',
+  coAuthors: '',
+  journalName: '',
+  yearPublished: '',
+  /**conferences: */
+  presentationTitle: '',
+  conferenceName: '',
+  conferenceLocation: '',
+  year: '',
+  /**certifications: */
+  certificationName: '',
+  issuingOrganization: '',
+  licenseNumber: '',
+  yearIssued: '',
+  /**recommendations: */
+  recommenderName: '',
+  recommenderTitle: '',
+  recommenderOrganization: '',
+  recommendation: '',
+  recommenderEmail: '',
+  recommenderPhone: '',
+};
 
 
-export default function ProfileModal(props: any) {
+
+export default function ProfileModal() {
 
   const {
     token, userId,
@@ -26,65 +74,12 @@ export default function ProfileModal(props: any) {
   const [filledForm, setFilledForm] = useState(true);
   const { screenNarrow } = useUI();
 
-
   const isPersonalInfo = collectionToChange === 'personal_info';
   const isProfileImageModal = collectionToChange === 'profile_image';
   const isEditAction = profileModalAction === 'edit';
   const isPostAction = profileModalAction === 'post';
 
-  const [profileInfo, setProfileInfo] = useState({
-    /**personal information: */
-    fullName: isEditAction ? userProfilePersonalInfo?.full_name : '',
-    professionOccupation: isEditAction ? userProfilePersonalInfo?.profession_occupation : '',
-    preferredLanguage: isEditAction ? userProfilePersonalInfo?.preferred_language : '',
-    personalLocation: isEditAction ? userProfilePersonalInfo?.location : '',
-    personalDescription: isEditAction ? userProfilePersonalInfo?.personal_description : '',
-    /**experience: */
-    companyOrganization: '',
-    roleTitle: '',
-    responsibilities: '',
-    technologiesUsedExperience: '',
-    monthsDuration: null,
-    teamSize: null,
-    /**education: */
-    universitySchool: '',
-    degree: '',
-    majorFieldStudy: '',
-    graduationYear: null,
-    /**courses: */
-    courseTitle: '',
-    institution: '',
-    yearCompleted: null,
-    skillsAcquired: '',
-    /**projects: */
-    projectName: '',
-    role: '',
-    technologiesUsedProject: '',
-    description: '',
-    projectUrl: '',
-    /**publications */
-    publicationTitle: '',
-    coAuthors: '',
-    journalConference: '',
-    yearPublished: null,
-    /**conferences: */
-    presentationTitle: '',
-    conferenceName: '',
-    conferenceLocation: '',
-    year: null,
-    /**certifications: */
-    certificationName: '',
-    issuingOrganization: '',
-    licenseNumber: '',
-    yearIssued: null,
-    /**recommendations: */
-    recommenderName: '',
-    recommenderTitle: '',
-    recommenderOrganization: '',
-    recommendation: '',
-    recommenderEmail: '',
-    recommenderPhone: '',
-  });
+  const [profileInfo, setProfileInfo] = useState(initialProfileInfo);
 
   const [changeProfileInfo, setChangeProfileInfo] = useState({
     /**personal information: */
@@ -92,13 +87,13 @@ export default function ProfileModal(props: any) {
     professionOccupation: false,
     preferredLanguage: false,
     personalLocation: false,
-    personalDescription: false,
     /**experience: */
     companyOrganization: false,
     roleTitle: false,
     responsibilities: false,
-    technologiesUsedExperience: false,
-    monthsDuration: false,
+    experienceLevel: false,
+    experienceYears: false,
+    technologiesUsed: false,
     teamSize: false,
     /**education: */
     universitySchool: false,
@@ -110,16 +105,10 @@ export default function ProfileModal(props: any) {
     institution: false,
     yearCompleted: false,
     skillsAcquired: false,
-    /**projects: */
-    projectName: false,
-    role: false,
-    technologiesUsedProject: false,
-    description: false,
-    projectUrl: false,
     /**publications: */
     publicationTitle: false,
     coAuthors: false,
-    journalConference: false,
+    journalName: false,
     yearPublished: false,
     /**conferences: */
     presentationTitle: false,
@@ -178,20 +167,20 @@ export default function ProfileModal(props: any) {
         full_name: profileInfo.fullName,
         profession_occupation: profileInfo.professionOccupation,
         preferred_language: profileInfo.preferredLanguage,
-        location: profileInfo.personalLocation,
-        personal_description: profileInfo.personalDescription
+        location: profileInfo.personalLocation
       },
       experience: {
-        company_organization: profileInfo.companyOrganization,
         role_title: profileInfo.roleTitle,
+        company_organization: profileInfo.companyOrganization,
         responsibilities: profileInfo.responsibilities,
-        technologies_used: profileInfo.technologiesUsedExperience,
-        duration: profileInfo.monthsDuration,
+        experience_level: profileInfo.experienceLevel,
+        experience_years: profileInfo.experienceYears,
+        technologies_used: profileInfo.technologiesUsed,
         team_size: profileInfo.teamSize,
       },
       education: {
-        university_school: profileInfo.universitySchool,
         degree: profileInfo.degree,
+        university_school: profileInfo.universitySchool,
         major_field_study: profileInfo.majorFieldStudy,
         graduation_year: profileInfo.graduationYear,
       },
@@ -201,17 +190,10 @@ export default function ProfileModal(props: any) {
         year_completed: profileInfo.yearCompleted,
         skills_acquired: profileInfo.skillsAcquired,
       },
-      projects: {
-        project_name: profileInfo.projectName,
-        role: profileInfo.role,
-        technologies_used: profileInfo.technologiesUsedProject,
-        description: profileInfo.description,
-        project_url: profileInfo.projectUrl,
-      },
       publications: {
         publication_title: profileInfo.publicationTitle,
         co_authors: profileInfo.coAuthors,
-        journal_conference: profileInfo.journalConference,
+        journal_name: profileInfo.journalName,
         year_published: profileInfo.yearPublished,
       },
       conferences: {
@@ -315,6 +297,7 @@ export default function ProfileModal(props: any) {
       setLoading(false);
       setProfileModalAction('');
       setProfileModalType('');
+      setProfileInfo(initialProfileInfo);
     }
   };
 
@@ -328,7 +311,6 @@ export default function ProfileModal(props: any) {
         { type: 'text', title: 'Profession or occupation', value: 'professionOccupation' },
         { type: 'text', title: 'Preferred language', value: 'preferredLanguage' },
         { type: 'text', title: 'Location', value: 'personalLocation' },
-        { type: 'text', title: 'Personal Description', value: 'personalDescription' }
       ],
     },
     {
@@ -336,12 +318,32 @@ export default function ProfileModal(props: any) {
       title: 'Experience',
       name: 'experience',
       inputs: [
-        { type: 'text', title: 'Company organization', value: 'companyOrganization' },
         { type: 'text', title: 'Role title', value: 'roleTitle' },
+        { type: 'text', title: 'Company organization', value: 'companyOrganization' },
         { type: 'text', title: 'Responsibilities', value: 'responsibilities' },
-        { type: 'text', title: 'Technologies used', value: 'technologiesUsedExperience' },
-        { type: 'number', title: 'Duration (months)', value: 'monthsDuration' },
-        { type: 'number', title: 'Team size', value: 'teamSize' },
+        {
+          type: 'select',
+          title: 'Experience level',
+          value: 'experienceLevel',
+          options: [
+            { value: 'Junior', title: 'Junior' },
+            { value: 'Mid', title: 'Mid' },
+            { value: 'Senior', title: 'Senior' },
+          ]
+        },
+        {
+          type: 'select',
+          title: 'Experience years',
+          value: 'experienceYears',
+          options: [
+            { value: '0-2', title: '0-2' },
+            { value: '2-5', title: '2-5' },
+            { value: '5-10', title: '5-10' },
+            { value: '+10', title: '+10' },
+          ]
+        },
+        { type: 'text', title: 'Technologies used', value: 'technologiesUsed' },
+        { type: 'text', title: 'Team size', value: 'teamSize' },
       ],
     },
     {
@@ -349,10 +351,20 @@ export default function ProfileModal(props: any) {
       title: 'Education',
       name: 'education',
       inputs: [
+        {
+          type: 'select',
+          title: 'Degree',
+          value: 'degree',
+          options: [
+            { value: 'HighSchool', title: 'High school' },
+            { value: 'Bachelor', title: 'Bachelor' },
+            { value: 'Master', title: 'Master' },
+            { value: 'Doctorate', title: 'Doctorate' },
+          ]
+        },
         { type: 'text', title: 'University school', value: 'universitySchool' },
-        { type: 'text', title: 'Degree', value: 'degree' },
         { type: 'text', title: 'Major field study', value: 'majorFieldStudy' },
-        { type: 'number', title: 'Graduation year', value: 'graduationYear' },
+        { type: 'text', title: 'Graduation year', value: 'graduationYear' },
       ],
     },
     {
@@ -363,19 +375,7 @@ export default function ProfileModal(props: any) {
         { type: 'text', title: 'Course title', value: 'courseTitle' },
         { type: 'text', title: 'Institution', value: 'institution' },
         { type: 'text', title: 'Skills acquired', value: 'skillsAcquired' },
-        { type: 'number', title: 'Year completed', value: 'yearCompleted' },
-      ],
-    },
-    {
-      collectionName: 'projects',
-      title: 'Project',
-      name: 'projects',
-      inputs: [
-        { type: 'text', title: 'Project Name', value: 'projectName' },
-        { type: 'text', title: 'Role', value: 'role' },
-        { type: 'text', title: 'Technologies Used', value: 'technologiesUsedProject' },
-        { type: 'text', title: 'Project URL', value: 'projectUrl' },
-        { type: 'text', title: 'Description', value: 'description' },
+        { type: 'text', title: 'Year completed', value: 'yearCompleted' },
       ],
     },
     {
@@ -385,8 +385,8 @@ export default function ProfileModal(props: any) {
       inputs: [
         { type: 'text', title: 'Publication Title', value: 'publicationTitle' },
         { type: 'text', title: 'Co-authors', value: 'coAuthors' },
-        { type: 'text', title: 'Journal or conference', value: 'journalConference' },
-        { type: 'number', title: 'Year Published', value: 'yearPublished' },
+        { type: 'text', title: 'Journal or conference', value: 'journalName' },
+        { type: 'text', title: 'Year Published', value: 'yearPublished' },
       ],
     },
     {
@@ -397,7 +397,7 @@ export default function ProfileModal(props: any) {
         { type: 'text', title: 'Presentation Title', value: 'presentationTitle' },
         { type: 'text', title: 'Conference Name', value: 'conferenceName' },
         { type: 'text', title: 'Location', value: 'conferenceLocation' },
-        { type: 'number', title: 'Year', value: 'year' },
+        { type: 'text', title: 'Year', value: 'year' },
       ],
     },
     {
@@ -408,7 +408,7 @@ export default function ProfileModal(props: any) {
         { type: 'text', title: 'Certification Name', value: 'certificationName' },
         { type: 'text', title: 'Issuing Organization', value: 'issuingOrganization' },
         { type: 'text', title: 'License Number', value: 'licenseNumber' },
-        { type: 'number', title: 'Year Issued', value: 'yearIssued' },
+        { type: 'text', title: 'Year Issued', value: 'yearIssued' },
       ],
     },
     {

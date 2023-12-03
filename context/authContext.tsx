@@ -33,6 +33,8 @@ interface AuthDataContextProps {
   setUserRequestTalent: React.Dispatch<React.SetStateAction<UserRequestTalent[] | []>>;
   userRequestJob: UserRequestJob[] | [];
   setUserRequestJob: React.Dispatch<React.SetStateAction<UserRequestJob[] | []>>;
+  userScore: number;
+  setUserScore: React.Dispatch<React.SetStateAction<number>>;
   collectionToChange: string;
   setCollectionToChange: React.Dispatch<React.SetStateAction<string>>;
   itemIdToChange: string;
@@ -216,6 +218,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   const [profileModalType, setProfileModalType] = useState<string>('');
   const [userRequestTalent, setUserRequestTalent] = useState<UserRequestTalent[] | []>([]);
   const [userRequestJob, setUserRequestJob] = useState<UserRequestJob[] | []>([]);
+  const [userScore, setUserScore] = useState<number>(0);
   const [requestModal, setRequestModal] = useState<string>('');
   const [requestModalAction, setRequestModalAction] = useState<string>('');
   const [collectionToChange, setCollectionToChange] = useState<string>('');
@@ -236,6 +239,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
     setUserProfileConferences([]);
     setUserProfileCertifications([]);
     setUserProfileRecommendations([]);
+    setUserScore(0);
     setCollectionToChange('');
     setItemIdToChange('');
     setProfileModalAction('');
@@ -262,6 +266,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
       userProfileRecommendations, setUserProfileRecommendations,
       userRequestTalent, setUserRequestTalent,
       userRequestJob, setUserRequestJob,
+      userScore, setUserScore,
       collectionToChange, setCollectionToChange,
       itemIdToChange, setItemIdToChange,
       update, setUpdate,

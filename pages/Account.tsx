@@ -6,7 +6,8 @@ import AccountNavbar from "./account/AccountNavbar";
 import Dashboard from "./account/Dashboard";
 import Profile from "./account/Profile";
 import ProfileModal from "./account/ProfileModal";
-import Request from "./account/Requests";
+import TalentRequest from "./account/TalentRequest";
+import JobRequest from "./account/JobRequest";
 import RequestModal from "./account/RequestModal";
 import Notifications from "./account/Notifications";
 import Settings from "./account/Settings";
@@ -46,7 +47,8 @@ export default function Account() {
   const modules: ModuleComponents = {
     'Dashboard': Dashboard,
     'Profile': Profile,
-    'Request': Request,
+    'Talent': TalentRequest,
+    'Job': JobRequest,
     'Notifications': Notifications,
     'Settings': Settings,
     'Help & Support': HelpSupport,
@@ -66,17 +68,17 @@ export default function Account() {
   }
 
   return (
-    <main className='w-full relative font-montserrat select-none flex flex-col items-center bg-slate-50'>
+    <main className='w-full relative font-montserrat select-none flex flex-col items-center bg-color-tertiary'>
       <div className='w-auto h-auto'>
         <AccountNavbar />
       </div>
-      <div className="w-full min-h-screen flex flex-col justify-between bg-slate-50">
+      <div className="w-full min-h-screen flex flex-col justify-between">
         {/**dashboard, profile, requests, notifications, account settings, help and support */}
         <div className='w-full lg:pl-1/6'>
           {(!screenNarrow || accountModule !== 'Dashboard') && <ActiveModule />}
         </div>
         {/***Copyright footer***/}
-        <div className="w-full flex flex-col border-t border-slate-200 bg-transparent">
+        <div className="w-full flex flex-col border-t border-color-border-clear bg-transparent">
           <div
             id='contact'
             className='w-full h-auto lg:h-10 pl-[17rem] pr-8 py-5 lg:py-2 flex flex-col-reverse lg:flex-row justify-between items-center'>
@@ -105,7 +107,7 @@ export default function Account() {
         /**sponsor banner */
         accountModule !== 'Dashboard' && (
           <div className="lg:w-60 h-screen pt-9 pb-[4.8rem] pr-8 fixed right-0 top-0 hidden lg:vissible lg:flex flex-col transition-all">
-            <div className="w-full h-full p-4 flex flex-col justify-center items-center bg-white border border-slate-200 rounded-lg">
+            <div className="w-full h-full p-4 flex flex-col justify-center items-center bg-color-clear border border-color-border-clear shadow-md rounded-lg">
               <h2>SPONSOR</h2>
               <h2>Recommendations</h2>
               <h2>SPONSOR</h2>
