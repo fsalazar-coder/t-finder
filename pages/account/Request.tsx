@@ -114,7 +114,7 @@ export default function Request({ requestType }: any) {
             <RequestDashboard
               requestType={requestType}
               isDashboard={isDashboard}
-              data={requestType === 'talent' ? requestData.requestTalent : requestData.requestJob}
+              data={requestType === 'talent' ? requestData?.requestTalent : requestData?.requestJob}
             />
             :
             <>

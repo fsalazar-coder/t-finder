@@ -12,12 +12,8 @@ export default function RequestDashboard({ requestType, data, isDashboard }: any
   const { setAccountModule } = useAuthUI();
   const [cardHover, setCardHover] = useState(false);
 
-  const stepsProcess = () => {
-    return (
-      requestType === 'talent' ?
-        ['Submmission', 'Candidates', 'Selection', 'Contact'] : ['Submmission', 'Contact', 'Aceptance']
-    )
-  };
+  const stepsProcess = requestType === 'talent' ?
+    ['Submmission', 'Candidates', 'Selection', 'Contact'] : ['Submmission', 'Contact', 'Aceptance'];
 
   return (
     <div className="w-full h-full flex flex-col bg-color-clear border border-color-border-clear shadow-md rounded-lg"
@@ -33,12 +29,12 @@ export default function RequestDashboard({ requestType, data, isDashboard }: any
         <DashboardEditButton
           id='button-request-edit'
           cardHover={cardHover}
-          click={() => setAccountModule(requestType === 'talent' ? 'Talent' : 'Job') }
+          click={() => setAccountModule(requestType === 'talent' ? 'Talent' : 'Job')}
         />
       </div>
       {
         /**content */
-        data.length > 0 ?
+        data?.length > 0 ?
           <div className='w-full h-full px-5 flex flex-col justify-center'>
             <div className='w-full h-fit flex flex-row items-center'>
               {/**graphycal request process completed */}
@@ -56,11 +52,9 @@ export default function RequestDashboard({ requestType, data, isDashboard }: any
               {/**steps process request */}
               <ul className='w-full h-28 pl-2 flex flex-wrap'>
                 {
-                  stepsProcess()?.map((element: any, index: any) => {
+                  stepsProcess?.map((element: any, index: any) => {
                     return (
-                      <li key={index}
-                        className='pb-2 flex flex-row items-center'
-                      >
+                      <li key={index} className='pb-2 flex flex-row items-center'>
                         <i className={`${index === 0 ? 'text-green-300' : 'text-yellow-300'} w-fit h-fit pr-1 text-sm`}>
                           {index === 0 ? <IconCheckCircle /> : <IconAlert />}
                         </i>
@@ -80,7 +74,7 @@ export default function RequestDashboard({ requestType, data, isDashboard }: any
             id={requestType === 'talent' ? 'post-request-talent' : 'post-request-job'}
             isDashboard={isDashboard}
             comment='Add request'
-            click={() => setAccountModule(requestType === 'talent' ? 'Talent' : 'Job') }
+            click={() => setAccountModule(requestType === 'talent' ? 'Talent' : 'Job')}
           />
       }
     </div>
