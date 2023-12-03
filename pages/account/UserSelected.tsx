@@ -46,10 +46,6 @@ export default function UserSelected({ data, listHover, requestStep, click }: Re
     { title: 'Recommendations', value: 'recommendations' },
   ];
 
-  useEffect(() => {
-    console.log('Click menu: ', userItemMenu)
-  }, [userItemMenu])
-
 
   return (
     <div className={`w-full h-full py-2 flex`}>
@@ -64,7 +60,7 @@ export default function UserSelected({ data, listHover, requestStep, click }: Re
         {/**submenu: overview, experirince, education, courses, ... */}
         <ul className={`w-full px-5 py-1 flex flex-row items-center border-y border-color-border-clear`}>
           {
-            userInfoMenu.map((itemMenu, index) => {
+            userInfoMenu?.map((itemMenu, index) => {
               return (
                 <li
                   key={`item-menu-${index}`}
@@ -94,7 +90,7 @@ export default function UserSelected({ data, listHover, requestStep, click }: Re
               </h1>
               :
               <SelectedUserActiveInfo
-                userId={data.user_id}
+                userId={data?.user_id}
                 userItemMenu={userItemMenu}
               />
           }

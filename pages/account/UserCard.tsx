@@ -41,7 +41,7 @@ export default function UserCard({ data, listHover, requestStep, click }: Reques
     { key: 'Rates', value: data?.rates }
   ];
 
-  const itemHighlighted = itemHover === data.user_id;
+  const itemHighlighted = itemHover === data?.user_id;
 
   return (
     <div
@@ -49,13 +49,13 @@ export default function UserCard({ data, listHover, requestStep, click }: Reques
         `${listHover ? itemHighlighted ? 'cursor-pointer z-50' : 'opacity-20 z-0' : 'opacity-100'}
         ${requestStep === 'candidates' ? 'border border-color-border-clear rounded-lg shadow-md' : 'rounded-t-lg'}
           w-full h-full flex flex-col bg-color-clear transform transition-all`}
-      onMouseEnter={() => setItemHover(requestStep === 'candidates' ? data.user_id : '')}
+      onMouseEnter={() => setItemHover(requestStep === 'candidates' ? data?.user_id : '')}
       onMouseLeave={() => setItemHover('')}
     >
       {/**user fullname */}
       <div className="w-full flex px-3 py-1 border-b border-color-border-clear">
         <h2 className='w-fit text-color-primary-clear font-semibold'>
-          {data.full_name}
+          {data?.full_name}
         </h2>
       </div>
       {/**header */}
@@ -63,7 +63,7 @@ export default function UserCard({ data, listHover, requestStep, click }: Reques
         <ul className={`${screenNarrow ? 'w-full' : 'w-4/5 h-full'} flex flex-wrap`}>
           {
             /**user information */
-            userData.map((element: any, index: any) => {
+            userData?.map((element: any, index: any) => {
               return (
                 <li key={index} className='w-1/3 py-1 px-2 flex flex-col'>
                   <h4 className='w-full text-color-text-secondary text-sm font-semibold'>
@@ -80,13 +80,13 @@ export default function UserCard({ data, listHover, requestStep, click }: Reques
         {/**user profile image */}
         <div className={`${screenNarrow ? 'w-full border-b flex-row justify-between' : 'w-1/5 h-full flex-col pl-3 border-l'} flex items-center border-color-border-clear`}>
           {
-            data.profile_image ?
+            data?.profile_image ?
               <div className='w-36 h-36 mb-3 flex flex-col justify-center items-center'>
                 <Image
                   className='w-full h-full flex flex-col justify-center items-center rounded-full'
                   width={800}
                   height={800}
-                  src={data.profile_image}
+                  src={data?.profile_image}
                   alt='user-image'
                 />
               </div>
