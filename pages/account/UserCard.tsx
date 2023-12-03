@@ -63,9 +63,9 @@ export default function UserCard({ data, listHover, requestStep, click }: Reques
         <ul className={`${screenNarrow ? 'w-full' : 'w-4/5 h-full'} flex flex-wrap`}>
           {
             /**user information */
-            userData.map((element: any) => {
+            userData.map((element: any, index: any) => {
               return (
-                <li className='w-1/3 py-1 px-2 flex flex-col'>
+                <li key={index} className='w-1/3 py-1 px-2 flex flex-col'>
                   <h4 className='w-full text-color-text-secondary text-sm font-semibold'>
                     {element.value}
                   </h4>
