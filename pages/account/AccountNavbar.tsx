@@ -22,13 +22,12 @@ export default function AccountNavbar(props: any) {
   const { dropdown, setDropdown, screenNarrow,
     setMessageModal, setTypeMessageModal, setTextMessageModal } = useUI();
   const indicatorRef: any = useRef(null);
-  const [translateY, setTranslateY] = useState(Number);
   const router = useRouter();
   const isDashboard = accountModule === 'Dashboard';
 
   useEffect(() => {
     const indicatorSelected: any = indicatorRef.current;
-    setTranslateY(isDashboard ? 56 : 36);
+    let translateY = isDashboard ? 56 : 36;
     if (indicatorSelected) {
       switch (accountModule) {
         case 'Profile':
@@ -57,7 +56,7 @@ export default function AccountNavbar(props: any) {
           break;
       }
     }
-  })
+  },[accountModule, isDashboard])
 
 
   return (

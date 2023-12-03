@@ -47,7 +47,7 @@ export default function SelectedUserActiveInfo({userId, userItemMenu}: UserInfoA
 
   useEffect(() => {
     getUserInfo();
-  },[userItemMenu]);
+  },[userItemMenu, userId]);
 
 
   return (

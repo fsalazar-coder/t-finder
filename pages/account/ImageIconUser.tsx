@@ -47,7 +47,7 @@ export default function ImageIconUser(props: any) {
       fetchData();
       setUpdate('');
     }
-  }, [update]);
+  }, [update, setUpdate]);
 
 
   return (
