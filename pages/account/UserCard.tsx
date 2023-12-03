@@ -31,14 +31,14 @@ export default function UserCard({ data, listHover, requestStep, click }: Reques
   const [itemHover, setItemHover] = useState('');
 
   const userData = [
-    { key: 'Profession or occupation', value: data.profession_occupation },
-    { key: 'Location', value: data.location },
-    { key: 'Preferred language', value: data.preferred_language },
-    { key: 'Experience level', value: data.experience_level },
-    { key: 'Skills', value: data.skills_offered },
-    { key: 'Work modality ', value: data.modality_work },
-    { key: 'Availability', value: data.availability },
-    { key: 'Rates', value: data.rates }
+    { key: 'Profession or occupation', value: data?.profession_occupation },
+    { key: 'Location', value: data?.location },
+    { key: 'Preferred language', value: data?.preferred_language },
+    { key: 'Experience level', value: data?.experience_level },
+    { key: 'Skills', value: data?.skills_offered },
+    { key: 'Work modality ', value: data?.modality_work },
+    { key: 'Availability', value: data?.availability },
+    { key: 'Rates', value: data?.rates }
   ];
 
   const itemHighlighted = itemHover === data.user_id;

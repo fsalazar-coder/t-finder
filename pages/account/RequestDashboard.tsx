@@ -56,7 +56,7 @@ export default function RequestDashboard({ requestType, data, isDashboard }: any
               {/**steps process request */}
               <ul className='w-full h-28 pl-2 flex flex-wrap'>
                 {
-                  stepsProcess().map((element: any, index: any) => {
+                  stepsProcess()?.map((element: any, index: any) => {
                     return (
                       <li key={index}
                         className='pb-2 flex flex-row items-center'
