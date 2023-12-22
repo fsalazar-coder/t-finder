@@ -4,6 +4,7 @@ import FormTemplate from './FormTemplate';
 import { IconCancel } from '../../icons/icons';
 import ProfileModalImage from './ProfileModalImage';
 import axios from 'axios';
+import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
 
 const initialProfileInfo = {
   /**personal information: */
@@ -70,7 +71,7 @@ export default function ProfileModal() {
     userProfileRecommendations, setUserProfileRecommendations,
     collectionToChange, setCollectionToChange, itemIdToChange, setUpdate } = useAuthData();
   const { profileModal, setProfileModal, setProfileModalType, profileModalAction, setProfileModalAction } = useAuthUI();
-  const { setMessageModal, setTypeMessageModal, setTextMessageModal, setLoading } = useUI();
+  const { setMessageModal, setLoading } = useUI();
   const [filledForm, setFilledForm] = useState(true);
   const { screenNarrow } = useUI();
 
@@ -252,6 +253,10 @@ export default function ProfileModal() {
     setProfileModal(false);
     setFilledForm(false);
 
+    
+
+
+
     const config = {
       headers: {
         'Authorization': `Bearer ${token}`
@@ -259,7 +264,7 @@ export default function ProfileModal() {
     };
 
     try {
-      const response = await axios.post('/api/userApi',
+      const response = await axios.post('/api/userDataApi',
         {
           id: isPersonalInfo || isPostAction ? userId : itemIdToChange,
           collectionName: collectionToChange,
@@ -272,25 +277,31 @@ export default function ProfileModal() {
       if (status === 'success') {
         setUserProfile(collectionToChange, actionResponse);
         setUpdate(collectionToChange);
-        setMessageModal(true);
-        setTypeMessageModal('successful');
-        setTextMessageModal(`Your information have been ${profileModalAction === 'post' ? 'posted' : 'uploaded'}`);
+        setMessageModal([{
+          type: 'successful',
+          text: `Your information have been ${profileModalAction === 'post' ? 'posted' : 'uploaded'}`,
+          click: () => setMessageModal([])
+        }]);
       }
     }
     catch (error: any) {
       if (error.response) {
         let statusError = error.response.status;
         let messageError = error.response.data.message;
-        setMessageModal(true);
+        let errorText;
         switch (statusError) {
           case 404:
-            setTypeMessageModal('error');
-            setTextMessageModal(messageError || 'User not found');
+            errorText = messageError || 'User not found';
             break;
           default:
-            setTypeMessageModal('error');
-            setTextMessageModal('An unexpected error occurred.');
+            errorText = 'An unexpected error occurred.';
+            break
         }
+        setMessageModal([{
+          type: 'error',
+          text: errorText,
+          click: () => setMessageModal([])
+        }]);
       }
     }
     finally {

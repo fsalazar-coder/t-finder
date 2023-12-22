@@ -72,7 +72,7 @@ export default function Account() {
       <div className='w-auto h-auto'>
         <AccountNavbar />
       </div>
-      <div className="w-full min-h-screen flex flex-col justify-between">
+      <div className="w-full min-h-screen flex flex-col justify-between items-center">
         {/**dashboard, profile, requests, notifications, account settings, help and support */}
         <div className='w-full lg:pl-1/6'>
           {(!screenNarrow || accountModule !== 'Dashboard') && <ActiveModule />}
@@ -105,7 +105,7 @@ export default function Account() {
       </div>
       {
         /**sponsor banner */
-        accountModule !== 'Dashboard' && (
+        accountModule === 'xxx' && (
           <div className="lg:w-60 h-screen pt-9 pb-[4.8rem] pr-8 fixed right-0 top-0 hidden lg:vissible lg:flex flex-col transition-all">
             <div className="w-full h-full p-4 flex flex-col justify-center items-center bg-color-clear border border-color-border-clear shadow-md rounded-lg">
               <h2>SPONSOR</h2>
@@ -122,7 +122,7 @@ export default function Account() {
 
       <RequestModal />
 
-      {/**message error and successful modal */}
+      {/**message modal: successful, error, question, delete and logout */}
       <MessageModal />
     </main>
   )

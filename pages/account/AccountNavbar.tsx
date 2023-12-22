@@ -17,10 +17,9 @@ const navbarElementAuth = [
 
 export default function AccountNavbar(props: any) {
 
-  const { userEmail, userProfilePersonalInfo } = useAuthData();
+  const { userEmail, userProfilePersonalInfo, logout } = useAuthData();
   const { setAccountActived, accountModule, setAccountModule } = useAuthUI();
-  const { dropdown, setDropdown, screenNarrow,
-    setMessageModal, setTypeMessageModal, setTextMessageModal } = useUI();
+  const { dropdown, setDropdown, screenNarrow, setMessageModal } = useUI();
   const indicatorRef: any = useRef(null);
   const router = useRouter();
   const isDashboard = accountModule === 'Dashboard';
@@ -56,7 +55,7 @@ export default function AccountNavbar(props: any) {
           break;
       }
     }
-  },[accountModule, isDashboard])
+  }, [accountModule, isDashboard])
 
 
   return (
@@ -205,9 +204,17 @@ export default function AccountNavbar(props: any) {
                   `${isDashboard ? 'w-10 h-10' : 'w-full'} 
                       py-2 flex flex-row justify-center items-center text-color-text-clear hover:font-extrabold bg-color-secondary bg-opacity-10 hover:bg-opacity-90 border border-color-secondary hover:border-color-clear shadow-md rounded-full transition-all`}
                 onClick={() => {
-                  setMessageModal(true);
-                  setTypeMessageModal('logout');
-                  setTextMessageModal('Logout your session with this action');
+                  setMessageModal([{
+                    type: 'logout',
+                    text: 'Logout your session with this action',
+                    click: () => {
+                      logout()
+                      setAccountActived(false)
+                      setAccountModule('')
+                      setMessageModal([])
+                      router.push('/')
+                    }
+                  }]);
                 }}
               >
                 {

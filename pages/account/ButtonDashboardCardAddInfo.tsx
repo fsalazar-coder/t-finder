@@ -9,7 +9,7 @@ interface AddInfo {
 
 
 
-export default function DashboardAddInfo({ id, isDashboard, comment, click }: AddInfo) {
+export default function ButtonDashboardCardAddInfo({ id, isDashboard, comment, click }: AddInfo) {
 
   return (
     <div id={id} className='w-full h-full flex flex-col justify-center items-center transition-all'>

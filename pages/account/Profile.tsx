@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useAuthData, useAuthUI } from "../../context/authContext";
-import { fetchDataApi } from '../api/fetchDataApi';
+import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
 import ProfileSectionCard from './ProfileSectionCard';
-import SectionTitles from '../components/SectionTitles';
-import CircleProgressBar from './CircleProgressBar';
-import { IconCircle, IconAlert, IconAdd, IconMenuI, IconUserGraduate, IconBxsBellRing, IconBxErrorCircle, IconCheckCircle, IconCancelCircle, IconEdit } from '@/icons/icons';
 import ProfileDashboard from './ProfileDashboard';
+import axios from 'axios';
 
 
 
@@ -13,7 +11,6 @@ export default function Profile() {
 
   const { token, userId, userScore, setUserScore, collectionToChange, setCollectionToChange, update, setUpdate } = useAuthData();
   const { accountModule, setAccountModule } = useAuthUI();
-  const [listHover, setListHover] = useState(false);
 
   const [profileData, setProfileData] = useState({
     experience: [],
@@ -91,13 +88,15 @@ export default function Profile() {
 
   // Cargar los datos para todas las secciones
   useEffect(() => {
-    if (!update || update === collectionToChange) {
+    if (!update || update === collectionToChange || accountModule === 'Profile') {
       sections.forEach((section) => {
         let collectionName = section.id;
-        fetchDataApi({
+        userDataHandlerFunction({
           token: token as string,
           userId: userId as string,
-          collectionName,
+          action: 'get',
+          collectionName: collectionName,
+          data: '',
           onSuccess: (data: any) => {
             updateSectionData(collectionName, data);
           },
@@ -109,7 +108,7 @@ export default function Profile() {
         }
       })
     }
-  }, [token, userId, update, setUpdate, collectionToChange, setCollectionToChange]);
+  }, [token, userId, accountModule, update, setUpdate, collectionToChange, setCollectionToChange]);
 
 
   useEffect(() => {
@@ -175,7 +174,35 @@ export default function Profile() {
       }
     });
     setUserScore(score);
+    userScoreUpdate(score);
   }, [sections]);
+
+
+  const userScoreUpdate = async (score: any) => {
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    };
+
+    try {
+      const response = await axios.post('/api/userApi',
+        {
+          id: userId,
+          collectionName: 'profile_score',
+          action: 'edit',
+          data: { profile_score: score },
+        },
+        config
+      );
+    }
+    catch (error: any) {
+      if (error.response) {
+        let statusError = error.response.status;
+        let messageError = error.response.data.message;
+      }
+    }
+  };
 
   const isDashboard = accountModule === 'Dashboard';
 
@@ -188,8 +215,8 @@ export default function Profile() {
         userScore={userScore}
       />
       :
-      <div className='w-full pl-0 lg:px-60 flex flex-row justify-center items-center'>
-        <ul className='w-full pt-12 px-2 pb-2 lg:p-8 flex flex-col transition-all'>
+      <div className='w-full pl-0 lg:pl-60 flex flex-row justify-center items-center'>
+        <ul className='w-[52rem] pt-12 px-2 pb-2 lg:p-8 flex flex-col transition-all'>
           {
             /**others section card: experience, education, courses, projects, publications, conferences, certifications and recommendatiosn */
             sections?.map((section: any, index: any) => {
@@ -200,6 +227,7 @@ export default function Profile() {
                   className='w-full relative my-1 flex flex-col bg-color-clear border border-color-border-clear shadow-md rounded-lg'
                 >
                   <ProfileSectionCard
+                    id={section.id}
                     title={section.title}
                     value={section.id}
                     data={section.data}

@@ -1,12 +1,12 @@
 
 
 
-export default function EditDeleteButtons({ id, icon, elementId, sectionValue, handleClick }: any) {
+export default function EditDeleteButtons({ id, icon, elementId, collection, handleClick }: any) {
   return (
     <button
       id={id}
       className="pl-1 flex flex-row justify-center items-center hover:cursor-default transition-all"
-      onClick={() => handleClick(elementId, sectionValue)}
+      onClick={() => handleClick(elementId, collection)}
     >
       <i className={
         `${id === 'edit-item-profile' ?

@@ -9,14 +9,8 @@ import { IconCancel } from '../../icons/icons';
 
 export default function JoinModal(props: any) {
 
-  const {
-    joinModal, setJoinModal,
-    setLoginModal,
-    setMessageModal,
-    setTypeMessageModal,
-    setTextMessageModal,
-    setLoading
-  } = useUI();
+  const { joinModal, setJoinModal, setLoginModal,
+    setMessageModal, setLoading } = useUI();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailChange, setEmailChange] = useState(false);
@@ -55,38 +49,42 @@ export default function JoinModal(props: any) {
     };
 
     try {
-      const response = await axios.post("/api/authApi", 
-      { 
-        email, 
-        password, 
-        action: "register" 
-      }, config);
+      const response = await axios.post("/api/authApi",
+        {
+          email,
+          password,
+          action: "register"
+        }, config);
       const { status, message } = response.data;
       if (status === 201) {
         setJoinModal(false);
-        setMessageModal(true);
-        setTypeMessageModal('successful');
-        setTextMessageModal(message);
+        setMessageModal([{
+          type: 'successful',
+          text: message,
+          click: () => setMessageModal([])
+        }]);
       }
     }
     catch (error: any) {
       if (error.response) {
         let statusError = error.response.status;
         let messageError = error.response.data.message;
-        setMessageModal(true);
+        let errorText;
         switch (statusError) {
           case 401:
-            setTypeMessageModal('error');
-            setTextMessageModal(messageError || 'Unauthorized access.');
+            errorText = messageError || 'Unauthorized access.';
             break;
           case 409:
-            setTypeMessageModal('error');
-            setTextMessageModal(messageError || 'Email already exists.');
+            errorText = messageError || 'Email already exists.';
             break;
           default:
-            setTypeMessageModal('error');
-            setTextMessageModal('An unexpected error occurred.');
+            errorText = 'An unexpected error occurred.';
         }
+        setMessageModal([{
+          type: 'error',
+          text: errorText,
+          click: () => setMessageModal([])
+        }]);
       }
     }
     finally {

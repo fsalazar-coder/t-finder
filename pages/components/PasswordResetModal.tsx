@@ -6,14 +6,9 @@ import { IconCancel } from '../../icons/icons';
 
 export default function PasswordReset(props: any) {
 
-  const {
-    setJoinModal,
-    setLoginModal,
+  const { setJoinModal, setLoginModal,
     passwordResetModal, setPasswordResetModal,
-    setMessageModal,
-    setTypeMessageModal,
-    setTextMessageModal
-  } = useUI();
+    setMessageModal } = useUI();
   const [email, setEmail] = useState('');
   const [emailChange, setEmailChange] = useState(false);
 
@@ -40,9 +35,11 @@ export default function PasswordReset(props: any) {
     e.preventDefault();
     setEmail('');
     setPasswordResetModal(false);
-    setMessageModal(true);
-    setTypeMessageModal('successful');
-    setTextMessageModal('A recovery link has been sent to your email');
+    setMessageModal([{
+      type: 'successful',
+      text:'A recovery link has been sent to your email',
+      click: () => setMessageModal([])
+    }]);
   }
 
   return (

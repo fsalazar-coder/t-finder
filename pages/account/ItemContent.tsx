@@ -1,8 +1,11 @@
+import { useUI } from "../../context/authContext";
 
 
 
 export default function ItemContent({ element }: any) {
-  
+
+  const { screenNarrow } = useUI();
+
   function formatKeys(element: any) {
     const formattedElement: Record<string, any> = {};
     for (const key in element) {
@@ -25,12 +28,12 @@ export default function ItemContent({ element }: any) {
   let newElement = formatKeys(element)
 
   return (
-    <ul className='w-full flex flex-col cursor-default lg:hover:cursor-pointer'>
+    <ul className={`${screenNarrow ? 'w-full' : 'w-full '} flex flex-wrap cursor-default lg:hover:cursor-pointer`}>
       {
         Object.entries(newElement).map(([key, value]) => (
           key !== ' id' && key !== 'User id' && (
             <li key={key}
-              className='w-full pb-2 flex flex-col'
+              className={`${screenNarrow ? 'w-1/2' : 'w-1/5 '} pb-2 flex flex-col`}
             >
               <h4 className='w-full text-color-text-secondary text-sm font-semibold'>
                 {typeof value === 'string' ? value : ''}

@@ -4,10 +4,13 @@ import SectionTitles from '../components/SectionTitles';
 import { IconAdd, IconEdit, IconDelete } from '../../icons/icons';
 import ItemContent from "./ItemContent";
 import EditDeleteButtons from "./EditDeleteButtons";
+import ButtonTitleMenuAddEdit from "./ButtonTitleMenuAddEdit";
+import { userDataHandlerFunction } from "../api/userDataHandlerFunction";
 
 
 
 interface ProfileSectionProps {
+  id: string,
   title: string,
   value: string,
   data: [],
@@ -15,11 +18,11 @@ interface ProfileSectionProps {
 }
 
 
-export default function ProfileSectionCard({ title, value, data, shouldRender }: ProfileSectionProps) {
+export default function ProfileSectionCard({ id, title, value, data, shouldRender }: ProfileSectionProps) {
 
-  const { setCollectionToChange, setItemIdToChange } = useAuthData();
+  const { token, userId, setCollectionToChange, setItemIdToChange, setUpdate } = useAuthData();
   const { setProfileModal, setProfileModalAction, setProfileModalType } = useAuthUI();
-  const { screenNarrow, setMessageModal, setTypeMessageModal, setTextMessageModal } = useUI();
+  const { screenNarrow, setMessageModal } = useUI();
   const [itemHover, setItemHover] = useState(null);
   const [listHover, setListHover] = useState(false);
 
@@ -40,11 +43,36 @@ export default function ProfileSectionCard({ title, value, data, shouldRender }:
       id: 'delete-item-profile',
       icon: <IconDelete />,
       click: (elementId: string, sectionValue: string) => {
-        setMessageModal(true);
-        setTypeMessageModal('delete');
-        setCollectionToChange(sectionValue);
-        setItemIdToChange(elementId);
-        setTextMessageModal(`Delete this ${sectionValue} information with this action`);
+        console.log('section Value profile: ', sectionValue)
+        setMessageModal([{
+          type: 'delete',
+          text: `Delete this ${sectionValue} information with this action`,
+          click: () => {
+            let collectionName = sectionValue;
+            let itemIdToChange: string = elementId;
+            userDataHandlerFunction({
+              token: token as string,
+              userId: collectionName === 'personal_info' ? userId as string : itemIdToChange,
+              action: 'delete',
+              collectionName: collectionName,
+              data: '',
+              onSuccess: (status: string) => {
+                status === 'success' &&
+                  setTimeout(() => {
+                    setUpdate(sectionValue);
+                    console.log('section value to Update profile: ', sectionValue)
+                    setMessageModal([{
+                      type: 'successful',
+                      text: `This ${sectionValue} information has been deleted`,
+                      click: () => setMessageModal([])
+                    }])
+                  }, 500);
+              },
+              onError: (error: any) => console.error(error)
+            });
+            setMessageModal([])
+          }
+        }]);
       }
     },
   ];
@@ -56,34 +84,27 @@ export default function ProfileSectionCard({ title, value, data, shouldRender }:
       <div className={
         `${shouldRender ?
           'border-b border-color-border-clear' :
-          ''} w-full px-5 py-1 lg:py-2 flex flex-row items-center`
+          ''} w-full px-5 py-1 lg:py-2 flex flex-row justify-between items-center`
       }>
         <SectionTitles
           sectionTitle={title}
           sectionType='account'
         />
-        {/**add button */}
-        <div className={
-          `${!shouldRender ? 'h-full' : 'h-fit'
-          } absolute right-0 top-0 px-5 py-1 lg:py-2 flex flex-row justify-end items-center z-20`
-        }>
-          <button
-            className="w-full flex flex-row justify-center items-center hover:cursor-default"
-            onClick={() => {
-              setProfileModal(true);
-              setProfileModalAction('post');
-              setProfileModalType(value);
-              setCollectionToChange(value);
-            }}
-          >
-            <h3 className='pr-2 text-sm text-color-text-tertiary transition-all'>
-              {screenNarrow ? 'Add' : 'Add information'}
-            </h3>
-            <i className='p-[2px] text-color-text-tertiary lg:hover:text-green-500 text-xl lg:text-2xl flex flex-row justify-center rounded-full cursor-default lg:cursor-pointer transition-all'>
-              <IconAdd />
-            </i>
-          </button>
-        </div>
+        <ButtonTitleMenuAddEdit
+          id={`button-title-profile-${title}`}
+          isRequest={shouldRender}
+          isDashboard={false}
+          cardHover={false}
+          screenNarrow={screenNarrow}
+          addButtonName={`New ${id}`}
+          openAccountModule={() => { }}
+          openModalForm={() => {
+            setProfileModal(true);
+            setProfileModalAction('post');
+            setProfileModalType(value);
+            setCollectionToChange(value);
+          }}
+        />
       </div>
       {/**showing section information */
         shouldRender && (

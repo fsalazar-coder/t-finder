@@ -38,10 +38,10 @@ const navbarElementUnauth = [
 
 export default function Dropdown(props: any) {
 
-  const { token, userEmail } = useAuthData();
+  const { token, userEmail, logout } = useAuthData();
   const { accountActived, setAccountActived, accountModule, setAccountModule } = useAuthUI();
   const { screenNarrow, dropdown, setDropdown, setHamburguerMenuActive,
-    setLoginModal, setJoinModal, setMessageModal, setTypeMessageModal, setTextMessageModal } = useUI();
+    setLoginModal, setJoinModal, setMessageModal } = useUI();
 
   const router = useRouter();
 
@@ -128,9 +128,17 @@ export default function Dropdown(props: any) {
                 onClick={() => {
                   setDropdown(false);
                   setHamburguerMenuActive(false);
-                  setMessageModal(true);
-                  setTypeMessageModal('logout');
-                  setTextMessageModal('Logout your session with this action');
+                  setMessageModal([{
+                    type: 'logout',
+                    text: 'Logout your session with this action',
+                    click: () => {
+                      logout()
+                      setAccountActived(false)
+                      setAccountModule('')
+                      setMessageModal([])
+                      router.push('/')
+                    }
+                  }]);
                 }}
               >
                 <i className='text-lg pl-8 pr-3'>

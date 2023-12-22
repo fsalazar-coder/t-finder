@@ -1,8 +1,4 @@
 import { useAuthUI } from "../../context/authContext";
-import {
-  IconCheckCircle,
-  IconArrowRight
-} from '../../icons/icons';
 import SectionTitles from '../components/SectionTitles';
 
 

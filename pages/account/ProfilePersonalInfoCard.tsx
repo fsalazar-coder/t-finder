@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
-import { IconUser, IconMenuI, IconCamera, IconAdd, IconEdit, IconDelete } from '../../icons/icons';
+import { IconMenuI, IconCamera, IconEdit, IconDelete } from '../../icons/icons';
+import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
 import ImageIconUser from './ImageIconUser';
 import SectionTitles from '../components/SectionTitles';
+import ButtonDashboardCardAddInfo from './ButtonDashboardCardAddInfo';
 import axios from 'axios';
-import DashboardAddInfo from './DashboardAddInfo';
 
 
 
@@ -13,7 +14,7 @@ export default function ProfilePersonalInfoCard() {
   const { token, userId, userProfilePersonalInfo, setUserProfilePersonalInfo,
     userProfileImage, setUserProfileImage, setCollectionToChange, update, setUpdate } = useAuthData();
   const { accountModule, setProfileModal, setProfileModalAction, setProfileModalType } = useAuthUI();
-  const { setMessageModal, setTypeMessageModal, setTextMessageModal } = useUI();
+  const { setMessageModal } = useUI();
   const [imageHover, setImageHover] = useState(false);
   const [listHover, setListHover] = useState(false);
   const [available, setAvailable] = useState(false);
@@ -26,7 +27,7 @@ export default function ProfilePersonalInfoCard() {
       }
     };
     try {
-      const response = await axios.post('/api/userApi',
+      const response = await axios.post('/api/userDataApi',
         {
           id: userId,
           collectionName: collection,
@@ -92,10 +93,32 @@ export default function ProfilePersonalInfoCard() {
       key: 'delete-item-profile',
       icon: <IconDelete />,
       click: () => {
-        setMessageModal(true);
-        setTypeMessageModal('delete');
-        setTextMessageModal('Delete your personal information with this action');
-        setCollectionToChange('personal_info');
+        setMessageModal([{
+          type: 'delete',
+          text: 'Delete your personal information with this action',
+          click: () => {
+            setMessageModal([])
+            setTimeout(() => {
+              userDataHandlerFunction({
+                token: token as string,
+                userId: userId as string,
+                action: 'delete',
+                collectionName: 'personal_info',
+                data: '',
+                onSuccess: (status: string) => {
+                  status === 'success' &&
+                    setMessageModal([{
+                      type: 'successful',
+                      text: 'Your personal information had been deleted',
+                      click: () => setMessageModal([])
+                    }])
+                },
+                onError: (error: any) => console.error(error)
+              });
+              setUserProfilePersonalInfo(null);
+            }, 500);
+          }
+        }]);
       },
     },
   ];
@@ -227,7 +250,7 @@ export default function ProfilePersonalInfoCard() {
               </div>
               :
               /**button add information */
-              <DashboardAddInfo
+              <ButtonDashboardCardAddInfo
                 id='post-item-profile'
                 isDashboard={isDashboard}
                 comment='Add information'

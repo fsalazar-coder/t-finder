@@ -78,6 +78,12 @@ const config: Config = {
           '0%': { transform: 'scale(1)' },
           '100%': { transform: 'scale(0)' },
         },
+        'poing': {
+          '0%': { transform: 'scale(0.005)' },
+          '70%': { transform: 'scale(1)', transformOrigin: 'center' },
+          '85%': { transform: 'scale(0.90)', transformOrigin: 'center' },
+          '100%': { transform: 'scale(1)', transformOrigin: 'center' },
+        },
         'unfold-in': {
           '0%': { transform: 'scaleX(0.005) scaleY(0.005)' },
           '75%': { transform: 'scaleX(1) scaleY(0.005)', transformOrigin: 'center' },

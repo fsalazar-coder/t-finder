@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useAuthUI } from "../../context/authContext";
 import SectionTitles from '../components/SectionTitles';
 import CircleProgressBar from './CircleProgressBar';
-import DashboardEditButton from './DashboardEditButton';
 import { IconAlert, IconCheckCircle } from '@/icons/icons';
+import ButtonTitleMenuAddEdit from './ButtonTitleMenuAddEdit';
 
 
 
@@ -22,10 +22,15 @@ export default function ProfileDashboard({ percentage, data, userScore }: any) {
           sectionTitle='Profile'
           sectionType='account'
         />
-        <DashboardEditButton
-          id='button-profile-edit'
+        <ButtonTitleMenuAddEdit
+          id='button-title-profile-edit'
+          isRequest={true}
+          isDashboard={true}
           cardHover={cardHover}
-          click={() => setAccountModule('Profile')}
+          screenNarrow={false}
+          addButtonName={''}
+          openAccountModule={() => setAccountModule('Profile')}
+          openModalForm={() => { }}
         />
       </div>
       {/**content */}

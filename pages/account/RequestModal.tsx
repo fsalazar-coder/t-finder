@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
-import axios from 'axios';
 import { IconCancel } from '../../icons/icons';
 import FormTemplate from './FormTemplate';
+import axios from 'axios';
 
 
 
 export default function RequestModal(props: any) {
 
-  const { token, userId, setUserRequestTalent, setUserRequestJob, collectionToChange, itemIdToChange, setUpdate } = useAuthData();
+  const { token, userId, setUserRequestTalent, setUserRequestJob, 
+    collectionToChange, itemIdToChange, setUpdate } = useAuthData();
   const { requestModal, setRequestModal, requestModalAction, setRequestModalAction } = useAuthUI();
-  const { setMessageModal, setTypeMessageModal, setTextMessageModal, setLoading } = useUI();
+  const { setMessageModal, setLoading } = useUI();
   const { screenNarrow } = useUI();
   const [filledForm, setFilledForm] = useState(false);
   const carouselFormRef: any = useRef(null);
@@ -51,6 +52,7 @@ export default function RequestModal(props: any) {
     experienceLevel: '',
     modalityWork: '',
     availability: '',
+    location: '',
     rates: '',
   });
   const [changeRequestJobData, setChangeRequestJobData] = useState({
@@ -60,13 +62,14 @@ export default function RequestModal(props: any) {
     experienceLevel: false,
     modalityWork: false,
     availability: false,
+    location: false,
     rates: false,
   });
   {/** */ }
 
   const handleChangeData = (e: any) => {
     const { name, value } = e.target;
-    if (requestModal === 'talent') {
+    if (requestModal === 'Talent') {
       setRequestTalentData({ ...requestTalentData, [name]: value });
     }
     else {
@@ -83,8 +86,8 @@ export default function RequestModal(props: any) {
   const dataUpdate = (requestToChange: string) => {
     const data = {
       requestTalent: {
-        job_title: requestTalentData.jobTitle,
         job_category: requestTalentData.jobCategory,
+        job_title: requestTalentData.jobTitle,
         skills_required: requestTalentData.skillsRequired,
         experience_level: requestTalentData.experienceLevel,
         experience_years: requestTalentData.experienceYears,
@@ -92,15 +95,18 @@ export default function RequestModal(props: any) {
         modality_work: requestTalentData.modalityWork,
         compensation: requestTalentData.compensation,
         company_info: requestTalentData.companyInfo,
+        status: 'submissed'
       },
       requestJob: {
-        talent_title: requestJobData.talentTitle,
         talent_category: requestJobData.talentCategory,
+        talent_title: requestJobData.talentTitle,
         skills_offered: requestJobData.skillsOffered,
         experience_level: requestJobData.experienceLevel,
         modality_work: requestJobData.modalityWork,
         availability: requestJobData.availability,
+        location: requestJobData.location,
         rates: requestJobData.rates,
+        status: 'submissed'
       },
     };
     let dataToApi;
@@ -122,6 +128,8 @@ export default function RequestModal(props: any) {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+
+    
     const config = {
       headers: {
         'Authorization': `Bearer ${token}`
@@ -129,7 +137,7 @@ export default function RequestModal(props: any) {
     };
 
     try {
-      const response = await axios.post('/api/userApi',
+      const response = await axios.post('/api/userDataApi',
         {
           id: requestModalAction === 'post' ? userId : itemIdToChange,
           collectionName: collectionToChange,
@@ -143,25 +151,31 @@ export default function RequestModal(props: any) {
       if (status === 'success') {
         setUserRequest(collectionToChange, actionResponse);
         setUpdate(collectionToChange);
-        setMessageModal(true);
-        setTypeMessageModal('successful');
-        setTextMessageModal(`Your request have been ${requestModalAction === 'post' ? 'posted' : 'uploaded'}`);
+        setMessageModal([{
+          type: 'successful',
+          text: `Your request have been ${requestModalAction === 'post' ? 'posted' : 'uploaded'}`,
+          click: () => setMessageModal([])
+        }]);
       }
     }
     catch (error: any) {
       if (error.response) {
         let statusError = error.response.status;
         let messageError = error.response.data.message;
-        setMessageModal(true);
+        let errorText;
         switch (statusError) {
           case 404:
-            setTypeMessageModal('error');
-            setTextMessageModal(messageError || 'User not found');
+            errorText = messageError || 'User not found';
             break;
           default:
-            setTypeMessageModal('error');
-            setTextMessageModal('An unexpected error occurred.');
+            errorText = 'An unexpected error occurred.';
+            break;
         }
+        setMessageModal([{
+          type: 'error',
+          text: errorText,
+          click: () => setMessageModal([])
+        }]);
       }
     }
     finally {
@@ -185,10 +199,10 @@ export default function RequestModal(props: any) {
   useEffect(() => {
     let dataTalentUnfilled = Object.values(requestTalentData).some(value => value === '');
     let dataJobUnfilled = Object.values(requestJobData).some(value => value === '');
-    if (requestModal === 'talent' && dataTalentUnfilled) {
+    if (requestModal === 'Talent' && dataTalentUnfilled) {
       setFilledForm(false);
     }
-    else if (requestModal === 'job' && dataJobUnfilled) {
+    else if (requestModal === 'Job' && dataJobUnfilled) {
       setFilledForm(false);
     }
     else {
@@ -306,6 +320,7 @@ export default function RequestModal(props: any) {
         { value: 'Freelance', title: 'Freelance' },
       ]
     },
+    { type: 'text', title: 'Location', value: 'location' },
     { type: 'text', title: 'Rates', value: 'rates' },
   ];
 
@@ -323,7 +338,7 @@ export default function RequestModal(props: any) {
       onClick={(e: any) => handleCloseModal(e)}
     >
       <div
-        className={
+        className={ 
           `${screenNarrow ? 'h-[85%]' : 'h-[90%]'}
             ${showRequestModal ?
             'scale-100 animate-[zoom-in_0.50s]'
@@ -362,7 +377,7 @@ export default function RequestModal(props: any) {
               <div className='w-full h-full flex flex-col justify-between items-center transition-all z-0'>
                 <div className='w-full h-full flex flex-col items-center'>
                   {
-                    requestModal === 'talent' ?
+                    requestModal === 'Talent' ?
                       /**talent request I */
                       <FormTemplate
                         inputData={talentInput.slice(0, 5)}
@@ -410,7 +425,7 @@ export default function RequestModal(props: any) {
               >
                 <div className='w-full h-full flex flex-col items-center'>
                   {
-                    requestModal === 'talent' ?
+                    requestModal === 'Talent' ?
                       /**talent request II */
                       <FormTemplate
                         inputData={talentInput.slice(5)}

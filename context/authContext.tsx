@@ -33,6 +33,10 @@ interface AuthDataContextProps {
   setUserRequestTalent: React.Dispatch<React.SetStateAction<UserRequestTalent[] | []>>;
   userRequestJob: UserRequestJob[] | [];
   setUserRequestJob: React.Dispatch<React.SetStateAction<UserRequestJob[] | []>>;
+  talentRequestStatus: string;
+  setTalentRequestStatus: React.Dispatch<React.SetStateAction<string>>;
+  jobRequestStatus: string;
+  setJobRequestStatus: React.Dispatch<React.SetStateAction<string>>;
   userScore: number;
   setUserScore: React.Dispatch<React.SetStateAction<number>>;
   collectionToChange: string;
@@ -182,16 +186,18 @@ interface UIContextProps {
   setJoinModal: React.Dispatch<React.SetStateAction<boolean>>;
   passwordResetModal: boolean;
   setPasswordResetModal: React.Dispatch<React.SetStateAction<boolean>>;
-  messageModal: boolean;
-  setMessageModal: React.Dispatch<React.SetStateAction<boolean>>;
-  typeMessageModal: string;
-  setTypeMessageModal: React.Dispatch<React.SetStateAction<string>>;
-  textMessageModal: string;
-  setTextMessageModal: React.Dispatch<React.SetStateAction<string>>;
+  messageModal: Messages[] | [];
+  setMessageModal: React.Dispatch<React.SetStateAction<Messages[] | []>>;
 }
 
 interface ProviderProps {
   children: ReactNode;
+}
+
+interface Messages {
+  type: string,     // types: successful, error, question, logout, delete
+  text: string,
+  click: () => void
 }
 
 const AuthDataContext = createContext<AuthDataContextProps | undefined>(undefined);
@@ -218,6 +224,8 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   const [profileModalType, setProfileModalType] = useState<string>('');
   const [userRequestTalent, setUserRequestTalent] = useState<UserRequestTalent[] | []>([]);
   const [userRequestJob, setUserRequestJob] = useState<UserRequestJob[] | []>([]);
+  const [talentRequestStatus, setTalentRequestStatus] = useState<string>('');
+  const [jobRequestStatus, setJobRequestStatus] = useState<string>('');
   const [userScore, setUserScore] = useState<number>(0);
   const [requestModal, setRequestModal] = useState<string>('');
   const [requestModalAction, setRequestModalAction] = useState<string>('');
@@ -266,6 +274,8 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
       userProfileRecommendations, setUserProfileRecommendations,
       userRequestTalent, setUserRequestTalent,
       userRequestJob, setUserRequestJob,
+      talentRequestStatus, setTalentRequestStatus,
+      jobRequestStatus, setJobRequestStatus,
       userScore, setUserScore,
       collectionToChange, setCollectionToChange,
       itemIdToChange, setItemIdToChange,
@@ -296,9 +306,7 @@ export const Provider = ({ children }: ProviderProps): JSX.Element => {
   const [loginModal, setLoginModal] = useState<boolean>(false);
   const [joinModal, setJoinModal] = useState<boolean>(false);
   const [passwordResetModal, setPasswordResetModal] = useState<boolean>(false);
-  const [messageModal, setMessageModal] = useState<boolean>(false);
-  const [typeMessageModal, setTypeMessageModal] = useState<string>('');
-  const [textMessageModal, setTextMessageModal] = useState<string>('');
+  const [messageModal, setMessageModal] = useState<Messages[] | []>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   const screenNarrowHandle: any = () => {
@@ -327,8 +335,6 @@ export const Provider = ({ children }: ProviderProps): JSX.Element => {
         loginModal, setLoginModal,
         passwordResetModal, setPasswordResetModal,
         messageModal, setMessageModal,
-        typeMessageModal, setTypeMessageModal,
-        textMessageModal, setTextMessageModal,
         loading, setLoading,
       }
     }>

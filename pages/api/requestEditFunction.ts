@@ -1,16 +1,17 @@
 import axios from 'axios';
 
-interface FetchDataParams {
-  token: string;
-  userId: string;
-  collectionName: string;
-  onSuccess: Function;
+interface EditDataParams {
+  token: string,
+  collection: string,
+  toRequestId: string,
+  dataToInsert: {},
+  onSuccess: Function,
   onError: Function
 }
 
 
 
-export const fetchDataApi = async ({ token, userId, collectionName, onSuccess, onError }: FetchDataParams) => {
+export const requestEditFunction = async ({ token, collection, toRequestId, dataToInsert, onSuccess, onError }: EditDataParams) => {
   const config = {
     headers: {
       'Authorization': `Bearer ${token}`
@@ -18,11 +19,11 @@ export const fetchDataApi = async ({ token, userId, collectionName, onSuccess, o
   };
 
   try {
-    const response = await axios.post('/api/userApi', {
-      id: userId,
-      collectionName: collectionName,
-      action: 'get',
-      data: ''
+    const response = await axios.post('/api/userDataApi', {
+      id: toRequestId,
+      collectionName: collection,
+      action: 'edit-request',
+      data: dataToInsert
     }, config);
 
     const { status, actionResponse } = response.data;
@@ -40,4 +41,3 @@ export const fetchDataApi = async ({ token, userId, collectionName, onSuccess, o
     }
   }
 };
-

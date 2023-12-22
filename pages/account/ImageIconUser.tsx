@@ -3,6 +3,7 @@ import { useAuthData } from "../../context/authContext";
 import Image from 'next/image';
 import { IconUser } from '@/icons/icons';
 import axios from 'axios';
+import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
 
 
 
@@ -10,41 +11,33 @@ export default function ImageIconUser(props: any) {
 
   const { token, userId, userProfileImage, setUserProfileImage, update, setUpdate } = useAuthData();
 
-
-  const fetchData = async () => {
-    const config = {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    };
-
-    try {
-      const response = await axios.post('/api/userApi',
-        {
-          id: userId,
-          collectionName: 'profile_image',
-          action: 'get',
-          data: ''
-        },
-        config
-      );
-      const { status, actionResponse } = response.data;
-      if (status === 'success') {
-        setUserProfileImage(actionResponse.image_url);
-      }
-    }
-    catch (error: any) {
-      console.log('An error occurred fetch data: ', error);
-    }
-  };
-
   useEffect(() => {
-    fetchData();
+    userDataHandlerFunction({
+      token: token as string,
+      userId: userId as string,
+      action: 'get',
+      collectionName: 'profile_image',
+      data: '',
+      onSuccess: (data: any) => {
+        setUserProfileImage(data.image_url);
+      },
+      onError: (error: any) => console.error(error)
+    });
   }, []);
 
   useEffect(() => {
     if (update === 'profile_image') {
-      fetchData();
+      userDataHandlerFunction({
+        token: token as string,
+        userId: userId as string,
+        action: 'get',
+        collectionName: 'profile_image',
+        data: '',
+        onSuccess: (data: any) => {
+          setUserProfileImage(data.image_url);
+        },
+        onError: (error: any) => console.error(error)
+      });
       setUpdate('');
     }
   }, [update, setUpdate]);

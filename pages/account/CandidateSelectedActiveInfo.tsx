@@ -1,18 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useAuthData, useUI } from "../../context/authContext";
-import { fetchDataApi } from '../api/fetchDataApi';
-import { IconCircle, IconAlert, IconAdd, IconMenuI, IconUserGraduate, IconBxsBellRing, IconBxErrorCircle, IconCheckCircle, IconCancelCircle, IconEdit } from '@/icons/icons';
 import ItemContent from './ItemContent';
 import axios from 'axios';
 
 
 interface UserInfoActive {
   userId: string,
-  userItemMenu: string
+  itemReviewMenu: string
 }
 
 
-export default function SelectedUserActiveInfo({userId, userItemMenu}: UserInfoActive) {
+export default function CandidateSelectedActiveInfo({userId, itemReviewMenu}: UserInfoActive) {
 
   const { token } = useAuthData();
   const { screenNarrow } = useUI();
@@ -20,7 +18,7 @@ export default function SelectedUserActiveInfo({userId, userItemMenu}: UserInfoA
   const [userInfo, setUserInfo] = useState([]);
 
   const getUserInfo = async () => {
-    let collectionName = userItemMenu;
+    let collectionName = itemReviewMenu;
     const config = {
       headers: {
         'Authorization': `Bearer ${token}`
@@ -28,7 +26,7 @@ export default function SelectedUserActiveInfo({userId, userItemMenu}: UserInfoA
     };
 
     try {
-      const response = await axios.post('/api/userApi', {
+      const response = await axios.post('/api/userDataApi', {
         id: userId,
         collectionName,
         action: 'get',
@@ -47,18 +45,20 @@ export default function SelectedUserActiveInfo({userId, userItemMenu}: UserInfoA
 
   useEffect(() => {
     getUserInfo();
-  },[userItemMenu, userId]);
+  },[itemReviewMenu, userId]);
 
 
   return (
-    <div className='w-full flex flex-row justify-center items-center'>
-      <ul className='w-full p-2 lg:p-8 flex flex-wrap transition-all'>
+    <div className='w-full flex flex-col'>
+      <ul className='w-full p-2 lg:p-8 flex flex-col transition-all'>
         {
           userInfo?.map((element: any, index: any) => {
             return (
               <li
                 key={element._id}
-                className={`${screenNarrow? 'w-full': 'w-1/3'} px-5 py-2 flex flex-col transform transition-all border border-red-500`}>
+                className={
+                  `${screenNarrow? 'w-full': 'w-full'} 
+                  border-b px-5 py-2 flex flex-col border-color-border-clear transform transition-all`}>
                 <ItemContent element={element as any} />
               </li>
             )

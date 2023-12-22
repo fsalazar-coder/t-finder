@@ -12,7 +12,7 @@ import axios from 'axios';
 export default function ProfileModalImage() {
   const { token, userId, userProfileImage, setUserProfileImage, collectionToChange, setUpdate } = useAuthData();
   const { setProfileModal, profileModalAction, setProfileModalAction, setProfileModalType } = useAuthUI();
-  const { setMessageModal, setTypeMessageModal, setTextMessageModal, setLoading } = useUI();
+  const { setMessageModal, setLoading } = useUI();
   const [previewImage, setPreviewImage] = useState<string | null>(userProfileImage || null);
   const [fileImage, setFileImage] = useState<File | null>(null);
 
@@ -21,9 +21,11 @@ export default function ProfileModalImage() {
     const file = e.currentTarget.files?.[0];
     if (file) {
       if (file.size / 1024 / 1024 > 50) {
-        setMessageModal(true);
-        setTypeMessageModal('error');
-        setTextMessageModal('File size too big (max 50MB)');
+        setMessageModal([{
+          type: 'error',
+          text: 'File size too big (max 50MB)',
+          click: () => setMessageModal([])
+        }]);
       }
       else {
         setFileImage(file);
@@ -66,21 +68,27 @@ export default function ProfileModalImage() {
                 if (status === 'success') {
                   setUserProfileImage(imageUrl);
                   setUpdate(collectionToChange)
-                  setMessageModal(true);
-                  setTypeMessageModal('successful');
-                  setTextMessageModal(`Your profile image have been ${profileModalAction === 'post' ? 'posted' : 'updated'}`);
+                  setMessageModal([{
+                    type: 'successful',
+                    text: `Your profile image have been ${profileModalAction === 'post' ? 'posted' : 'updated'}`,
+                    click: () => setMessageModal([])
+                  }]);
                 }
                 else {
-                  setMessageModal(true);
-                  setTypeMessageModal('error');
-                  setTextMessageModal('Profile image not uploaded');
+                  setMessageModal([{
+                    type: 'error',
+                    text: 'Profile image not uploaded',
+                    click: () => setMessageModal([])
+                  }]);
                 }
               });
           }
           else {
-            setMessageModal(true);
-            setTypeMessageModal('error');
-            setTextMessageModal('Url image not formed');
+            setMessageModal([{
+              type: 'error',
+              text: 'Url image not formed',
+              click: () => setMessageModal([])
+            }]);
           }
         })
         .finally(() => {
@@ -92,9 +100,11 @@ export default function ProfileModalImage() {
         });
     }
     else {
-      setMessageModal(true);
-      setTypeMessageModal('error');
-      setTextMessageModal('Profile image not founded');
+      setMessageModal([{
+        type: 'error',
+        text: 'Url image not formed',
+        click: () => setMessageModal([])
+      }]);
     }
   };
 

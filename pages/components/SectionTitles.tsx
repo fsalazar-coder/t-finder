@@ -5,7 +5,7 @@ export default function SectionTitles(props: any) {
   return (
     <div className={
       `${props.sectionType === 'account' ?
-        'w-full' :
+        'w-fit' :
         props.sectionType === 'home' ?
           'w-full lg:w-1/2' :
           ''} flex flex-col`

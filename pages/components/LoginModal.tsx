@@ -9,18 +9,12 @@ import { IconCancel } from '../../icons/icons';
 
 export default function LoginModal(props: any) {
 
-  const {
-    setToken,
-    setUserId,
-    setUserEmail,
-  } = useAuthData();
+  const { setToken, setUserId, setUserEmail } = useAuthData();
   const {
     setJoinModal,
     loginModal, setLoginModal,
     setPasswordResetModal,
     setMessageModal,
-    setTypeMessageModal,
-    setTextMessageModal,
     setLoading
   } = useUI();
   const [email, setEmail] = useState('');
@@ -52,7 +46,7 @@ export default function LoginModal(props: any) {
 
   const loginSubmitHandle = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);     //Ampliar
+    setLoading(true);
 
     const config: any = {
       headers: {
@@ -76,16 +70,19 @@ export default function LoginModal(props: any) {
       if (error.response) {
         let statusError = error.response.status;
         let messageError = error.response.data.message;
-        setMessageModal(true);
+        let errorText;
         switch (statusError) {
           case 401:
-            setTypeMessageModal('error');
-            setTextMessageModal(messageError || 'Unauthorized access.');
+            errorText = messageError || 'Unauthorized access.';
             break;
           default:
-            setTypeMessageModal('error');
-            setTextMessageModal('An unexpected error occurred.');
+            errorText = 'An unexpected error occurred.';
         }
+        setMessageModal([{
+          type: 'error',
+          text: errorText,
+          click: () => setMessageModal([])
+        }]);
       }
     }
     finally {
