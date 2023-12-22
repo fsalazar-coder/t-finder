@@ -24,7 +24,9 @@ export default function CardsDisplayer({
   const [listHover, setListHover] = useState(false);
 
   const isDashboard = accountModule === 'Dashboard';
-  const shouldRenderData = Object.keys(dataToRender).length > 0;
+  //const shouldRenderData = dataToRender && Object.keys(dataToRender).length > 0;
+  const shouldRenderData = Array.isArray(dataToRender) && dataToRender.length > 0;
+
 
 
   return (
