@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
-import { requestEditFunction } from '../api/requestEditFunction';
 import RequestDashboard from './RequestDashboard';
 import SectionTitles from '../components/SectionTitles';
 import ButtonTitleMenuAddEdit from './ButtonTitleMenuAddEdit';
@@ -59,10 +58,8 @@ interface Accepted {
 interface TalentData {
   job_category: string;
   _id: string;
-  // Include other properties as needed
 }
 
-// And then ensure requestData.requestTalent is of this type:
 interface RequestData {
   requestTalent: TalentData[];
 }
@@ -70,7 +67,7 @@ interface RequestData {
 
 export default function Request({ requestType }: any) {
   const { token, userId, collectionToChange, setCollectionToChange,
-    update, setUpdate, talentRequestStatus, setTalentRequestStatus, jobRequestStatus, setJobRequestStatus } = useAuthData();
+    update, setUpdate, talentRequestStatus, setTalentRequestStatus } = useAuthData();
   const { accountModule, setAccountModule, setRequestModal, setRequestModalAction } = useAuthUI();
   const { screenNarrow, setMessageModal, setLoading } = useUI();
   const [listHover, setListHover] = useState(false);
@@ -83,20 +80,26 @@ export default function Request({ requestType }: any) {
   });
 
   const [candidates, setCandidates] = useState<CandidatesParams>({});
+  const [candidatesAvailables, setCandidatesAvailables] = useState<CandidatesParams>({});
   const [candidatesRequestTalentId, setCandidatesRequestTalentId] = useState('');
   const [candidatesToRender, setCandidatesToRender] = useState<any[]>([]);
   const [candidateToReview, setCandidateToReview] = useState<any[]>([]);
   const [candidateToReviewId, setCandidateToReviewId] = useState('');
-
-  const [candidatesContacting, setCandidatesContacting] = useState<CandidatesContacting>({});
-
   const [offers, setOffers] = useState<OffersParams>({});
+  const [offersAvailables, setOffersAvailables] = useState<OffersParams>({});
   const [offerRequestJobId, setOfferRequestJobId] = useState('');
   const [offersToRender, setOffersToRender] = useState<any[]>([]);
-  const [offerToReview, setOfferToReview] = useState<any[]>([]);
-  const [offerToReviewId, setOfferToReviewId] = useState('');
+  const [offerToAcceptId, setOfferToAcceptId] = useState('');
 
+  const [requestTalentIdFromOfferToAccept, setRequestTalentIdFromOfferToAccept] = useState<string>('');
+
+  const [candidatesContacting, setCandidatesContacting] = useState<CandidatesContacting>({});
+  const [candidatesContactingUpdated, setCandidatesContactingUpdated] = useState<CandidatesContacting>(candidatesContacting);
   const [offersAccepted, setOffersAccepted] = useState<OffersAccepted>({});
+  const [offersAcceptedUpdated, setOffersAcceptedUpdated] = useState<OffersAccepted>(offersAccepted);
+
+
+  const [goClickUpdate, setGoClickUpdate] = useState('');
 
   const requests: any = [
     {
@@ -138,16 +141,16 @@ export default function Request({ requestType }: any) {
   useEffect(() => {
     if (!update || update === collectionToChange) {
       requests.forEach((request: Request) => {
-        let collectionName = request.collection;
+        const collectionName = request.collection;
         userDataHandlerFunction({
           token: token as string,
           userId: userId as string,
           action: 'get',
           collectionName: collectionName,
           data: '',
-          onSuccess: (data: any) => {
+          onSuccess: (responseData: any) => {
             const requestName = collectionName === 'request_talent' ? 'requestTalent' : 'requestJob';
-            updateRequestData(requestName, data);
+            updateRequestData(requestName, responseData);
           },
           onError: (error: any) => console.error(error)
         });
@@ -162,85 +165,92 @@ export default function Request({ requestType }: any) {
   // Arreglo con todos los candidatos disponibles para cada talent request //
   // y, Arreglo con todos los candidatos que están siendo contactados //
   useEffect(() => {
-    requestData.requestTalent.forEach((data: TalentData) => {
-      let keyword = data.job_category;
-      let requestTalentId = data._id;
-
-      userDataHandlerFunction({
-        token: token as string,
-        userId: '',
-        action: 'get-candidates',
-        collectionName: 'request_job',
-        data: keyword,
-        onSuccess: (searchResponse: []) => {
-          setCandidates((prevData) => ({
-            ...prevData,
-            [requestTalentId]: searchResponse
-          }));
-        },
-        onError: (error: any) => console.error(error)
+    if (requestMenu === 'talent submitted' || goClickUpdate === 'candidates contacting') {
+      requestData.requestTalent.forEach((data: TalentData) => {
+        const keyword = data.job_category;
+        let requestTalentId = data._id;
+        userDataHandlerFunction({
+          token: token as string,
+          userId: 'userId' as string,
+          action: 'get-candidates',
+          collectionName: 'request_job',
+          data: keyword,
+          onSuccess: (responseData: any) => {
+            setCandidates((prevData) => ({
+              ...prevData, [requestTalentId]: responseData
+            }));
+          },
+          onError: (error: any) => console.error(error)
+        });
+        userDataHandlerFunction({
+          token: token as string,
+          userId: userId as string,
+          action: 'get-contacting-candidates-ids',
+          collectionName: 'notifications',
+          data: requestTalentId,
+          onSuccess: (responseData: any) => {
+            setCandidatesContacting((prevData) => ({
+              ...prevData,
+              [requestTalentId]: responseData
+            }));
+          },
+          onError: (error: any) => console.error(error)
+        });
       });
-
-      userDataHandlerFunction({
-        token: token as string,
-        userId: userId as string,
-        action: 'get-contacting-candidates-ids',
-        collectionName: 'notifications',
-        data: requestTalentId,
-        onSuccess: (actionResponse: []) => {
-          setCandidatesContacting((prevData) => ({
-            ...prevData,
-            [requestTalentId]: actionResponse
-          }));
-        },
-        onError: (error: any) => console.error(error)
-      });
-    });
-  }, [token, userId, requestData.requestTalent, requestMenu]);
+      setGoClickUpdate('');
+    }
+  }, [token, userId, requestData.requestTalent, requestMenu, goClickUpdate]);
 
   // Arreglo con todas las ofertas disponibles para cada job request //
   useEffect(() => {
-    requestData.requestJob.map((data: any, index: any) => {
-      let requestJobId = data._id;
-      userDataHandlerFunction({
-        token: token as string,
-        userId: userId as string,
-        action: 'get-offers',
-        collectionName: 'notifications',
-        data: requestJobId,
-        onSuccess: (actionResponse: []) => {
-          setOffers((prevData) => ({
-            ...prevData,
-            [requestJobId]: actionResponse
-          }));
-        },
-        onError: (error: any) => console.error(error)
+    if (requestMenu === 'job submitted' || goClickUpdate === 'offers accepted') {
+      requestData.requestJob.map((data: any) => {
+        let requestJobId = data._id;
+        userDataHandlerFunction({
+          token: token as string,
+          userId: userId as string,
+          action: 'get-offers',
+          collectionName: 'notifications',
+          data: requestJobId,
+          onSuccess: (responseData: any) => {
+            setOffers((prevData) => ({
+              ...prevData,
+              [requestJobId]: responseData
+            }));
+          },
+          onError: (error: any) => console.error(error)
+        });
+        userDataHandlerFunction({
+          token: token as string,
+          userId: userId as string,
+          action: 'get-offers-accepted',
+          collectionName: 'notifications',
+          data: requestJobId,
+          onSuccess: (responseData: any) => {
+            setOffersAccepted((prevData) => ({
+              ...prevData,
+              [requestJobId]: responseData
+            }));
+          },
+          onError: (error: any) => console.error(error)
+        });
       });
-      userDataHandlerFunction({
-        token: token as string,
-        userId: userId as string,
-        action: 'get-offers-accepted',
-        collectionName: 'notifications',
-        data: requestJobId,
-        onSuccess: (actionResponse: []) => {
-          setOffersAccepted((prevData) => ({
-            ...prevData,
-            [requestJobId]: actionResponse
-          }));
-        },
-        onError: (error: any) => console.error(error)
-      });
-    });
-  }, [token, userId, requestData.requestJob, requestMenu])
+      setGoClickUpdate('');
+    }
+  }, [token, userId, requestData.requestJob, requestMenu, goClickUpdate])
 
   useEffect(() => {
-    const result = candidates[candidatesRequestTalentId];
-    (Array.isArray(result)) && setCandidatesToRender(result);
-  }, [candidates, candidatesRequestTalentId]);
+    if (requestMenu === 'candidates') {
+      const result = candidates[candidatesRequestTalentId];
+      (Array.isArray(result)) && setCandidatesToRender(result);
+    }
+  }, [candidates, candidatesRequestTalentId, requestMenu]);
 
   useEffect(() => {
-    const offersAll = offers[offerRequestJobId];
-    (Array.isArray(offersAll)) && setOffersToRender(offersAll);
+    if (requestMenu === 'offers') {
+      const offersAll = offers[offerRequestJobId];
+      (Array.isArray(offersAll)) && setOffersToRender(offersAll);
+    }
   }, [offers, offerRequestJobId]);
 
   useEffect(() => {
@@ -252,12 +262,13 @@ export default function Request({ requestType }: any) {
   }, [requestMenu, candidateToReviewId]);
 
   useEffect(() => {
-    if (requestMenu === 'offer review') {
-      setOfferToReview(
-        offersToRender.filter((offer) => offer.user_id === offerToReviewId)
-      );
+    if (requestMenu === 'offers') {
+      let matchedOffer = offersToRender?.find((offer) => offer.user_id === offerToAcceptId);
+      let toRequestTalentId = matchedOffer ? matchedOffer.request_talent_id : undefined;
+      setRequestTalentIdFromOfferToAccept(toRequestTalentId);
     }
-  }, [requestMenu, offerToReviewId]);
+  }, [offerToAcceptId]);
+
 
   const requestMenuTitles = [
     {
@@ -271,29 +282,19 @@ export default function Request({ requestType }: any) {
       requestMenuCondition: requestMenu === 'job submitted'
     },
     {
+      id: 'offers-and-cceptance',
+      label: 'Offers & Acceptance',
+      requestMenuCondition: requestMenu === 'offers'
+    },
+    {
       id: 'candidates',
       label: 'Candidates',
       requestMenuCondition: requestMenu === 'candidates'
     },
     {
-      id: 'offers',
-      label: 'Offers',
-      requestMenuCondition: requestMenu === 'offers'
-    },
-    {
-      id: 'talent-review',
+      id: 'candidate-review-and-contact',
       label: 'Review & Contact',
       requestMenuCondition: requestMenu === 'candidate review'
-    },
-    {
-      id: 'offer-review',
-      label: 'Review & Acceptance',
-      requestMenuCondition: requestMenu === 'offer review'
-    },
-    {
-      id: requestType === 'Talent' ? 'contact-request-talent' : 'contact-request-job',
-      label: 'Chat',
-      requestMenuCondition: requestMenu === 'chat'
     }
   ];
 
@@ -349,116 +350,35 @@ export default function Request({ requestType }: any) {
       }
     },
     {
-      id: 'candidates-list',
-      cardsDisplayerType: 'candidates',
-      dataToRender: candidatesToRender,
-      dataToCompare: [],
-      requestMenuCondition: 'candidates',
-      goClickTitleDisabled: '',
-      goClickTitleEnabled: 'Review',
-      goClick: (value: any) => {
-        setRequestMenu('candidate review')
-        setCandidateToReviewId(value)
-        setListHover(false)
-      }
-    },
-    {
-      id: 'offers-list',
+      id: 'offers-list-acceptance',
       cardsDisplayerType: 'offers',
       dataToRender: offersToRender,
-      dataToCompare: [],
+      dataToCompare: offersAccepted[offerRequestJobId]?.map((element: any) => element.to_user_id),
       requestMenuCondition: 'offers',
-      goClickTitleDisabled: '',
-      goClickTitleEnabled: 'Review',
-      goClick: (value: any) => {
-        setRequestMenu('offer review')
-        setOfferToReviewId(value)
-        setListHover(false)
-      }
-    },
-    {
-      id: 'candidate-review',
-      cardsDisplayerType: 'review',
-      dataToRender: candidateToReview,
-      dataToCompare: candidatesContacting[candidatesRequestTalentId]?.map((element) => element.to_user_id),
-      requestMenuCondition: 'candidate review',
-      goClickTitleDisabled: 'Contacting',
-      goClickTitleEnabled: 'Contact',
-      goClick: (value: any) => {
-        setMessageModal([{
-          type: 'question',
-          text: 'A contact request will be sent to the candidate. If the candidate accepts, you can start a CHAT',
-          click: () => {
-            setLoading(true);
-            userDataHandlerFunction({
-              token: token as string,
-              userId: candidateToReviewId,
-              action: 'post',
-              collectionName: 'notifications',
-              data: {
-                from_user_id: userId,
-                to_request_id: value,
-                from_request_id: candidatesRequestTalentId,
-                notification_type: 'request contact',
-              },
-              onSuccess: (insertedId: string) => {
-                //requestEditFunction({
-                //token: token as string,
-                //collection: 'request_job',
-                //toRequestId: value,
-                //dataToInsert: { notification_id: insertedId, from_request_id: candidatesRequestTalentId },
-                //onSuccess: (actionResponse: any) => {},
-                //onError: (error: any) => console.error(error)
-                //})
-                setLoading(false);
-                setMessageModal([{
-                  type: 'successful',
-                  text: `Your request contact have been sent successful`,
-                  click: () => setMessageModal([])
-                }]);
-              },
-              onError: (error: any) => console.error(error)
-            });
-            setTalentRequestStatus('Contacting')
-            setMessageModal([]);
-          }
-        }])
-      },
-    },
-    {
-      id: 'offer-review',
-      cardsDisplayerType: 'review',
-      dataToRender: offerToReview,
-      dataToCompare: Object.keys(offersAccepted).filter(key => offersAccepted[key].length === 0),
-      requestMenuCondition: 'offer review',
       goClickTitleDisabled: 'Chat',
-      goClickTitleEnabled: 'Accept',
+      goClickTitleEnabled: 'Acceptance',
       goClick: (value: any) => {
-        //requestMenu === 'offer review' && (() => {
-        //console.log('Offers: ', offers);
-        //console.log('Offers to render: ', offersToRender);
-        //console.log('Offer to review: ', offerToReview);
-        //console.log('Offers to review Id: ', offerToReviewId);
-        //})
+        setListHover(false);
+        setOfferToAcceptId(value)
+        const toRequestTalentId = offersToRender?.find(offer => offer.user_id === value)?.request_talent_id;
         setMessageModal([{
           type: 'question',
-          text: 'Accepting this offer will initiate a CHAT with the Talent Scout',
+          text: 'Do you accept this contact request from Talent Scout?',
           click: () => {
-            console.log('goClick offers review (value): ', value);
             setLoading(true);
             userDataHandlerFunction({
               token: token as string,
-              userId: offerToReviewId,
+              userId: value,
               action: 'post',
               collectionName: 'notifications',
               data: {
                 from_user_id: userId,
-                to_request_id: value,
+                to_request_id: toRequestTalentId as string,
                 from_request_id: offerRequestJobId,
                 notification_type: 'offer acceptance',
               },
-              onSuccess: (insertedId: string) => {
-                //console.log('Action response request contact: ', insertedId)
+              onSuccess: () => {
+                setGoClickUpdate('offers accepted');
                 setLoading(false);
                 setMessageModal([{
                   type: 'successful',
@@ -474,6 +394,62 @@ export default function Request({ requestType }: any) {
         }])
       }
     },
+    {
+      id: 'candidates-list',
+      cardsDisplayerType: 'candidates',
+      dataToRender: candidatesToRender,
+      dataToCompare: [],
+      requestMenuCondition: 'candidates',
+      goClickTitleDisabled: '',
+      goClickTitleEnabled: 'Review',
+      goClick: (value: any) => {
+        setRequestMenu('candidate review')
+        setCandidateToReviewId(value)
+        setListHover(false)
+      }
+    },
+    {
+      id: 'candidate-review',
+      cardsDisplayerType: 'candidate review',
+      dataToRender: candidateToReview,
+      dataToCompare: candidatesContacting[candidatesRequestTalentId]?.map((element) => element.to_user_id),
+      requestMenuCondition: 'candidate review',
+      goClickTitleDisabled: 'Contacting',
+      goClickTitleEnabled: 'Contact',
+      goClick: (value: any) => {
+        setMessageModal([{
+          type: 'question',
+          text: 'Do you want to send this candidate a CHAT request?',
+          click: () => {
+            setLoading(true);
+            userDataHandlerFunction({
+              token: token as string,
+              userId: candidateToReviewId,
+              action: 'post',
+              collectionName: 'notifications',
+              data: {
+                from_user_id: userId,
+                to_request_id: value,
+                from_request_id: candidatesRequestTalentId,
+                notification_type: 'request contact',
+              },
+              onSuccess: () => {
+                setGoClickUpdate('candidates contacting');
+                setLoading(false);
+                setMessageModal([{
+                  type: 'successful',
+                  text: `Your request contact have been sent successful`,
+                  click: () => setMessageModal([])
+                }]);
+              },
+              onError: (error: any) => console.error(error)
+            });
+            setTalentRequestStatus('Contacting')
+            setMessageModal([]);
+          }
+        }])
+      },
+    }
   ];
 
   const isDashboard = accountModule === 'Dashboard';
@@ -511,22 +487,25 @@ export default function Request({ requestType }: any) {
                 sectionTitle={`${requestType} request`}
                 sectionType='account'
               />
-              {/**submenu: submitted, candidates, offers, review and chat... */}
-              <div className={`w-fit pl-5 flex flex-row items-center`}>
-                {
-                  requestMenuTitles.map(({ id, label, requestMenuCondition }) => (
-                    requestMenuCondition &&
-                    <div
-                      key={id}
-                      className='px-5 border-l border-color-border-clear cursor-default'
-                    >
-                      <h4 className={`text-color-secondary font-semibold`}>
-                        {label}
-                      </h4>
-                    </div>
-                  ))
-                }
-              </div>
+              {
+                !isDashboard &&
+                /**submenu: submitted, candidates, offers, review and chat... */
+                <div className={`w-fit pl-5 flex flex-row items-center`}>
+                  {
+                    requestMenuTitles.map(({ id, label, requestMenuCondition }) => (
+                      requestMenuCondition &&
+                      <div
+                        key={id}
+                        className='px-5 border-l border-color-border-clear cursor-default'
+                      >
+                        <h4 className={`text-color-secondary font-semibold`}>
+                          {label}
+                        </h4>
+                      </div>
+                    ))
+                  }
+                </div>
+              }
             </div>
             <div className="w-1/3 h-full relative flex flex-row justify-end items-center">
               {
@@ -591,7 +570,7 @@ export default function Request({ requestType }: any) {
                       key={id}
                       cardsDisplayerType={cardsDisplayerType}
                       dataToRender={dataToRender}
-                      dataToCompare={dataToCompare}
+                      dataToCompare={dataToCompare as any}
                       requestMenu={requestMenu}
                       goClick={goClick}
                       goClickTitleEnabled={goClickTitleEnabled}

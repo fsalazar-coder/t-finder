@@ -4,12 +4,11 @@ import NotificationCard from "./NotificationCard";
 
 interface NotificationsCardsDisplayerParams {
   dataToRender: string[],
-  goClick: (value: any) => void,
 }
 
 
 
-export default function NotificationsCardsDisplayer({ dataToRender, goClick }: NotificationsCardsDisplayerParams) {
+export default function NotificationsCardsDisplayer({ dataToRender }: NotificationsCardsDisplayerParams) {
 
   const { accountModule, setAccountModule } = useAuthUI();
   const [itemHover, setItemHover] = useState(null);
@@ -59,7 +58,6 @@ export default function NotificationsCardsDisplayer({ dataToRender, goClick }: N
                       listHover={listHover}
                       itemHover={itemHover}
                       isDashboard={isDashboard}
-                      goClickValue={goToAccountModule}
                     />
                   </div>
                 </li>

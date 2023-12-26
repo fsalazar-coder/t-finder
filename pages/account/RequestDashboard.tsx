@@ -30,7 +30,6 @@ export default function RequestDashboard({ requestType, isDashboard, stepsProces
   }
 
   useEffect(() => {
-    console.log('Account module actived: ', accountModule)
     if (accountModule === 'Dashboard') {
       userRequestStatusFunction({
         token: token as string,

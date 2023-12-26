@@ -20,15 +20,22 @@ interface UserCardParams {
   goClick: (e: any) => void,
 }
 
+interface DataUser {
+  user_id: string,
+  user_name: string,
+  user_image: string
+}
 
 
 export default function UserCard({ data, userCardType, requestMenu, listHover,
   itemHover, indexCard, goClickCondition, goClickTitleEnabled, goClickTitleDisabled, value, goClick }: UserCardParams) {
   const { token, userId, setCollectionToChange, setItemIdToChange, setUpdate } = useAuthData();
-  const { setRequestModal, setRequestModalAction } = useAuthUI();
+  const { setRequestModal, setRequestModalAction, setChatActived, setChatDataUser } = useAuthUI();
   const { screenNarrow, setMessageModal } = useUI();
   const [itemReviewMenu, setItemReviewMenu] = useState('overview');
-
+  const [isRequestContactAccepted, setIsRequestContactAccepted] = useState(false);
+  const [isGoClickDisabled, setIsGoClickDisabled] = useState(true);
+  const [goClickTitle, setGoClickTitle] = useState('');
 
   const requestTalentData = [
     { key: 'Required talent', value: data?.job_category },
@@ -65,7 +72,7 @@ export default function UserCard({ data, userCardType, requestMenu, listHover,
     { key: 'Rates', value: data?.rates },
     { key: 'Profile score', value: data?.profile_score },
 
-    
+
   ];
 
   const buttonsEditDeleteRequest = [
@@ -118,10 +125,9 @@ export default function UserCard({ data, userCardType, requestMenu, listHover,
   const dataModule: any = {
     'talent request': requestTalentData,
     'job request': requestJobData,
-    'candidates': candidateData,
     'offers': requestTalentData,
+    'candidates': candidateData,
     'candidate review': candidateData,
-    'offer review': requestTalentData,
   };
 
   const collectionModule: any = {
@@ -132,7 +138,7 @@ export default function UserCard({ data, userCardType, requestMenu, listHover,
   const dataToRender = dataModule[userCardType];
   const activedCollection = collectionModule[userCardType];
   const isCardTypeSubmitted = userCardType === 'talent request' || userCardType === 'job request';
-  const isRequestMenuReview = requestMenu === 'candidate review' || requestMenu === 'offer review';
+  const isRequestMenuReview = requestMenu === 'candidate review';
   const isEditDeleteButton = isCardTypeSubmitted && (listHover && (itemHover === indexCard));
 
   const candidateReviewMenu = [
@@ -147,10 +153,104 @@ export default function UserCard({ data, userCardType, requestMenu, listHover,
   ];
 
   useEffect(() => {
-    if (requestMenu === 'offers review') {
-      console.log(`Data: `, data)
-      console.log(`Data user id: `, data.user_id)
-      console.log(`Offer to render: `, dataToRender);
+    if (requestMenu === 'candidate review') {
+      let requestJobId = data.request_job_id;
+      userDataHandlerFunction({
+        token: token as string,
+        userId: userId as string,
+        action: 'get-request-contact-accepted',
+        collectionName: 'notifications',
+        data: requestJobId,
+        onSuccess: (responseData: any) => {
+          let isOfferAccepted = responseData.length !== 0;
+          setIsRequestContactAccepted(isOfferAccepted);
+        },
+        onError: (error: any) => console.error(error)
+      });
+    }
+  }, [token, userId, requestMenu]);
+
+  useEffect(() => {
+    let disabled = true;
+    let title = '';
+    switch (requestMenu) {
+      case 'talent submitted':
+        disabled = goClickCondition;
+        title = goClickCondition ? 'Awaiting candidates' : 'Candidates';
+        break;
+      case 'job submitted':
+        disabled = goClickCondition;
+        title = goClickCondition ? 'Awaiting offers' : 'Offers';
+        break;
+      case 'candidates':
+        disabled = false;
+        title = 'Review';
+        break;
+      case 'offers':
+        disabled = false;
+        title = goClickCondition ? 'Chat' : 'Acceptance';
+        break;
+      case 'candidate review':
+        if (goClickCondition) {
+          disabled = !isRequestContactAccepted;
+          title = isRequestContactAccepted ? 'Chat' : 'Contacting';
+        }
+        else {
+          disabled = false;
+          title = 'Contact';
+        }
+        break;
+      default:
+        //disabled = true; // or some default value
+        //title = ''; // or some default value
+        break;
+    };
+    setIsGoClickDisabled(disabled);
+    setGoClickTitle(title);
+  }, [requestMenu, goClickCondition, isRequestContactAccepted]);
+
+
+
+  const goToClick: any = () => {
+    switch (requestMenu) {
+      case 'candidates':
+        return goClick(data.user_id);
+      case 'offers':
+        if (goClickTitle === 'Chat') {
+          let dataUser: DataUser = {
+            user_id: data?.user_id,
+            user_name: data?.full_name,
+            user_image: data?.profile_image
+          };
+          setChatDataUser(dataUser);
+          setChatActived(true);
+        }
+        else {
+          return goClick(data.user_id);
+        }
+        break;
+      case 'candidate review':
+        if (goClickTitle === 'Chat') {
+          let dataUser: DataUser = {
+            user_id: data?.user_id,
+            user_name: data?.full_name,
+            user_image: data?.profile_image
+          };
+          setChatDataUser(dataUser);
+          setChatActived(true);
+        }
+        else {
+          return goClick(data.request_job_id);
+        }
+        break;
+      default:
+        return goClick(value);
+    }
+  }
+
+  useEffect(() => {
+    if (requestMenu === 'offers') {
+      console.log('data offer acepted: ', data)
     }
   }, [requestMenu])
 
@@ -235,26 +335,19 @@ export default function UserCard({ data, userCardType, requestMenu, listHover,
             <button
               id='button-go-to'
               className={
-                `${goClickCondition ? 'bg-slate-400 bg-opacity-40'
+                `${isGoClickDisabled ? 'bg-slate-400 bg-opacity-40'
                   : 'bg-green-400 hover:bg-green-500 bg-opacity-40 hover:bg-opacity-100'
                 } w-full px-4 py-2 flex flex-row justify-center items-center rounded-lg font-semibold transition-all`}
-              disabled={goClickCondition === true ? true : false}
-              //value={(requestMenu === 'candidates' || requestMenu === 'offers') ? data.user_id : value}
-              onClick={() => {
-                goClick(
-                  (requestMenu === 'candidates' || requestMenu === 'offers') ? data.user_id
-                    : requestMenu === 'candidate review' ? data.request_job_id
-                      : requestMenu === 'offer review' ? data.request_talent_id : value
-                )
-              }}
+              disabled={isGoClickDisabled}
+              onClick={() => goToClick()}
             >
               <h4 className="h-4 text-color-text-clear text-[14px] flex flex-row items-center">
-                {goClickCondition ? goClickTitleDisabled : goClickTitleEnabled}
+                {goClickTitle}
               </h4>
             </button>
           </div>
         </div>
-      </div >
+      </div>
       {
         /**submenu: overview, experience, education, courses, ... */
         isRequestMenuReview &&

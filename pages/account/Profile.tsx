@@ -3,7 +3,6 @@ import { useAuthData, useAuthUI } from "../../context/authContext";
 import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
 import ProfileSectionCard from './ProfileSectionCard';
 import ProfileDashboard from './ProfileDashboard';
-import axios from 'axios';
 
 
 
@@ -97,8 +96,8 @@ export default function Profile() {
           action: 'get',
           collectionName: collectionName,
           data: '',
-          onSuccess: (data: any) => {
-            updateSectionData(collectionName, data);
+          onSuccess: (responseData: any) => {
+            updateSectionData(collectionName, responseData);
           },
           onError: (error: any) => console.error(error)
         });
@@ -179,29 +178,15 @@ export default function Profile() {
 
 
   const userScoreUpdate = async (score: any) => {
-    const config = {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    };
-
-    try {
-      const response = await axios.post('/api/userApi',
-        {
-          id: userId,
-          collectionName: 'profile_score',
-          action: 'edit',
-          data: { profile_score: score },
-        },
-        config
-      );
-    }
-    catch (error: any) {
-      if (error.response) {
-        let statusError = error.response.status;
-        let messageError = error.response.data.message;
-      }
-    }
+    userDataHandlerFunction({
+      token: token as string,
+      userId: userId as string,
+      action: 'edit',
+      collectionName: 'profile_score',
+      data: { profile_score: score },
+      onSuccess: (responseData: any) => { },
+      onError: (error: any) => console.error(error)
+    });
   };
 
   const isDashboard = accountModule === 'Dashboard';

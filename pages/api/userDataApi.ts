@@ -5,150 +5,98 @@ import dbConnect from "../../lib/mongodb";
 import { v4 as uuidv4 } from 'uuid';
 
 const cors = initMiddleware(
-  Cors({
-    methods: ['POST', 'GET', 'PUT', 'PATCH'],
-  })
+  Cors({ methods: ['POST', 'GET', 'PUT', 'PATCH'] })
 );
 
-
-const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-const today = new Date();
-const month = months[today.getMonth()];
-const dayOfMonth = today.getDate();
-const year = today.getFullYear();
-const dateString = `${month} ${dayOfMonth}, ${year}`;
+function getTodayDateString() {
+  const today = new Date();
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  return `${months[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}`;
+}
 
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+
+  await cors(req, res);
+  const { db } = await dbConnect();
+
   try {
-    await cors(req, res);
     const { id, collectionName, action, data } = req.body;
-    const { db } = await dbConnect();
     const collection = db?.collection(collectionName);
 
-    let personalInfoCollection: any;
     let profileImageCollection: any;
-    let requestCollection: any;
-    let notificationCollection: any;
+    let personalInfoCollection: any;
     let profileScoreCollection: any;
-    let notificationRequestContact;
-    let addition;
-    let allDataAdd;
-    let notificationToUser: any;
-    let requestTalentId: string;
-    let notificationRequestTalentIds;
-    let notificationToUserId;
-    let requestContact;
-    let requestContactToUserId;
-    let acceptanceOffer;
-    let acceptedOfferFromUserId;
-    let notificationsToUser;
-    let notificationsRequestContact;
-    let notificationsToRequestJobId;
-    let notificationsFromUserId: any;
-    let notificationFromUserId: any;
-    let notificationId: any;
-    let notificationsToUserId;
-    let notificationsResponse;
-    let requestTalentUserIds;
+    let requestCollection: any;
     let userInfoPromises: any;
-    let actionResponse: any;
-    let requestContactUserIds;
-    let notificationsAcceptedOffers;
+    let notificationsToUserId;
+    let notificationsFromUserId;
+    let notificationsRequestContact: any;
+    let notificationsOfferAcceptance: any;
 
     switch (action) {
       case 'post':
-        if (collectionName === 'personal_info') {
-          addition = await collection?.insertOne({
-            _id: id,
-            ...data
-          });
-
-          if (addition) {
-            allDataAdd = await collection?.find({ _id: id });
-            return res.status(200).json({
-              status: 'success',
-              actionResponse: allDataAdd
-            });
-          }
-          else {
-            return res.status(404).json({ error: 'User not found' });
-          }
+        let postData;
+        switch (collectionName) {
+          case 'personal_info':
+            postData = await collection?.insertOne({ _id: id, ...data });
+            break;
+          case 'notifications':
+            postData = await collection?.insertOne({ created_at: getTodayDateString(), _id: uuidv4(), to_user_id: id, ...data });
+            break;
+          default:
+            postData = await collection?.insertOne({ created_at: getTodayDateString(), _id: uuidv4(), user_id: id, ...data });
+            break;
         }
-        else if (collectionName === 'notifications') {
-          addition = await collection?.insertOne({
-            created_at: dateString,
-            _id: uuidv4(),
-            to_user_id: id,
-            ...data
-          });
-          if (addition.insertedId) {
-            return res.status(200).json({
-              status: 'success',
-              insertedId: addition.insertedId
-            });
-          }
-          else {
-            return res.status(404).json({ error: 'User not found' });
-          }
+        if (postData) {
+          return res.status(200).json({ status: 'success' });
         }
         else {
-          addition = await collection?.insertOne({
-            created_at: dateString,
-            _id: uuidv4(),
-            user_id: id,
-            ...data
-          });
-
-          if (addition) {
-            allDataAdd = await collection?.find({ user_id: id }).toArray();
-            return res.status(200).json({
-              status: 'success',
-              actionResponse: allDataAdd
-            });
-          }
-          else {
-            return res.status(404).json({ error: 'User not found' });
-          }
+          return res.status(404).json({ error: 'Post failed' });
         }
         break;
 
       case 'get':
         let getData;
-        if (collectionName === 'personal_info' || collectionName === 'profile_image') {
-          getData = await collection?.findOne({ _id: id as any });
-        }
-        else {
-          getData = await collection?.find({ user_id: id }).toArray();
-        }
-
+        switch (collectionName) {
+          case 'personal_info':
+          case 'profile_image':
+            getData = await collection?.findOne({ _id: id as any });
+            break;
+          case 'notifications':
+            getData = await collection?.find({ to_user_id: id }).toArray();
+            break;
+          default:
+            getData = await collection?.find({ user_id: id }).toArray();
+            break;
+        };
         if (getData) {
           return res.status(200).json({
             status: 'success',
-            actionResponse: getData
+            responseData: getData
           });
         }
         break;
 
-      case 'get-notifications':
-        notificationToUser = await collection?.find({ to_user_id: id }).toArray();
-
-        return res.status(200).json({
-          status: 'success',
-          notificationsResponse: notificationToUser
-        });
-
+      case 'get-one-request':
+        let getOneRequest = await collection?.findOne({ _id: data as any });
+        if (getOneRequest) {
+          return res.status(200).json({
+            status: 'success',
+            responseData: getOneRequest
+          });
+        }
         break;
 
       case 'get-candidates':
         let keyword = data;
+        let requestMatch = await collection?.find({ talent_category: keyword }).toArray();
+        let candidatesUserIds = requestMatch?.map((request: any) => request.user_id);
         profileImageCollection = db?.collection('profile_image');
         personalInfoCollection = db?.collection('personal_info');
         profileScoreCollection = db?.collection('profile_score');
-        const requestMatch = await collection?.find({ talent_category: keyword }).toArray();
-        const candidatesUserIds = requestMatch?.map((request: any) => request.user_id);
-        
+
         userInfoPromises = candidatesUserIds.map(async (userId: any) => {
           const [profileImage, personalInfo, profileScore, requestInfo] = await Promise.all([
             profileImageCollection?.findOne({ _id: userId }),
@@ -174,41 +122,41 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           };
         });
 
-        actionResponse = await Promise.all(userInfoPromises);
+        let getCandidates = await Promise.all(userInfoPromises);
 
         //userInfo = userInfo.sort((a, b) => a.user_id.localeCompare(b.user_id));
 
         return res.status(200).json({
           status: 'success',
-          actionResponse
+          responseData: getCandidates
         });
         break;
 
       case 'get-contacting-candidates-ids':
-        requestTalentId = data;
+        let requestTalentId = data;
         notificationsFromUserId = await collection?.find({ from_user_id: id }).toArray();
-        notificationRequestContact = notificationsFromUserId?.filter((notification: any) => notification.notification_type === 'request contact');
-        notificationRequestTalentIds = notificationRequestContact?.filter((notification: any) => notification.from_request_id === requestTalentId);
-        notificationToUserId = notificationRequestTalentIds?.map((notification: any) => ({ to_user_id: notification.to_user_id }));
+        notificationsRequestContact = notificationsFromUserId?.filter((notification: any) => notification.notification_type === 'request contact');
+        let notificationRequestTalentIds = notificationsRequestContact?.filter((notification: any) => notification.from_request_id === requestTalentId);
+        let contactingCandidatesIds = notificationRequestTalentIds?.map((notification: any) => ({ to_user_id: notification.to_user_id }));
 
-        if (notificationToUserId) {
+        if (contactingCandidatesIds) {
           return res.status(200).json({
             status: 'success',
-            actionResponse: notificationToUserId
+            responseData: contactingCandidatesIds
           });
         }
         break;
 
       case 'get-offers':
-        requestCollection = db?.collection('request_talent');
+        notificationsToUserId = await collection?.find({ to_user_id: id }).toArray();
+        notificationsRequestContact = notificationsToUserId?.filter((notification) => notification.notification_type === 'request contact');
+        let notificationsToRequestJobId = notificationsRequestContact?.filter((notification: any) => notification.to_request_id === data);
+        let requestContactUserIds = notificationsToRequestJobId?.map((notification: any) => notification.from_user_id);
         profileImageCollection = db?.collection('profile_image');
         personalInfoCollection = db?.collection('personal_info');
-        notificationsToUser = await collection?.find({ to_user_id: id }).toArray();
-        notificationsRequestContact = notificationsToUser?.filter((notification) => notification.notification_type === 'request contact');
-        notificationsToRequestJobId = notificationsRequestContact?.filter((notification) => notification.to_request_id === data);
-        requestContactUserIds = notificationsToRequestJobId?.map((notification) => notification.from_user_id);
+        requestCollection = db?.collection('request_talent');
 
-        userInfoPromises = requestContactUserIds.map(async userId => {
+        userInfoPromises = requestContactUserIds.map(async (userId: any) => {
           const [profileImage, personalInfo, requestInfo] = await Promise.all([
             profileImageCollection?.findOne({ _id: userId }),
             personalInfoCollection?.findOne({ _id: userId }),
@@ -232,25 +180,40 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           };
         });
 
-        actionResponse = await Promise.all(userInfoPromises);
+        let getOffers = await Promise.all(userInfoPromises);
 
         //userInfo = userInfo.sort((a, b) => a.user_id.localeCompare(b.user_id));
 
         return res.status(200).json({
           status: 'success',
-          actionResponse
+          responseData: getOffers
         });
         break;
 
       case 'get-offers-accepted':
         notificationsFromUserId = await collection?.find({ from_user_id: id }).toArray();
-        notificationsAcceptedOffers = notificationsFromUserId?.filter((notification: any) => notification.notification_type === 'offer acceptance');
-        let acceptedOfferToUserId = notificationsAcceptedOffers?.map((notification: any) => notification.to_user_id);
+        let notificationsAcceptedOffers = notificationsFromUserId?.filter((notification: any) => notification.notification_type === 'offer acceptance');
+        let getOffersAccepted = notificationsAcceptedOffers?.filter((notification: any) => notification.from_request_id === data);
+        //let getOffersAcceptedId = getOffersAccepted?.map((notification: any) => notification.to_user_id);
 
-        if (acceptedOfferFromUserId) {
+        if (getOffersAccepted) {
           return res.status(200).json({
             status: 'success',
-            actionResponse: acceptedOfferFromUserId
+            responseData: getOffersAccepted
+          });
+        }
+        break;
+
+      case 'get-request-contact-accepted':
+        let requestJobId = data;
+        notificationsToUserId = await collection?.find({ to_user_id: id }).toArray();
+        notificationsOfferAcceptance = notificationsToUserId?.filter((notification: any) => notification.notification_type === 'offer acceptance');
+        let offerAcceptanceFromRequestJobId = notificationsOfferAcceptance?.filter((notification: any) => notification.from_request_id === requestJobId);
+        
+        if (offerAcceptanceFromRequestJobId) {
+          return res.status(200).json({
+            status: 'success',
+            responseData: offerAcceptanceFromRequestJobId
           });
         }
         break;
@@ -265,7 +228,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (edition?.value) {
           return res.status(200).json({
             status: 'success',
-            actionResponse: edition.value
+            responseData: edition.value
           });
         }
         else {
@@ -283,7 +246,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (requestEdition?.value) {
           return res.status(200).json({
             status: 'success',
-            actionResponse: requestEdition.value
+            responseData: requestEdition.value
           });
         }
         else {
@@ -301,7 +264,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (notificationEdition?.value) {
           return res.status(200).json({
             status: 'success',
-            actionResponse: notificationEdition.value
+            responseData: notificationEdition.value
           });
         }
         else {
@@ -317,8 +280,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (deleted?.value) {
           return res.status(200).json({
             status: 'success',
-            message: 'Your information was successfully deleted',
-            deletedDocument: deleted.value // optional, include if useful
+            responseData: 'Your information was successfully deleted',
           });
         }
         else {

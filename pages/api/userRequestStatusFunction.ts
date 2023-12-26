@@ -27,11 +27,10 @@ export const userRequestStatusFunction = async ({ token, userId, collectionName,
       data: action === 'get' ? '' : statusRequest
     }, config);
 
-    const { status, actionResponse } = response.data;
+    const { status, responseData } = response.data;
     if (status === 'success' && onSuccess) {
-      const statusRequest = actionResponse[0].status;
+      const statusRequest = responseData[0].status;
       onSuccess(statusRequest);
-      console.log('StatusRequest: ', statusRequest)
     }
     else if (onError) {
       onError(new Error('Failed to fetch data'));

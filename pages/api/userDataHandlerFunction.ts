@@ -37,14 +37,20 @@ export const userDataHandlerFunction = async ({
   try {
     const response = await axios.post('/api/userDataApi', {
       id: userId,
-      collectionName,
-      action,
-      data
+      collectionName: collectionName,
+      action: action,
+      data: data
     }, config);
 
-    const { status, actionResponse } = response.data;
+    const { status } = response.data;
     if (status === 'success' && onSuccess) {
-      onSuccess(actionResponse);
+      if (action === 'post') {
+        onSuccess(status);
+      }
+      else {
+        const { responseData } = response.data;
+        onSuccess(responseData);
+      }
     }
     else if (onError) {
       onError(new Error('Data handling failed'));
@@ -54,7 +60,6 @@ export const userDataHandlerFunction = async ({
     }
   }
   catch (error) {
-    console.error('Data handling error occurred:', error);
     if (onError) {
       onError(error);
     }

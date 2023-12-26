@@ -21,34 +21,24 @@ export default function ProfilePersonalInfoCard() {
 
 
   const fetchData = async (collection: string) => {
-    const config = {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    };
-    try {
-      const response = await axios.post('/api/userDataApi',
-        {
-          id: userId,
-          collectionName: collection,
-          action: 'get',
-          data: ''
-        },
-        config
-      );
-      const { status, actionResponse } = response.data;
-      if (status === 'success') {
+
+    
+    userDataHandlerFunction({
+      token: token as string,
+      userId: userId as string,
+      action: 'get',
+      collectionName: collection,
+      data: '',
+      onSuccess: (responseData: any) => {
         if (collection === 'personal_info') {
-          setUserProfilePersonalInfo(actionResponse);
+          setUserProfilePersonalInfo(responseData);
         }
         else if (collection === 'profile_image') {
-          setUserProfileImage(actionResponse.image_url);
+          setUserProfileImage(responseData.image_url);
         }
-      }
-    }
-    catch (error: any) {
-      console.log('An error occurred fetch data: ', error);
-    }
+      },
+      onError: (error: any) => console.error(error)
+    });
   };
 
   useEffect(() => {

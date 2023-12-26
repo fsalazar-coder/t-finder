@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
-import FormTemplate from './FormTemplate';
-import { IconCancel } from '../../icons/icons';
-import ProfileModalImage from './ProfileModalImage';
-import axios from 'axios';
 import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
+import { IconCancel } from '../../icons/icons';
+import FormTemplate from './FormTemplate';
+import ProfileModalImage from './ProfileModalImage';
 
 const initialProfileInfo = {
   /**personal information: */
@@ -58,18 +57,7 @@ const initialProfileInfo = {
 
 export default function ProfileModal() {
 
-  const {
-    token, userId,
-    userProfilePersonalInfo, setUserProfilePersonalInfo,
-    userProfileExperience, setUserProfileExperience,
-    userProfileEducation, setUserProfileEducation,
-    userProfileCourses, setUserProfileCourses,
-    userProfileProjects, setUserProfileProjects,
-    userProfilePublications, setUserProfilePublications,
-    userProfileConferences, setUserProfileConferences,
-    userProfileCertifications, setUserProfileCertifications,
-    userProfileRecommendations, setUserProfileRecommendations,
-    collectionToChange, setCollectionToChange, itemIdToChange, setUpdate } = useAuthData();
+  const { token, userId, collectionToChange, setCollectionToChange, itemIdToChange, setUpdate } = useAuthData();
   const { profileModal, setProfileModal, setProfileModalType, profileModalAction, setProfileModalAction } = useAuthUI();
   const { setMessageModal, setLoading } = useUI();
   const [filledForm, setFilledForm] = useState(true);
@@ -222,87 +210,35 @@ export default function ProfileModal() {
     return dataToApi;
   };
 
-  const setUserProfile = (userProfile: string, data: any) => {
-    switch (userProfile) {
-      case 'personal_info':
-        return setUserProfilePersonalInfo(data);
-      case 'experience':
-        return setUserProfileExperience(data);
-      case 'education':
-        return setUserProfileEducation(data);
-      case 'courses':
-        return setUserProfileCourses(data);
-      case 'projects':
-        return setUserProfileProjects(data);
-      case 'publications':
-        return setUserProfilePublications(data);
-      case 'conferences':
-        return setUserProfileConferences(data);
-      case 'certifications':
-        return setUserProfileCertifications(data);
-      case 'recommendations':
-        return setUserProfileRecommendations(data);
-      default:
-        break;
-    }
-  }
-
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setProfileModal(false);
     setFilledForm(false);
 
-    
-
-
-
-    const config = {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    };
+    const actionUserId: any = isPersonalInfo || isPostAction ? userId : itemIdToChange;
+    const textMessage = `Your information has been ${profileModalAction === 'post' ? 'posted' : 'updated'}.`;
 
     try {
-      const response = await axios.post('/api/userDataApi',
-        {
-          id: isPersonalInfo || isPostAction ? userId : itemIdToChange,
-          collectionName: collectionToChange,
-          action: profileModalAction,
-          data: dataUpdate(),
+      await userDataHandlerFunction({
+        token: token as string,
+        userId: actionUserId,
+        action: profileModalAction,
+        collectionName: collectionToChange,
+        data: dataUpdate(),
+        onSuccess: () => {
+          setUpdate(collectionToChange);
+          setMessageModal([{
+            type: 'successful',
+            text: textMessage,
+            click: () => setMessageModal([])
+          }]);
         },
-        config
-      );
-      const { status, actionResponse } = response.data;
-      if (status === 'success') {
-        setUserProfile(collectionToChange, actionResponse);
-        setUpdate(collectionToChange);
-        setMessageModal([{
-          type: 'successful',
-          text: `Your information have been ${profileModalAction === 'post' ? 'posted' : 'uploaded'}`,
-          click: () => setMessageModal([])
-        }]);
-      }
+        onError: (error: any) => console.error(error)
+      });
     }
-    catch (error: any) {
-      if (error.response) {
-        let statusError = error.response.status;
-        let messageError = error.response.data.message;
-        let errorText;
-        switch (statusError) {
-          case 404:
-            errorText = messageError || 'User not found';
-            break;
-          default:
-            errorText = 'An unexpected error occurred.';
-            break
-        }
-        setMessageModal([{
-          type: 'error',
-          text: errorText,
-          click: () => setMessageModal([])
-        }]);
-      }
+    catch (error) {
+      console.error('Error in handleSubmit (Modal-profile):', error);
     }
     finally {
       setLoading(false);
@@ -311,6 +247,7 @@ export default function ProfileModal() {
       setProfileInfo(initialProfileInfo);
     }
   };
+
 
   const modal = [
     {

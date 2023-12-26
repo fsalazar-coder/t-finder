@@ -22,11 +22,14 @@ export default function CardsDisplayer({
   const { accountModule } = useAuthUI();
   const [itemHover, setItemHover] = useState(null);
   const [listHover, setListHover] = useState(false);
+  const [dataToCompareUpdated, setDataToCompareUpdated] = useState(dataToCompare);
 
   const isDashboard = accountModule === 'Dashboard';
-  //const shouldRenderData = dataToRender && Object.keys(dataToRender).length > 0;
   const shouldRenderData = Array.isArray(dataToRender) && dataToRender.length > 0;
 
+  useEffect(() => {
+    setDataToCompareUpdated(dataToCompare)
+  }, [dataToCompare])
 
 
   return (
@@ -45,7 +48,8 @@ export default function CardsDisplayer({
             <ul className='w-full flex flex-col'>
               {
                 dataToRender?.map((element: any, index: any) => {
-                  const changeId = (requestMenu === 'candidate review' || requestMenu === 'offer review') ? element.user_id : element._id
+
+                  const changeId = (requestMenu === 'candidate review' || requestMenu === 'offers') ? element.user_id : element._id;
 
                   return (
                     <li key={`${changeId}-${index}`}
@@ -58,14 +62,14 @@ export default function CardsDisplayer({
                     >
                       <div className="w-full px-5 py-3 flex flex-col bg-color-clear border border-color-border-clear shadow-md rounded-lg transform transition-all">
                         <UserCard
-                          key={`changeId-${index}`}   
+                          key={`changeId-${index}`}
                           data={element}
                           indexCard={index}
                           listHover={listHover}
                           itemHover={itemHover}
                           userCardType={cardsDisplayerType}
                           requestMenu={requestMenu}
-                          goClickCondition={dataToCompare.includes(changeId)}
+                          goClickCondition={dataToCompareUpdated?.includes(changeId)}
                           goClickTitleEnabled={goClickTitleEnabled}
                           goClickTitleDisabled={goClickTitleDisabled}
                           value={changeId}

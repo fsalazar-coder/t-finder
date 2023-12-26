@@ -598,6 +598,9 @@ export const IconCancel = () => {
       <svg
         viewBox="0 0 470 1000"
         fill="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={4}
         height="1em"
         width="1em"
       >
@@ -647,6 +650,30 @@ export const IconCheckLg = () => {
     </div>
   )
 }
+
+
+
+export const IconBxChevronUp = () => {
+  return (
+    <div
+      className='icons-container'
+    >
+      <svg
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={4}
+        viewBox="0 0 24 24"
+        height="1em"
+        width="1em"
+      >
+        <path d="M18 15l-6-6-6 6" />
+      </svg>
+    </div>
+  )
+}
+
 
 export const IconBxChevronLeft = () => {
   return (

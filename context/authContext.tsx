@@ -63,10 +63,20 @@ interface AuthUIContextProps {
   setRequestModal: React.Dispatch<React.SetStateAction<string>>;
   requestModalAction: string;
   setRequestModalAction: React.Dispatch<React.SetStateAction<string>>;
+  chatActived: boolean;
+  setChatActived: React.Dispatch<React.SetStateAction<boolean>>;
+  chatDataUser: {};
+  setChatDataUser: React.Dispatch<React.SetStateAction<{} | {}>>;
 }
 
 interface Id {
   id: string;
+}
+
+interface ChatDataUser {
+  user_id: string,
+  user_name: string,
+  user_image: string,
 }
 
 interface UserProfilePersonalInfo {
@@ -231,6 +241,8 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   const [requestModalAction, setRequestModalAction] = useState<string>('');
   const [collectionToChange, setCollectionToChange] = useState<string>('');
   const [itemIdToChange, setItemIdToChange] = useState<string>('');
+  const [chatActived, setChatActived] = useState<boolean>(false);
+  const [chatDataUser, setChatDataUser] = useState<object>({}); 
   const [update, setUpdate] = useState<string>('')
 
   const logout = () => {
@@ -290,6 +302,8 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
         profileModalType, setProfileModalType,
         requestModal, setRequestModal,
         requestModalAction, setRequestModalAction,
+        chatActived, setChatActived,
+        chatDataUser, setChatDataUser,
       }}>
         {children}
       </AuthUIContext.Provider>

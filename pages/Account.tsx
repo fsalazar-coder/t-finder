@@ -19,6 +19,7 @@ import {
   IconInstagram,
   IconTwitter
 } from '../icons/icons';
+import ChatCard from "./account/ChatCard";
 
 // Define a type for the modules object
 type ModuleComponents = {
@@ -122,8 +123,9 @@ export default function Account() {
 
       <RequestModal />
 
-      {/**message modal: successful, error, question, delete and logout */}
       <MessageModal />
+      
+      <ChatCard />
     </main>
   )
 }

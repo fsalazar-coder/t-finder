@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
-import SectionTitles from '../components/SectionTitles';
 import NotificationsCardsDisplayer from './NotificationsCardsDisplayer';
-import axios from 'axios';
+import SectionTitles from '../components/SectionTitles';
+import { IconBxChevronLeft } from '@/icons/icons';
 
 
-export default function Notifications(props: any) {
+
+export default function Notifications() {
   const { token, userId, update, setUpdate } = useAuthData();
   const { accountModule, setAccountModule } = useAuthUI();
   const { screenNarrow, setMessageModal } = useUI();
@@ -14,37 +15,18 @@ export default function Notifications(props: any) {
   const [notificationsData, setNotificationsData] = useState([]);
   const [notifications, setNotifications] = useState([]);
 
-
-
   useEffect(() => {
     if (accountModule === 'Dashboard' || accountModule === 'Notifications') {
-      const handleNotifications = async () => {
-        const config = {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        };
-
-        try {
-          const response = await axios.post('/api/userDataApi', {
-            id: userId,
-            collectionName: 'notifications',
-            action: 'get-notifications',
-            data: ''
-          }, config);
-
-          const { status, notificationsResponse } = response.data;
-          if (status === 'success') {
-            setNotificationsData(notificationsResponse);
-          }
-        }
-        catch {
-          (error: any) => console.log(error)
-        }
-      };
-
-      handleNotifications()
-    }
+      userDataHandlerFunction({
+        token: token as string,
+        userId: userId as string,
+        action: 'get',
+        collectionName: 'notifications',
+        data: '',
+        onSuccess: (responseData: any) => setNotificationsData(responseData),
+        onError: (error: any) => console.error(error)
+      });
+    };
   }, [token, userId, accountModule]);
 
 
@@ -77,14 +59,38 @@ export default function Notifications(props: any) {
               });
             });
 
-            return {
+            let requestCollectionName = notification?.notification_type === 'request contact' ?
+              'request_talent' : notification?.notification_type === 'offer acceptance' && 'request_job';
+
+            let notificationFromRequestId: string = notification.from_request_id;
+
+            const requestInfoResponse: any = await new Promise((resolve, reject) => {
+              userDataHandlerFunction({
+                token: token as string,
+                userId: notification.from_user_id as string,
+                action: 'get-one-request',
+                collectionName: requestCollectionName as string,
+                data: notificationFromRequestId,
+                onSuccess: resolve,
+                onError: reject
+              });
+            });
+
+            let notificationInfo = {
               _id: notification._id,
+              created_date: notification.created_at,
               notification_type: notification.notification_type,
+              user_id: personalInfoResponse._id,
               profile_image: profileImageResponse.image_url,
               full_name: personalInfoResponse.full_name,
-              message: notification.message,
-              created_date: notification.created_at
+              company_info: requestInfoResponse.company_info,
+              company_location: requestInfoResponse.location,
+              company_job_title: requestInfoResponse.job_title,
+              candidate_location: requestInfoResponse.location,
+              candidate_talent_category: requestInfoResponse.talent_category
             };
+
+            return notificationInfo
           }
           catch (error) {
             console.error('Error fetching data for notification:', notification._id, error);
@@ -93,7 +99,6 @@ export default function Notifications(props: any) {
         });
 
         const newNotifications: any = await Promise.all(notificationsPromises);
-        //console.log('New notifications: ', newNotifications)
         setNotifications(newNotifications)
       };
 
@@ -119,20 +124,19 @@ export default function Notifications(props: any) {
           `${isDashboard ? 'border-b' : 'bg-color-clear border shadow-md rounded-lg'
           } w-full px-5 py-1 flex justify-between flex-row items-center border-color-border-clear`
         }>
-          <div className='w-fit flex flex-row'>
-            <SectionTitles
-              sectionTitle={`Notifications`}
-              sectionType='account'
-            />
+          <div className='w-full flex flex-row justify-between items-center'>
+            <div className='w-2/3 flex flex-row items-center'>
+              <SectionTitles
+                sectionTitle={`Notifications`}
+                sectionType='account'
+              />
+            </div>
           </div>
         </div>
         <NotificationsCardsDisplayer
           dataToRender={notifications}
-          goClick={(goClickValue: string) => {
-            setAccountModule(goClickValue)
-          }}
         />
       </div>
-    </div>
+    </div >
   )
 }  

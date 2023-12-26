@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
+import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
 import { IconCancel } from '../../icons/icons';
 import FormTemplate from './FormTemplate';
-import axios from 'axios';
 
 
 
 export default function RequestModal(props: any) {
 
-  const { token, userId, setUserRequestTalent, setUserRequestJob, 
+  const { token, userId, setUserRequestTalent, setUserRequestJob,
     collectionToChange, itemIdToChange, setUpdate } = useAuthData();
   const { requestModal, setRequestModal, requestModalAction, setRequestModalAction } = useAuthUI();
   const { setMessageModal, setLoading } = useUI();
@@ -115,68 +115,31 @@ export default function RequestModal(props: any) {
     return dataToApi;
   };
 
-  const setUserRequest = (userRequest: string, data: any) => {
-    switch (userRequest) {
-      case 'request_talent':
-        return setUserRequestTalent(data);
-      case 'request_job':
-        return setUserRequestJob(data);
-      default:
-        break;
-    }
-  }
-
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-
-    
-    const config = {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    };
+    const actionUserId: any = requestModalAction === 'post' ? userId : itemIdToChange;
+    const textMessage = `Your request have been ${requestModalAction === 'post' ? 'posted' : 'uploaded'}`;
 
     try {
-      const response = await axios.post('/api/userDataApi',
-        {
-          id: requestModalAction === 'post' ? userId : itemIdToChange,
-          collectionName: collectionToChange,
-          action: requestModalAction,
-          data: dataUpdate(collectionToChange),
+      await userDataHandlerFunction({
+        token: token as string,
+        userId: actionUserId,
+        action: requestModalAction,
+        collectionName: collectionToChange,
+        data: dataUpdate(collectionToChange),
+        onSuccess: () => {
+          setUpdate(collectionToChange);
+          setMessageModal([{
+            type: 'successful',
+            text: textMessage,
+            click: () => setMessageModal([])
+          }]);
         },
-        config
-      );
-      const { status, actionResponse } = response.data;
-
-      if (status === 'success') {
-        setUserRequest(collectionToChange, actionResponse);
-        setUpdate(collectionToChange);
-        setMessageModal([{
-          type: 'successful',
-          text: `Your request have been ${requestModalAction === 'post' ? 'posted' : 'uploaded'}`,
-          click: () => setMessageModal([])
-        }]);
-      }
+        onError: (error: any) => console.error(error)
+      });
     }
-    catch (error: any) {
-      if (error.response) {
-        let statusError = error.response.status;
-        let messageError = error.response.data.message;
-        let errorText;
-        switch (statusError) {
-          case 404:
-            errorText = messageError || 'User not found';
-            break;
-          default:
-            errorText = 'An unexpected error occurred.';
-            break;
-        }
-        setMessageModal([{
-          type: 'error',
-          text: errorText,
-          click: () => setMessageModal([])
-        }]);
-      }
+    catch (error) {
+      console.error('Error in handleSubmit (Modal-profile):', error);
     }
     finally {
       setLoading(false);
@@ -338,7 +301,7 @@ export default function RequestModal(props: any) {
       onClick={(e: any) => handleCloseModal(e)}
     >
       <div
-        className={ 
+        className={
           `${screenNarrow ? 'h-[85%]' : 'h-[90%]'}
             ${showRequestModal ?
             'scale-100 animate-[zoom-in_0.50s]'

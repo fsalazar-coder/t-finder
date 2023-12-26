@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useAuthData, useUI } from "../../context/authContext";
-import axios from 'axios';
-import Image from 'next/image';
-import googleIcon from '../../public/images/google-icon.webp';
 import { IconCancel } from '../../icons/icons';
+import googleIcon from '../../public/images/google-icon.webp';
+import Image from 'next/image';
+import axios from 'axios';
 
 
 
