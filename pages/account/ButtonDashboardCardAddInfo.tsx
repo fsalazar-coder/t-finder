@@ -18,13 +18,13 @@ export default function ButtonDashboardCardAddInfo({ id, isDashboard, comment, c
         onClick={() => click()}
       >
         <i className={
-          `${isDashboard ? 'text-[8rem] text-color-text-quaternary lg:hover:text-green-200' :
-            'text-xl lg:text-2xl text-color-text-tertiary lg:hover:text-green-500'
-          } p-[2px] flex flex-row justify-center items-center bg-color-clear rounded-full cursor-default lg:cursor-pointer transition-all`
+          `${isDashboard ? 'text-[8rem] text-color-text-almost-clear lg:hover:text-green-200' :
+            'text-xl lg:text-2xl text-color-text-clear lg:hover:text-green-500'
+          } p-[2px] flex flex-row justify-center items-center rounded-full cursor-default lg:cursor-pointer transition-all`
         }>
           <IconAdd />
         </i>
-        <h3 className='pr-2 text-sm text-color-text-tertiary transition-all'>
+        <h3 className='pr-2 text-sm text-color-text-almost-clear transition-all'>
           {comment}
         </h3>
       </button>

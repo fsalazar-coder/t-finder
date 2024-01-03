@@ -11,7 +11,6 @@ import {
 
 export default function Testimonials(props: any) {
 
-
   const carouselRef: any = useRef(null);                                                 /***Carousel Ref.***/
   const { screenNarrow } = useUI();
   const [testimonyActiveIndex, setTestimonyActiveIndex] = useState(Number);              /***State testimony active index***/

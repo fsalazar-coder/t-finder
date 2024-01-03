@@ -37,7 +37,7 @@ export default function ImageIconUser({ size }: UserProfileImageParams) {
 
   return (
     userProfileImage ?
-      <div className='w-full h-full flex flex-col justify-center items-center bg-gradient-to-br from-slate-50 via-fuchsia-400 to-fuchsia-950 rounded-full z-20'>
+      <div className='w-full h-full flex flex-col justify-center items-center bg-gradient-to-br from-color-clear via-sky-400 to-sky-950 rounded-full z-20'>
         <Image
           className={`${imageClass} w-[95%] h-[95%] flex flex-col justify-center items-center rounded-full border-white`}
           width={800}
@@ -47,7 +47,7 @@ export default function ImageIconUser({ size }: UserProfileImageParams) {
         />
       </div>
       :
-      <i className={`${iconClass} w-full h-full text-slate-50 font-light flex flex-row justify-center items-center border border-slate-50 rounded-full transition-all`}>
+      <i className={`${iconClass} w-full h-full text-color-clear font-light flex flex-row justify-center items-center border border-color-border rounded-full transition-all`}>
         <IconUser />
       </i>
   )

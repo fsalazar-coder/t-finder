@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
+import CardsTitlesRequest from './CardsTitlesRequest';
 import RequestDashboard from './RequestDashboard';
-import SectionTitles from '../components/SectionTitles';
-import ButtonTitleMenuAddEdit from './ButtonTitleMenuAddEdit';
-import CardsDisplayer from './CardsDisplayer';
-import { IconBxChevronLeft } from '@/icons/icons';
+import CardsDisplayerRequest from './CardsDisplayerRequest';
+//import io from 'socket.io-client';
 
 interface Request {
   collection: string;
@@ -62,12 +61,13 @@ interface TalentData {
 
 interface RequestData {
   requestTalent: TalentData[];
-}
+};
+
 
 
 export default function Request({ requestType }: any) {
   const { token, userId, collectionToChange, setCollectionToChange,
-    update, setUpdate, talentRequestStatus, setTalentRequestStatus } = useAuthData();
+    update, setUpdate, talentRequestStatus, setTalentRequestStatus, socket } = useAuthData();
   const { accountModule, setAccountModule, setRequestModal, setRequestModalAction } = useAuthUI();
   const { screenNarrow, setMessageModal, setLoading } = useUI();
   const [listHover, setListHover] = useState(false);
@@ -80,13 +80,11 @@ export default function Request({ requestType }: any) {
   });
 
   const [candidates, setCandidates] = useState<CandidatesParams>({});
-  const [candidatesAvailables, setCandidatesAvailables] = useState<CandidatesParams>({});
   const [candidatesRequestTalentId, setCandidatesRequestTalentId] = useState('');
   const [candidatesToRender, setCandidatesToRender] = useState<any[]>([]);
   const [candidateToReview, setCandidateToReview] = useState<any[]>([]);
   const [candidateToReviewId, setCandidateToReviewId] = useState('');
   const [offers, setOffers] = useState<OffersParams>({});
-  const [offersAvailables, setOffersAvailables] = useState<OffersParams>({});
   const [offerRequestJobId, setOfferRequestJobId] = useState('');
   const [offersToRender, setOffersToRender] = useState<any[]>([]);
   const [offerToAcceptId, setOfferToAcceptId] = useState('');
@@ -94,52 +92,12 @@ export default function Request({ requestType }: any) {
   const [requestTalentIdFromOfferToAccept, setRequestTalentIdFromOfferToAccept] = useState<string>('');
 
   const [candidatesContacting, setCandidatesContacting] = useState<CandidatesContacting>({});
-  const [candidatesContactingUpdated, setCandidatesContactingUpdated] = useState<CandidatesContacting>(candidatesContacting);
   const [offersAccepted, setOffersAccepted] = useState<OffersAccepted>({});
-  const [offersAcceptedUpdated, setOffersAcceptedUpdated] = useState<OffersAccepted>(offersAccepted);
-
-
   const [goClickUpdate, setGoClickUpdate] = useState('');
-
-  const requests: any = [
-    {
-      id: 'Talent',
-      title: 'Talent request',
-      data: requestData.requestTalent,
-      collection: 'request_talent',
-      shouldRender: requestData.requestTalent.length > 0,
-      stepsProcess: [
-        { step: 'Submmission', render: requestData?.requestTalent?.length > 0 },
-        { step: 'Selecting', render: Object.keys(candidates).length > 0 },
-        { step: 'Contacting', render: true },
-        { step: 'Chating', render: true }
-      ]
-    },
-    {
-      id: 'Job',
-      title: 'Job request',
-      data: requestData.requestJob,
-      collection: 'request_job',
-      shouldRender: requestData.requestJob.length > 0,
-      stepsProcess: [
-        { step: 'Submmission', render: requestData?.requestJob?.length > 0 },
-        { step: 'Alerted', render: true },
-        { step: 'Acceptance', render: true },
-        { step: 'Chating', render: true }
-      ],
-    }
-  ];
-
-  const updateRequestData = (requestName: string, data: any) => {
-    setRequestData((prevData) => ({
-      ...prevData,
-      [requestName]: data
-    }));
-  };
 
   // Cargar los datos para todas las request
   useEffect(() => {
-    if (!update || update === collectionToChange) {
+    if (update === collectionToChange || accountModule === 'Talent' || accountModule === 'Job') {
       requests.forEach((request: Request) => {
         const collectionName = request.collection;
         userDataHandlerFunction({
@@ -160,7 +118,7 @@ export default function Request({ requestType }: any) {
         }
       });
     }
-  }, [token, userId, setUpdate, collectionToChange, setCollectionToChange]);
+  }, [token, userId, update, collectionToChange, accountModule]);
 
   // Arreglo con todos los candidatos disponibles para cada talent request //
   // y, Arreglo con todos los candidatos que están siendo contactados //
@@ -269,6 +227,69 @@ export default function Request({ requestType }: any) {
     }
   }, [offerToAcceptId]);
 
+  useEffect(() => {
+    if (requestMenu === 'offers' || requestMenu === 'candidates') {
+
+    }
+  }, [requestData, requestMenu]);
+
+  const updateRequestData = (requestName: string, data: any) => {
+    setRequestData((prevData) => ({
+      ...prevData,
+      [requestName]: data
+    }));
+  };
+
+  const requests: any = [
+    {
+      id: 'Talent',
+      title: 'Talent request',
+      data: requestData.requestTalent,
+      collection: 'request_talent',
+      shouldRender: requestData.requestTalent.length > 0,
+      stepsProcess: [
+        { step: 'Submmission', render: requestData?.requestTalent?.length > 0 },
+        { step: 'Selecting', render: Object.keys(candidates).length > 0 },
+        { step: 'Contacting', render: true },
+        { step: 'Chating', render: true }
+      ]
+    },
+    {
+      id: 'Job',
+      title: 'Job request',
+      data: requestData.requestJob,
+      collection: 'request_job',
+      shouldRender: requestData.requestJob.length > 0,
+      stepsProcess: [
+        { step: 'Submmission', render: requestData?.requestJob?.length > 0 },
+        { step: 'Alerted', render: true },
+        { step: 'Acceptance', render: true },
+        { step: 'Chating', render: true }
+      ],
+    }
+  ];
+
+  const requestBackButton: any = () => {
+    setListHover(false);
+    switch (requestMenu) {
+      case 'candidates':
+        setRequestMenu('talent submitted')
+        setCandidatesRequestTalentId('');
+        break;
+      case 'offers':
+        setRequestMenu('job submitted')
+        //setCandidatesRequestTalentId('');
+        break;
+      case 'offer review':
+        setRequestMenu('offers')
+        break;
+      case 'candidate review':
+        setRequestMenu('candidates')
+        break;
+      default:
+        break;
+    }
+  }
 
   const requestMenuTitles = [
     {
@@ -298,30 +319,8 @@ export default function Request({ requestType }: any) {
     }
   ];
 
-  const requestBackButton: any = () => {
-    setListHover(false);
-    switch (requestMenu) {
-      case 'candidates':
-        setRequestMenu('talent submitted')
-        setCandidatesRequestTalentId('');
-        break;
-      case 'offers':
-        setRequestMenu('job submitted')
-        //setCandidatesRequestTalentId('');
-        break;
-      case 'offer review':
-        setRequestMenu('offers')
-        break;
-      case 'candidate review':
-        setRequestMenu('candidates')
-        break;
-      default:
-        break;
-    }
-  }
-
-  const requestCardsDisplayer = [
-    {
+  const requestElements: any = {
+    'talent submitted': {
       id: 'submitted-talent-request',
       cardsDisplayerType: 'talent request',
       dataToRender: requestData.requestTalent,
@@ -335,7 +334,7 @@ export default function Request({ requestType }: any) {
         setCandidatesRequestTalentId(value)
       }
     },
-    {
+    'job submitted': {
       id: 'submitted-job-request',
       cardsDisplayerType: 'job request',
       dataToRender: requestData.requestJob,
@@ -349,7 +348,7 @@ export default function Request({ requestType }: any) {
         setOfferRequestJobId(value)
       }
     },
-    {
+    'offers': {
       id: 'offers-list-acceptance',
       cardsDisplayerType: 'offers',
       dataToRender: offersToRender,
@@ -385,6 +384,11 @@ export default function Request({ requestType }: any) {
                   text: `Your acceptance offer have been sent successful`,
                   click: () => setMessageModal([])
                 }]);
+                //webSocket notification:
+                socket?.emit('notification', {
+                  toUserId: value,
+                  message: 'notification update'
+                });
               },
               onError: (error: any) => console.error(error)
             });
@@ -394,7 +398,7 @@ export default function Request({ requestType }: any) {
         }])
       }
     },
-    {
+    'candidates': {
       id: 'candidates-list',
       cardsDisplayerType: 'candidates',
       dataToRender: candidatesToRender,
@@ -408,7 +412,7 @@ export default function Request({ requestType }: any) {
         setListHover(false)
       }
     },
-    {
+    'candidate review': {
       id: 'candidate-review',
       cardsDisplayerType: 'candidate review',
       dataToRender: candidateToReview,
@@ -441,6 +445,11 @@ export default function Request({ requestType }: any) {
                   text: `Your request contact have been sent successful`,
                   click: () => setMessageModal([])
                 }]);
+                //webSocket notification:
+                socket?.emit('notification', {
+                  toUserId: candidateToReviewId,
+                  message: 'notification update'
+                });
               },
               onError: (error: any) => console.error(error)
             });
@@ -450,7 +459,7 @@ export default function Request({ requestType }: any) {
         }])
       },
     }
-  ];
+  };
 
   const isDashboard = accountModule === 'Dashboard';
   const isRequest = requestType === 'Talent' ? requestData?.requestTalent?.length > 0 : requestData?.requestJob?.length > 0;
@@ -458,128 +467,55 @@ export default function Request({ requestType }: any) {
   const isCardTypeSubmitted = requestMenu === 'talent submitted' || requestMenu === 'job submitted';
   const isButtonBack = !isCardTypeSubmitted;
 
-
-  useEffect(() => {
-    if (requestMenu === 'offers' || requestMenu === 'candidates') {
-
-    }
-  }, [requestData, requestMenu])
+  const containerClassNames = `${isDashboard ? 'w-full h-full flex-col bg-white border border-color-border shadow-md rounded-lg'
+    : screenNarrow ? 'w-full flex-col px-1 py-12' : 'w-[52rem] px-2 lg:px-8 lg:py-9 flex-col'
+    } flex justify-between transition-all`;
 
 
   return (
     <div className={`${!isDashboard && 'pl-0 lg:pl-60'} w-full h-full flex flex-col items-center`}>
-      <div className={
-        `${isDashboard ? 'w-full h-full flex-col bg-color-clear border border-color-border-clear shadow-md rounded-lg'
-          : screenNarrow ? 'w-full flex-col px-1 py-12' : 'w-[52rem] px-2 lg:px-8 lg:py-9 flex-col'
-        } flex justify-between transition-all`
-      }
+      <div className={containerClassNames}
         onMouseEnter={() => setCardHover(true)}
         onMouseLeave={() => setCardHover(false)}
       >
-        {/**title */}
-        <div className={
-          `${isDashboard ? 'border-b' : 'bg-color-clear border shadow-md rounded-lg'
-          } w-full relative px-5 py-1 flex justify-between flex-row items-center border-color-border-clear`
-        }>
-          <div className='w-full flex flex-row justify-between items-center'>
-            <div className='w-2/3 flex flex-row items-center'>
-              <SectionTitles
-                sectionTitle={`${requestType} request`}
-                sectionType='account'
-              />
-              {
-                !isDashboard &&
-                /**submenu: submitted, candidates, offers, review and chat... */
-                <div className={`w-fit pl-5 flex flex-row items-center`}>
-                  {
-                    requestMenuTitles.map(({ id, label, requestMenuCondition }) => (
-                      requestMenuCondition &&
-                      <div
-                        key={id}
-                        className='px-5 border-l border-color-border-clear cursor-default'
-                      >
-                        <h4 className={`text-color-secondary font-semibold`}>
-                          {label}
-                        </h4>
-                      </div>
-                    ))
-                  }
-                </div>
-              }
-            </div>
-            <div className="w-1/3 h-full relative flex flex-row justify-end items-center">
-              {
-                !isButtonBack ?
-                  <ButtonTitleMenuAddEdit
-                    id={`button-title-request-${requestType}`}
-                    isRequest={isRequest}
-                    isDashboard={isDashboard}
-                    cardHover={cardHover}
-                    screenNarrow={screenNarrow}
-                    addButtonName={`New request`}
-                    openAccountModule={() => setAccountModule(requestType)}
-                    openModalForm={() => {
-                      setRequestModal(requestType);
-                      setRequestModalAction('post');
-                      setCollectionToChange(requestType === 'Talent' ? 'request_talent' : 'request_job');
-                    }}
-                  />
-                  :
-                  /**back button */
-                  <button
-                    id='button-back'
-                    className={
-                      `w-fit h-full text-color-text-tertiary hover:text-color-text-primary text-[14px] flex flex-row justify-end items-center transition-all`}
-                    onClick={() => requestBackButton()}
-                  >
-                    <i className='pr-1'>
-                      <IconBxChevronLeft />
-                    </i>
-                    <h4 className="flex flex-row">
-                      Back
-                    </h4>
-                  </button>
-              }
-            </div>
-          </div>
-        </div>
+        <CardsTitlesRequest
+          screenNarrow={screenNarrow}
+          isDashboard={isDashboard}
+          dataType={requestType}
+          dataMenuTitles={requestMenuTitles}
+          isData={isRequest}
+          cardHover={cardHover}
+          openAccountModuleClick={() => setAccountModule(requestType)}
+          openModalFormClick={() => {
+            setRequestModal(requestType);
+            setRequestModalAction('post');
+            setCollectionToChange(requestType === 'Talent' ? 'request_talent' : 'request_job');
+          }}
+          isButtonBack={isButtonBack}
+          requestBackButton={() => requestBackButton()}
+        />
         {
           isDashboard ?
             <RequestDashboard
-              requestType={requestType}
               isDashboard={isDashboard}
+              isRequest={isRequest}
+              requestType={requestType}
               stepsProcess={stepsProcess}
               clickAddInfoButton={() => setAccountModule(requestType)}
-              isRequest={isRequest}
               selecting={Object.keys(candidates).length > 0}
             />
             :
-            !isDashboard && isRequest &&
-            <div className='w-full flex flex-col'>
-              {
-                requestCardsDisplayer.map((
-                  {
-                    id, cardsDisplayerType, dataToRender, dataToCompare, requestMenuCondition,
-                    goClickTitleEnabled, goClickTitleDisabled, goClick
-                  }
-                ) => {
-                  return (
-                    requestMenuCondition === requestMenu &&
-                    <CardsDisplayer
-                      id={id}
-                      key={id}
-                      cardsDisplayerType={cardsDisplayerType}
-                      dataToRender={dataToRender}
-                      dataToCompare={dataToCompare as any}
-                      requestMenu={requestMenu}
-                      goClick={goClick}
-                      goClickTitleEnabled={goClickTitleEnabled}
-                      goClickTitleDisabled={goClickTitleDisabled}
-                    />
-                  )
-                })
-              }
-            </div>
+            <CardsDisplayerRequest
+              id={requestElements[requestMenu].id}
+              key={requestElements[requestMenu].id}
+              cardsDisplayerType={requestElements[requestMenu].cardsDisplayerType}
+              dataToRender={requestElements[requestMenu].dataToRender}
+              dataToCompare={requestElements[requestMenu].dataToCompare as any}
+              requestMenu={requestMenu}
+              goClick={requestElements[requestMenu].goClick}
+              goClickTitleEnabled={requestElements[requestMenu].goClickTitleEnabled}
+              goClickTitleDisabled={requestElements[requestMenu].goClickTitleDisabled}
+            />
         }
       </div>
     </div>

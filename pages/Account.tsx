@@ -69,7 +69,7 @@ export default function Account() {
   }
 
   return (
-    <main className='w-full relative font-montserrat select-none flex flex-col items-center bg-color-tertiary'>
+    <main className='w-full relative font-montserrat select-none flex flex-col items-center bg-color-clear'>
       <div className='w-auto h-auto'>
         <AccountNavbar />
       </div>
@@ -83,7 +83,7 @@ export default function Account() {
           <div
             id='contact'
             className='w-full h-auto lg:h-10 pl-[17rem] pr-8 py-5 lg:py-2 flex flex-col-reverse lg:flex-row justify-between items-center'>
-            <h2 className='w-1/2 h-full text-slate-500 text-xs lg:text-sm text-center sm:text-start pt-2 sm:pt-0'>
+            <h2 className='w-1/2 h-full text-color-text-medium text-xs lg:text-sm text-center sm:text-start pt-2 sm:pt-0'>
               © 2023 - Decalin-stack all right reserved
             </h2>
             <ul className='w-1/2 h-full flex flex-row justify-center sm:justify-end items-center list-none'>
@@ -93,7 +93,7 @@ export default function Account() {
                     <li
                       key={element.id}
                       className='w-fit h-full px-5 sm:px-0 sm:pl-10 flex flex-col justify-center sm:items-center cursor-pointer'>
-                      <i className='w-fit h-fit text-slate-600 lg:text-slate-400 text-2xl sm:text-lg md:text-xl text-center lg:hover:transform hover:text-slate-600 lg:hover:scale-[1.2] transition-all'>
+                      <i className='w-fit h-fit text-color-text-medium text-2xl sm:text-lg md:text-xl text-center lg:hover:transform hover:text-color-text-dark lg:hover:scale-[1.2] transition-all'>
                         {element.icon}
                       </i>
                     </li>
@@ -104,18 +104,6 @@ export default function Account() {
           </div>
         </div>
       </div>
-      {
-        /**sponsor banner */
-        accountModule === 'xxx' && (
-          <div className="lg:w-60 h-screen pt-9 pb-[4.8rem] pr-8 fixed right-0 top-0 hidden lg:vissible lg:flex flex-col transition-all">
-            <div className="w-full h-full p-4 flex flex-col justify-center items-center bg-color-clear border border-color-border-clear shadow-md rounded-lg">
-              <h2>SPONSOR</h2>
-              <h2>Recommendations</h2>
-              <h2>SPONSOR</h2>
-            </div>
-          </div>
-        )
-      }
 
       <Dropdown />
 

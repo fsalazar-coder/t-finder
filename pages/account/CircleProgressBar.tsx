@@ -1,7 +1,7 @@
 
 
 
-export default function CircleProgressBar({ percentage, circleWidth, radius, strokeWidth, color} : any) {
+export default function CircleProgressBar({ percentage, circleWidth, radius, strokeWidth} : any) {
 
   const dashArray = radius * Math.PI * 2;
   const dashOffset = dashArray - (dashArray * percentage) / 100;
@@ -15,7 +15,7 @@ export default function CircleProgressBar({ percentage, circleWidth, radius, str
         viewBox={`0 0 ${circleWidth} ${circleWidth}`}
       >
         <circle
-          className="w-full h-full stroke-yellow-200"
+          className="w-full h-full stroke-slate-50"
           cx={circleWidth / 2}
           cy={circleWidth / 2}
           fill="none"
@@ -23,7 +23,7 @@ export default function CircleProgressBar({ percentage, circleWidth, radius, str
           r={radius}
         />
         <circle
-          className={`w-full h-full stroke-${color}`}
+          className={`w-full h-full stroke-sky-500`}
           cx={circleWidth / 2}
           cy={circleWidth / 2}
           fill="none"

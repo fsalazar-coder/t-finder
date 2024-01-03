@@ -21,8 +21,6 @@ export default function ProfilePersonalInfoCard() {
 
 
   const fetchData = async (collection: string) => {
-
-    
     userDataHandlerFunction({
       token: token as string,
       userId: userId as string,
@@ -117,143 +115,116 @@ export default function ProfilePersonalInfoCard() {
 
 
   return (
-    <>
-      <div className='w-full h-[45%]'>
-        {/**profile image */}
-        <div className='w-full h-full relative flex flex-col justify-between items-center border border-color-border-clear bg-color-clear shadow-md rounded-lg'>
-          <div className='w-full h-[80%] relative flex flex-col justify-center items-center'>
-            {/**profile image */}
-            <div className='w-36 h-36'>
-              <ImageIconUser size='large' />
-            </div>
-            {/**effect-background: add or edit */}
-            <div
-              className={
-                `${imageHover && 'bg-black bg-opacity-60'
-                } w-36 h-36 absolute flex flex-col justify-center items-center rounded-full hover:cursor-pointer transition-all`
+    <div
+      className='w-full h-full flex flex-col border border-color-border bg-white shadow-md rounded-lg'
+      onMouseEnter={() => setListHover(true)}
+      onMouseLeave={() => setListHover(false)}
+    >
+      {/**title */}
+      <div className='w-full relative px-5 py-1 flex flex-row items-center border-b border-color-border'>
+        <SectionTitles
+          sectionTitle='Personal info...'
+          sectionType='account'
+        />
+        {/**edit and delete button */}
+        <div className="w-fit h-full absolute top-0 right-0 p-2 flex flex-row items-center z-20">
+          {userProfilePersonalInfo && listHover ?
+            <ul className="w-full h-fit flex flex-row justify-end items-center transition-all">
+              {
+                buttons.map((button: any, index: any) => {
+                  return (
+                    <li
+                      key={button.key}
+                      id={button.id}
+                      className='flex flex-col justify-center items-center transition-all'>
+                      <button className="flex flex-row justify-center items-center hover:cursor-default">
+                        <i className={
+                          `${index === 1 ? 'lg:hover:text-red-500' : 'lg:hover:text-green-500'} 
+                              py-[2px] pl-1 text-color-text-almost-clear text-xl lg:text-2xl flex flex-row justify-center rounded-full cursor-default lg:cursor-pointer animate-[appear_0.7s_ease] transition-all`
+                        }
+                          onClick={button.click}
+                        >
+                          {button.icon}
+                        </i>
+                      </button>
+                    </li>
+                  )
+                })
               }
-              onMouseEnter={() => setImageHover(true)}
-              onMouseLeave={() => setImageHover(false)}
-              onClick={(e: any) => {
-                setProfileModal(true);
-                setProfileModalAction(userProfileImage ? 'edit' : 'post');
-                setCollectionToChange('profile_image');
-              }}
-            >
-              <i className={
-                `${userProfileImage ?
-                  imageHover ? 'visible text-color-text-clear' : 'hidden' :
-                  'visible text-color-text-clear'} text-7xl flex flex-row justify-center cursor-default lg:cursor-pointer transition-all`}>
-                {imageHover && <IconCamera />}
-              </i>
-            </div>
-          </div>
-          {/**Availability */}
-          <div className='w-full h-[20%] flex border-t border-color-border-clear'>
-            <div className='w-full h-full px-5 flex flex-row items-center'>
-              <h3 className='w-full pr-2 text-slate-600 text-xs text-start transition-all'>
-                Availability
-              </h3>
-              <div className='w-28 relative flex flex-row justify-center items-center rounded-full'>
-                <button
-                  className={`${available ? 'bg-green-300' : 'bg-color-tertiary border border-color-border-clear'} w-32 h-3 rounded-full transition-all`}
-                  onClick={() => setAvailable(!available)}
-                />
-                <div className={
-                  `${available ? 'bg-green-400 outline-green-400 translate-x-[5.75rem]'
-                    : 'bg-slate-300 outline-slate-300 translate-x-0'} w-5 h-5 absolute left-0 border-2 border-color-clear outline-1 outline rounded-full transform transition-transform`
-                } />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/**personal information */}
-      <div className='w-full h-[55%] pt-2'>
-        <div
-          className='w-full h-full flex flex-col border border-color-border-clear bg-color-clear shadow-md rounded-lg'
-          onMouseEnter={() => setListHover(true)}
-          onMouseLeave={() => setListHover(false)}
-        >
-          {/**title */}
-          <div className='w-full relative px-5 py-1 flex flex-row items-center border-b border-color-border-clear'>
-            <SectionTitles
-              sectionTitle='Personal info...'
-              sectionType='account'
-            />
-            {/**edit and delete button */}
-            <div className="w-fit h-full absolute top-0 right-0 p-2 flex flex-row items-center z-20">
-              {userProfilePersonalInfo && listHover ?
-                <ul className="w-full h-fit flex flex-row justify-end items-center transition-all">
-                  {
-                    buttons.map((button: any, index: any) => {
-                      return (
-                        <li
-                          key={button.key}
-                          id={button.id}
-                          className='flex flex-col justify-center items-center transition-all'>
-                          <button className="flex flex-row justify-center items-center hover:cursor-default">
-                            <i className={
-                              `${index === 1 ? 'lg:hover:text-red-500' : 'lg:hover:text-green-500'} 
-                              py-[2px] pl-1 text-color-text-tertiary text-xl lg:text-2xl flex flex-row justify-center bg-color-clear rounded-full cursor-default lg:cursor-pointer animate-[appear_0.7s_ease] transition-all`
-                            }
-                              onClick={button.click}
-                            >
-                              {button.icon}
-                            </i>
-                          </button>
-                        </li>
-                      )
-                    })
-                  }
-                </ul>
-                :
-                userProfilePersonalInfo &&
-                <i className='py-[2px] text-color-text-tertiary text-2xl flex flex-row justify-center cursor-pointer animate-[appear_0.7s_ease] transition-all'>
-                  <IconMenuI />
-                </i>
-              }
-            </div>
-          </div>
-          {
-            /**content */
-            userProfilePersonalInfo ?
-              <div className='w-full relative px-5 py-3 flex flex-col transform transition-all' >
-                {/**information */}
-                <ul className='w-full flex flex-col'>
-                  {
-                    personalInfo?.map((element: any, index: any) => {
-                      return (
-                        /**fullname, profession or occupation, preferred language, location and personal description */
-                        <li key={index} className='w-full pb-2 flex flex-col'>
-                          <h4 className='w-full text-color-text-secondary text-sm font-semibold'>
-                            {element.description}
-                          </h4>
-                          <h5 className='w-full text-color-text-tertiary text-xs'>
-                            {element.title}
-                          </h5>
-                        </li>
-                      )
-                    })
-                  }
-                </ul>
-              </div>
-              :
-              /**button add information */
-              <ButtonDashboardCardAddInfo
-                id='post-item-profile'
-                isDashboard={isDashboard}
-                comment='Add information'
-                click={() => {
-                  setProfileModal(true);
-                  setProfileModalAction('post');
-                  setProfileModalType('personal information');
-                  setCollectionToChange('personal_info');
-                }}
-              />
+            </ul>
+            :
+            userProfilePersonalInfo &&
+            <i className='py-[2px] text-color-text-almost-clear text-2xl flex flex-row justify-center cursor-pointer animate-[appear_0.7s_ease] transition-all'>
+              <IconMenuI />
+            </i>
           }
         </div>
       </div>
-    </>
+      {/**profile image */}
+      <div className='w-full h-fit py-4 relative flex flex-col justify-center items-center'>
+        {/**profile image */}
+        <div className='w-36 h-36'>
+          <ImageIconUser size='large' />
+        </div>
+        {/**effect-background: add or edit */}
+        <div
+          className={
+            `${imageHover && 'bg-black bg-opacity-60'
+            } w-36 h-36 absolute flex flex-col justify-center items-center rounded-full hover:cursor-pointer transition-all`
+          }
+          onMouseEnter={() => setImageHover(true)}
+          onMouseLeave={() => setImageHover(false)}
+          onClick={(e: any) => {
+            setProfileModal(true);
+            setProfileModalAction(userProfileImage ? 'edit' : 'post');
+            setCollectionToChange('profile_image');
+          }}
+        >
+          <i className={
+            `${userProfileImage ?
+              imageHover ? 'visible text-color-text-clear' : 'hidden' :
+              'visible text-color-text-clear'} text-7xl flex flex-row justify-center cursor-default lg:cursor-pointer transition-all`}>
+            {imageHover && <IconCamera />}
+          </i>
+        </div>
+      </div>
+      {
+        /**content */
+        userProfilePersonalInfo ?
+          <div className='w-full relative px-5 flex flex-col transform transition-all' >
+            {/**information */}
+            <ul className='w-full pt-4 flex flex-col border-t border-color-border'>
+              {
+                personalInfo?.map((element: any, index: any) => {
+                  return (
+                    /**fullname, profession or occupation, preferred language, location and personal description */
+                    <li key={index} className='w-full pb-2 flex flex-col'>
+                      <h4 className='w-full text-color-text-dark text-sm font-semibold'>
+                        {element.description}
+                      </h4>
+                      <h5 className='w-full text-color-text-almost-clear text-xs'>
+                        {element.title}
+                      </h5>
+                    </li>
+                  )
+                })
+              }
+            </ul>
+          </div>
+          :
+          /**button add information */
+          <ButtonDashboardCardAddInfo
+            id='post-item-profile'
+            isDashboard={isDashboard}
+            comment='Add information'
+            click={() => {
+              setProfileModal(true);
+              setProfileModalAction('post');
+              setProfileModalType('personal information');
+              setCollectionToChange('personal_info');
+            }}
+          />
+      }
+    </div>
   )
 };

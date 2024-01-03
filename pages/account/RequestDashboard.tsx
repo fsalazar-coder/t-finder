@@ -83,7 +83,7 @@ export default function RequestDashboard({ requestType, isDashboard, stepsProces
                         <i className={`${element.render ? 'text-green-300' : 'text-yellow-300'} w-fit h-fit pr-1 text-sm`}>
                           {element.render ? <IconCheckCircle /> : <IconAlert />}
                         </i>
-                        <h4 className='w-fit h-fit text-color-text-secondary text-sm font-semibold text-start'>
+                        <h4 className='w-fit h-fit text-color-text-almost-clear text-sm font-semibold text-start'>
                           {element.step}
                         </h4>
                       </li>

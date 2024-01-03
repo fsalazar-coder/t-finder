@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import initMiddleware from '../../lib/init-middleware';
+import dbConnect from "../../lib/mongodb";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Cors from 'cors';
-import initMiddleware from '../../lib/init-middleware';
-import dbConnect from "../../lib/mongodb";
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -82,7 +82,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         throw new Error("SECRET_KEY environment variable is not defined");
       }
 
-      const token = jwt.sign({ email }, process.env.SECRET_KEY);
+      const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY);
 
       return res.status(200).json({
         token: token,

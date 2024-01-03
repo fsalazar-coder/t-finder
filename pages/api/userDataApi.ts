@@ -3,16 +3,24 @@ import Cors from 'cors';
 import initMiddleware from '../../lib/init-middleware';
 import dbConnect from "../../lib/mongodb";
 import { v4 as uuidv4 } from 'uuid';
+import dateTimeFunction from './dateTimeFunction';
+
+interface UserChatParams {
+  _id: string;
+  participants: string[];
+  chat: {
+    from_user_id: string,
+    message: string;
+    message_date: string;
+  }[];
+}
 
 const cors = initMiddleware(
   Cors({ methods: ['POST', 'GET', 'PUT', 'PATCH'] })
 );
 
-function getTodayDateString() {
-  const today = new Date();
-  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  return `${months[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}`;
-}
+const date = dateTimeFunction('date');
+const time = dateTimeFunction('time');
 
 
 
@@ -43,10 +51,45 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             postData = await collection?.insertOne({ _id: id, ...data });
             break;
           case 'notifications':
-            postData = await collection?.insertOne({ created_at: getTodayDateString(), _id: uuidv4(), to_user_id: id, ...data });
+            postData = await collection?.insertOne({ _id: uuidv4(), to_user_id: id, ...data, created_at: date });
+            break;
+          case 'chats':
+            let fromUserId: string = id;
+            let toUserId: string = data.to_user_id;
+            let message: string = data.message;
+            let chatUsers = [fromUserId, toUserId].sort();
+            let chat = await collection.findOne({ participants: { $all: chatUsers } });
+
+            if (chat) {
+              postData = await collection?.updateOne(
+                { _id: chat._id },
+                {
+                  $push: {
+                    chat: {
+                      from_user_id: fromUserId,
+                      message: message,
+                      message_date: date,
+                      message_time: time
+                    }
+                  }
+                }
+              );
+            }
+            else {
+              postData = await collection?.insertOne({
+                _id: uuidv4() as any,
+                participants: chatUsers,
+                chat: [{
+                  from_user_id: fromUserId,
+                  message: message,
+                  message_date: date,
+                  message_time: time
+                }],
+              });
+            }
             break;
           default:
-            postData = await collection?.insertOne({ created_at: getTodayDateString(), _id: uuidv4(), user_id: id, ...data });
+            postData = await collection?.insertOne({ created_at: date, _id: uuidv4(), user_id: id, ...data });
             break;
         }
         if (postData) {
@@ -66,6 +109,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             break;
           case 'notifications':
             getData = await collection?.find({ to_user_id: id }).toArray();
+            break;
+          case 'chats':
+            let fromUserId = id;
+            let toUserId = data.to_user_id;
+            let chatUsers = [fromUserId, toUserId].sort();
+            let chatsInfo = await collection.findOne({ participants: { $all: chatUsers } });
+            getData = chatsInfo?.chat;
             break;
           default:
             getData = await collection?.find({ user_id: id }).toArray();
@@ -209,7 +259,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         notificationsToUserId = await collection?.find({ to_user_id: id }).toArray();
         notificationsOfferAcceptance = notificationsToUserId?.filter((notification: any) => notification.notification_type === 'offer acceptance');
         let offerAcceptanceFromRequestJobId = notificationsOfferAcceptance?.filter((notification: any) => notification.from_request_id === requestJobId);
-        
+
         if (offerAcceptanceFromRequestJobId) {
           return res.status(200).json({
             status: 'success',

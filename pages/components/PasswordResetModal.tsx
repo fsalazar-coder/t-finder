@@ -78,7 +78,7 @@ export default function PasswordReset(props: any) {
           {/**content */}
           <div className='w-full flex flex-col justify-start items-center'>
             {/**header form */}
-            <div className='w-full h-24 lg:h-32 px-4 lg:px-8 pt-2 lg:pt-4 flex flex-col bg-slate-950 rounded-t-md'>
+            <div className='w-full h-24 lg:h-32 px-4 lg:px-8 pt-2 lg:pt-4 flex flex-col bg-color-highlighted rounded-t-md'>
               <h2 className='w-full h-fit text-white text-xl lg:text-3xl font-bold z-10'>
                 Password reset
               </h2>

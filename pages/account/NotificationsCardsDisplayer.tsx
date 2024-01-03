@@ -48,8 +48,8 @@ export default function NotificationsCardsDisplayer({ dataToRender }: Notificati
                   onMouseLeave={() => { setItemHover(null); setListHover(false); }}
                 >
                   <div className={
-                    `${(isDashboard && evenIndex) ? 'bg-slate-50 rounded-md'
-                      : !isDashboard && 'bg-color-clear border border-color-border-clear shadow-md rounded-lg'
+                    `${(isDashboard && evenIndex) ? 'bg-color-clear rounded-md'
+                      : !isDashboard && 'bg-white border border-color-border shadow-md rounded-lg'
                     } w-full px-4 py-3 flex flex-col transform transition-all`
                   }>
                     <NotificationCard

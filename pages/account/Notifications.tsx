@@ -3,20 +3,20 @@ import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
 import NotificationsCardsDisplayer from './NotificationsCardsDisplayer';
 import SectionTitles from '../components/SectionTitles';
-import { IconBxChevronLeft } from '@/icons/icons';
 
 
 
 export default function Notifications() {
-  const { token, userId, update, setUpdate } = useAuthData();
+  const { token, userId, update, setUpdate, socket } = useAuthData();
   const { accountModule, setAccountModule } = useAuthUI();
   const { screenNarrow, setMessageModal } = useUI();
   const [cardHover, setCardHover] = useState(false);
   const [notificationsData, setNotificationsData] = useState([]);
   const [notifications, setNotifications] = useState([]);
+  const [updateNotifications, setUpdateNotifications] = useState<boolean>(false);
 
   useEffect(() => {
-    if (accountModule === 'Dashboard' || accountModule === 'Notifications') {
+    if (accountModule === 'Dashboard' || accountModule === 'Notifications' || updateNotifications) {
       userDataHandlerFunction({
         token: token as string,
         userId: userId as string,
@@ -27,8 +27,7 @@ export default function Notifications() {
         onError: (error: any) => console.error(error)
       });
     };
-  }, [token, userId, accountModule]);
-
+  }, [token, userId, accountModule, updateNotifications]);
 
   useEffect(() => {
     if (accountModule === 'Dashboard' || accountModule === 'Notifications') {
@@ -106,13 +105,25 @@ export default function Notifications() {
     }
   }, [token, userId, accountModule, notificationsData]);
 
+  useEffect(() => {
+    socket?.on('notificacion', (data: any) => {
+      const { toUserId, message } = data;
+      if (toUserId === userId) {
+        if (message === 'notification update') {
+          setUpdateNotifications(true);
+        }
+        else { console.log('Data webSocket value: ', data) }
+      }
+    });
+  }, []);
+
   const isDashboard = accountModule === 'Dashboard';
 
 
   return (
     <div className={`${!isDashboard && 'pl-0 lg:pl-60'} w-full h-full flex flex-col items-center`}>
       <div className={
-        `${isDashboard ? 'w-full h-full flex-col bg-color-clear border border-color-border-clear shadow-md rounded-lg'
+        `${isDashboard ? 'w-full h-full flex-col bg-white border border-color-border shadow-md rounded-lg'
           : screenNarrow ? 'w-full flex-col px-1 py-12' : 'w-[52rem] px-2 lg:px-8 lg:py-9 flex-col'
         } flex justify-between transition-all`
       }
@@ -121,8 +132,8 @@ export default function Notifications() {
       >
         {/**title */}
         <div className={
-          `${isDashboard ? 'border-b' : 'bg-color-clear border shadow-md rounded-lg'
-          } w-full px-5 py-1 flex justify-between flex-row items-center border-color-border-clear`
+          `${isDashboard ? 'border-b' : 'bg-white border shadow-md rounded-lg'
+          } w-full px-5 py-1 flex justify-between flex-row items-center border-color-border`
         }>
           <div className='w-full flex flex-row justify-between items-center'>
             <div className='w-2/3 flex flex-row items-center'>

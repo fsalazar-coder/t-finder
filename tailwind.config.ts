@@ -10,19 +10,20 @@ const config: Config = {
     extend: {
       colors: {
         'color': {
-          'primary': '#020617',     // slate-950 (Fondo principal, barra de navegación, texto de énfasis...)
-          'primary-clear': '#0f172a',     // slate-900 (bordes internos sobre Fondo principal...)
-          'secondary': '#c026d3',   // fuchsia-600 (Botones, enlaces hover, elementos interactivos...)
-          'secondary-clear': '#e879f9',   // fuchsia-400 (subtitulos pagina principal...)
-          'tertiary': '#f8fafc',    // slate-50 (Fondo general)
-          'border-clear': '#e2e8f0',       // slate-200 (bordes claros)
-          'clear': '#ffffff',       // white (Fondo de tarjetas, fondo de modal...)
+          'dark': '#1e293b',               //#1e293b (slate-800), #0f172a (slate-900)
+          'clear': '#f8fafc',              // slate-50 (Fondo general)
+          'highlighted' : '#0ea5e9',       //#0ea5e9 (sky-500), #d946ef (fuchsia-500) 
+          'highlighted-clear' : '#7dd3fc', //#7dd3fc (sky-300) 
+          'navbar': '#ffffff',             //#0f172a (slate-900), #94a3b8 (slate-400)
+          'border': '#e2e8f0',             // #e2e8f0 (slate-200)
+          'border-navbar': '#f8fafc',      //#0f172a (slate-900), #94a3b8 (slate-400)
+          'hover': '#bae6fd',              //#bae6fd (sky-200), #0f172a (slate-900), #94a3b8 (slate-400)
           'text': {
-            'primary': '#0f172a',   // slate-900
-            'secondary': '#475569', // slate-600
-            'tertiary': '#94a3b8',  // slate-400
-            'quaternary': '#cbd5e1',  // slate-300
-            'clear': '#ffffff',     // white
+            'highlighted' : '#0ea5e9',     //#0ea5e9 (sky-500), #d946ef (fuchsia-500)   
+            'dark': '#0f172a',             //#0f172a (slate-900), #334155 (slate-700), #475569 (slate-600)
+            'medium': '#64748b',           //#64748b (slate-500)
+            'almost-clear': '#94a3b8',     //#94a3b8 (slate-400)
+            'clear': '#e2e8f0',            //#e2e8f0 (slate-200), #cbd5e1 (slate-300), 
           }
         },
       },

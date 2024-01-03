@@ -610,6 +610,23 @@ export const IconCancel = () => {
   )
 }
 
+export const IconSendMessage = () => {
+  return (
+    <div
+      className='icons-container'
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        height="1em"
+        width="1em"
+      >
+        <path d="M21.426 11.095l-17-8A1 1 0 003.03 4.242l1.212 4.849L12 12l-7.758 2.909-1.212 4.849a.998.998 0 001.396 1.147l17-8a1 1 0 000-1.81z" />
+      </svg>
+    </div>
+  )
+}
+
 export const IconCancelCircle = () => {
   return (
     <div
@@ -663,12 +680,15 @@ export const IconBxChevronUp = () => {
         stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth={4}
-        viewBox="0 0 24 24"
+        strokeWidth={1}
+        viewBox="0 0 16 16"
         height="1em"
         width="1em"
       >
-        <path d="M18 15l-6-6-6 6" />
+        <path
+          fillRule="evenodd"
+          d="M7.776 5.553a.5.5 0 01.448 0l6 3a.5.5 0 11-.448.894L8 6.56 2.224 9.447a.5.5 0 11-.448-.894l6-3z"
+        />
       </svg>
     </div>
   )

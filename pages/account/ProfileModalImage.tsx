@@ -133,7 +133,7 @@ export default function ProfileModalImage() {
                   alt='profile-image'
                 />
                 :
-                <i className='w-full h-full text-slate-300 text-7xl font-light flex flex-row justify-center items-center border border-slate-300 rounded-full cursor-pointer transition-all'>
+                <i className='w-full h-full text-color-text-almost-clear text-7xl font-light flex flex-row justify-center items-center border border-color-border rounded-full cursor-pointer transition-all'>
                   <IconUser />
                 </i>
           }

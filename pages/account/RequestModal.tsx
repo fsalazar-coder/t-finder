@@ -8,8 +8,7 @@ import FormTemplate from './FormTemplate';
 
 export default function RequestModal(props: any) {
 
-  const { token, userId, setUserRequestTalent, setUserRequestJob,
-    collectionToChange, itemIdToChange, setUpdate } = useAuthData();
+  const { token, userId, collectionToChange, itemIdToChange, setUpdate } = useAuthData();
   const { requestModal, setRequestModal, requestModalAction, setRequestModalAction } = useAuthUI();
   const { setMessageModal, setLoading } = useUI();
   const { screenNarrow } = useUI();
@@ -21,10 +20,9 @@ export default function RequestModal(props: any) {
 
   {/**talent request form constants*/ }
   const [requestTalentData, setRequestTalentData] = useState({
-    jobTitle: '',
+    jobDescription: '',
     jobCategory: '',
     skillsRequired: '',
-    experienceLevel: '',
     experienceYears: '',
     location: '',
     modalityWork: '',
@@ -32,10 +30,9 @@ export default function RequestModal(props: any) {
     companyInfo: '',
   });
   const [changeRequestTalentData, setChangeRequestTalentData] = useState({
-    jobTitle: false,
+    jobDescription: false,
     jobCategory: false,
     skillsRequired: false,
-    experienceLevel: false,
     experienceYears: false,
     location: false,
     modalityWork: false,
@@ -46,17 +43,17 @@ export default function RequestModal(props: any) {
 
   {/**job request form constants */ }
   const [requestJobData, setRequestJobData] = useState({
-    talentTitle: '',
     talentCategory: '',
+    talentDescription: '',
     skillsOffered: '',
-    experienceLevel: '',
+    experienceYears: '',
     modalityWork: '',
     availability: '',
     location: '',
     rates: '',
   });
   const [changeRequestJobData, setChangeRequestJobData] = useState({
-    talentTitle: false,
+    talentDescription: false,
     talentCategory: false,
     skillsOffered: false,
     experienceLevel: false,
@@ -86,27 +83,26 @@ export default function RequestModal(props: any) {
   const dataUpdate = (requestToChange: string) => {
     const data = {
       requestTalent: {
+        title: requestTalentData.jobCategory,
         job_category: requestTalentData.jobCategory,
-        job_title: requestTalentData.jobTitle,
-        skills_required: requestTalentData.skillsRequired,
-        experience_level: requestTalentData.experienceLevel,
-        experience_years: requestTalentData.experienceYears,
-        location: requestTalentData.location,
+        job_description: requestTalentData.jobDescription,
+        required_skills: requestTalentData.skillsRequired,
+        required_experience_years: requestTalentData.experienceYears,
         modality_work: requestTalentData.modalityWork,
+        company_name: requestTalentData.companyInfo,
+        location: requestTalentData.location,
         compensation: requestTalentData.compensation,
-        company_info: requestTalentData.companyInfo,
-        status: 'submissed'
       },
       requestJob: {
+        title: requestJobData.talentCategory,
         talent_category: requestJobData.talentCategory,
-        talent_title: requestJobData.talentTitle,
-        skills_offered: requestJobData.skillsOffered,
-        experience_level: requestJobData.experienceLevel,
+        talent_description: requestJobData.talentDescription,
+        offered_skills: requestJobData.skillsOffered,
+        experience_years: requestJobData.experienceYears,
         modality_work: requestJobData.modalityWork,
         availability: requestJobData.availability,
         location: requestJobData.location,
         rates: requestJobData.rates,
-        status: 'submissed'
       },
     };
     let dataToApi;
@@ -157,7 +153,6 @@ export default function RequestModal(props: any) {
     }
   });
 
-
   /**fill form control */
   useEffect(() => {
     let dataTalentUnfilled = Object.values(requestTalentData).some(value => value === '');
@@ -175,7 +170,6 @@ export default function RequestModal(props: any) {
 
   /**inputs for talent form */
   const talentInput = [
-    { type: 'text', title: 'Job Title', value: 'jobTitle' },
     {
       type: 'select',
       title: 'Job Category',
@@ -194,16 +188,7 @@ export default function RequestModal(props: any) {
         { value: 'Gardener', title: 'Gardener' },
       ]
     },
-    {
-      type: 'select',
-      title: 'Experience Level',
-      value: 'experienceLevel',
-      options: [
-        { value: 'Junior', title: 'Junior' },
-        { value: 'Mid', title: 'Mid' },
-        { value: 'Senior', title: 'Senior' },
-      ]
-    },
+    { type: 'text', title: 'Job Description', value: 'jobDescription' },
     {
       type: 'select',
       title: 'Experience years',
@@ -233,7 +218,6 @@ export default function RequestModal(props: any) {
 
   /**inputs for job form */
   const jobInput = [
-    { type: 'text', title: 'Talent Title', value: 'talentTitle' },
     {
       type: 'select',
       title: 'Talent Category',
@@ -252,15 +236,17 @@ export default function RequestModal(props: any) {
         { value: 'Gardener', title: 'Gardener' },
       ]
     },
+    { type: 'text', title: 'Talent Description', value: 'talentDescription' },
     { type: 'text', title: 'Skills Offered', value: 'skillsOffered' },
     {
       type: 'select',
-      title: 'Experience Level',
-      value: 'experienceLevel',
+      title: 'Experience years',
+      value: 'experienceYears',
       options: [
-        { value: 'Entry', title: 'Entry' },
-        { value: 'Mid', title: 'Mid' },
-        { value: 'Senior', title: 'Senior' },
+        { value: '0-2', title: '0-2' },
+        { value: '2-5', title: '2-5' },
+        { value: '5-10', title: '5-10' },
+        { value: '+10', title: '+10' },
       ]
     },
     {
@@ -320,7 +306,7 @@ export default function RequestModal(props: any) {
           </i>
         </div>
         {/**header form */}
-        <div className='w-full px-4 lg:px-8 py-1 lg:py-2 flex flex-col bg-slate-950 rounded-t-md z-50'>
+        <div className='w-full px-4 lg:px-8 py-1 lg:py-2 flex flex-col bg-color-highlighted rounded-t-md z-50'>
           <h2 className='w-full h-fit py-1 text-white text-xl lg:text-3xl font-bold transition-all z-10'>
             {`Request ${requestModal}`}
           </h2>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuthData, useUI } from "../../context/authContext";
-import ItemContent from './ItemContent';
+import CardsItems from './CardsItems';
 import axios from 'axios';
 
 
@@ -14,7 +14,6 @@ export default function CandidateSelectedActiveInfo({userId, itemReviewMenu}: Us
 
   const { token } = useAuthData();
   const { screenNarrow } = useUI();
-
   const [userInfo, setUserInfo] = useState([]);
 
   const getUserInfo = async () => {
@@ -58,8 +57,8 @@ export default function CandidateSelectedActiveInfo({userId, itemReviewMenu}: Us
                 key={element._id}
                 className={
                   `${screenNarrow? 'w-full': 'w-full'} 
-                  border-b px-5 py-2 flex flex-col border-color-border-clear transform transition-all`}>
-                <ItemContent element={element as any} />
+                  border-b px-5 py-2 flex flex-col border-color-border transform transition-all`}>
+                <CardsItems element={element as any} />
               </li>
             )
           })

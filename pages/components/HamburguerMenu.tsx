@@ -19,19 +19,19 @@ export default function HamburguerMenu(props: any) {
       {
         hamburguerMenuActive ?
           <>
-            <div className='w-5 h-[2px] absolute bg-slate-50 transform rotate-45 transition-all' />
-            <div className='w-5 h-[2px] absolute bg-slate-50 transform -rotate-45 transition-all' />
-            <div className='w-5 h-[2px] absolute bg-slate-50 transform scale-0 transition-all' />
-            <div className='w-5 h-[2px] absolute bg-slate-50 transform -rotate-45 transition-all' />
-            <div className='w-5 h-[2px] absolute bg-slate-50 transform rotate-45 transition-all' />
+            <div className='w-5 h-[2px] absolute bg-color-highlighted-clear transform rotate-45 transition-all' />
+            <div className='w-5 h-[2px] absolute bg-color-highlighted-clear transform -rotate-45 transition-all' />
+            <div className='w-5 h-[2px] absolute bg-color-highlighted-clear transform scale-0 transition-all' />
+            <div className='w-5 h-[2px] absolute bg-color-highlighted-clear transform -rotate-45 transition-all' />
+            <div className='w-5 h-[2px] absolute bg-color-highlighted-clear transform rotate-45 transition-all' />
           </>
           :
           <>
-            <div className='w-5 h-[2px] absolute top-1 bg-slate-50 transition-all' />
-            <div className='w-5 h-[2px] absolute top-1 bg-slate-50 transition-all' />
-            <div className='w-5 h-[2px] absolute top-[0.7rem] bg-slate-50 transition-all' />
-            <div className='w-5 h-[2px] absolute bottom-1 bg-slate-50 transition-all' />
-            <div className='w-5 h-[2px] absolute bottom-1 bg-slate-50 transition-all' />
+            <div className='w-5 h-[2px] absolute top-1 bg-color-highlighted-clear transition-all' />
+            <div className='w-5 h-[2px] absolute top-1 bg-color-highlighted-clear transition-all' />
+            <div className='w-5 h-[2px] absolute top-[0.7rem] bg-color-highlighted-clear transition-all' />
+            <div className='w-5 h-[2px] absolute bottom-1 bg-color-highlighted-clear transition-all' />
+            <div className='w-5 h-[2px] absolute bottom-1 bg-color-highlighted-clear transition-all' />
           </>
       }
     </div>

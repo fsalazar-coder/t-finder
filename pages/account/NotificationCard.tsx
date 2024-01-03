@@ -119,13 +119,13 @@ export default function NotificationsCard({ data, indexCard, listHover, itemHove
       </div>
       {/**fullname, message, date ... */}
       <div className="w-full pr-2 flex flex-col">
-        <h5 className='w-full text-color-text-secondary text-xs text-justify'>
+        <h5 className='w-full text-color-text-dark text-xs text-justify'>
           <a className='text-color-primary-clear font-semibold'>
             {`${data?.full_name}, `}
           </a>
           {message}
         </h5>
-        <h6 className='w-full text-color-text-secondary text-[10px] text-end'>
+        <h6 className='w-full text-color-text-medium text-[10px] text-end'>
           {data?.created_date}
         </h6>
       </div>
@@ -145,7 +145,7 @@ export default function NotificationsCard({ data, indexCard, listHover, itemHove
               :
               <i className={
                 `${isDashboard ? 'w-10 h-10 text-2xl' : 'w-20 h-20 mb-1 text-4xl'
-                } text-color-text-tertiary font-light flex flex-row justify-center items-center border border-color-border-clear rounded-full transition-all`
+                } text-color-text-almost-clear font-light flex flex-row justify-center items-center border border-color-border rounded-full transition-all`
               }>
                 <IconUser />
               </i>
@@ -161,7 +161,7 @@ export default function NotificationsCard({ data, indexCard, listHover, itemHove
                 } w-full px-4 py-[6px] flex flex-row justify-center items-center rounded-lg font-semibold transition-all`}
               onClick={() => goToClick()}
             >
-              <h4 className="h-4 text-color-text-clear text-[14px] flex flex-row items-center">
+              <h4 className="h-4 text-white text-[14px] flex flex-row items-center">
                 {buttonText}
               </h4>
             </button>

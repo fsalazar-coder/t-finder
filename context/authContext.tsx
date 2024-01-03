@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import io, { Socket } from 'socket.io-client';
 
 
 
@@ -45,6 +46,8 @@ interface AuthDataContextProps {
   setItemIdToChange: React.Dispatch<React.SetStateAction<string>>;
   update: string;
   setUpdate: React.Dispatch<React.SetStateAction<string>>;
+  socket: Socket | null;  // Allow socket to be null
+  setSocket: React.Dispatch<React.SetStateAction<Socket | null>>;
   logout: () => void;
 }
 
@@ -150,8 +153,7 @@ interface UserProfileRecommendations {
   recommender_phone: string,
 }
 
-
-interface UserRequestTalent {    
+interface UserRequestTalent {
   job_title: string,
   job_category: string,
   skills_required: string,
@@ -213,6 +215,8 @@ interface Messages {
 const AuthDataContext = createContext<AuthDataContextProps | undefined>(undefined);
 const AuthUIContext = createContext<AuthUIContextProps | undefined>(undefined);
 
+
+
 export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   const [token, setToken] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | { id: string }>('');
@@ -242,8 +246,9 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   const [collectionToChange, setCollectionToChange] = useState<string>('');
   const [itemIdToChange, setItemIdToChange] = useState<string>('');
   const [chatActived, setChatActived] = useState<boolean>(false);
-  const [chatDataUser, setChatDataUser] = useState<object>({}); 
-  const [update, setUpdate] = useState<string>('')
+  const [chatDataUser, setChatDataUser] = useState<object>({});
+  const [update, setUpdate] = useState<string>('');
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   const logout = () => {
     setToken(null);
@@ -266,7 +271,27 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
     setProfileModalType('');
     setRequestModal('');
     setRequestModalAction('');
+    setChatActived(false);
+    setAccountActived(false)
+    setAccountModule('')
+    if (socket) {
+      socket.disconnect();
+      setSocket(null);
+    }
   };
+
+  useEffect(() => {
+    if (token && accountActived) {
+      const newSocket = io('http://localhost:3000', { query: { token: token as string } });
+      newSocket.on('connection', () => { console.log('Conectado al servidor WebSocket') });
+      setSocket(newSocket);
+      console.log('New socket: ', newSocket);
+    }
+    else if (socket) {
+      socket.disconnect();
+      setSocket(null);
+    }
+  }, [token, accountActived]);
 
 
   return (
@@ -292,7 +317,8 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
       collectionToChange, setCollectionToChange,
       itemIdToChange, setItemIdToChange,
       update, setUpdate,
-      logout
+      socket, setSocket,
+      logout,
     }}>
       <AuthUIContext.Provider value={{
         accountActived, setAccountActived,
@@ -312,6 +338,8 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
 }
 
 const UIContext = createContext<UIContextProps | undefined>(undefined);
+
+
 
 export const Provider = ({ children }: ProviderProps): JSX.Element => {
   const [screenNarrow, setScreenNarrow] = useState<boolean>(false);

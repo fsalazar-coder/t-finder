@@ -18,7 +18,7 @@ const navbarElementAuth = [
 export default function AccountNavbar(props: any) {
 
   const { userEmail, userProfilePersonalInfo, logout } = useAuthData();
-  const { setAccountActived, accountModule, setAccountModule } = useAuthUI();
+  const { setAccountActived, accountModule, setAccountModule, setChatActived } = useAuthUI();
   const { dropdown, setDropdown, screenNarrow, setMessageModal } = useUI();
   const indicatorRef: any = useRef(null);
   const router = useRouter();
@@ -61,10 +61,10 @@ export default function AccountNavbar(props: any) {
   return (
     <div
       className={
-        `${screenNarrow ? 'w-full h-10'
-          : isDashboard ? 'w-24 h-screen'
-            : 'w-60 h-screen'
-        } fixed left-0 flex justify-center items-center bg-color-primary transition-all z-50`
+        `${screenNarrow ? 'w-full h-10 border-b'
+          : isDashboard ? 'w-24 h-screen border-r'
+            : 'w-60 h-screen border-r'
+        } fixed left-0 flex justify-center items-center bg-white border-color-border transition-all z-50`
       }>
       <div className={
         `${screenNarrow ? 'px-1 flex-row justify-between'
@@ -77,13 +77,13 @@ export default function AccountNavbar(props: any) {
         }>
           {isDashboard ?
             <div className="w-16 h-16 flex flex-col justify-center items-center outline outline-1 outline-color-clear border-2 border-color-secondary rounded-full transition-all">
-              <h2 className='flex flex-row text-color-secondary text-3xl font-bold transition-all'>
+              <h2 className='flex flex-row text-color-text-highlighted text-3xl font-bold transition-all'>
                 T
               </h2>
             </div>
             :
-            <h2 className='flex flex-row text-color-text-clear font-light'>
-              <a className='text-color-secondary font-extrabold'>T</a>
+            <h2 className='flex flex-row text-color-text-medium font-light'>
+              <a className='text-color-text-highlighted font-extrabold'>T</a>
               <a className='text-color-secondary font-extralight'>alent</a>-
               <a className='text-color-text-clear font-bold'>finder</a>
             </h2>
@@ -96,11 +96,11 @@ export default function AccountNavbar(props: any) {
               className="flex flex-row justify-end items-center hover:cursor-pointer"
               onClick={() => setDropdown(!dropdown)}
             >
-              <h2 className='w-fit pr-1 text-color-text-clear'>
+              <h2 className='w-fit pr-1 text-color-text-dark'>
                 {accountModule}
               </h2>
               <div className={`${dropdown ? 'pt-3' : 'pt-1'} h-full flex flex-col justify-center`}>
-                <div className={`${dropdown ? '-rotate-[135deg]' : 'rotate-45'} w-2 h-2 border-r-2 border-b-2 border-color-clear transform transition-all`} />
+                <div className={`${dropdown ? '-rotate-[135deg]' : 'rotate-45'} w-2 h-2 border-r-2 border-b-2 border-color-border transform transition-all`} />
               </div>
             </div>
           </div>
@@ -109,7 +109,7 @@ export default function AccountNavbar(props: any) {
           /**image profile */
           !isDashboard &&
           <div className={
-            `${screenNarrow ? 'w-fit relative' : 'w-full border-y border-color-primary-clear'} py-4 flex flex-col justify-center items-center`
+            `${screenNarrow ? 'w-fit relative' : 'w-full border-y border-color-border'} py-4 flex flex-col justify-center items-center`
           }>
             <div
               className={
@@ -127,13 +127,13 @@ export default function AccountNavbar(props: any) {
               /**name or email user */
               !isDashboard &&
               <div className='w-full flex flex-row justify-center items-center transition-all'>
-                <h3 className='w-full py-3 text-color-text-secondary text-base text-center'>
+                <h3 className='w-full py-3 text-color-text-dark text-base text-center'>
                   {userProfilePersonalInfo?.full_name ? userProfilePersonalInfo?.full_name : userEmail}
                 </h3>
               </div>
             }
             {/**nav elements */}
-            <nav className='w-full h-full relative flex flex-col items-center border-y border-color-primary-clear'>
+            <nav className='w-full h-full relative flex flex-col items-center border-y border-color-border'>
               {
                 navbarElementAuth?.map((item: any, index: any) => {
                   return (
@@ -142,7 +142,7 @@ export default function AccountNavbar(props: any) {
                         key={index}
                         className={
                           `${isDashboard ? 'h-14 py-3 justify-center' : 'h-9 py-1'} 
-                              ${accountModule === item.accountModule ? 'text-color-secondary font-semibold' : 'text-color-text-secondary hover:text-color-clear hover:bg-color-primary-clear cursor-pointer'}
+                              ${accountModule === item.accountModule ? 'text-color-highlighted font-bold' : 'text-color-text-almost-clear hover:text-color-text-medium hover:bg-color-clear cursor-pointer'}
                             w-full flex flex-row items-center z-[70]`
                         }
                         onClick={() => setAccountModule(item.accountModule)}
@@ -166,11 +166,12 @@ export default function AccountNavbar(props: any) {
                 key='home-link'
                 className={
                   `${isDashboard ? 'h-14 py-3 justify-center' : 'h-9 py-1'} 
-                  w-full flex flex-row items-center text-color-text-secondary hover:text-color-text-clear hover:bg-color-primary-clear cursor-pointer z-[70]`
+                  w-full flex flex-row items-center text-color-text-almost-clear hover:text-color-text-medium hover:bg-color-clear cursor-pointer z-[70]`
                 }
                 onClick={() => {
                   setAccountModule('');
                   setAccountActived(false);
+                  setChatActived(false);
                   router.push('/');
                 }}
               >
@@ -189,7 +190,7 @@ export default function AccountNavbar(props: any) {
               <div
                 className={
                   `${isDashboard ? 'w-24 h-14' : 'w-60 h-9'} 
-                absolute left-0 top-0 flex flex-row justify-end bg-color-secondary bg-opacity-10 transform transition-all`
+                absolute left-0 top-0 flex flex-row justify-end bg-color-highlighted-clear bg-opacity-10 transform transition-all`
                 }
                 ref={indicatorRef}
               />
@@ -202,7 +203,7 @@ export default function AccountNavbar(props: any) {
               <button
                 className={
                   `${isDashboard ? 'w-10 h-10' : 'w-full'} 
-                      py-2 flex flex-row justify-center items-center text-color-text-clear hover:font-extrabold bg-color-secondary bg-opacity-10 hover:bg-opacity-90 border border-color-secondary hover:border-color-clear shadow-md rounded-full transition-all`}
+                      py-2 flex flex-row justify-center items-center text-color-text-clear hover:font-extrabold bg-color-highlighted hover:bg-color-highlighted-clear border border-color-border shadow-md rounded-full transition-all`}
                 onClick={() => {
                   setMessageModal([{
                     type: 'logout',

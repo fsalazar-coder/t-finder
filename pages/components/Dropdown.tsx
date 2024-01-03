@@ -39,7 +39,7 @@ const navbarElementUnauth = [
 export default function Dropdown(props: any) {
 
   const { token, userEmail, logout } = useAuthData();
-  const { accountActived, setAccountActived, accountModule, setAccountModule } = useAuthUI();
+  const { accountActived, setAccountActived, accountModule, setAccountModule, setChatActived } = useAuthUI();
   const { screenNarrow, dropdown, setDropdown, setHamburguerMenuActive,
     setLoginModal, setJoinModal, setMessageModal } = useUI();
 
@@ -49,24 +49,19 @@ export default function Dropdown(props: any) {
   return (
     dropdown &&
     <ul className={
-      `${!token ?
-        screenNarrow ?
-          'w-52 h-full left-0 animate-[appear-left_0.5s_ease] '
-          :
-          ''
-        :
-        'w-64 right-0 animate-[appear-top_0.5s_ease]'
-      } fixed top-0 pt-10 lg:pt-12 flex-col justify-start items-start bg-color-primary rounded-sm transition-all z-40`}>
+      `${!token ? screenNarrow ? 'w-52 h-full left-0 animate-[appear-left_0.5s_ease]' : ''
+        : 'w-64 right-0 animate-[appear-top_0.5s_ease]'
+      } fixed top-0 pt-10 lg:pt-12 flex-col justify-start items-start bg-color-navbar rounded-sm transition-all z-40`}>
       {
         token ?
           <>
             {/**user icon-image */}
-            <li className='w-full h-auto py-4 px-4 mb-4 flex flex-row items-center border-y border-color-primary-clear'>
+            <li className='w-full h-auto py-4 px-4 mb-4 flex flex-row items-center border-y border-color-border-navbar'>
               <div className='flex flex-row items-center'>
                 <div className='w-10 h-10 flex flex-col justify-center items-center'>
                   <ImageIconUser size='small' />
                 </div>
-                <h5 className='text-color-text-clear pl-3 text-xs lg:text-sm xl:text-sm font-light'>
+                <h5 className='text-color-text-dark pl-3 text-xs lg:text-sm xl:text-sm font-light'>
                   Hello, <br /> {userEmail}
                 </h5>
               </div>
@@ -80,9 +75,9 @@ export default function Dropdown(props: any) {
                       key={index}
                       className={
                         `${accountModule === item.accountModule ?
-                          'text-color-secondary font-semibold' :
-                          'text-color-text-secondary hover:text-color-text-clear font-normal'
-                        } w-full h-auto flex flex-row items-center hover:bg-color-primary-clear hover:cursor-pointer`
+                          'text-color-highlighted font-semibold' :
+                          'text-color-text-almost-clear hover:text-color-text-medium font-normal'
+                        } w-full h-auto flex flex-row items-center hover:bg-color-hover hover:cursor-pointer`
                       }
                       onClick={() => {
                         setDropdown(false);
@@ -105,11 +100,12 @@ export default function Dropdown(props: any) {
               accountActived &&
               <li
                 key='home-link'
-                className='w-full h-auto flex flex-row items-center text-color-text-secondary hover:text-color-text-clear font-normal hover:bg-color-primary-clear hover:cursor-pointer'
+                className='w-full h-auto flex flex-row items-center text-color-text-almost-clear hover:text-color-text-medium font-normal hover:bg-color-hover hover:cursor-pointer'
                 onClick={() => {
                   setDropdown(false);
                   setAccountModule('');
                   setAccountActived(false);
+                  setChatActived(false);
                   router.push('/');
                 }}
               >
@@ -122,7 +118,7 @@ export default function Dropdown(props: any) {
               </li>
             }
             {/**logout button */}
-            <li className='w-full h-auto mt-4 py-4 flex flex-row justify-center items-center text-color-text-secondary hover:text-color-text-clear font-normal hover:bg-color-primary-clear hover:cursor-pointer border-t border-color-primary-clear'>
+            <li className='w-full h-auto mt-4 py-4 flex flex-row justify-center items-center text-color-text-almost-clear hover:text-color-text-medium font-normal hover:bg-color-hover hover:cursor-pointer border-t border-color-border-navbar'>
               <button
                 className='w-full h-full flex flex-row items-center'
                 onClick={() => {
@@ -133,8 +129,6 @@ export default function Dropdown(props: any) {
                     text: 'Logout your session with this action',
                     click: () => {
                       logout()
-                      setAccountActived(false)
-                      setAccountModule('')
                       setMessageModal([])
                       router.push('/')
                     }

@@ -15,7 +15,6 @@ const initialProfileInfo = {
   roleTitle: '',
   companyOrganization: '',
   responsibilities: '',
-  experienceLevel: '',
   experienceYears: '',
   technologiesUsed: '',
   teamSize: '',
@@ -60,17 +59,11 @@ export default function ProfileModal() {
   const { token, userId, collectionToChange, setCollectionToChange, itemIdToChange, setUpdate } = useAuthData();
   const { profileModal, setProfileModal, setProfileModalType, profileModalAction, setProfileModalAction } = useAuthUI();
   const { setMessageModal, setLoading } = useUI();
-  const [filledForm, setFilledForm] = useState(true);
   const { screenNarrow } = useUI();
-
-  const isPersonalInfo = collectionToChange === 'personal_info';
-  const isProfileImageModal = collectionToChange === 'profile_image';
-  const isEditAction = profileModalAction === 'edit';
-  const isPostAction = profileModalAction === 'post';
+  const [filledForm, setFilledForm] = useState(false);
 
   const [profileInfo, setProfileInfo] = useState(initialProfileInfo);
-
-  const [changeProfileInfo, setChangeProfileInfo] = useState({
+  const [profileInfoChange, setProfileInfoChange] = useState({
     /**personal information: */
     fullName: false,
     professionOccupation: false,
@@ -120,6 +113,10 @@ export default function ProfileModal() {
 
   const [profileSelected, setProfileSelected] = useState(Object);
   const [nameProfileSelected, setNameProfileSelected] = useState('');
+  
+  const isPersonalInfo = collectionToChange === 'personal_info';
+  const isProfileImageModal = collectionToChange === 'profile_image';
+  const isPostAction = profileModalAction === 'post';
 
   const handleCloseModal = () => {
     setProfileModal(false);
@@ -144,7 +141,6 @@ export default function ProfileModal() {
     document.body.style.overflowY = profileModal ? 'hidden' : 'auto';
   }, [profileModal]);
 
-
   const handleChangeData = (e: any) => {
     const { name, value } = e.target;
     setProfileInfo({ ...profileInfo, [name]: value });
@@ -154,56 +150,55 @@ export default function ProfileModal() {
     const data = {
       personalInfo: {
         full_name: profileInfo.fullName,
-        profession_occupation: profileInfo.professionOccupation,
+        profession_or_occupation: profileInfo.professionOccupation,
         preferred_language: profileInfo.preferredLanguage,
         location: profileInfo.personalLocation
       },
       experience: {
-        role_title: profileInfo.roleTitle,
-        company_organization: profileInfo.companyOrganization,
+        title: profileInfo.companyOrganization,
+        role: profileInfo.roleTitle,
         responsibilities: profileInfo.responsibilities,
-        experience_level: profileInfo.experienceLevel,
         experience_years: profileInfo.experienceYears,
         technologies_used: profileInfo.technologiesUsed,
         team_size: profileInfo.teamSize,
       },
       education: {
-        degree: profileInfo.degree,
+        title: profileInfo.majorFieldStudy,
         university_school: profileInfo.universitySchool,
-        major_field_study: profileInfo.majorFieldStudy,
+        degree: profileInfo.degree,
         graduation_year: profileInfo.graduationYear,
       },
       courses: {
-        course_title: profileInfo.courseTitle,
+        title: profileInfo.courseTitle,
         institution: profileInfo.institution,
-        year_completed: profileInfo.yearCompleted,
         skills_acquired: profileInfo.skillsAcquired,
+        year_completed: profileInfo.yearCompleted,
       },
       publications: {
-        publication_title: profileInfo.publicationTitle,
-        co_authors: profileInfo.coAuthors,
+        title: profileInfo.publicationTitle,
+        authors: profileInfo.coAuthors,
         journal_name: profileInfo.journalName,
         year_published: profileInfo.yearPublished,
       },
       conferences: {
-        presentation_title: profileInfo.presentationTitle,
+        title: profileInfo.presentationTitle,
         conference_name: profileInfo.conferenceName,
         location: profileInfo.conferenceLocation,
         year: profileInfo.year,
       },
       certifications: {
-        certification_name: profileInfo.certificationName,
-        issuing_organization: profileInfo.issuingOrganization,
+        title: profileInfo.certificationName,
         license_number: profileInfo.licenseNumber,
+        issuing_organization: profileInfo.issuingOrganization,
         year_issued: profileInfo.yearIssued,
       },
       recommendations: {
-        recommender_title: profileInfo.recommenderTitle,
-        recommender_name: profileInfo.recommenderName,
-        recommender_organization: profileInfo.recommenderOrganization,
+        title: profileInfo.recommenderName,
         recommendation: profileInfo.recommendation,
-        recommender_email: profileInfo.recommenderEmail,
-        recommender_phone: profileInfo.recommenderPhone,
+        recommender_title: profileInfo.recommenderTitle,
+        organization: profileInfo.recommenderOrganization,
+        email: profileInfo.recommenderEmail,
+        phone: profileInfo.recommenderPhone,
       }
     };
     const dataToApi = data[nameProfileSelected as keyof typeof data];
@@ -248,7 +243,6 @@ export default function ProfileModal() {
     }
   };
 
-
   const modal = [
     {
       collectionName: 'personal_info',
@@ -269,16 +263,6 @@ export default function ProfileModal() {
         { type: 'text', title: 'Role title', value: 'roleTitle' },
         { type: 'text', title: 'Company organization', value: 'companyOrganization' },
         { type: 'text', title: 'Responsibilities', value: 'responsibilities' },
-        {
-          type: 'select',
-          title: 'Experience level',
-          value: 'experienceLevel',
-          options: [
-            { value: 'Junior', title: 'Junior' },
-            { value: 'Mid', title: 'Mid' },
-            { value: 'Senior', title: 'Senior' },
-          ]
-        },
         {
           type: 'select',
           title: 'Experience years',
@@ -417,7 +401,7 @@ export default function ProfileModal() {
           </i>
         </div>
         {/**header form */}
-        <div className='w-full px-4 lg:px-8 py-1 lg:py-2 flex flex-col bg-slate-950 rounded-t-md z-50'>
+        <div className='w-full px-4 lg:px-8 py-1 lg:py-2 flex flex-col bg-color-highlighted rounded-t-md z-50'>
           <h2 className='w-full h-fit ml-2 py-1 text-white text-xl lg:text-3xl font-bold transition-all z-10'>
             {isProfileImageModal ? 'Profile image' : profileSelected.title}
           </h2>
@@ -438,10 +422,10 @@ export default function ProfileModal() {
                     <FormTemplate
                       inputData={profileSelected.inputs}
                       formData={profileInfo}
-                      changeData={changeProfileInfo}
+                      changeData={profileInfoChange}
                       onChange={(e: any) => handleChangeData(e)}
-                      onFocus={(e: any) => setChangeProfileInfo({ ...changeProfileInfo, [e.target.name]: true })}
-                      onBlur={(e: any) => setChangeProfileInfo({ ...changeProfileInfo, [e.target.name]: false })}
+                      onFocus={(e: any) => setProfileInfoChange({ ...profileInfoChange, [e.target.name]: true })}
+                      onBlur={(e: any) => setProfileInfoChange({ ...profileInfoChange, [e.target.name]: false })}
                     />
                   </div>
                   {/**submit button */}

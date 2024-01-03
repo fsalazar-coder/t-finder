@@ -25,7 +25,7 @@ export default function Header(props: any) {
   }, [headerActived]);
 
   return (
-    <div className='w-full h-full px-2 lg:px-8 relative flex flex-col justify-center items-center bg-slate-800'>
+    <div className='w-full h-full px-2 lg:px-8 relative flex flex-col justify-center items-center bg-slate-100'>
 
       {/**Title text */}
       <div className='w-full h-fit flex flex-col justify-center items-center z-[35]'>

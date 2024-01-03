@@ -116,7 +116,7 @@ export default function Home() {
       {/**job section */}
       <section
         id='job-section'
-        className='w-full h-auto py-8 lg:h-[615px] lg:py-0 bg-slate-100'
+        className='w-full h-auto py-8 lg:h-[615px] lg:py-0 bg-color-clear'
         ref={jobSectionRef}
       >
         <Presentation
@@ -148,7 +148,7 @@ export default function Home() {
       {/**blog section */}
       <section
         id='blog-section'
-        className='w-full h-auto py-8 lg:h-[615px] lg:py-0 bg-slate-100'
+        className='w-full h-auto py-8 lg:h-[615px] lg:py-0 bg-color-clear'
         ref={blogSectionRef}
       >
         <Blog

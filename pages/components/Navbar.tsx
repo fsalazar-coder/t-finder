@@ -34,9 +34,9 @@ export default function Navbar(props: any) {
           `${navbarFirstUse ?
             'animate-[disappear-color_0.50s_ease-out]' :
             ''
-          } bg-transparent` :
-          'bg-slate-950 border border-slate-800 animate-[appear-color_0.50s_ease-in]'
-        } w-full h-10 lg:h-12 fixed flex flex-row justify-center items-center z-50`
+          } bg-transparent border-slate-200 ` :
+          'bg-color-navbar border-color-border-navbar'
+        } w-full h-10 lg:h-12 fixed flex flex-row justify-center items-center border-b transition-colors z-50`
       }>
       <div className='container w-full h-full px-0 lg:px-5 flex flex-row justify-between items-center'>
         {
@@ -54,11 +54,11 @@ export default function Navbar(props: any) {
         {/**Logo (left) */}
         <div className='w-1/2 h-full flex flex-row justify-start items-center'>
           <h2 className='text-lg text-white font-light'>
-            <a className='font-bold'>
+            <a className='font-bold text-color-text-highlighted'>
               T
             </a>
             alent-
-            <a className='text-white font-bold'>
+            <a className='text-color-text-highlighted font-semibold'>
               finder
             </a>
           </h2>
@@ -92,7 +92,7 @@ export default function Navbar(props: any) {
                       className='w-auto h-auto px-4 py-2 flex flex-row justify-center items-center transition-all z-30'
                       onClick={() => setLoginModal(true)}
                     >
-                      <h3 className='w-full h-2/3 py-1 px-8 text-slate-50 hover:text-white text-sm lg:text-base xl:text-lg font-semibold tracking-wider flex flex-row justify-center items-center border-2 border-fuchsia-300 hover:border-fuchsia-900 rounded-full cursor-pointer transition-all'>
+                      <h3 className='w-full h-2/3 py-1 px-8 text-color-highlighted-clear hover:text-color-highlighted text-sm lg:text-base xl:text-lg font-semibold tracking-wider flex flex-row justify-center items-center border-2 border-color-highlighted-clear hover:border-color-highlighted rounded-full cursor-pointer transition-all'>
                         Login
                       </h3>
                     </button>
@@ -103,7 +103,7 @@ export default function Navbar(props: any) {
                       className='w-auto h-auto px-4 py-2 flex flex-row justify-center items-center transition-all z-30'
                       onClick={() => setJoinModal(true)}
                     >
-                      <h3 className='w-full h-2/3 py-1 px-8 text-slate-50 hover:text-white text-sm lg:text-base xl:text-lg font-semibold tracking-wider flex flex-row justify-center items-center bg-fuchsia-300 hover:bg-fuchsia-900 border-2 border-fuchsia-300 hover:border-fuchsia-900 rounded-full cursor-pointer transition-all'>
+                      <h3 className='w-full h-2/3 py-1 px-8 text-slate-50 hover:text-white text-sm lg:text-base xl:text-lg font-semibold tracking-wider flex flex-row justify-center items-center bg-color-highlighted-clear hover:bg-color-highlighted border-2 border-color-highlighted-clear hover:border-color-highlighted rounded-full cursor-pointer transition-all'>
                         Join
                       </h3>
                     </button>

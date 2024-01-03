@@ -30,10 +30,10 @@ export default function Dashboard() {
       <div className='container w-full h-full pt-14 lg:pt-10 p-5 lg:p-10 flex flex-col justify-center items-center transition-all'>
         {/**wellcome */}
         <div className='w-full flex flex-col'>
-          <h1 className="text-color-text-dark-primary text-lg font-semibold">
+          <h1 className="text-color-dark text-lg font-semibold">
             Hello, {userProfilePersonalInfo?.full_name ? userProfilePersonalInfo?.full_name : 'User'}
           </h1>
-          <h4 className="text-color-text-dark-secondary text-sm">
+          <h4 className="text-color-text-medium text-sm">
             Today is {currentDate}
           </h4>
         </div>
@@ -60,14 +60,6 @@ export default function Dashboard() {
           <div className="w-2/5 h-full">
             <Notifications />
           </div>
-          {/**section 5: sponsors 
-          <div className="w-1/5 h-full">
-            <div className="w-full h-full p-4 flex flex-col justify-center items-center bg-color-clear border border-color-border-clear shadow-md rounded-lg">
-              <h2>SPONSOR</h2>
-              <h2>Recommendations</h2>
-              <h2>SPONSOR</h2>
-            </div>
-          </div> */}
         </div>
       </div>
     </div>

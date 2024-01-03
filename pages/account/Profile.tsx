@@ -1,16 +1,20 @@
 import { useState, useEffect } from 'react';
-import { useAuthData, useAuthUI } from "../../context/authContext";
+import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
-import ProfileSectionCard from './ProfileSectionCard';
 import ProfileDashboard from './ProfileDashboard';
+import CardsTitlesProfile from './CardsTitleProfile';
+import CardsDisplayerProfile from './CardsDisplayerProfile';
 
 
 
 export default function Profile() {
 
   const { token, userId, userScore, setUserScore, collectionToChange, setCollectionToChange, update, setUpdate } = useAuthData();
-  const { accountModule, setAccountModule } = useAuthUI();
-
+  const { accountModule, setProfileModal, setProfileModalType, setProfileModalAction } = useAuthUI();
+  const { screenNarrow } = useUI();
+  const [cardHover, setCardHover] = useState<boolean>(false);
+  const [profileMenu, setProfileMenu] = useState<string>('experience');
+  const [profileMenuIndex, setProfileMenuIndex] = useState<number>(0);
   const [profileData, setProfileData] = useState({
     experience: [],
     education: [],
@@ -20,12 +24,12 @@ export default function Profile() {
     certifications: [],
     recommendations: [],
   });
-
-  const sections = [
+  const profile: any = [
     {
       id: 'experience',
       title: 'Experience',
       data: profileData.experience,
+      profileMenuCondition: profileMenu === 'experience',
       shouldRender: profileData.experience.length > 0,
       length: profileData.experience.length,
     },
@@ -33,6 +37,7 @@ export default function Profile() {
       id: 'education',
       title: 'Education',
       data: profileData.education,
+      profileMenuCondition: profileMenu === 'education',
       shouldRender: profileData.education.length > 0,
       length: profileData.education.length
     },
@@ -40,6 +45,7 @@ export default function Profile() {
       id: 'courses',
       title: 'Courses',
       data: profileData.courses,
+      profileMenuCondition: profileMenu === 'courses',
       shouldRender: profileData.courses.length > 0,
       length: profileData.courses.length
     },
@@ -47,6 +53,7 @@ export default function Profile() {
       id: 'publications',
       title: 'Publications',
       data: profileData.publications,
+      profileMenuCondition: profileMenu === 'publications',
       shouldRender: profileData.publications.length > 0,
       length: profileData.publications.length
     },
@@ -54,6 +61,7 @@ export default function Profile() {
       id: 'conferences',
       title: 'Conferences',
       data: profileData.conferences,
+      profileMenuCondition: profileMenu === 'conferences',
       shouldRender: profileData.conferences.length > 0,
       length: profileData.conferences.length
     },
@@ -61,35 +69,28 @@ export default function Profile() {
       id: 'certifications',
       title: 'Certifications',
       data: profileData.certifications,
+      profileMenuCondition: profileMenu === 'certifications',
       shouldRender: profileData.certifications.length > 0,
       length: profileData.certifications.length
     },
     {
       id: 'recommendations',
-      title: 'Recommendations',
+      title: 'Recommend...',
       data: profileData.recommendations,
+      profileMenuCondition: profileMenu === 'recommendations',
       shouldRender: profileData.recommendations.length > 0,
       length: profileData.recommendations.length
     }
   ];
+  const elementsProfile: number = profile.length;
+  const elementsCompleted = profile.filter((element: any) => element.shouldRender).length;
+  const percentageProfileFilled: number = Math.round((elementsCompleted / elementsProfile) * 100);
 
-  const totalSections = sections.length;
-  const sectionsCompleted = sections.filter(section => section.shouldRender).length;
-  const percentageProfileFilled = Math.round((sectionsCompleted / totalSections) * 100);
-
-  // Función para actualizar los datos de una sección específica
-  const updateSectionData = (sectionName: string, data: any) => {
-    setProfileData((prevData) => ({
-      ...prevData,
-      [sectionName]: data
-    }));
-  };
-
-  // Cargar los datos para todas las secciones
+  // Cargar los datos para todos los elementos
   useEffect(() => {
-    if (!update || update === collectionToChange || accountModule === 'Profile') {
-      sections.forEach((section) => {
-        let collectionName = section.id;
+    if (update === collectionToChange || accountModule === 'Profile') {
+      profile.forEach((element: any) => {
+        let collectionName = element.id;
         userDataHandlerFunction({
           token: token as string,
           userId: userId as string,
@@ -97,7 +98,12 @@ export default function Profile() {
           collectionName: collectionName,
           data: '',
           onSuccess: (responseData: any) => {
-            updateSectionData(collectionName, responseData);
+            let elementName: string = collectionName;
+            let data: any = responseData;
+            setProfileData((prevData) => ({
+              ...prevData,
+              [elementName]: data
+            }));
           },
           onError: (error: any) => console.error(error)
         });
@@ -105,68 +111,64 @@ export default function Profile() {
           setUpdate('');
           setCollectionToChange('');
         }
-      })
+      });
     }
-  }, [token, userId, accountModule, update, setUpdate, collectionToChange, setCollectionToChange]);
-
+  }, [token, userId, update, accountModule, collectionToChange]);
 
   useEffect(() => {
-    let score = 0;
-
-    const experiencePoints = {
+    let score: number = 0;
+    const experiencePoints: any = {
       'Junior': 5,
       'Mid': 10,
       'Senior': 15
     };
-
-    const experienceYearsPoints = {
+    const experienceYearsPoints: any = {
       '0-2': 10,
       '2-5': 20,
       '5-10': 30,
       '+10': 40
     };
-
-    const educationDegreePoints = {
+    const educationDegreePoints: any = {
       'High school': 10,
       'Bachelor': 20,
       'Master': 30,
       'Doctorate': 40
     };
-
-    const calculateScore = (sectionLength: any, pointsPerItem: any, maxPoints: any) => {
-      return Math.min(sectionLength * pointsPerItem, maxPoints);
+    const calculateScore = (elementLength: any, pointsPerItem: any, maxPoints: any) => {
+      return Math.min(elementLength * pointsPerItem, maxPoints);
     };
-
-    sections.forEach((section) => {
-      let sectionData = section.data;
-      switch (section.id) {
+    profile.forEach((element: any) => {
+      let elementData = element.data;
+      let elementLength: number = element.length;
+      let elementEmpty: boolean = elementLength === 0;
+      switch (element.id) {
         case 'experience':
-          if (section.length > 0) {
-            sectionData.map((experience) => {
+          if (!elementEmpty) {
+            elementData.map((experience: any) => {
               score += experiencePoints[experience['experience_level']] || 0;
               score += experienceYearsPoints[experience['experience_years']] || 0;
             })
           }
           break;
         case 'education':
-          if (section.length > 0) {
-            sectionData.map((education) => {
+          if (!elementEmpty) {
+            elementData.map((education: any) => {
               score += educationDegreePoints[education['degree']] || 0;
             })
           }
           break;
         case 'courses':
-          score += calculateScore(section.length, 5, 30);
+          score += calculateScore(elementLength, 5, 30);
           break;
         case 'publications':
         case 'conferences':
-          score += calculateScore(section.length, 4, 20);
+          score += calculateScore(elementLength, 4, 20);
           break;
         case 'certifications':
-          score += calculateScore(section.length, 6, 30);
+          score += calculateScore(elementLength, 6, 30);
           break;
         case 'recommendations':
-          score += calculateScore(section.length, 3, 15);
+          score += calculateScore(elementLength, 3, 15);
           break;
         default:
           break;
@@ -174,7 +176,8 @@ export default function Profile() {
     });
     setUserScore(score);
     userScoreUpdate(score);
-  }, [sections]);
+  }, [profile]);
+
 
 
   const userScoreUpdate = async (score: any) => {
@@ -184,45 +187,59 @@ export default function Profile() {
       action: 'edit',
       collectionName: 'profile_score',
       data: { profile_score: score },
-      onSuccess: (responseData: any) => { },
+      onSuccess: (responseData: any) => { },     // ????????????
       onError: (error: any) => console.error(error)
     });
   };
 
+
+
+  const profileElementsId: string = profile[profileMenuIndex].id;
+  const profileElementsData: any = profile[profileMenuIndex].data;
   const isDashboard = accountModule === 'Dashboard';
+  const containerClassNames = `${isDashboard ? 'w-full h-full flex-col bg-white border border-color-border shadow-md rounded-lg'
+    : screenNarrow ? 'w-full flex-col px-1 py-12' : 'w-[52rem] px-2 lg:px-8 lg:py-9 flex-col'
+    } flex justify-between transition-all`;
 
 
   return (
-    isDashboard ?
-      <ProfileDashboard
-        percentage={percentageProfileFilled}
-        data={sections}
-        userScore={userScore}
-      />
-      :
-      <div className='w-full pl-0 lg:pl-60 flex flex-row justify-center items-center'>
-        <ul className='w-[52rem] pt-12 px-2 pb-2 lg:p-8 flex flex-col transition-all'>
-          {
-            /**others section card: experience, education, courses, projects, publications, conferences, certifications and recommendatiosn */
-            sections?.map((section: any, index: any) => {
-              return (
-                <li
-                  id={section.id}
-                  key={`${index}-${section.title}`}
-                  className='w-full relative my-1 flex flex-col bg-color-clear border border-color-border-clear shadow-md rounded-lg'
-                >
-                  <ProfileSectionCard
-                    id={section.id}
-                    title={section.title}
-                    value={section.id}
-                    data={section.data}
-                    shouldRender={section.shouldRender}
-                  />
-                </li>
-              )
-            })
-          }
-        </ul>
+    <div className={`${!isDashboard && 'pl-0 lg:pl-60'} w-full h-full flex flex-col items-center`}>
+      <div className={containerClassNames}
+        onMouseEnter={() => setCardHover(true)}
+        onMouseLeave={() => setCardHover(false)}
+      >
+        <CardsTitlesProfile
+          screenNarrow={screenNarrow}
+          isDashboard={isDashboard}
+          data={profile}
+          profileId={profileElementsId}
+          cardHover={cardHover}
+          profileMenuIndex={profileMenuIndex}
+          profileMenuIndexRetro={() => setProfileMenuIndex(profileMenuIndex > 0 ? profileMenuIndex - 1 : 0)}
+          profileMenuIndexNext={() => setProfileMenuIndex(profileMenuIndex + 1)}
+          openModalFormClick={() => {
+            setProfileModal(true);
+            setProfileModalAction('post');
+            setProfileModalType(profileElementsId);
+            setCollectionToChange(profileElementsId);
+          }}
+        />
+        {
+          isDashboard ?
+            <ProfileDashboard
+              percentage={percentageProfileFilled}
+              data={profile}
+              userScore={userScore}
+            />
+            :
+            <CardsDisplayerProfile
+              id={profileElementsId}
+              key={profileElementsId}
+              data={profileElementsData}
+              collectionName={profileElementsId}
+            />
+        }
       </div>
+    </div>
   );
 };
