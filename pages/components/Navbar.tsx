@@ -5,9 +5,9 @@ import ImageIconUser from '../account/ImageIconUser';
 
 
 
-export default function Navbar(props: any) {
+export default function Navbar() {
 
-  const { token } = useAuthData();
+  const { token, userId } = useAuthData();
   const {
     screenNarrow,
     dropdown, setDropdown,
@@ -77,8 +77,11 @@ export default function Navbar(props: any) {
                 }
                 onClick={() => setDropdown(!dropdown)}
               >
-                <div className='w-8 h-8 flex flex-col justify-center items-center'>
-                  <ImageIconUser size='small' />
+                <div className='w-9 h-9 flex flex-col justify-center items-center'>
+                  <ImageIconUser
+                    type='navbar'
+                    toUserId={userId as string}
+                  />
                 </div>
               </div>
               :

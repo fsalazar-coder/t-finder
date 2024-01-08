@@ -11,7 +11,6 @@ import JobRequest from "./account/JobRequest";
 import RequestModal from "./account/RequestModal";
 import Notifications from "./account/Notifications";
 import Settings from "./account/Settings";
-import HelpSupport from "./account/HelpSupport";
 import MessageModal from './components/MessageModal';
 import {
   IconBxlLinkedin,
@@ -52,7 +51,6 @@ export default function Account() {
     'Job': JobRequest,
     'Notifications': Notifications,
     'Settings': Settings,
-    'Help & Support': HelpSupport,
   };
 
   const ActiveModule = modules[accountModule as keyof ModuleComponents] || Dashboard;

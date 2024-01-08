@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import { userDataHandlerFunction } from "../api/userDataHandlerFunction";
 import { IconDelete, IconEdit } from "@/icons/icons";
-import EditDeleteButtons from "./EditDeleteButtons";
 import UserCardRequest from "./UserCardRequest";
-import Profile from "./Profile";
 
 interface CardsDisplayerParams {
   id: string,
@@ -20,9 +18,8 @@ interface CardsDisplayerParams {
 
 
 
-export default function CardsDisplayerRequest({
-  id, key, dataToRender, dataToCompare, cardsDisplayerType, requestMenu,
-  goClickTitleEnabled, goClickTitleDisabled, goClick }: CardsDisplayerParams) {
+export default function CardsDisplayerRequest({id, key, dataToRender, 
+  dataToCompare, cardsDisplayerType, requestMenu, goClick }: CardsDisplayerParams) {
 
   const { screenNarrow, setMessageModal } = useUI();
   const { accountModule, setRequestModal, setRequestModalAction } = useAuthUI();
@@ -32,7 +29,6 @@ export default function CardsDisplayerRequest({
   const [listHover, setListHover] = useState(false);
 
   const isDashboard = accountModule === 'Dashboard';
-  const isEditable = (requestMenu === 'talent submitted' || requestMenu === 'job submitted');
   const isRequestMenuReview: boolean = requestMenu === 'candidate review';
   const collection: string = requestMenu === 'talent submitted' ? 'request_talent' : requestMenu === 'job submitted' ? 'request_job' : '';
   const shouldRenderData = Array.isArray(dataToRender) && dataToRender.length > 0;
@@ -104,27 +100,13 @@ export default function CardsDisplayerRequest({
               onMouseEnter={() => { setItemHover(index); setListHover(true) }}
               onMouseLeave={() => { setItemHover(null); setListHover(false) }}
             >
-              {
-                isEditable &&
-                <EditDeleteButtons
-                  buttons={editDeleteButtons}
-                  elementId={element._id}
-                  collection={collection}
-                  listHover={listHover}
-                  itemHover={itemHover}
-                  index={index}
-                />
-              }
               <UserCardRequest
                 data={element}
-                indexCard={index}
-                listHover={listHover}
-                itemHover={itemHover}
+                dataBaseCollection={collection}
                 userCardType={cardsDisplayerType}
                 requestMenu={requestMenu}
+                editDeleteButtonVisible={listHover && (itemHover === index)}
                 goClickCondition={dataToCompareUpdated?.includes(changeId)}
-                goClickTitleEnabled={goClickTitleEnabled}
-                goClickTitleDisabled={goClickTitleDisabled}
                 value={changeId}
                 goClick={(e: any) => goClick(e)}
               />

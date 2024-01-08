@@ -38,7 +38,7 @@ const navbarElementUnauth = [
 
 export default function Dropdown(props: any) {
 
-  const { token, userEmail, logout } = useAuthData();
+  const { token, userId, userEmail, logout } = useAuthData();
   const { accountActived, setAccountActived, accountModule, setAccountModule, setChatActived } = useAuthUI();
   const { screenNarrow, dropdown, setDropdown, setHamburguerMenuActive,
     setLoginModal, setJoinModal, setMessageModal } = useUI();
@@ -58,8 +58,11 @@ export default function Dropdown(props: any) {
             {/**user icon-image */}
             <li className='w-full h-auto py-4 px-4 mb-4 flex flex-row items-center border-y border-color-border-navbar'>
               <div className='flex flex-row items-center'>
-                <div className='w-10 h-10 flex flex-col justify-center items-center'>
-                  <ImageIconUser size='small' />
+                <div className='w-9 h-9 flex flex-col justify-center items-center'>
+                  <ImageIconUser
+                    type='dropdown'
+                    toUserId={userId as string}
+                  />
                 </div>
                 <h5 className='text-color-text-dark pl-3 text-xs lg:text-sm xl:text-sm font-light'>
                   Hello, <br /> {userEmail}

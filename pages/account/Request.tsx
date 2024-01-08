@@ -59,25 +59,20 @@ interface TalentData {
   _id: string;
 }
 
-interface RequestData {
+interface userRequestData {
   requestTalent: TalentData[];
 };
 
 
 
 export default function Request({ requestType }: any) {
-  const { token, userId, collectionToChange, setCollectionToChange,
+  const { token, userId, userRequestData, setUserRequestData, collectionToChange, setCollectionToChange,
     update, setUpdate, talentRequestStatus, setTalentRequestStatus, socket } = useAuthData();
   const { accountModule, setAccountModule, setRequestModal, setRequestModalAction } = useAuthUI();
   const { screenNarrow, setMessageModal, setLoading } = useUI();
   const [listHover, setListHover] = useState(false);
   const [cardHover, setCardHover] = useState(false);
   const [requestMenu, setRequestMenu] = useState(requestType === 'Talent' ? 'talent submitted' : 'job submitted');
-
-  const [requestData, setRequestData] = useState({
-    requestTalent: [],
-    requestJob: [],
-  });
 
   const [candidates, setCandidates] = useState<CandidatesParams>({});
   const [candidatesRequestTalentId, setCandidatesRequestTalentId] = useState('');
@@ -97,7 +92,7 @@ export default function Request({ requestType }: any) {
 
   // Cargar los datos para todas las request
   useEffect(() => {
-    if (update === collectionToChange || accountModule === 'Talent' || accountModule === 'Job') {
+    if (update === 'request' || update === collectionToChange) {     /// || accountModule === 'Talent' || accountModule === 'Job'
       requests.forEach((request: Request) => {
         const collectionName = request.collection;
         userDataHandlerFunction({
@@ -108,7 +103,10 @@ export default function Request({ requestType }: any) {
           data: '',
           onSuccess: (responseData: any) => {
             const requestName = collectionName === 'request_talent' ? 'requestTalent' : 'requestJob';
-            updateRequestData(requestName, responseData);
+            setUserRequestData((prevData) => ({
+              ...prevData,
+              [requestName]: responseData
+            }));
           },
           onError: (error: any) => console.error(error)
         });
@@ -118,13 +116,13 @@ export default function Request({ requestType }: any) {
         }
       });
     }
-  }, [token, userId, update, collectionToChange, accountModule]);
+  }, [token, userId, update]);
 
   // Arreglo con todos los candidatos disponibles para cada talent request //
   // y, Arreglo con todos los candidatos que están siendo contactados //
   useEffect(() => {
     if (requestMenu === 'talent submitted' || goClickUpdate === 'candidates contacting') {
-      requestData.requestTalent.forEach((data: TalentData) => {
+      userRequestData.requestTalent.forEach((data: any) => {
         const keyword = data.job_category;
         let requestTalentId = data._id;
         userDataHandlerFunction({
@@ -157,12 +155,12 @@ export default function Request({ requestType }: any) {
       });
       setGoClickUpdate('');
     }
-  }, [token, userId, requestData.requestTalent, requestMenu, goClickUpdate]);
+  }, [token, userId, userRequestData.requestTalent, requestMenu, goClickUpdate]);
 
   // Arreglo con todas las ofertas disponibles para cada job request //
   useEffect(() => {
     if (requestMenu === 'job submitted' || goClickUpdate === 'offers accepted') {
-      requestData.requestJob.map((data: any) => {
+      userRequestData.requestJob.map((data: any) => {
         let requestJobId = data._id;
         userDataHandlerFunction({
           token: token as string,
@@ -195,7 +193,7 @@ export default function Request({ requestType }: any) {
       });
       setGoClickUpdate('');
     }
-  }, [token, userId, requestData.requestJob, requestMenu, goClickUpdate])
+  }, [token, userId, userRequestData.requestJob, requestMenu, goClickUpdate])
 
   useEffect(() => {
     if (requestMenu === 'candidates') {
@@ -231,24 +229,17 @@ export default function Request({ requestType }: any) {
     if (requestMenu === 'offers' || requestMenu === 'candidates') {
 
     }
-  }, [requestData, requestMenu]);
-
-  const updateRequestData = (requestName: string, data: any) => {
-    setRequestData((prevData) => ({
-      ...prevData,
-      [requestName]: data
-    }));
-  };
+  }, [userRequestData, requestMenu]);
 
   const requests: any = [
     {
       id: 'Talent',
       title: 'Talent request',
-      data: requestData.requestTalent,
+      data: userRequestData.requestTalent,
       collection: 'request_talent',
-      shouldRender: requestData.requestTalent.length > 0,
+      shouldRender: userRequestData.requestTalent.length > 0,
       stepsProcess: [
-        { step: 'Submmission', render: requestData?.requestTalent?.length > 0 },
+        { step: 'Submmission', render: userRequestData?.requestTalent?.length > 0 },
         { step: 'Selecting', render: Object.keys(candidates).length > 0 },
         { step: 'Contacting', render: true },
         { step: 'Chating', render: true }
@@ -257,11 +248,11 @@ export default function Request({ requestType }: any) {
     {
       id: 'Job',
       title: 'Job request',
-      data: requestData.requestJob,
+      data: userRequestData.requestJob,
       collection: 'request_job',
-      shouldRender: requestData.requestJob.length > 0,
+      shouldRender: userRequestData.requestJob.length > 0,
       stepsProcess: [
-        { step: 'Submmission', render: requestData?.requestJob?.length > 0 },
+        { step: 'Submmission', render: userRequestData?.requestJob?.length > 0 },
         { step: 'Alerted', render: true },
         { step: 'Acceptance', render: true },
         { step: 'Chating', render: true }
@@ -323,7 +314,7 @@ export default function Request({ requestType }: any) {
     'talent submitted': {
       id: 'submitted-talent-request',
       cardsDisplayerType: 'talent request',
-      dataToRender: requestData.requestTalent,
+      dataToRender: userRequestData.requestTalent,
       dataToCompare: Object.keys(candidates).filter(key => candidates[key].length === 0),
       requestMenuCondition: 'talent submitted',
       goClickTitleDisabled: 'Awaiting candidates',
@@ -337,7 +328,7 @@ export default function Request({ requestType }: any) {
     'job submitted': {
       id: 'submitted-job-request',
       cardsDisplayerType: 'job request',
-      dataToRender: requestData.requestJob,
+      dataToRender: userRequestData.requestJob,
       dataToCompare: Object.keys(offers).filter(key => offers[key].length === 0),
       requestMenuCondition: 'job submitted',
       goClickTitleDisabled: 'Awaiting offers',
@@ -462,13 +453,13 @@ export default function Request({ requestType }: any) {
   };
 
   const isDashboard = accountModule === 'Dashboard';
-  const isRequest = requestType === 'Talent' ? requestData?.requestTalent?.length > 0 : requestData?.requestJob?.length > 0;
+  const isRequest = requestType === 'Talent' ? userRequestData?.requestTalent?.length > 0 : userRequestData?.requestJob?.length > 0;
   const stepsProcess = requests[requestType === 'Talent' ? 0 : 1].stepsProcess;
   const isCardTypeSubmitted = requestMenu === 'talent submitted' || requestMenu === 'job submitted';
   const isButtonBack = !isCardTypeSubmitted;
 
   const containerClassNames = `${isDashboard ? 'w-full h-full flex-col bg-white border border-color-border shadow-md rounded-lg'
-    : screenNarrow ? 'w-full flex-col px-1 py-12' : 'w-[52rem] px-2 lg:px-8 lg:py-9 flex-col'
+    : screenNarrow ? 'w-full flex-col px-1 py-16' : 'w-[52rem] px-2 lg:px-8 lg:py-9 flex-col'
     } flex justify-between transition-all`;
 
 

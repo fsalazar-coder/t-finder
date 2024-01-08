@@ -221,7 +221,7 @@ export default function MessageModal() {
               <button
                 className={
                   `${type === 'successful' ? 'bg-green-400 lg:bg-green-300 lg:hover:bg-green-600' :
-                    type === 'question' ? 'bg-blue-400 lg:bg-blue-300 lg:hover:bg-blue-600' :
+                    type === 'question' ? 'bg-color-highlighted lg:hover:bg-color-highlighted-clear' :
                       type === 'logout' ? 'bg-yellow-400 lg:bg-yellow-300 lg:hover:bg-yellow-600' :
                         'w-full bg-red-400 lg:bg-red-300 lg:hover:bg-red-600'
                   } w-[95%] text-slate-50 lg:hover:text-white lg:hover:font-bold py-2 flex flex-row justify-center items-center cursor-default lg:cursor-pointer rounded-md transition-all`

@@ -1,19 +1,15 @@
 import SectionTitles from "../components/SectionTitles";
-import ButtonTitleMenuAddEdit from "./ButtonTitleMenuAddEdit";
+import ButtonTitleCards from "./ButtonTitleCards";
 import { IconBxChevronLeft } from "@/icons/icons";
 
 
 
 export default function CardsTitlesRequest(
   {
-    screenNarrow,
     isDashboard,
     dataType,
     dataMenuTitles,
     isData,
-    cardHover,
-    openAccountModuleClick,
-    openModalFormClick,
     isButtonBack,
     requestBackButton
   }: any) {
@@ -52,33 +48,28 @@ export default function CardsTitlesRequest(
           }
         </div>
         <div className="w-1/3 h-full relative flex flex-row justify-end items-center">
+          <ButtonTitleCards
+            id={`button-title-request-${dataType}`}
+            isData={isData}
+            buttonType={isDashboard ? 'request-title-dashboard' : 'request-title'}
+            dataBaseCollection={dataType === 'Talent' ? 'request_talent' : 'request_job'}
+            shouldRenderButton={!isButtonBack}
+          />
           {
-            !isButtonBack ?
-              <ButtonTitleMenuAddEdit
-                id={`button-title-request-${dataType}`}
-                isData={isData}
-                isDashboard={isDashboard}
-                cardHover={cardHover}
-                screenNarrow={screenNarrow}
-                addButtonName={`New request`}
-                openAccountModuleClick={() => openAccountModuleClick()}
-                openModalFormClick={() => openModalFormClick()}
-              />
-              :
-              /**back button */
-              <button
-                id='button-back'
-                className={
-                  `w-fit h-full flex flex-row justify-end items-center`}
-                onClick={() => requestBackButton()}
-              >
-                <i className='w-6 pr-1 flex flex-row justify-center text-color-text-medium text-lg hover:text-color-highlighted cursor-pointer transition-all'>
-                  <IconBxChevronLeft />
-                </i>
-                <h4 className="flex flex-row">
-                  Back
-                </h4>
-              </button>
+            isButtonBack &&
+            /**back button */
+            <button
+              id='button-back'
+              className={`w-fit h-full flex flex-row justify-end items-center`}
+              onClick={() => requestBackButton()}
+            >
+              <i className='w-6 pr-1 flex flex-row justify-center text-color-text-medium text-lg hover:text-color-highlighted cursor-pointer transition-all'>
+                <IconBxChevronLeft />
+              </i>
+              <h4 className="flex flex-row">
+                Back
+              </h4>
+            </button>
           }
         </div>
       </div>

@@ -5,73 +5,67 @@ import { IconCancel } from '../../icons/icons';
 import FormTemplate from './FormTemplate';
 
 
+const initialUserRequestData = {
+  /**request talent information: */
+  jobDescription: '',
+  jobCategory: '',
+  requiredSkills: '',
+  requiredExperienceYears: '',
+  jobLocation: '',
+  offeredWorkModality: '',
+  offeredCompensation: '',
+  companyInfo: '',
+  /**job talent information: */
+  talentCategory: '',
+  talentDescription: '',
+  offeredSkills: '',
+  experienceYears: '',
+  prefiredWorkModality: '',
+  availability: '',
+  location: '',
+  desiredCompensation: '',
+};
+
+
 
 export default function RequestModal(props: any) {
 
+  const { screenNarrow, setMessageModal, setLoading } = useUI();
   const { token, userId, collectionToChange, itemIdToChange, setUpdate } = useAuthData();
   const { requestModal, setRequestModal, requestModalAction, setRequestModalAction } = useAuthUI();
-  const { setMessageModal, setLoading } = useUI();
-  const { screenNarrow } = useUI();
   const [filledForm, setFilledForm] = useState(false);
+
   const carouselFormRef: any = useRef(null);
   const carouselFormSelected: any = carouselFormRef.current;
   const [carouselFormPosition, setCarouselFormPosition] = useState(Number);
   const [carouselTranslateX, setCarouselTranslateX] = useState(Number);
 
-  {/**talent request form constants*/ }
-  const [requestTalentData, setRequestTalentData] = useState({
+  const [userRequestDataUpdate, setUserRequestDataUpdate] = useState(initialUserRequestData);
+
+  const [changeUserRequestDataUpdate, setChangeUserrequestDataUpdate] = useState({
+    /**request talent information: */
     jobDescription: '',
     jobCategory: '',
-    skillsRequired: '',
-    experienceYears: '',
-    location: '',
-    modalityWork: '',
-    compensation: '',
+    requiredSkills: '',
+    requiredExperienceYears: '',
+    jobLocation: '',
+    offeredWorkModality: '',
+    offeredCompensation: '',
     companyInfo: '',
-  });
-  const [changeRequestTalentData, setChangeRequestTalentData] = useState({
-    jobDescription: false,
-    jobCategory: false,
-    skillsRequired: false,
-    experienceYears: false,
-    location: false,
-    modalityWork: false,
-    compensation: false,
-    companyInfo: false,
-  });
-  {/** */ }
-
-  {/**job request form constants */ }
-  const [requestJobData, setRequestJobData] = useState({
+    /**job talent information: */
     talentCategory: '',
     talentDescription: '',
-    skillsOffered: '',
+    offeredSkills: '',
     experienceYears: '',
-    modalityWork: '',
+    prefiredWorkModality: '',
     availability: '',
     location: '',
-    rates: '',
+    desiredCompensation: '',
   });
-  const [changeRequestJobData, setChangeRequestJobData] = useState({
-    talentDescription: false,
-    talentCategory: false,
-    skillsOffered: false,
-    experienceLevel: false,
-    modalityWork: false,
-    availability: false,
-    location: false,
-    rates: false,
-  });
-  {/** */ }
 
   const handleChangeData = (e: any) => {
     const { name, value } = e.target;
-    if (requestModal === 'Talent') {
-      setRequestTalentData({ ...requestTalentData, [name]: value });
-    }
-    else {
-      setRequestJobData({ ...requestJobData, [name]: value });
-    }
+    setUserRequestDataUpdate({ ...userRequestDataUpdate, [name]: value });
   };
 
   const handleCloseModal = (e: any) => {
@@ -83,26 +77,26 @@ export default function RequestModal(props: any) {
   const dataUpdate = (requestToChange: string) => {
     const data = {
       requestTalent: {
-        title: requestTalentData.jobCategory,
-        job_category: requestTalentData.jobCategory,
-        job_description: requestTalentData.jobDescription,
-        required_skills: requestTalentData.skillsRequired,
-        required_experience_years: requestTalentData.experienceYears,
-        modality_work: requestTalentData.modalityWork,
-        company_name: requestTalentData.companyInfo,
-        location: requestTalentData.location,
-        compensation: requestTalentData.compensation,
+        title: userRequestDataUpdate.jobCategory,
+        job_category: userRequestDataUpdate.jobCategory,
+        job_description: userRequestDataUpdate.jobDescription,
+        required_skills: userRequestDataUpdate.requiredSkills,
+        required_experience_years: userRequestDataUpdate.requiredExperienceYears,
+        modality_work: userRequestDataUpdate.offeredWorkModality,
+        company_name: userRequestDataUpdate.companyInfo,
+        location: userRequestDataUpdate.jobLocation,
+        offeredCompensation: userRequestDataUpdate.offeredCompensation,
       },
       requestJob: {
-        title: requestJobData.talentCategory,
-        talent_category: requestJobData.talentCategory,
-        talent_description: requestJobData.talentDescription,
-        offered_skills: requestJobData.skillsOffered,
-        experience_years: requestJobData.experienceYears,
-        modality_work: requestJobData.modalityWork,
-        availability: requestJobData.availability,
-        location: requestJobData.location,
-        rates: requestJobData.rates,
+        title: userRequestDataUpdate.talentCategory,
+        talent_category: userRequestDataUpdate.talentCategory,
+        talent_description: userRequestDataUpdate.talentDescription,
+        offered_skills: userRequestDataUpdate.offeredSkills,
+        experience_years: userRequestDataUpdate.experienceYears,
+        modality_work: userRequestDataUpdate.prefiredWorkModality,
+        availability: userRequestDataUpdate.availability,
+        location: userRequestDataUpdate.location,
+        desiredCompensation: userRequestDataUpdate.desiredCompensation,
       },
     };
     let dataToApi;
@@ -155,8 +149,8 @@ export default function RequestModal(props: any) {
 
   /**fill form control */
   useEffect(() => {
-    let dataTalentUnfilled = Object.values(requestTalentData).some(value => value === '');
-    let dataJobUnfilled = Object.values(requestJobData).some(value => value === '');
+    let dataTalentUnfilled = Object.values(userRequestDataUpdate).some(value => value === '');
+    let dataJobUnfilled = Object.values(userRequestDataUpdate).some(value => value === '');
     if (requestModal === 'Talent' && dataTalentUnfilled) {
       setFilledForm(false);
     }
@@ -191,8 +185,8 @@ export default function RequestModal(props: any) {
     { type: 'text', title: 'Job Description', value: 'jobDescription' },
     {
       type: 'select',
-      title: 'Experience years',
-      value: 'experienceYears',
+      title: 'Required experience years',
+      value: 'requiredExperienceYears',
       options: [
         { value: '0-2', title: '0-2' },
         { value: '2-5', title: '2-5' },
@@ -200,19 +194,19 @@ export default function RequestModal(props: any) {
         { value: '+10', title: '+10' },
       ]
     },
-    { type: 'text', title: 'Skills Required', value: 'skillsRequired' },
-    { type: 'text', title: 'Location', value: 'location' },
+    { type: 'text', title: 'Required skills', value: 'requiredSkills' },
+    { type: 'text', title: 'Job location', value: 'jobLocation' },
     {
       type: 'select',
       title: 'Modality Work',
-      value: 'modalityWork',
+      value: 'offeredWorkModality',
       options: [
         { value: 'Remote', title: 'Remote' },
         { value: 'On-site', title: 'On-site' },
         { value: 'Flexible', title: 'Flexible' },
       ]
     },
-    { type: 'text', title: 'Compensation (USD)', value: 'compensation' },
+    { type: 'text', title: 'Offered compensation (USD)', value: 'offeredCompensation' },
     { type: 'text', title: 'Company Info', value: 'companyInfo' }
   ];
 
@@ -237,7 +231,7 @@ export default function RequestModal(props: any) {
       ]
     },
     { type: 'text', title: 'Talent Description', value: 'talentDescription' },
-    { type: 'text', title: 'Skills Offered', value: 'skillsOffered' },
+    { type: 'text', title: 'Offered skills', value: 'offeredSkills' },
     {
       type: 'select',
       title: 'Experience years',
@@ -251,8 +245,8 @@ export default function RequestModal(props: any) {
     },
     {
       type: 'select',
-      title: 'Modality Work',
-      value: 'modalityWork',
+      title: 'Prefered modality work',
+      value: 'preferedWorkModality',
       options: [
         { value: 'Remote', title: 'Remote' },
         { value: 'On-site', title: 'On-site' },
@@ -270,7 +264,7 @@ export default function RequestModal(props: any) {
       ]
     },
     { type: 'text', title: 'Location', value: 'location' },
-    { type: 'text', title: 'Rates', value: 'rates' },
+    { type: 'text', title: 'Desired compensation', value: 'desiredCompensation' },
   ];
 
   const showRequestModal = requestModal !== '';
@@ -330,21 +324,21 @@ export default function RequestModal(props: any) {
                       /**talent request I */
                       <FormTemplate
                         inputData={talentInput.slice(0, 5)}
-                        formData={requestTalentData}
-                        changeData={changeRequestTalentData}
+                        formData={userRequestDataUpdate}
+                        changeData={changeUserRequestDataUpdate}
                         onChange={(e: any) => handleChangeData(e)}
-                        onFocus={(e: any) => setChangeRequestTalentData({ ...changeRequestTalentData, [e.target.name]: true })}
-                        onBlur={(e: any) => setChangeRequestTalentData({ ...changeRequestTalentData, [e.target.name]: false })}
+                        onFocus={(e: any) => setChangeUserrequestDataUpdate({ ...changeUserRequestDataUpdate, [e.target.name]: true })}
+                        onBlur={(e: any) => setChangeUserrequestDataUpdate({ ...changeUserRequestDataUpdate, [e.target.name]: false })}
                       />
                       :
                       /**job request I */
                       <FormTemplate
                         inputData={jobInput.slice(0, 5)}
-                        formData={requestJobData}
-                        changeData={changeRequestJobData}
+                        formData={userRequestDataUpdate}
+                        changeData={changeUserRequestDataUpdate}
                         onChange={(e: any) => handleChangeData(e)}
-                        onFocus={(e: any) => setChangeRequestJobData({ ...changeRequestJobData, [e.target.name]: true })}
-                        onBlur={(e: any) => setChangeRequestJobData({ ...changeRequestJobData, [e.target.name]: false })}
+                        onFocus={(e: any) => setChangeUserrequestDataUpdate({ ...changeUserRequestDataUpdate, [e.target.name]: true })}
+                        onBlur={(e: any) => setChangeUserrequestDataUpdate({ ...changeUserRequestDataUpdate, [e.target.name]: false })}
                       />
                   }
                 </div>
@@ -378,21 +372,21 @@ export default function RequestModal(props: any) {
                       /**talent request II */
                       <FormTemplate
                         inputData={talentInput.slice(5)}
-                        formData={requestTalentData}
-                        changeData={changeRequestTalentData}
+                        formData={userRequestDataUpdate}
+                        changeData={changeUserRequestDataUpdate}
                         onChange={(e: any) => handleChangeData(e)}
-                        onFocus={(e: any) => setChangeRequestTalentData({ ...changeRequestTalentData, [e.target.value]: true })}
-                        onBlur={(e: any) => setChangeRequestTalentData({ ...changeRequestTalentData, [e.target.value]: false })}
+                        onFocus={(e: any) => setChangeUserrequestDataUpdate({ ...changeUserRequestDataUpdate, [e.target.value]: true })}
+                        onBlur={(e: any) => setChangeUserrequestDataUpdate({ ...changeUserRequestDataUpdate, [e.target.value]: false })}
                       />
                       :
                       /**job request II */
                       <FormTemplate
-                        formData={requestJobData}
+                        formData={userRequestDataUpdate}
                         inputData={jobInput.slice(5)}
-                        changeData={changeRequestJobData}
+                        changeData={changeUserRequestDataUpdate}
                         onChange={(e: any) => handleChangeData(e)}
-                        onFocus={(e: any) => setChangeRequestJobData({ ...changeRequestJobData, [e.target.value]: true })}
-                        onBlur={(e: any) => setChangeRequestJobData({ ...changeRequestJobData, [e.target.value]: false })}
+                        onFocus={(e: any) => setChangeUserrequestDataUpdate({ ...changeUserRequestDataUpdate, [e.target.value]: true })}
+                        onBlur={(e: any) => setChangeUserrequestDataUpdate({ ...changeUserRequestDataUpdate, [e.target.value]: false })}
                       />
                   }
                 </div>

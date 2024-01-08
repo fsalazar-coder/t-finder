@@ -1,54 +1,120 @@
-import { useEffect } from 'react';
-import { useAuthData } from "../../context/authContext";
+import { useState, useEffect } from 'react';
+import { useAuthUI, useAuthData } from "../../context/authContext";
 import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
-import { IconUser } from '@/icons/icons';
+import { IconCamera, IconUser } from '@/icons/icons';
 import Image from 'next/image';
 
 interface UserProfileImageParams {
-  size: 'small' | 'large';
+  type: 'navbar' | 'dropdown' | 'account-navbar' | 'personal-info' | 'notifications' | 'request' | 'title-chat' | 'message-chat';
+  toUserId: string;
 }
 
 
 
-export default function ImageIconUser({ size }: UserProfileImageParams) {
-  const { token, userId, userProfileImage, setUserProfileImage, update, setUpdate } = useAuthData();
+export default function ImageIconUser({ type, toUserId }: UserProfileImageParams) {
+  const { accountModule, setProfileModal, setProfileModalAction } = useAuthUI();
+  const { token, userImage, setUserImage, setCollectionToChange, update, setUpdate } = useAuthData();
+  const [imageHover, setImageHover] = useState(false);
+
+  useEffect(() => {
+    if (toUserId && token && (!update || update === 'profile_image' || update === 'image-profile')) {
+      fetchUserProfileImage();
+      if (update === 'profile_image' || update === 'image-profile') { 
+        setUpdate(''); 
+      }
+    }
+  }, [token, toUserId, update]);
 
   const fetchUserProfileImage = () => {
     userDataHandlerFunction({
       token: token as string,
-      userId: userId as string,
+      userId: toUserId as string,
       action: 'get',
       collectionName: 'profile_image',
       data: '',
-      onSuccess: (responseData: any) => setUserProfileImage(responseData.image_url),
+      onSuccess: (responseData: any) => setUserImage(responseData.image_url),
       onError: (error: any) => console.error(error)
     });
   };
 
-  useEffect(() => {
-    if (userId && token && (!update || update === 'profile_image')) {
-      fetchUserProfileImage();
-      setUpdate('');
-    }
-  }, [userId, token, update, setUpdate]);
+  const getImageClasses = () => {
+    const baseClass = moduleType[type] && moduleType[type]['image-class'];
+    return userImage && `${baseClass}`;
+  };
 
-  const imageClass = size === 'small' ? 'border-[1px]' : size === 'large' && 'border-[2px]';
-  const iconClass = size === 'small' ? 'text-2xl' : size === 'large' && 'text-6xl';
+  const getIconClasses = () => {
+    const baseClass = moduleType[type] && moduleType[type]['icon-class'];
+    return `${baseClass} w-[95%] h-[95%] text-color-text-almost-clear font-light bg-white rounded-full transition-all`;
+  };
+
+  const getBorderClass = () => {
+    return userImage ? moduleBorderColor[type] || 'border-color-border' : 'border border-color-border';
+  };
+
+  const isDashboard = accountModule === 'Dashboard';
+  const isEditableImage = type === 'personal-info';
+  
+  const moduleType: any = {
+    'message-chat': { 'image-class': 'border-[1px]', 'icon-class': 'text-2xl' },
+    'title-chat': { 'image-class': 'border-[1px]', 'icon-class': 'text-2xl' },
+    'navbar': { 'image-class': 'w-[93%] h-[93%] border-[1px]', 'icon-class': 'text-2xl' },
+    'dropdown': { 'image-class': 'w-[92%] h-[92%] border-[1px]', 'icon-class': 'text-2xl' },
+    'notifications': { 'image-class': 'border-[2px]', 'icon-class': `${isDashboard ? 'text-2xl' : 'text-4xl'}` },
+    'request': { 'image-class': 'border-[2px]', 'icon-class': 'text-4xl' },
+    'account-navbar': { 'image-class': 'border-[2px]', 'icon-class': 'text-6xl' },
+    'personal-info': { 'image-class': 'border-[2px]', 'icon-class': 'text-6xl' },
+  };
+
+  const moduleBorderColor: any = {
+    'message-chat': 'bg-color-highlighted',
+    'title-chat': 'bg-white',
+    'navbar': 'bg-color-highlighted',
+    'dropdown': 'bg-color-highlighted',
+    'notifications': '',
+    'request': '',
+    'account-navbar': 'bg-gradient-to-br from-color-clear via-color-highlighted to-color-highlighted-dark',
+    'personal-info': 'bg-gradient-to-br from-color-clear via-color-highlighted to-color-highlighted-dark',
+  }
+
 
   return (
-    userProfileImage ?
-      <div className='w-full h-full flex flex-col justify-center items-center bg-gradient-to-br from-color-clear via-sky-400 to-sky-950 rounded-full z-20'>
-        <Image
-          className={`${imageClass} w-[95%] h-[95%] flex flex-col justify-center items-center rounded-full border-white`}
-          width={800}
-          height={800}
-          src={userProfileImage}
-          alt='profile-image'
-        />
+    <div className={`${getBorderClass()} w-full h-full relative flex justify-center items-center rounded-full z-0`}>
+      {
+        userImage ?
+          <Image
+            className={`${getImageClasses()} w-[94%] h-[94%] rounded-full border-white transition-all z-10`}
+            width={800}
+            height={800}
+            src={userImage}
+            alt='profile-image'
+          />
+          :
+          <i className={`${getIconClasses()} flex flex-col text-color-text-clear justify-center items-center`}>
+            <IconUser />
+          </i>
+      }
+      {isEditableImage && renderEditOverlay()}
+    </div>
+  );
+
+  function renderEditOverlay() {
+    return (
+      <div
+        className={`${imageHover ? 'bg-opacity-25' : 'bg-opacity-0'} w-32 h-32 absolute flex justify-center items-center bg-black rounded-full hover:cursor-pointer transition-all z-20`}
+        onMouseEnter={() => setImageHover(true)}
+        onMouseLeave={() => setImageHover(false)}
+        onClick={handleImageEditClick}
+      >
+        <i className={`${imageHover ? 'visible text-color-text-clear' : 'hidden'} text-7xl flex justify-center cursor-default lg:cursor-pointer transition-all z-20`}>
+          {imageHover && <IconCamera />}
+        </i>
       </div>
-      :
-      <i className={`${iconClass} w-full h-full text-color-clear font-light flex flex-row justify-center items-center border border-color-border rounded-full transition-all`}>
-        <IconUser />
-      </i>
-  )
+    );
+  }
+
+  function handleImageEditClick(e: any) {
+    setProfileModal(true);
+    setProfileModalAction(userImage ? 'edit' : 'post');
+    setCollectionToChange('profile_image');
+  }
 }

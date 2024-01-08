@@ -1,9 +1,7 @@
-import { useState, useEffect } from 'react';
 import { useAuthUI, useAuthData, useUI } from "../../context/authContext";
-import { IconUser, IconDelete } from '@/icons/icons';
 import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
-import EditDeleteButtons from './EditDeleteButtons';
-import Image from 'next/image';
+import { IconDelete } from '@/icons/icons';
+import ImageIconUser from './ImageIconUser';
 
 interface NotificationCardParams {
   data: { [key: string]: string },
@@ -22,9 +20,9 @@ interface DataUser {
 
 
 export default function NotificationsCard({ data, indexCard, listHover, itemHover, isDashboard }: NotificationCardParams) {
-  const { token, userId, setCollectionToChange, setItemIdToChange, setUpdate } = useAuthData();
-  const { accountModule, setAccountModule, setChatActived, setChatDataUser } = useAuthUI();
-  const { screenNarrow, setMessageModal } = useUI();
+  const { setMessageModal } = useUI();
+  const { token, userId, setUpdate } = useAuthData();
+  const { setAccountModule, setChatActived, setChatDataUser } = useAuthUI();
 
   const buttonNotificationDelete = [
     {
@@ -63,6 +61,7 @@ export default function NotificationsCard({ data, indexCard, listHover, itemHove
     },
   ];
 
+  let notificacionFromUserId = data?.user_id || '';
   let companyInfo = data?.company_info || '';
   let companyLocation = data?.company_location || '';
   let companyJobTitle = data?.company_job_title || '';
@@ -100,22 +99,23 @@ export default function NotificationsCard({ data, indexCard, listHover, itemHove
     >
       {/**edit delete buttons */}
       <div className="w-full absolute top-0 right-0 flex flex-row justify-end items-center transition-all z-20">
+        
         {
-          !isDashboard && listHover && (itemHover === indexCard) && (
-            buttonNotificationDelete.map((button: any) => {
-              return (
-                <EditDeleteButtons
-                  id={button.id}
-                  key={button.key}
-                  icon={button.icon}
-                  elementId={data?._id}
-                  collection='notifications'
-                  handleClick={button.click}
-                />
-              )
-            })
-          )
+          //!isDashboard && listHover && (itemHover === indexCard) && (
+            //buttonNotificationDelete.map((button: any) => {
+              //return (
+                //<EditDeleteButtons
+                  //id={button.id}
+                  //icon={button.icon}
+                  //elementId={data?._id}
+                  //collection='notifications'
+                  //handleClick={button.click}
+                ///>
+              //)
+            //})
+          //)
         }
+
       </div>
       {/**fullname, message, date ... */}
       <div className="w-full pr-2 flex flex-col">
@@ -129,27 +129,13 @@ export default function NotificationsCard({ data, indexCard, listHover, itemHove
           {data?.created_date}
         </h6>
       </div>
-      {/**user profile image and button */}
-      <div className={`${isDashboard ? 'w-14' : 'w-32'} h-full flex flex-col justify-between items-center`}>
-        <div className={
-          `${isDashboard ? 'items-end' : 'items-center justify-center'} w-full my-1 flex flex-col`}>
-          {
-            data?.profile_image ?
-              <Image
-                className={`${isDashboard ? 'w-10 h-10' : 'w-20 h-20 mb-1'} flex flex-col justify-center items-center rounded-full`}
-                width={400}
-                height={400}
-                src={data?.profile_image}
-                alt='user-image'
-              />
-              :
-              <i className={
-                `${isDashboard ? 'w-10 h-10 text-2xl' : 'w-20 h-20 mb-1 text-4xl'
-                } text-color-text-almost-clear font-light flex flex-row justify-center items-center border border-color-border rounded-full transition-all`
-              }>
-                <IconUser />
-              </i>
-          }
+      {/**user profile image and buttons */}
+      <div className={`${isDashboard ? 'w-9' : 'w-16'} h-full flex flex-col justify-between items-center`}>
+        <div className={`${isDashboard ? 'w-9 h-9 items-end' : 'w-16 h-16 items-center justify-center'} my-1 flex flex-col`}>
+          <ImageIconUser
+            type={'notifications'}
+            toUserId={notificacionFromUserId as string}
+          />
         </div>
         {
           !isDashboard &&

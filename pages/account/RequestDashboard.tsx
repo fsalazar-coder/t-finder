@@ -3,7 +3,7 @@ import { useAuthData, useAuthUI } from "../../context/authContext";
 import { IconAlert, IconCheckCircle } from '@/icons/icons';
 import { userRequestStatusFunction } from '../api/userRequestStatusFunction'; 
 import CircleProgressBar from './CircleProgressBar';
-import ButtonDashboardCardAddInfo from './ButtonDashboardCardAddInfo';
+import ButtonDashboardAddInfo from './ButtonDashboardAddInfo';
 
 
 
@@ -95,7 +95,7 @@ export default function RequestDashboard({ requestType, isDashboard, stepsProces
           </div>
           :
           /**button add information */
-          <ButtonDashboardCardAddInfo
+          <ButtonDashboardAddInfo
             id={`button-add-request-${requestType}`}
             isDashboard={isDashboard}
             comment='Add request'

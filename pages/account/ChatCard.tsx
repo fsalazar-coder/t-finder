@@ -5,6 +5,7 @@ import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
 import Image from 'next/image';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
+import ImageIconUser from './ImageIconUser';
 
 
 interface ChatDataUser {
@@ -150,22 +151,10 @@ export default function ChatCard() {
         <div className='w-full h-[12%] p-2 flex flex-row justify-between items-center bg-color-highlighted rounded-t-md'>
           {/**profile image from user contacted */}
           <div className='w-10 h-10 flex flex-row items-center'>
-            {
-              chatUserImage ?
-                <div className='w-full h-full flex flex-col justify-center items-center bg-white rounded-full z-20'>
-                  <Image
-                    className={`w-[95%] h-[95%] flex flex-col justify-center items-center rounded-full border-[1px] border-white`}
-                    width={800}
-                    height={800}
-                    src={chatUserImage}
-                    alt='profile-image'
-                  />
-                </div>
-                :
-                <i className={`w-full h-full text-2xl text-white font-light flex flex-row justify-center items-center border border-white rounded-full transition-all`}>
-                  <IconUser />
-                </i>
-            }
+            <ImageIconUser
+              type={'title-chat'}
+              toUserId={chatUserId as string}
+            />
           </div>
           {/**full name from user contacted */}
           <div className='w-52 h-fit flex flex-row'>
@@ -209,7 +198,7 @@ export default function ChatCard() {
                   chatsData?.map((chat: any, index: any) => {
                     let { isMyMessage, isDifferentDate, roundedSide, positionType } = messageValues(chat, index, chatsData);
                     let messageEffect = effectRoundedChat(roundedSide as any, positionType as any);
-                    let chatProfileImage = isMyMessage ? userProfileImage : chatUserImage
+                    let chatProfileImageId: any = isMyMessage ? userId : chatUserId
 
                     return (
                       <li className={`w-[98%] flex flex-col items-center`}>
@@ -244,21 +233,13 @@ export default function ChatCard() {
                           <div className='w-[12%] flex flex-row justify-center items-center'>
                             <div className='w-8 h-8 flex flex-col justify-center items-center z-20'>
                               {
-                                //profile image from messaging user
-                                (positionType === 'end' || positionType === 'single') && (
-                                  chatProfileImage ?
-                                    <Image
-                                      className={`w-[95%] h-[95%] flex flex-col justify-center items-center rounded-full border border-color-highlighted`}
-                                      width={800}
-                                      height={800}
-                                      src={chatProfileImage}
-                                      alt='profile-image'
-                                    />
-                                    :
-                                    <i className={`w-[95%] h-[95%] text-2xl text-color-clear font-light flex flex-row justify-center items-center border border-color-border rounded-full transition-all`}>
-                                      <IconUser />
-                                    </i>
-                                )}
+                                //profile images to messages
+                                (positionType === 'end' || positionType === 'single') &&
+                                <ImageIconUser
+                                  type={'message-chat'}
+                                  toUserId={chatProfileImageId as string}
+                                />
+                              }
                             </div>
                           </div>
                         </div>

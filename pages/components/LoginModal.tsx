@@ -9,7 +9,7 @@ import axios from 'axios';
 
 export default function LoginModal(props: any) {
 
-  const { setToken, setUserId, setUserEmail } = useAuthData();
+  const { setToken, setUserId, setUserEmail, setUpdate } = useAuthData();
   const {
     setJoinModal,
     loginModal, setLoginModal,
@@ -43,6 +43,15 @@ export default function LoginModal(props: any) {
       : (document.body.style.overflowY = 'auto');
   }, [loginModal]);
 
+  const updateUserDataStringArray: string[] = ['image-profile', 'profile', 'request', 'notifications'];
+
+  const updateUserData = () => {
+    updateUserDataStringArray.forEach((string, index) => {
+      setTimeout(() => {
+        setUpdate(string);
+      }, (index * 1000));
+    });
+  }
 
   const loginSubmitHandle = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,6 +73,7 @@ export default function LoginModal(props: any) {
         setUserId(user._id);
         setUserEmail(user.email);
         setLoginModal(false);
+        updateUserData();        
       }
     }
     catch (error: any) {

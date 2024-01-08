@@ -105,6 +105,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         switch (collectionName) {
           case 'personal_info':
           case 'profile_image':
+          case 'profile_score':
             getData = await collection?.findOne({ _id: id as any });
             break;
           case 'notifications':
@@ -218,14 +219,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             request_talent_id: requestInfo?._id,
             profile_image: profileImage?.image_url,
             full_name: personalInfo?.full_name,
-            job_category: requestInfo?.job_category,
-            job_title: requestInfo?.job_title,
-            skills_required: requestInfo?.skills_required,
-            experience_level: requestInfo?.experience_level,
-            experience_years: requestInfo?.experience_years,
+            job_description: requestInfo?.job_description,
+            title: requestInfo?.title,
+            required_skills: requestInfo?.required_skills,
+            required_experience_years: requestInfo?.required_experience_years,
             location: requestInfo?.location,
             modality_work: requestInfo?.modality_work,
-            company_info: requestInfo?.company_info,
+            company_name: requestInfo?.company_name,
             compensation: requestInfo?.compensation,
           };
         });

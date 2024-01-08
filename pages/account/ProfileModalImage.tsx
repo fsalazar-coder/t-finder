@@ -10,10 +10,10 @@ import axios from 'axios';
 
 
 export default function ProfileModalImage() {
-  const { token, userId, userProfileImage, setUserProfileImage, collectionToChange, setUpdate } = useAuthData();
-  const { setProfileModal, profileModalAction, setProfileModalAction, setProfileModalType } = useAuthUI();
   const { setMessageModal, setLoading } = useUI();
-  const [previewImage, setPreviewImage] = useState<string | null>(userProfileImage || null);
+  const { token, userId, userImage, setUserImage, collectionToChange, setUpdate } = useAuthData();
+  const { setProfileModal, profileModalAction, setProfileModalAction, setProfileModalType } = useAuthUI();
+  const [previewImage, setPreviewImage] = useState<string | null>(userImage || null);
   const [fileImage, setFileImage] = useState<File | null>(null);
 
 
@@ -66,7 +66,7 @@ export default function ProfileModalImage() {
               .then((response) => {
                 const { status, imageUrl } = response.data;
                 if (status === 'success') {
-                  setUserProfileImage(imageUrl);
+                  setUserImage(imageUrl);
                   setUpdate(collectionToChange)
                   setMessageModal([{
                     type: 'successful',
@@ -114,29 +114,31 @@ export default function ProfileModalImage() {
       {/**icon user or profile image preview */}
       <div className='w-full h-full flex flex-col justify-center items-center'>
         <div className='w-72 h-72 flex flex-row justify-center items-center'>
-          {
-            previewImage ?
-              <Image
-                className='w-full h-full rounded-full'
-                width={400}
-                height={400}
-                src={previewImage as string}
-                alt='profile-image'
-              />
-              :
-              userProfileImage ?
+          <div className='w-52 h-52 flex flex-row justify-center items-center'>
+            {
+              previewImage ?
                 <Image
                   className='w-full h-full rounded-full'
                   width={400}
                   height={400}
-                  src={userProfileImage}
+                  src={previewImage as string}
                   alt='profile-image'
                 />
                 :
-                <i className='w-full h-full text-color-text-almost-clear text-7xl font-light flex flex-row justify-center items-center border border-color-border rounded-full cursor-pointer transition-all'>
-                  <IconUser />
-                </i>
-          }
+                userImage ?
+                  <Image
+                    className='w-full h-full rounded-full'
+                    width={400}
+                    height={400}
+                    src={userImage}
+                    alt='profile-image'
+                  />
+                  :
+                  <i className='w-full h-full text-color-text-clear text-9xl font-light flex flex-row justify-center items-center border border-color-border rounded-full cursor-pointer transition-all'>
+                    <IconUser />
+                  </i>
+            }
+          </div>
         </div>
       </div>
       {/**form container */}

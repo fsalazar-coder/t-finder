@@ -14,6 +14,7 @@ const config: Config = {
           'clear': '#f8fafc',              // slate-50 (Fondo general)
           'highlighted' : '#0ea5e9',       //#0ea5e9 (sky-500), #d946ef (fuchsia-500) 
           'highlighted-clear' : '#7dd3fc', //#7dd3fc (sky-300) 
+          'highlighted-dark' : '#082f49', //#082f49 (sky-950) 
           'navbar': '#ffffff',             //#0f172a (slate-900), #94a3b8 (slate-400)
           'border': '#e2e8f0',             // #e2e8f0 (slate-200)
           'border-navbar': '#f8fafc',      //#0f172a (slate-900), #94a3b8 (slate-400)

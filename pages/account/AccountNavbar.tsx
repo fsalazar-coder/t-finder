@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import { useRouter } from 'next/navigation';
 import ImageIconUser from './ImageIconUser';
@@ -17,7 +17,7 @@ const navbarElementAuth = [
 
 export default function AccountNavbar(props: any) {
 
-  const { userEmail, userProfilePersonalInfo, logout } = useAuthData();
+  const { userId, userEmail, userProfilePersonalInfo, logout } = useAuthData();
   const { setAccountActived, accountModule, setAccountModule, setChatActived } = useAuthUI();
   const { dropdown, setDropdown, screenNarrow, setMessageModal } = useUI();
   const indicatorRef: any = useRef(null);
@@ -61,7 +61,7 @@ export default function AccountNavbar(props: any) {
   return (
     <div
       className={
-        `${screenNarrow ? 'w-full h-10 border-b'
+        `${screenNarrow ? 'w-full h-12 border-b'
           : isDashboard ? 'w-24 h-screen border-r'
             : 'w-60 h-screen border-r'
         } fixed left-0 flex justify-center items-center bg-white border-color-border transition-all z-50`
@@ -75,7 +75,7 @@ export default function AccountNavbar(props: any) {
         <div className={
           `${isDashboard ? 'h-24 py-4' : 'py-2'} w-full flex flex-row justify-center items-center`
         }>
-          {isDashboard ?
+          {(!screenNarrow && isDashboard) ?
             <div className="w-16 h-16 flex flex-col justify-center items-center outline outline-1 outline-color-clear border-2 border-color-secondary rounded-full transition-all">
               <h2 className='flex flex-row text-color-text-highlighted text-3xl font-bold transition-all'>
                 T
@@ -109,14 +109,17 @@ export default function AccountNavbar(props: any) {
           /**image profile */
           !isDashboard &&
           <div className={
-            `${screenNarrow ? 'w-fit relative' : 'w-full border-y border-color-border'} py-4 flex flex-col justify-center items-center`
+            `${screenNarrow ? 'w-fit relative' : 'w-full py-4 border-y border-color-border'} flex flex-col justify-center items-center`
           }>
             <div
               className={
-                `${screenNarrow ? 'w-7 h-7 mx-3' : isDashboard ? 'w-16 h-16' : 'w-32 h-32'
+                `${screenNarrow ? 'w-9 h-9 mx-3' : 'w-32 h-32'
                 } flex flex-col justify-center items-center transition-all`
               }>
-              <ImageIconUser size={screenNarrow ? 'small' : 'large'} />
+              <ImageIconUser
+                type={screenNarrow ? 'navbar' : 'account-navbar'}
+                toUserId={userId as string}
+              />
             </div>
           </div>
         }

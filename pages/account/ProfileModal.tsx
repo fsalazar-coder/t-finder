@@ -5,7 +5,7 @@ import { IconCancel } from '../../icons/icons';
 import FormTemplate from './FormTemplate';
 import ProfileModalImage from './ProfileModalImage';
 
-const initialProfileInfo = {
+const initialUserProfileData = {
   /**personal information: */
   fullName: '',
   professionOccupation: '',
@@ -15,6 +15,7 @@ const initialProfileInfo = {
   roleTitle: '',
   companyOrganization: '',
   responsibilities: '',
+  experienceLevel: '',
   experienceYears: '',
   technologiesUsed: '',
   teamSize: '',
@@ -59,11 +60,17 @@ export default function ProfileModal() {
   const { token, userId, collectionToChange, setCollectionToChange, itemIdToChange, setUpdate } = useAuthData();
   const { profileModal, setProfileModal, setProfileModalType, profileModalAction, setProfileModalAction } = useAuthUI();
   const { setMessageModal, setLoading } = useUI();
+  const [filledForm, setFilledForm] = useState(true);
   const { screenNarrow } = useUI();
-  const [filledForm, setFilledForm] = useState(false);
 
-  const [profileInfo, setProfileInfo] = useState(initialProfileInfo);
-  const [profileInfoChange, setProfileInfoChange] = useState({
+  const isPersonalInfo = collectionToChange === 'personal_info';
+  const isProfileImageModal = collectionToChange === 'profile_image';
+  const isEditAction = profileModalAction === 'edit';
+  const isPostAction = profileModalAction === 'post';
+
+  const [userProfileDataUpdate, setUserProfileDataUpdate] = useState(initialUserProfileData);
+
+  const [changeUserProfileDataUpdate, setChangeUserProfileDataUpdate] = useState({
     /**personal information: */
     fullName: false,
     professionOccupation: false,
@@ -113,10 +120,6 @@ export default function ProfileModal() {
 
   const [profileSelected, setProfileSelected] = useState(Object);
   const [nameProfileSelected, setNameProfileSelected] = useState('');
-  
-  const isPersonalInfo = collectionToChange === 'personal_info';
-  const isProfileImageModal = collectionToChange === 'profile_image';
-  const isPostAction = profileModalAction === 'post';
 
   const handleCloseModal = () => {
     setProfileModal(false);
@@ -141,64 +144,66 @@ export default function ProfileModal() {
     document.body.style.overflowY = profileModal ? 'hidden' : 'auto';
   }, [profileModal]);
 
+
   const handleChangeData = (e: any) => {
     const { name, value } = e.target;
-    setProfileInfo({ ...profileInfo, [name]: value });
+    setUserProfileDataUpdate({ ...userProfileDataUpdate, [name]: value });
   };
 
   const dataUpdate = () => {
     const data = {
       personalInfo: {
-        full_name: profileInfo.fullName,
-        profession_or_occupation: profileInfo.professionOccupation,
-        preferred_language: profileInfo.preferredLanguage,
-        location: profileInfo.personalLocation
+        full_name: userProfileDataUpdate.fullName,
+        profession_occupation: userProfileDataUpdate.professionOccupation,
+        preferred_language: userProfileDataUpdate.preferredLanguage,
+        location: userProfileDataUpdate.personalLocation
       },
       experience: {
-        title: profileInfo.companyOrganization,
-        role: profileInfo.roleTitle,
-        responsibilities: profileInfo.responsibilities,
-        experience_years: profileInfo.experienceYears,
-        technologies_used: profileInfo.technologiesUsed,
-        team_size: profileInfo.teamSize,
+        role_title: userProfileDataUpdate.roleTitle,
+        company_organization: userProfileDataUpdate.companyOrganization,
+        responsibilities: userProfileDataUpdate.responsibilities,
+        experience_level: userProfileDataUpdate.experienceLevel,
+        experience_years: userProfileDataUpdate.experienceYears,
+        technologies_used: userProfileDataUpdate.technologiesUsed,
+        team_size: userProfileDataUpdate.teamSize,
       },
       education: {
-        title: profileInfo.majorFieldStudy,
-        university_school: profileInfo.universitySchool,
-        degree: profileInfo.degree,
-        graduation_year: profileInfo.graduationYear,
+        degree: userProfileDataUpdate.degree,
+        university_school: userProfileDataUpdate.universitySchool,
+        major_field_study: userProfileDataUpdate.majorFieldStudy,
+        graduation_year: userProfileDataUpdate.graduationYear,
       },
       courses: {
-        title: profileInfo.courseTitle,
-        institution: profileInfo.institution,
-        skills_acquired: profileInfo.skillsAcquired,
-        year_completed: profileInfo.yearCompleted,
+        course_title: userProfileDataUpdate.courseTitle,
+        institution: userProfileDataUpdate.institution,
+        year_completed: userProfileDataUpdate.yearCompleted,
+        skills_acquired: userProfileDataUpdate.skillsAcquired,
       },
       publications: {
-        title: profileInfo.publicationTitle,
-        authors: profileInfo.coAuthors,
-        journal_name: profileInfo.journalName,
-        year_published: profileInfo.yearPublished,
+        publication_title: userProfileDataUpdate.publicationTitle,
+        co_authors: userProfileDataUpdate.coAuthors,
+        journal_name: userProfileDataUpdate.journalName,
+        year_published: userProfileDataUpdate.yearPublished,
       },
       conferences: {
-        title: profileInfo.presentationTitle,
-        conference_name: profileInfo.conferenceName,
-        location: profileInfo.conferenceLocation,
-        year: profileInfo.year,
+        presentation_title: userProfileDataUpdate.presentationTitle,
+        conference_name: userProfileDataUpdate.conferenceName,
+        location: userProfileDataUpdate.conferenceLocation,
+        year: userProfileDataUpdate.year,
       },
       certifications: {
-        title: profileInfo.certificationName,
-        license_number: profileInfo.licenseNumber,
-        issuing_organization: profileInfo.issuingOrganization,
-        year_issued: profileInfo.yearIssued,
+        certification_name: userProfileDataUpdate.certificationName,
+        issuing_organization: userProfileDataUpdate.issuingOrganization,
+        license_number: userProfileDataUpdate.licenseNumber,
+        year_issued: userProfileDataUpdate.yearIssued,
       },
       recommendations: {
-        title: profileInfo.recommenderName,
-        recommendation: profileInfo.recommendation,
-        recommender_title: profileInfo.recommenderTitle,
-        organization: profileInfo.recommenderOrganization,
-        email: profileInfo.recommenderEmail,
-        phone: profileInfo.recommenderPhone,
+        recommender_title: userProfileDataUpdate.recommenderTitle,
+        recommender_name: userProfileDataUpdate.recommenderName,
+        recommender_organization: userProfileDataUpdate.recommenderOrganization,
+        recommendation: userProfileDataUpdate.recommendation,
+        recommender_email: userProfileDataUpdate.recommenderEmail,
+        recommender_phone: userProfileDataUpdate.recommenderPhone,
       }
     };
     const dataToApi = data[nameProfileSelected as keyof typeof data];
@@ -239,9 +244,10 @@ export default function ProfileModal() {
       setLoading(false);
       setProfileModalAction('');
       setProfileModalType('');
-      setProfileInfo(initialProfileInfo);
+      setUserProfileDataUpdate(initialUserProfileData);
     }
   };
+
 
   const modal = [
     {
@@ -263,6 +269,16 @@ export default function ProfileModal() {
         { type: 'text', title: 'Role title', value: 'roleTitle' },
         { type: 'text', title: 'Company organization', value: 'companyOrganization' },
         { type: 'text', title: 'Responsibilities', value: 'responsibilities' },
+        {
+          type: 'select',
+          title: 'Experience level',
+          value: 'experienceLevel',
+          options: [
+            { value: 'Junior', title: 'Junior' },
+            { value: 'Mid', title: 'Mid' },
+            { value: 'Senior', title: 'Senior' },
+          ]
+        },
         {
           type: 'select',
           title: 'Experience years',
@@ -366,10 +382,10 @@ export default function ProfileModal() {
 
   /**fill-form control */
   useEffect(() => {
-    let profileInfoSelected = dataUpdate();
-    if (profileInfoSelected) {
-      let profileInfoSelectedUnfilled = Object.values(profileInfoSelected).some(value => value === '');
-      setFilledForm(profileInfoSelectedUnfilled ? false : true);
+    let userProfileDataUpdateSelected = dataUpdate();
+    if (userProfileDataUpdateSelected) {
+      let userProfileDataUpdateSelectedUnfilled = Object.values(userProfileDataUpdateSelected).some(value => value === '');
+      setFilledForm(userProfileDataUpdateSelectedUnfilled ? false : true);
     }
   });
 
@@ -401,7 +417,7 @@ export default function ProfileModal() {
           </i>
         </div>
         {/**header form */}
-        <div className='w-full px-4 lg:px-8 py-1 lg:py-2 flex flex-col bg-color-highlighted rounded-t-md z-50'>
+        <div className='w-full px-4 lg:px-8 py-1 lg:py-2 flex flex-col bg-slate-950 rounded-t-md z-50'>
           <h2 className='w-full h-fit ml-2 py-1 text-white text-xl lg:text-3xl font-bold transition-all z-10'>
             {isProfileImageModal ? 'Profile image' : profileSelected.title}
           </h2>
@@ -421,11 +437,11 @@ export default function ProfileModal() {
                   <div className='w-full h-full flex flex-col items-center'>
                     <FormTemplate
                       inputData={profileSelected.inputs}
-                      formData={profileInfo}
-                      changeData={profileInfoChange}
+                      formData={userProfileDataUpdate}
+                      changeData={changeUserProfileDataUpdate}
                       onChange={(e: any) => handleChangeData(e)}
-                      onFocus={(e: any) => setProfileInfoChange({ ...profileInfoChange, [e.target.name]: true })}
-                      onBlur={(e: any) => setProfileInfoChange({ ...profileInfoChange, [e.target.name]: false })}
+                      onFocus={(e: any) => setChangeUserProfileDataUpdate({ ...changeUserProfileDataUpdate, [e.target.name]: true })}
+                      onBlur={(e: any) => setChangeUserProfileDataUpdate({ ...changeUserProfileDataUpdate, [e.target.name]: false })}
                     />
                   </div>
                   {/**submit button */}

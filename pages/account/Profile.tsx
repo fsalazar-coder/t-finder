@@ -4,91 +4,104 @@ import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
 import ProfileDashboard from './ProfileDashboard';
 import CardsTitlesProfile from './CardsTitleProfile';
 import CardsDisplayerProfile from './CardsDisplayerProfile';
+import { userProfileScoreFunction } from '../api/userProfileScoreFunction';
 
 
 
 export default function Profile() {
 
-  const { token, userId, userScore, setUserScore, collectionToChange, setCollectionToChange, update, setUpdate } = useAuthData();
+  const { token, userId, userProfileData, setUserProfileData, collectionToChange, setCollectionToChange, update, setUpdate } = useAuthData();
   const { accountModule, setProfileModal, setProfileModalType, setProfileModalAction } = useAuthUI();
   const { screenNarrow } = useUI();
+  const [userProfileScore, setUserProfileScore] = useState<string>('');
+  const [userProfileScoreUpdate, setUserProfileScoreUpdate] = useState<boolean>(false);
   const [cardHover, setCardHover] = useState<boolean>(false);
   const [profileMenu, setProfileMenu] = useState<string>('experience');
   const [profileMenuIndex, setProfileMenuIndex] = useState<number>(0);
-  const [profileData, setProfileData] = useState({
-    experience: [],
-    education: [],
-    courses: [],
-    publications: [],
-    conferences: [],
-    certifications: [],
-    recommendations: [],
-  });
+
   const profile: any = [
     {
       id: 'experience',
       title: 'Experience',
-      data: profileData.experience,
+      data: userProfileData.experience,
       profileMenuCondition: profileMenu === 'experience',
-      shouldRender: profileData.experience.length > 0,
-      length: profileData.experience.length,
+      shouldRender: userProfileData.experience.length > 0,
+      length: userProfileData.experience.length,
     },
     {
       id: 'education',
       title: 'Education',
-      data: profileData.education,
+      data: userProfileData.education,
       profileMenuCondition: profileMenu === 'education',
-      shouldRender: profileData.education.length > 0,
-      length: profileData.education.length
+      shouldRender: userProfileData.education.length > 0,
+      length: userProfileData.education.length
     },
     {
       id: 'courses',
       title: 'Courses',
-      data: profileData.courses,
+      data: userProfileData.courses,
       profileMenuCondition: profileMenu === 'courses',
-      shouldRender: profileData.courses.length > 0,
-      length: profileData.courses.length
+      shouldRender: userProfileData.courses.length > 0,
+      length: userProfileData.courses.length
     },
     {
       id: 'publications',
       title: 'Publications',
-      data: profileData.publications,
+      data: userProfileData.publications,
       profileMenuCondition: profileMenu === 'publications',
-      shouldRender: profileData.publications.length > 0,
-      length: profileData.publications.length
+      shouldRender: userProfileData.publications.length > 0,
+      length: userProfileData.publications.length
     },
     {
       id: 'conferences',
       title: 'Conferences',
-      data: profileData.conferences,
+      data: userProfileData.conferences,
       profileMenuCondition: profileMenu === 'conferences',
-      shouldRender: profileData.conferences.length > 0,
-      length: profileData.conferences.length
+      shouldRender: userProfileData.conferences.length > 0,
+      length: userProfileData.conferences.length
     },
     {
       id: 'certifications',
       title: 'Certifications',
-      data: profileData.certifications,
+      data: userProfileData.certifications,
       profileMenuCondition: profileMenu === 'certifications',
-      shouldRender: profileData.certifications.length > 0,
-      length: profileData.certifications.length
+      shouldRender: userProfileData.certifications.length > 0,
+      length: userProfileData.certifications.length
     },
     {
       id: 'recommendations',
       title: 'Recommend...',
-      data: profileData.recommendations,
+      data: userProfileData.recommendations,
       profileMenuCondition: profileMenu === 'recommendations',
-      shouldRender: profileData.recommendations.length > 0,
-      length: profileData.recommendations.length
+      shouldRender: userProfileData.recommendations.length > 0,
+      length: userProfileData.recommendations.length
     }
   ];
+
   const elementsProfile: number = profile.length;
   const elementsCompleted = profile.filter((element: any) => element.shouldRender).length;
   const percentageProfileFilled: number = Math.round((elementsCompleted / elementsProfile) * 100);
 
+  useEffect(() => {
+    if (userProfileScoreUpdate || accountModule === 'Dashboard') {
+      userDataHandlerFunction({
+        token: token as string,
+        userId: userId as string,
+        action: 'get',
+        collectionName: 'profile_score',
+        data: '',
+        onSuccess: (responseData: any) => {
+          setUserProfileScore(responseData.profile_score);
+        },
+        onError: (error: any) => console.error(error)
+      });
+      setUserProfileScoreUpdate(false);
+    }
+  }, [userProfileScoreUpdate, accountModule])
+
   // Cargar los datos para todos los elementos
   useEffect(() => {
-    if (update === collectionToChange || accountModule === 'Profile') {
+    if (update === 'profile' || update === collectionToChange) {     // || accountModule === 'Profile' || accountModule === 'Dashboard'
       profile.forEach((element: any) => {
         let collectionName = element.id;
         userDataHandlerFunction({
@@ -100,7 +113,7 @@ export default function Profile() {
           onSuccess: (responseData: any) => {
             let elementName: string = collectionName;
             let data: any = responseData;
-            setProfileData((prevData) => ({
+            setUserProfileData((prevData) => ({
               ...prevData,
               [elementName]: data
             }));
@@ -113,92 +126,29 @@ export default function Profile() {
         }
       });
     }
-  }, [token, userId, update, accountModule, collectionToChange]);
+  }, [token, userId, update]);
 
   useEffect(() => {
-    let score: number = 0;
-    const experiencePoints: any = {
-      'Junior': 5,
-      'Mid': 10,
-      'Senior': 15
-    };
-    const experienceYearsPoints: any = {
-      '0-2': 10,
-      '2-5': 20,
-      '5-10': 30,
-      '+10': 40
-    };
-    const educationDegreePoints: any = {
-      'High school': 10,
-      'Bachelor': 20,
-      'Master': 30,
-      'Doctorate': 40
-    };
-    const calculateScore = (elementLength: any, pointsPerItem: any, maxPoints: any) => {
-      return Math.min(elementLength * pointsPerItem, maxPoints);
-    };
-    profile.forEach((element: any) => {
-      let elementData = element.data;
-      let elementLength: number = element.length;
-      let elementEmpty: boolean = elementLength === 0;
-      switch (element.id) {
-        case 'experience':
-          if (!elementEmpty) {
-            elementData.map((experience: any) => {
-              score += experiencePoints[experience['experience_level']] || 0;
-              score += experienceYearsPoints[experience['experience_years']] || 0;
-            })
-          }
-          break;
-        case 'education':
-          if (!elementEmpty) {
-            elementData.map((education: any) => {
-              score += educationDegreePoints[education['degree']] || 0;
-            })
-          }
-          break;
-        case 'courses':
-          score += calculateScore(elementLength, 5, 30);
-          break;
-        case 'publications':
-        case 'conferences':
-          score += calculateScore(elementLength, 4, 20);
-          break;
-        case 'certifications':
-          score += calculateScore(elementLength, 6, 30);
-          break;
-        case 'recommendations':
-          score += calculateScore(elementLength, 3, 15);
-          break;
-        default:
-          break;
-      }
-    });
-    setUserScore(score);
-    userScoreUpdate(score);
+    if (accountModule === 'Profile' && profile) {
+      let score: any = userProfileScoreFunction(profile, 'score');
+      userDataHandlerFunction({
+        token: token as string,
+        userId: userId as string,
+        action: 'edit',
+        collectionName: 'profile_score',
+        data: { profile_score: score.toString() },
+        onSuccess: () => { },
+        onError: (error: any) => console.error(error)
+      });
+      setUserProfileScoreUpdate(true);
+    }
   }, [profile]);
-
-
-
-  const userScoreUpdate = async (score: any) => {
-    userDataHandlerFunction({
-      token: token as string,
-      userId: userId as string,
-      action: 'edit',
-      collectionName: 'profile_score',
-      data: { profile_score: score },
-      onSuccess: (responseData: any) => { },     // ????????????
-      onError: (error: any) => console.error(error)
-    });
-  };
-
-
 
   const profileElementsId: string = profile[profileMenuIndex].id;
   const profileElementsData: any = profile[profileMenuIndex].data;
   const isDashboard = accountModule === 'Dashboard';
   const containerClassNames = `${isDashboard ? 'w-full h-full flex-col bg-white border border-color-border shadow-md rounded-lg'
-    : screenNarrow ? 'w-full flex-col px-1 py-12' : 'w-[52rem] px-2 lg:px-8 lg:py-9 flex-col'
+    : screenNarrow ? 'w-full flex-col px-1 py-16' : 'w-[52rem] px-2 lg:px-8 lg:py-9 flex-col'
     } flex justify-between transition-all`;
 
 
@@ -227,9 +177,8 @@ export default function Profile() {
         {
           isDashboard ?
             <ProfileDashboard
-              percentage={percentageProfileFilled}
               data={profile}
-              userScore={userScore}
+              percentage={percentageProfileFilled}
             />
             :
             <CardsDisplayerProfile

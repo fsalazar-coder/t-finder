@@ -3,6 +3,45 @@ import io, { Socket } from 'socket.io-client';
 
 
 
+interface UserProfileData {
+  personalInfo: UserProfilePersonalInfo | null;
+  experience: UserProfileExperience[];
+  education: UserProfileEducation[];
+  courses: UserProfileCourses[];
+  projects: UserProfileProjects[];
+  publications: UserProfilePublications[];
+  conferences: UserProfileConferences[];
+  certifications: UserProfileCertifications[];
+  recommendations: UserProfileRecommendations[];
+}
+
+// Initialize with default values
+const initialUserProfileData: UserProfileData = {
+  personalInfo: null,
+  experience: [],
+  education: [],
+  courses: [],
+  projects: [],
+  publications: [],
+  conferences: [],
+  certifications: [],
+  recommendations: [],
+};
+
+interface UserRequestData {
+  requestTalent: UserRequestTalent[];
+  requestJob: UserRequestJob[];
+}
+
+// Initialize with default values
+const initialUserRequestData: UserRequestData = {
+  requestTalent: [],
+  requestJob: [],
+};
+
+
+
+
 interface AuthDataContextProps {
   token: string | null;
   setToken: React.Dispatch<React.SetStateAction<string | null>>;
@@ -10,30 +49,14 @@ interface AuthDataContextProps {
   setUserId: React.Dispatch<React.SetStateAction<Id | string>>;
   userEmail: string | null;
   setUserEmail: React.Dispatch<React.SetStateAction<string | null>>;
-  userProfileImage: string | null;
-  setUserProfileImage: React.Dispatch<React.SetStateAction<string | null>>;
-  userProfilePersonalInfo: UserProfilePersonalInfo | null;
-  setUserProfilePersonalInfo: React.Dispatch<React.SetStateAction<UserProfilePersonalInfo | null>>;
-  userProfileExperience: UserProfileExperience[] | [];
-  setUserProfileExperience: React.Dispatch<React.SetStateAction<UserProfileExperience[] | []>>;
-  userProfileEducation: UserProfileEducation[] | [];
-  setUserProfileEducation: React.Dispatch<React.SetStateAction<UserProfileEducation[] | []>>;
-  userProfileCourses: UserProfileCourses[] | [];
-  setUserProfileCourses: React.Dispatch<React.SetStateAction<UserProfileCourses[] | []>>;
-  userProfileProjects: UserProfileProjects[] | [];
-  setUserProfileProjects: React.Dispatch<React.SetStateAction<UserProfileProjects[] | []>>;
-  userProfilePublications: UserProfilePublications[] | [];
-  setUserProfilePublications: React.Dispatch<React.SetStateAction<UserProfilePublications[] | []>>;
-  userProfileConferences: UserProfileConferences[] | [];
-  setUserProfileConferences: React.Dispatch<React.SetStateAction<UserProfileConferences[] | []>>;
-  userProfileCertifications: UserProfileCertifications[] | [];
-  setUserProfileCertifications: React.Dispatch<React.SetStateAction<UserProfileCertifications[] | []>>;
-  userProfileRecommendations: UserProfileRecommendations[] | [];
-  setUserProfileRecommendations: React.Dispatch<React.SetStateAction<UserProfileRecommendations[] | []>>;
-  userRequestTalent: UserRequestTalent[] | [];
-  setUserRequestTalent: React.Dispatch<React.SetStateAction<UserRequestTalent[] | []>>;
-  userRequestJob: UserRequestJob[] | [];
-  setUserRequestJob: React.Dispatch<React.SetStateAction<UserRequestJob[] | []>>;
+  userImage: string | null;
+  setUserImage: React.Dispatch<React.SetStateAction<string | null>>;
+
+  userProfileData: UserProfileData;
+  setUserProfileData: React.Dispatch<React.SetStateAction<UserProfileData>>;
+  userRequestData: UserRequestData;
+  setUserRequestData: React.Dispatch<React.SetStateAction<UserRequestData>>;
+
   talentRequestStatus: string;
   setTalentRequestStatus: React.Dispatch<React.SetStateAction<string>>;
   jobRequestStatus: string;
@@ -50,6 +73,7 @@ interface AuthDataContextProps {
   setSocket: React.Dispatch<React.SetStateAction<Socket | null>>;
   logout: () => void;
 }
+
 
 interface AuthUIContextProps {
   accountActived: boolean;
@@ -154,6 +178,7 @@ interface UserProfileRecommendations {
 }
 
 interface UserRequestTalent {
+  _id: string,
   job_title: string,
   job_category: string,
   skills_required: string,
@@ -167,6 +192,7 @@ interface UserRequestTalent {
 }
 
 interface UserRequestJob {
+  _id: string,
   talent_title: string,
   talent_category: string,
   skills_offered: string,
@@ -221,23 +247,17 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   const [token, setToken] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | { id: string }>('');
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userImage, setUserImage] = useState<string | null>(null);
+
+  const [userProfileData, setUserProfileData] = useState<UserProfileData>(initialUserProfileData);
+  const [userRequestData, setUserRequestData] = useState<UserRequestData>(initialUserRequestData);
+
   const [accountActived, setAccountActived] = useState<boolean>(false);
   const [accountModule, setAccountModule] = useState<string>('');
-  const [userProfileImage, setUserProfileImage] = useState<string | null>(null);
-  const [userProfilePersonalInfo, setUserProfilePersonalInfo] = useState<UserProfilePersonalInfo | null>(null);
-  const [userProfileExperience, setUserProfileExperience] = useState<UserProfileExperience[] | []>([]);
-  const [userProfileEducation, setUserProfileEducation] = useState<UserProfileEducation[] | []>([]);
-  const [userProfileCourses, setUserProfileCourses] = useState<UserProfileCourses[] | []>([]);
-  const [userProfileProjects, setUserProfileProjects] = useState<UserProfileProjects[] | []>([]);
-  const [userProfilePublications, setUserProfilePublications] = useState<UserProfilePublications[] | []>([]);
-  const [userProfileConferences, setUserProfileConferences] = useState<UserProfileConferences[] | []>([]);
-  const [userProfileCertifications, setUserProfileCertifications] = useState<UserProfileCertifications[] | []>([]);
-  const [userProfileRecommendations, setUserProfileRecommendations] = useState<UserProfileRecommendations[] | []>([]);
   const [profileModal, setProfileModal] = useState<boolean>(false);
   const [profileModalAction, setProfileModalAction] = useState<string>('');
   const [profileModalType, setProfileModalType] = useState<string>('');
-  const [userRequestTalent, setUserRequestTalent] = useState<UserRequestTalent[] | []>([]);
-  const [userRequestJob, setUserRequestJob] = useState<UserRequestJob[] | []>([]);
+  
   const [talentRequestStatus, setTalentRequestStatus] = useState<string>('');
   const [jobRequestStatus, setJobRequestStatus] = useState<string>('');
   const [userScore, setUserScore] = useState<number>(0);
@@ -254,16 +274,11 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
     setToken(null);
     setUserId('');
     setUserEmail(null);
-    setUserProfileImage(null);
-    setUserProfilePersonalInfo(null);
-    setUserProfileExperience([]);
-    setUserProfileEducation([]);
-    setUserProfileCourses([]);
-    setUserProfileProjects([]);
-    setUserProfilePublications([]);
-    setUserProfileConferences([]);
-    setUserProfileCertifications([]);
-    setUserProfileRecommendations([]);
+    setUserImage(null);
+
+    setUserProfileData(initialUserProfileData);
+    setUserRequestData(initialUserRequestData);
+
     setUserScore(0);
     setCollectionToChange('');
     setItemIdToChange('');
@@ -299,18 +314,13 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
       token, setToken,
       userId, setUserId,
       userEmail, setUserEmail,
-      userProfileImage, setUserProfileImage,
-      userProfilePersonalInfo, setUserProfilePersonalInfo,
-      userProfileEducation, setUserProfileEducation,
-      userProfileCourses, setUserProfileCourses,
-      userProfileExperience, setUserProfileExperience,
-      userProfileProjects, setUserProfileProjects,
-      userProfilePublications, setUserProfilePublications,
-      userProfileConferences, setUserProfileConferences,
-      userProfileCertifications, setUserProfileCertifications,
-      userProfileRecommendations, setUserProfileRecommendations,
-      userRequestTalent, setUserRequestTalent,
-      userRequestJob, setUserRequestJob,
+      userImage, setUserImage,
+
+      userProfileData,
+      setUserProfileData,
+      userRequestData,
+      setUserRequestData,
+      
       talentRequestStatus, setTalentRequestStatus,
       jobRequestStatus, setJobRequestStatus,
       userScore, setUserScore,

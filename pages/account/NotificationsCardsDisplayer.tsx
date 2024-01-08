@@ -16,27 +16,19 @@ export default function NotificationsCardsDisplayer({ dataToRender }: Notificati
 
   const isDashboard = accountModule === 'Dashboard';
 
-  useEffect(() => {
-    if (accountModule === 'Dashboard' || accountModule === 'Notifications') {
-      //console.log('Data to render: ', dataToRender)
-    }
-  }, [accountModule]);
-
 
   return (
     <div
       id='card-notifications'
       className={`${!isDashboard && 'my-1'} w-full h-full flex`}>
       <div
-        className="w-full h-full flex"
+        className={`${isDashboard && 'overflow-y-auto'} w-full h-full flex`}
         onMouseEnter={() => setListHover(true)}
         onMouseLeave={() => setListHover(false)}
       >
         <ul className='w-full h-full flex flex-col'>
           {
             dataToRender?.map((element: any, index: any) => {
-              let notificationType = element?.notification_type || '';
-              let goToAccountModule = notificationType === 'request contact' ? 'Job' : notificationType === 'offer acceptance' ? 'Talent' : '';
               let evenIndex = index % 2 === 0;
               return (
                 <li key={index}
