@@ -1,18 +1,27 @@
 import { useState, useEffect, useRef } from 'react';
-import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
-import { IconBxChevronUp, IconCancel, IconSendMessage, IconUser } from '../../icons/icons';
+import { useAuthData, useAuthUI } from "../../context/authContext";
+import { IconBxChevronUp, IconCancel, IconSendMessage } from '../../icons/icons';
 import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
-import Image from 'next/image';
-import SimpleBar from 'simplebar-react';
-import 'simplebar/dist/simplebar.min.css';
+import dateTimeFunction from '../api/dateTimeFunction';
 import ImageIconUser from './ImageIconUser';
+//import SimpleBar from 'simplebar-react';
+//import 'simplebar/dist/simplebar.min.css';
 
 
 interface ChatDataUser {
   user_id: string,
   user_name: string,
-  user_image: string
+  user_image_url: string
 };
+
+interface UnreadMessagesForUser {
+  [key: string]: number
+}
+
+interface ChatData {
+  to_user_id: string;
+  message: string;
+}
 
 type RoundedSide = 'right' | 'left';
 type PositionType = 'start' | 'center' | 'end' | 'single';
@@ -21,82 +30,84 @@ type PositionType = 'start' | 'center' | 'end' | 'single';
 
 export default function ChatCard() {
 
-  const { token, userId, userProfileImage, socket } = useAuthData();
-  const { chatActived, setChatActived, chatDataUser } = useAuthUI();
+  const { token, userId, userChatsData, setUserChatsData, setIsGettingChatData, socket, setUnreadMessagesForUser } = useAuthData();
+  const { accountModule, chatActived, setChatActived, chatDataUser, setChatDataUser, } = useAuthUI();
   const [message, setMessage] = useState('');
   const [messageChange, setMessageChange] = useState(false);
   const [chatMinimized, setChatMinimized] = useState(false);
-  const [chatsData, setChatsData] = useState([]);
-  const [updateChats, setUpdateChats] = useState<boolean>(false);
   const [lastMessageDate, setLastMessageDate] = useState('');
 
   const chatListRef = useRef<HTMLUListElement>(null);
-  const chatUserName = (chatDataUser as ChatDataUser).user_name;
-  const chatUserImage = (chatDataUser as ChatDataUser).user_image;
-  const chatUserId = (chatDataUser as ChatDataUser).user_id;
+  const chatUserId: string = (chatDataUser as ChatDataUser).user_id;
+  const chatUserName: string = (chatDataUser as ChatDataUser).user_name;
+  const chatUserImageUrl: string = (chatDataUser as ChatDataUser).user_image_url;
 
+  ///get chats 
   useEffect(() => {
-    if (chatActived || updateChats) {
-      userDataHandlerFunction({
-        token: token as string,
-        userId: userId as string,
-        action: 'get',
-        collectionName: 'chats',
-        data: { to_user_id: chatUserId },
-        onSuccess: (responseData: any) => setChatsData(responseData),
-        onError: (error: any) => console.error(error)
-      });
-      setUpdateChats(false);
-    };
-  }, [token, userId, chatActived, updateChats]);
-
-  useEffect(() => {
-    socket?.on('notificacion', (data: any) => {
-      const { toUserId, message } = data;
-      if (toUserId === userId) {
-        if (message === 'chat update') {
-          setUpdateChats(true)
-        }
-        else { console.log('Data webSocket value: ', data) }
+    if (token && userId && chatActived) {
+      const fetchChats = async () => {
+        userDataHandlerFunction({
+          token: token as string,
+          userId: userId as string,
+          action: 'get',
+          collectionName: 'chats',
+          data: { from_user_id: chatUserId },
+          onSuccess: (responseData: any) => {
+            setUserChatsData(responseData);
+          },
+          onError: (error: any) => console.error(error)
+        });
       }
-    });
-  }, []);
+      fetchChats().then(() => {
+        setIsGettingChatData(false);
+        setUnreadMessagesForUser((prevMessages: UnreadMessagesForUser) => ({
+          ...prevMessages,
+          [chatUserId]: 0
+        }));
+      })
+    };
+  }, [chatActived]);
+
+  //web-socket listener
+  ///useEffect(() => {
+  ///  if (token && socket && chatActived && !getChatData) {
+  ///    socket.on('message', (data: SocketsMessages) => { setChatsData(prevChats => [...prevChats, data]) });
+  ///    return () => { socket.off('message') };
+  ///  }
+  ///}, [socket, getChatData]);
 
   useEffect(() => {
-    const lastChatItem = chatListRef.current?.lastChild;
+    let lastChatItem = chatListRef.current?.lastChild;
     if (lastChatItem && lastChatItem instanceof HTMLElement) {
       lastChatItem.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [chatsData]);
+  }, [userChatsData]);
 
+  useEffect(() => { !isConnections && setChatActived(false) }, [accountModule]);
 
   const messageChatSubmitHandle = async (e: React.FormEvent) => {
     e.preventDefault();
-    const data = {
+    const date: any = dateTimeFunction('date');
+    const time: any = dateTimeFunction('time');
+    const data: SocketsMessages = {
       to_user_id: chatUserId,
-      message: message
+      from_user_id: userId as string,
+      message: message,
+      message_date: date,
+      message_time: time,
+      message_status: 'unread',
     };
-
-    try {
-      await userDataHandlerFunction({
-        token: token as string,
-        userId: userId as string,
-        action: 'post',
-        collectionName: 'chats',
-        data: data,
-        onSuccess: () => {
-          socket?.emit('notification', { toUserId: chatUserId, message: 'chat update' });     //webSocket notification
-        },
-        onError: (error: any) => console.error(error)
-      });
-    }
-    catch (error) {
-      console.error('Error to send message:', error);
-    }
-    finally {
-      setMessage('');
-      setUpdateChats(true);
-    }
+    await userDataHandlerFunction({
+      token: token as string,
+      userId: userId as string,
+      action: 'post',
+      collectionName: 'chats',
+      data: data,
+      onSuccess: () => { socket?.emit('message', data) },                     //webSocket notification
+      onError: (error: any) => console.error(error)
+    });
+    setUserChatsData(prevChats => [...prevChats, data]);
+    setMessage('');
   };
 
   function messageValues(chat: any, index: number, chatsData: any) {
@@ -114,29 +125,44 @@ export default function ChatCard() {
     let positionType = isMessageStart ? 'start' : isMessageCenter ? 'center' : isMessageEnd ? 'end' : 'single';
 
     return { isMyMessage, isDifferentDate, roundedSide, positionType };
-  }
+  };
 
   function effectRoundedChat(roundedSide: RoundedSide, positionType: PositionType): string {
     const roundedStyles: Record<RoundedSide, Record<PositionType, string>> = {
       right: {
-        start: 'rounded-tr-4xl rounded-l-4xl',
-        center: 'rounded-l-4xl',
-        end: 'rounded-br-4xl rounded-l-4xl',
-        single: 'rounded-4xl'
+        start: 'rounded-tr-2xl rounded-l-2xl',
+        center: 'rounded-l-2xl',
+        end: 'rounded-br-2xl rounded-l-2xl',
+        single: 'rounded-2xl'
       },
       left: {
-        start: 'rounded-tl-4xl rounded-r-4xl',
-        center: 'rounded-r-4xl',
-        end: 'rounded-bl-4xl rounded-r-4xl',
-        single: 'rounded-4xl'
+        start: 'rounded-tl-2xl rounded-r-2xl',
+        center: 'rounded-r-2xl',
+        end: 'rounded-bl-2xl rounded-r-2xl',
+        single: 'rounded-2xl'
       }
     };
-    return roundedStyles[roundedSide][positionType] || 'rounded-4xl';
-  }
+    return roundedStyles[roundedSide][positionType] || 'rounded-2xl';
+  };
+
+  function effectPadding(positionType: string) {
+    switch (positionType) {
+      case 'end':
+        return 'mb-1';
+      case 'start':
+        return 'mt-1';
+      case 'single':
+        return 'my-1';
+      default:
+        break;
+    }
+  };
+
+  const isConnections: boolean = accountModule === 'Connections';
 
 
   return (
-    chatActived &&
+    (isConnections && chatActived) &&
     <div
       className={
         `${chatActived ?
@@ -153,7 +179,7 @@ export default function ChatCard() {
           <div className='w-10 h-10 flex flex-row items-center'>
             <ImageIconUser
               type={'title-chat'}
-              toUserId={chatUserId as string}
+              otherUserImageUrl={chatUserImageUrl}
             />
           </div>
           {/**full name from user contacted */}
@@ -177,6 +203,8 @@ export default function ChatCard() {
                 setChatActived(false);
                 setChatMinimized(false);
                 setLastMessageDate('');
+                setUserChatsData([]);
+                setChatDataUser({});
               }}
             >
               <IconCancel />
@@ -186,69 +214,62 @@ export default function ChatCard() {
         {/**form container */}
         <div className='w-full h-[88%] flex flex-col'>
           <div className='w-full h-[86%] flex'>
-            <SimpleBar
-              className='simplebar-scrollbar w-full h-full flex flex-row justify-center'
-              style={{ maxHeight: 350 }}
+            <ul
+              className='w-full h-full flex flex-col items-center overflow-y-auto'
+              ref={chatListRef}
             >
-              <ul
-                className='w-full h-full pr-[5px] flex flex-col items-center'
-                ref={chatListRef}
-              >
-                {
-                  chatsData?.map((chat: any, index: any) => {
-                    let { isMyMessage, isDifferentDate, roundedSide, positionType } = messageValues(chat, index, chatsData);
-                    let messageEffect = effectRoundedChat(roundedSide as any, positionType as any);
-                    let chatProfileImageId: any = isMyMessage ? userId : chatUserId
+              {
+                userChatsData?.map((chat: any, index: any) => {
+                  let { isMyMessage, isDifferentDate, roundedSide, positionType } = messageValues(chat, index, userChatsData);
+                  let messageEffectBorder = effectRoundedChat(roundedSide as any, positionType as any);
+                  let chatProfileImageUrlToRender: any = isMyMessage ? '' : chatUserImageUrl;
+                  let messageEffectPadding: any = effectPadding(positionType);
 
-                    return (
-                      <li className={`w-[98%] flex flex-col items-center`}>
-                        {
-                          isDifferentDate &&
-                          /**date */
-                          <div className={`w-full relative my-2 flex flex-row justify-center`}>
-                            <h6 className='w-fit h-fit py-1 px-4 flex text-color-text-medium text-[10px] bg-white border border-color-border outline outline-white rounded-full z-10'>
-                              {chat.message_date}
-                            </h6>
-                            <div className='w-full h-fit absolute top-1/2 bg-white border-b border-color-border rounded-full z-0' />
-                          </div>
-                        }
-                        <div className={
-                          `${isMyMessage ? 'flex-row justify-end' : 'flex-row-reverse'} 
-                      ${positionType === 'end' ? 'mb-1' : positionType === 'start' ? 'mt-1' : positionType === 'single' && 'my-1'} w-full py-[1px] flex`
-                        }>
-                          {/**message and time */}
-                          <div className={`${isMyMessage && 'justify-end'} w-[88%] flex flex-row`}>
-                            <div className={
-                              `${isMyMessage && 'bg-color-clear'} ${messageEffect} px-4 py-1 flex flex-col border border-color-border`}>
-                              <h4 className='w-full text-color-text-dark text-sm'>
-                                {chat.message}
-                              </h4>
-                              <div className='w-full flex flex-row justify-end'>
-                                <h6 className='w-fit flex text-color-text-medium text-[10px]'>
-                                  {chat.message_time}
-                                </h6>
-                              </div>
-                            </div>
-                          </div>
-                          <div className='w-[12%] flex flex-row justify-center items-center'>
-                            <div className='w-8 h-8 flex flex-col justify-center items-center z-20'>
-                              {
-                                //profile images to messages
-                                (positionType === 'end' || positionType === 'single') &&
-                                <ImageIconUser
-                                  type={'message-chat'}
-                                  toUserId={chatProfileImageId as string}
-                                />
-                              }
+                  return (
+                    <li key={index} className={`w-[95%] flex flex-col items-center`}>
+                      {
+                        isDifferentDate &&
+                        /**date */
+                        <div className={`w-full relative my-2 flex flex-row justify-center`}>
+                          <h6 className='w-fit h-fit py-1 px-4 flex text-color-text-medium text-[10px] bg-white border border-color-border outline outline-white rounded-full z-10'>
+                            {chat.message_date}
+                          </h6>
+                          <div className='w-full h-fit absolute top-1/2 bg-white border-b border-color-border rounded-full z-0' />
+                        </div>
+                      }
+                      <div className={`${isMyMessage ? 'flex-row justify-end' : 'flex-row-reverse'} ${messageEffectPadding} w-full py-[1px] flex items-end`}>
+                        <div className={`${isMyMessage && 'justify-end'} w-[88%] flex flex-row`}>
+                          <div className={`${isMyMessage && 'bg-color-clear'} ${messageEffectBorder} px-4 py-1 flex flex-col border border-color-border`}>
+                            {/**message */}
+                            <h4 className='w-full text-color-text-dark text-sm'>
+                              {chat.message}
+                            </h4>
+                            {/**message time */}
+                            <div className='w-full flex flex-row justify-end'>
+                              <h6 className='w-fit flex text-color-text-medium text-[10px]'>
+                                {chat.message_time}
+                              </h6>
                             </div>
                           </div>
                         </div>
-                      </li>
-                    )
-                  })
-                }
-              </ul>
-            </SimpleBar>
+                        {/** profile images to messages */}
+                        <div className='w-[12%] pb-1 flex flex-row justify-center items-center'>
+                          <div className='w-8 h-8 flex flex-col justify-center items-center z-20'>
+                            {
+                              (positionType === 'end' || positionType === 'single') &&
+                              <ImageIconUser
+                                type={'message-chat'}
+                                otherUserImageUrl={chatProfileImageUrlToRender}
+                              />
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  )
+                })
+              }
+            </ul>
           </div>
           {/**form-box */}
           <form

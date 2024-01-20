@@ -17,6 +17,7 @@ export default function MessageModal() {
   const { messageModal, setMessageModal } = useUI();
   const [circleAnimation, setCircleAnimation] = useState(false);
   const [symbolAnimation, setSymbolAnimation] = useState(false);
+  const [circleGrowAnimation, setCircleGrowAnimation] = useState(false);
 
   const type = messageModal[0]?.type;
   const text = messageModal[0]?.text;
@@ -28,8 +29,13 @@ export default function MessageModal() {
   useEffect(() => {
     if (modalActived) {
       setCircleAnimation(true);
+      setSymbolAnimation(false)
       setTimeout(() => {
-        setSymbolAnimation(true)
+        setSymbolAnimation(true);
+        setCircleGrowAnimation(false);
+        setTimeout(() => {
+          setCircleGrowAnimation(true);
+        }, 1000);
       }, 1000);
     }
   }, [modalActived]);
@@ -83,19 +89,21 @@ export default function MessageModal() {
         } container w-64 lg:w-[22rem] p-4 lg:p-8 relative flex flex-col justify-start items-center bg-white rounded-lg shadow-md transform z-[100]`
       }>
         <div className='w-full flex flex-col justify-start items-center'>
+
           {/**SVG: animation circle: successful, error & alert */}
           <div className='w-full h-20 lg:h-28 relative flex flex-col justify-center items-center rounded-t-md animate-[appear_1.0s]'>
+            {/**circle animation */}
             <svg
               className='w-20 lg:w-28 h-20 lg:h-28 absolute'
               viewBox='0 0 40 40'
             >
               <circle
                 className={
-                  `${type === 'successful' ? 'stroke-green-500' : type === 'error' ? 'stroke-red-600' : 'stroke-yellow-300'}
+                  `${type === 'successful' ? 'stroke-green-500' : type === 'error' ? 'stroke-red-600' : 'stroke-color-highlighted-clear'}
                   ${circleAnimation ? 'animate-[draw-circle_2.0s_ease]' : 'hidden'}`
                 }
-                cx="20" cy="20" r="18"
-                strokeWidth="3"
+                cx="20" cy="20" r="19"
+                strokeWidth={2}
                 fill="none"
                 strokeMiterlimit={10}
                 strokeDasharray={330}
@@ -112,27 +120,14 @@ export default function MessageModal() {
                   strokeLinecap='round'
                 >
                   <line
-                    className={
-                      `${symbolAnimation ?
-                        'animate-[draw-check_0.75s_ease-in-out_delay_1.0s]'
-                        : 'hidden'
-                      }`
-                    }
-                    x1="4"
-                    y1="26"
-                    x2="16"
-                    y2="36"
+                    className={`${symbolAnimation ? 'animate-[draw-check_0.75s_ease-in-out_delay_1.0s]' : 'hidden'}`}
+                    x1="4" y1="26" x2="16" y2="36"
                     strokeMiterlimit={10}
                     strokeDasharray={330}
                     strokeDashoffset={0}
                   />
                   <line
-                    className={
-                      `${symbolAnimation ?
-                        'animate-[draw-check_1.25s_ease-in-out_delay_0.75s]'
-                        : 'hidden'
-                      }`
-                    }
+                    className={`${symbolAnimation ? 'animate-[draw-check_1.25s_ease-in-out_delay_0.75s]' : 'hidden'}`}
                     x1="16" y1="36" x2="36" y2="12"
                   />
                 </svg>
@@ -146,67 +141,39 @@ export default function MessageModal() {
                     strokeLinecap='round'
                   >
                     <line
-                      className={
-                        `${symbolAnimation ?
-                          'animate-[draw-check_2.0s_ease]'
-                          : 'hidden'
-                        }`
-                      }
-                      x1="6"
-                      y1="6"
-                      x2="35"
-                      y2="35"
+                      className={`${symbolAnimation ? 'animate-[draw-check_2.0s_ease]' : 'hidden'}`}
+                      x1="6" y1="6" x2="35" y2="35"
                     />
                     <line
-                      className={
-                        `${symbolAnimation ?
-                          'animate-[draw-check_3.0s_ease]'
-                          : 'hidden'
-                        }`
-                      }
-                      x1="6"
-                      y1="35"
-                      x2="35"
-                      y2="6"
+                      className={`${symbolAnimation ? 'animate-[draw-check_3.0s_ease]' : 'hidden'}`}
+                      x1="6" y1="35" x2="35" y2="6"
                     />
                   </svg>
                   :
                   /**alert SVG animation */
                   <>
-                    <svg
-                      className='w-10 lg:w-14 h-10 lg:h-14 stroke-yellow-300 flex'
-                      strokeWidth={8}
-                      viewBox='0 0 40 40'
-                      strokeLinecap='round'
-                    >
-                      <line
-                        className={
-                          `${symbolAnimation ?
-                            'animate-[draw-check_2.0s_ease]'
-                            : 'hidden'
-                          }`
-                        }
-                        x1="20"
-                        y1="4"
-                        x2="20"
-                        y2="27"
-                      />
-                      <line
-                        className={
-                          `${symbolAnimation ?
-                            'animate-[draw-check_3.0s_ease]'
-                            : 'hidden'
-                          }`
-                        }
-                        x1="20"
-                        y1="36"
-                        x2="20"
-                        y2="36"
-                      />
-                    </svg>
+                    {
+                      symbolAnimation &&
+                      <svg
+                        className='w-10 lg:w-14 h-10 lg:h-14 stroke-color-highlighted-clear flex'
+                        strokeWidth={4}
+                        viewBox='0 0 40 40'
+                        strokeLinecap='round'
+                      >
+                        <line
+                          className={`${symbolAnimation ? 'animate-[draw-check_1.0s_ease]' : 'hidden'}`}
+                          x1="20" y1="4" x2="20" y2="27"
+                        />
+                        <line
+                          className={`${symbolAnimation ? 'animate-[draw-check_1.5s_ease]' : 'hidden'}`}
+                          x1="20" y1="36" x2="20" y2="36"
+                        />
+                      </svg>
+                    }
                   </>
             }
           </div>
+
           {/**message title */}
           <h2 className='w-full pt-4 text-xl lg:text-3xl text-slate-950 text-center flex flex-col justify-center items-center'>
             {title}
@@ -222,7 +189,7 @@ export default function MessageModal() {
                 className={
                   `${type === 'successful' ? 'bg-green-400 lg:bg-green-300 lg:hover:bg-green-600' :
                     type === 'question' ? 'bg-color-highlighted lg:hover:bg-color-highlighted-clear' :
-                      type === 'logout' ? 'bg-yellow-400 lg:bg-yellow-300 lg:hover:bg-yellow-600' :
+                      type === 'logout' ? 'bg-color-highlighted lg:hover:bg-color-highlighted-clear' :
                         'w-full bg-red-400 lg:bg-red-300 lg:hover:bg-red-600'
                   } w-[95%] text-slate-50 lg:hover:text-white lg:hover:font-bold py-2 flex flex-row justify-center items-center cursor-default lg:cursor-pointer rounded-md transition-all`
                 }

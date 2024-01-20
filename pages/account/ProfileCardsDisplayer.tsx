@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAuthUI } from "../../context/authContext";
-import UserCardProfile from "./UserCardProfile";
-import ButtonTitleCards from "./ButtonTitleCards";
+import ProfileCard from "./ProfileCard";
 
 interface CardsDisplayerParams {
   id: string,
@@ -12,7 +11,7 @@ interface CardsDisplayerParams {
 
 
 
-export default function CardsDisplayerProfile({ id, key, data, collectionName }: CardsDisplayerParams) {
+export default function ProfileCardsDisplayer({ id, key, data, collectionName }: CardsDisplayerParams) {
   const { accountModule } = useAuthUI();
   const [itemHover, setItemHover] = useState(null);
   const [listHover, setListHover] = useState(false);
@@ -34,7 +33,7 @@ export default function CardsDisplayerProfile({ id, key, data, collectionName }:
                 onMouseEnter={() => { setItemHover(index); setListHover(true); }}
                 onMouseLeave={() => { setItemHover(null); setListHover(false); }}
               >
-                <UserCardProfile
+                <ProfileCard
                   data={element}
                   editDeleteButtonVisible={listHover && (itemHover === index)}
                   dataBaseCollection={collectionName}

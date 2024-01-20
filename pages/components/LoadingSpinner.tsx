@@ -7,20 +7,14 @@ export default function LoadingSpinner() {
   const { loading } = useUI();
 
   return (
-    <div
-      className={
-        `${!loading ?
-          'hidden' :
-          ''} w-screen h-screen fixed top-0 flex flex-col justify-center items-center bg-black bg-opacity-75 z-[60]`
-      }
-    >
+    <div className={`${!loading && 'hidden' } w-screen h-screen fixed top-0 flex flex-col justify-center items-center bg-black bg-opacity-75 z-[60]`} >
       <div className='w-full h-full relative flex flex-col justify-center items-center'>
         <div className="w-full h-full absolute flex justify-center items-center">
-          <div className="w-12 h-12 mb-4 border-4 border-t-4 border-slate-50 rounded-full loader ease-linear" />
+          <div className="w-12 h-12 mb-4 border-4 border-t-4 border-color-clear rounded-full loader ease-linear" />
           <style jsx>
             {`
         .loader {
-          border-top-color: #d946ef;
+          border-top-color: #0ea5e9;
           -webkit-animation: spinner 1.5s linear infinite;
           animation: spinner 1.5s linear infinite;
         }

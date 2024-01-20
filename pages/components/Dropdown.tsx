@@ -2,14 +2,15 @@ import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'
 import ImageIconUser from "../account/ImageIconUser";
-import { IconDashboard, IconUserTie, IconRequest, IconBxsBellRing, IconHelpCircle, IconGear, IconHome, IconBxPowerOff } from '@/icons/icons';
+import { IconDashboard, IconUserTie, IconBxsBellRing, IconGear, IconHome, IconBxPowerOff, IconUserConnections, IconRequestTalent, IconRequestJob } from '@/icons/icons';
 
 const navbarElementAuth = [
   { title: 'Dashboard', accountModule: 'Dashboard', icon: <IconDashboard /> },
   { title: 'Profile', accountModule: 'Profile', icon: <IconUserTie /> },
-  { title: 'Talent request', accountModule: 'Talent', icon: <IconRequest /> },
-  { title: 'Job request', accountModule: 'Job', icon: <IconRequest /> },
-  { title: 'Notifications', accountModule: 'Notifications', icon: <IconBxsBellRing /> },
+  { title: 'Talent request', accountModule: 'Talent', icon: <IconRequestTalent /> },
+  { title: 'Job request', accountModule: 'Job', icon: <IconRequestJob /> },
+  //{ title: 'Notifications', accountModule: 'Notifications', icon: <IconBxsBellRing /> },
+  { title: 'Connections', accountModule: 'Connections', icon: <IconUserConnections /> },
   { title: 'Settings', accountModule: 'Settings', icon: <IconGear /> },
 ];
 
@@ -49,9 +50,8 @@ export default function Dropdown(props: any) {
   return (
     dropdown &&
     <ul className={
-      `${!token ? screenNarrow ? 'w-52 h-full left-0 animate-[appear-left_0.5s_ease]' : ''
-        : 'w-64 right-0 animate-[appear-top_0.5s_ease]'
-      } fixed top-0 pt-10 lg:pt-12 flex-col justify-start items-start bg-color-navbar rounded-sm transition-all z-40`}>
+      `${!token ? screenNarrow && 'w-52 h-full left-0 animate-[appear-left_0.5s_ease]' : 'w-64 right-0 animate-[zoom-in-top_0.2s_ease]'
+      } fixed top-[50px] lg:top-[58px] flex-col justify-start items-start bg-color-navbar border border-color-border-navbar rounded-sm transition-all z-40`}>
       {
         token ?
           <>
@@ -61,7 +61,7 @@ export default function Dropdown(props: any) {
                 <div className='w-9 h-9 flex flex-col justify-center items-center'>
                   <ImageIconUser
                     type='dropdown'
-                    toUserId={userId as string}
+                    otherUserImageUrl={''}
                   />
                 </div>
                 <h5 className='text-color-text-dark pl-3 text-xs lg:text-sm xl:text-sm font-light'>
@@ -73,29 +73,28 @@ export default function Dropdown(props: any) {
               /**authenticated: dropdown options */
               navbarElementAuth.map((item: any, index: any) => {
                 return (
-                  screenNarrow && item.title === 'Dashboard' ? '' :
-                    <li
-                      key={index}
-                      className={
-                        `${accountModule === item.accountModule ?
-                          'text-color-highlighted font-semibold' :
-                          'text-color-text-almost-clear hover:text-color-text-medium font-normal'
-                        } w-full h-auto flex flex-row items-center hover:bg-color-hover hover:cursor-pointer`
-                      }
-                      onClick={() => {
-                        setDropdown(false);
-                        setAccountActived(true);
-                        setAccountModule(item.accountModule);
-                        router.push('/Account')
-                      }}
-                    >
-                      <i className='text-base pl-8 pr-3'>
-                        {item.icon}
-                      </i>
-                      <h3 className='py-2 px-4 text-sm lg:text-base text-start'>
-                        {item?.title}
-                      </h3>
-                    </li>
+                  <li
+                    key={index}
+                    className={
+                      `${accountModule === item.accountModule ?
+                        'text-color-highlighted font-bold' :
+                        'text-color-text-almost-clear hover:text-color-text-medium font-normal hover:bg-color-hover hover:cursor-pointer'
+                      } w-full h-auto flex flex-row items-center`
+                    }
+                    onClick={() => {
+                      setDropdown(false);
+                      setAccountActived(true);
+                      setAccountModule(item.accountModule);
+                      router.push('/Account')
+                    }}
+                  >
+                    <i className='text-base pl-8 pr-3'>
+                      {item.icon}
+                    </i>
+                    <h3 className='py-2 px-4 text-sm lg:text-base text-start'>
+                      {item?.title}
+                    </h3>
+                  </li>
                 )
               })
             }
@@ -121,31 +120,24 @@ export default function Dropdown(props: any) {
               </li>
             }
             {/**logout button */}
-            <li className='w-full h-auto mt-4 py-4 flex flex-row justify-center items-center text-color-text-almost-clear hover:text-color-text-medium font-normal hover:bg-color-hover hover:cursor-pointer border-t border-color-border-navbar'>
-              <button
-                className='w-full h-full flex flex-row items-center'
-                onClick={() => {
-                  setDropdown(false);
-                  setHamburguerMenuActive(false);
-                  setMessageModal([{
-                    type: 'logout',
-                    text: 'Logout your session with this action',
-                    click: () => {
-                      logout()
-                      setMessageModal([])
-                      router.push('/')
-                    }
-                  }]);
-                }}
-              >
-                <i className='text-lg pl-8 pr-3'>
-                  <IconBxPowerOff />
-                </i>
-                <h3 className='h-auto text-sm lg:text-base px-4 text-start'>
-                  Log out
-                </h3>
-              </button>
-            </li>
+            <ButtonAccount
+              key='logout-button'
+              buttonType='Log out'
+              icon={<IconBxPowerOff />}
+              click={() => {
+                setDropdown(false);
+                setHamburguerMenuActive(false);
+                setMessageModal([{
+                  type: 'logout',
+                  text: 'Logout your session with this action',
+                  click: () => {
+                    logout()
+                    setMessageModal([])
+                    router.push('/')
+                  }
+                }]);
+              }}
+            />
           </>
           :
           <>
@@ -157,9 +149,9 @@ export default function Dropdown(props: any) {
                     key={index}
                     className={
                       `${props.sectionActived === element.linkTo ?
-                        'text-color-secondary font-semibold' :
-                        'text-color-text-secondary hover:text-color-text-clear font-normal'
-                      } w-full h-auto flex flex-row items-center hover:bg-color-primary-clear hover:cursor-pointer`
+                        'text-color-highlighted font-bold' :
+                        'text-color-text-almost-clear hover:text-color-text-medium font-normal hover:bg-color-hover hover:cursor-pointer'
+                      } ${index === navbarElementUnauth.length - 1 && 'border-b border-color-border-navbar'} w-full h-auto flex flex-row items-center`
                     }
                   >
                     <Link
@@ -180,33 +172,55 @@ export default function Dropdown(props: any) {
               })
             }
             {/**login button */}
-            <li
+            <ButtonAccount
               key='login-button'
-              className='w-full h-auto mt-4 pt-4 py-2 flex flex-row items-center text-color-text-secondary hover:text-color-clear hover:bg-color-primary-clear border-t border-color-primary-clear'
-              onClick={() => {
+              buttonType='Log in'
+              icon={''}
+              click={() => {
                 setDropdown(false);
-                setHamburguerMenuActive(false);
                 setLoginModal(true);
-              }}>
-              <h3 className='w-full pr-4 text-sm lg:text-base text-end'>
-                Log in
-              </h3>
-            </li>
+                setHamburguerMenuActive(false);
+              }}
+            />
+
             {/**join button */}
-            <li
-              key='join-button'
-              className='w-full h-auto py-2 flex flex-row items-center text-color-text-secondary hover:text-color-clear hover:bg-color-primary-clear'
-              onClick={() => {
+            <ButtonAccount
+              buttonType='Join'
+              icon={''}
+              click={() => {
                 setDropdown(false);
                 setHamburguerMenuActive(false);
                 setJoinModal(true);
-              }}>
-              <h3 className='w-full pr-4 text-sm lg:text-base text-end'>
-                Join
-              </h3>
-            </li>
+              }}
+            />
           </>
       }
-    </ul>
+    </ul >
   )
 }
+
+function ButtonAccount({ buttonType, icon, click }: any, index: any) {
+  return (
+    <li key={`button-${buttonType}-${index}`} className={
+      `${buttonType === 'Log out' && 'mt-4 justify-center border-t border-color-border-navbar'
+      } w-full h-auto py-4 flex flex-row items-center text-color-text-almost-clear hover:text-color-text-medium hover:bg-color-hover hover:cursor-pointer`
+    }>
+      <button
+        className='w-full h-full flex flex-row items-center'
+        onClick={() => click()}
+      >
+        <i className='text-lg pl-8 pr-3'>
+          {icon}
+        </i>
+        <h3 className={
+          `${buttonType === 'Log out' ?
+            'h-auto text-sm lg:text-base px-4 text-start'
+            : 'w-full pr-4 text-sm lg:text-base text-end'}`
+        }>
+          {buttonType}
+        </h3>
+      </button>
+    </li>
+  )
+}
+

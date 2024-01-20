@@ -80,9 +80,7 @@ export default function Home() {
 
       {/**navbar */}
       <div className='w-auto h-auto'>
-        <Navbar
-          sectionActived={sectionActived}
-        />
+        <Navbar />
       </div>
 
       {/***Header section***/}

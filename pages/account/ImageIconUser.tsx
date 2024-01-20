@@ -6,40 +6,44 @@ import Image from 'next/image';
 
 interface UserProfileImageParams {
   type: 'navbar' | 'dropdown' | 'account-navbar' | 'personal-info' | 'notifications' | 'request' | 'title-chat' | 'message-chat';
-  toUserId: string;
+  otherUserImageUrl: string;
 }
 
 
 
-export default function ImageIconUser({ type, toUserId }: UserProfileImageParams) {
+export default function ImageIconUser({ type, otherUserImageUrl }: UserProfileImageParams) {
   const { accountModule, setProfileModal, setProfileModalAction } = useAuthUI();
-  const { token, userImage, setUserImage, setCollectionToChange, update, setUpdate } = useAuthData();
+  const { token, userId, userImageUrl, setUserImageUrl, setCollectionToChange, update, setUpdate, updateCounter, setUpdateCounter } = useAuthData();
   const [imageHover, setImageHover] = useState(false);
 
   useEffect(() => {
-    if (toUserId && token && (!update || update === 'profile_image' || update === 'image-profile')) {
-      fetchUserProfileImage();
-      if (update === 'profile_image' || update === 'image-profile') { 
-        setUpdate(''); 
-      }
+    if (token && userId && (update === 'all' || update === 'profile-image')) {
+      setUpdateCounter((counter) => counter + 1);
+      const fetchUserProfileImage = async () => {
+        userDataHandlerFunction({
+          token: token as string,
+          userId: userId as string,
+          action: 'get',
+          collectionName: 'profile_image',
+          data: '',
+          onSuccess: (responseData: any) => setUserImageUrl(responseData.image_url),
+          onError: (error: any) => console.error(error)
+        });
+      };
+      fetchUserProfileImage().then(() => {
+        setUpdateCounter((counter) => counter - 1);  
+        if ((update === 'all' && updateCounter === 0) || update === 'profile-image') {
+          setUpdate('');
+        }
+      });
     }
-  }, [token, toUserId, update]);
+  }, [token, userId, update]);
 
-  const fetchUserProfileImage = () => {
-    userDataHandlerFunction({
-      token: token as string,
-      userId: toUserId as string,
-      action: 'get',
-      collectionName: 'profile_image',
-      data: '',
-      onSuccess: (responseData: any) => setUserImage(responseData.image_url),
-      onError: (error: any) => console.error(error)
-    });
-  };
+  const userImageUrlToRender: any = otherUserImageUrl === '' ? userImageUrl : otherUserImageUrl;
 
   const getImageClasses = () => {
     const baseClass = moduleType[type] && moduleType[type]['image-class'];
-    return userImage && `${baseClass}`;
+    return userImageUrlToRender && `${baseClass}`;
   };
 
   const getIconClasses = () => {
@@ -48,12 +52,12 @@ export default function ImageIconUser({ type, toUserId }: UserProfileImageParams
   };
 
   const getBorderClass = () => {
-    return userImage ? moduleBorderColor[type] || 'border-color-border' : 'border border-color-border';
+    return userImageUrlToRender ? moduleBorderColor[type] || 'border-color-border' : 'border border-color-border';
   };
 
   const isDashboard = accountModule === 'Dashboard';
   const isEditableImage = type === 'personal-info';
-  
+
   const moduleType: any = {
     'message-chat': { 'image-class': 'border-[1px]', 'icon-class': 'text-2xl' },
     'title-chat': { 'image-class': 'border-[1px]', 'icon-class': 'text-2xl' },
@@ -80,12 +84,12 @@ export default function ImageIconUser({ type, toUserId }: UserProfileImageParams
   return (
     <div className={`${getBorderClass()} w-full h-full relative flex justify-center items-center rounded-full z-0`}>
       {
-        userImage ?
+        userImageUrlToRender ?
           <Image
             className={`${getImageClasses()} w-[94%] h-[94%] rounded-full border-white transition-all z-10`}
             width={800}
             height={800}
-            src={userImage}
+            src={userImageUrlToRender as string}
             alt='profile-image'
           />
           :
@@ -113,8 +117,9 @@ export default function ImageIconUser({ type, toUserId }: UserProfileImageParams
   }
 
   function handleImageEditClick(e: any) {
-    setProfileModal(true);
-    setProfileModalAction(userImage ? 'edit' : 'post');
+    setProfileModal('profile-image');
+    setProfileModalAction(userImageUrl ? 'edit' : 'post');
     setCollectionToChange('profile_image');
+    console.log('Click on image: ', userImageUrl)
   }
 }

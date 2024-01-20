@@ -7,118 +7,123 @@ import SectionTitles from '../components/SectionTitles';
 
 
 export default function Notifications() {
-  const { token, userId, update, setUpdate, socket } = useAuthData();
-  const { accountModule } = useAuthUI();
   const { screenNarrow } = useUI();
+  const { accountModule } = useAuthUI();
+  const { token, userId, userNotificationsData, setUserNotificationsData, update, setUpdate, updateCounter, setUpdateCounter, socket } = useAuthData();
   const [cardHover, setCardHover] = useState(false);
-  const [notificationsData, setNotificationsData] = useState([]);
-  const [notifications, setNotifications] = useState([]);
-  
-  useEffect(() => {
-    if (accountModule === 'Dashboard' || accountModule === 'Notifications' || update === 'notifications') {
-      userDataHandlerFunction({
-        token: token as string,
-        userId: userId as string,
-        action: 'get',
-        collectionName: 'notifications',
-        data: '',
-        onSuccess: (responseData: any) => setNotificationsData(responseData),
-        onError: (error: any) => console.error(error)
-      });
-      if (update === 'notifications') {
-        setUpdate('');
-      }
-    };
-  }, [token, userId, accountModule, update]);
 
-  useEffect(() => {
-    if (accountModule === 'Dashboard' || accountModule === 'Notifications') {
-      const fetchNotifications = async () => {
-        const notificationsPromises = notificationsData.map(async (notification: any) => {
-          try {
-            const personalInfoResponse: any = await new Promise((resolve, reject) => {
-              userDataHandlerFunction({
-                token: token as string,
-                userId: notification.from_user_id as string,
-                action: 'get',
-                collectionName: 'personal_info',
-                data: '',
-                onSuccess: resolve,
-                onError: reject
-              });
-            });
+  const fetchNotificationsAllInfo = async (notifications: any) => {
+    const notificationsPromises = notifications.map(async (notification: any) => {
+      let notificationFromRequestId: string = notification.from_request_id;
+      let notificationFromUserId: string = notification.from_user_id;
+      let requestCollectionName: any = notification?.notification_type === 'request contact' ?
+        'request_talent' : notification?.notification_type === 'request accepted' && 'request_job';
 
-            let requestCollectionName = notification?.notification_type === 'request contact' ?
-              'request_talent' : notification?.notification_type === 'offer acceptance' && 'request_job';
-
-            let notificationFromRequestId: string = notification.from_request_id;
-
-            const requestInfoResponse: any = await new Promise((resolve, reject) => {
-              userDataHandlerFunction({
-                token: token as string,
-                userId: notification.from_user_id as string,
-                action: 'get-one-request',
-                collectionName: requestCollectionName as string,
-                data: notificationFromRequestId,
-                onSuccess: resolve,
-                onError: reject
-              });
-            });
-
-            let notificationInfo = {
-              _id: notification._id,
-              created_date: notification.created_at,
-              notification_type: notification.notification_type,
-              user_id: personalInfoResponse._id,
-              full_name: personalInfoResponse.full_name,
-              company_info: requestInfoResponse.company_info,
-              company_location: requestInfoResponse.location,
-              company_job_title: requestInfoResponse.job_title,
-              candidate_location: requestInfoResponse.location,
-              candidate_talent_category: requestInfoResponse.talent_category
-            };
-
-            return notificationInfo
-          }
-          catch (error) {
-            console.error('Error fetching data for notification:', notification._id, error);
-            return null;
-          }
+      try {
+        const notificationUserImageResponse: any = await new Promise((resolve, reject) => {
+          userDataHandlerFunction({
+            token: token as string,
+            userId: notificationFromUserId,
+            action: 'get',
+            collectionName: 'profile_image',
+            data: '',
+            onSuccess: resolve,
+            onError: reject
+          });
+        });
+        const notificationPersonalInfoResponse: any = await new Promise((resolve, reject) => {
+          userDataHandlerFunction({
+            token: token as string,
+            userId: notificationFromUserId,
+            action: 'get',
+            collectionName: 'personal_info',
+            data: '',
+            onSuccess: resolve,
+            onError: reject
+          });
+        });
+        const notificationRequestInfoResponse: any = await new Promise((resolve, reject) => {
+          userDataHandlerFunction({
+            token: token as string,
+            userId: notificationFromUserId,
+            action: 'get-one-request',
+            collectionName: requestCollectionName as string,
+            data: notificationFromRequestId,
+            onSuccess: resolve,
+            onError: reject
+          });
         });
 
-        const newNotifications: any = await Promise.all(notificationsPromises);
-        setNotifications(newNotifications)
-      };
+        let notificationInfo = {
+          _id: notification._id,
+          created_date: notification.created_at,
+          notification_type: notification.notification_type,
+          user_id: notificationPersonalInfoResponse[0]._id,
+          full_name: notificationPersonalInfoResponse[0].full_name,
+          user_image_url: notificationUserImageResponse.image_url,
+          company_name: notificationRequestInfoResponse.company_name,
+          job_location: notificationRequestInfoResponse.location,
+          job_description: notificationRequestInfoResponse.job_description,
+          candidate_location: notificationRequestInfoResponse.location,
+          candidate_talent_category: notificationRequestInfoResponse.talent_category
+        };
 
-      fetchNotifications();
-    }
-  }, [token, userId, accountModule, notificationsData]);
-
-  //webSockets to update notifications
-  useEffect(() => {
-    socket?.on('notificacion', (data: any) => {
-      const { toUserId, message } = data;
-      if (toUserId === userId) {
-        if (message === 'notification update') {
-          if (update) {
-            setTimeout(() => {
-              setUpdate('notifications')
-            }, 250);
-          };
-        }
-        else { console.log('Data webSocket value: ', data) }
+        return notificationInfo
+      }
+      catch (error) {
+        console.error('Error fetching data for notification:', notification._id, error);
+        return null;
       }
     });
-  }, []);
+    const notificationsAllInfo: any = await Promise.all(notificationsPromises);
+    setUserNotificationsData(notificationsAllInfo)
+  };
+
+  // get notifications
+  useEffect(() => {
+    if (token && userId && (update === 'all' || update === 'notifications' || accountModule === 'Dashboard' || accountModule === 'Notifications')) {
+      setUpdateCounter((counter) => counter + 1);
+      const fetchNotifications = async () => {
+        userDataHandlerFunction({
+          token: token as string,
+          userId: userId as string,
+          action: 'get',
+          collectionName: 'notifications',
+          data: '',
+          onSuccess: (responseData: any) => {
+            fetchNotificationsAllInfo(responseData);
+          },
+          onError: (error: any) => console.error(error)
+        });
+      }
+      fetchNotifications().then(() => {
+        setUpdateCounter((counter) => counter - 1);
+        if ((update === 'all' && updateCounter === 0) || update === 'notifications') {
+          setUpdate('');
+        }
+      })
+    };
+  }, [token, userId, update]);
+
+  //webSockets to active update notifications  
+  useEffect(() => {
+    socket?.on('notificacion', (data: SocketsNotifications) => {
+      const { to_user_id, update_socket } = data;
+      if (to_user_id === userId) {
+        update_socket === 'notifications' && setUpdate('notifications');
+      }
+    });
+  }, [])
 
   const isDashboard = accountModule === 'Dashboard';
+  const isNotifications = accountModule === 'Notifications';
 
 
   return (
     <div className={`${!isDashboard && 'pl-0 lg:pl-60'} w-full h-full flex flex-col items-center`}>
       <div className={
         `${isDashboard ? 'w-full h-full flex-col bg-white border border-color-border shadow-md rounded-lg'
-          : screenNarrow ? 'w-full flex-col px-1 py-16' : 'w-[35rem] px-2 lg:px-8 lg:py-9 flex-col'                   //w-[52rem] (ancho normal para todas las cards)
+          : screenNarrow ? 'w-full flex-col px-5 py-16' : 'w-[35rem] px-2 lg:px-8 lg:py-9 flex-col'                   //w-[52rem] (ancho normal para todas las cards)
         } flex justify-between transition-all`
       }
         onMouseEnter={() => setCardHover(true)}
@@ -126,8 +131,8 @@ export default function Notifications() {
       >
         {/**title */}
         <div className={
-          `${isDashboard ? 'border-b' : 'bg-white border shadow-md rounded-lg'
-          } w-full px-5 py-1 flex justify-between flex-row items-center border-color-border`
+          `${isDashboard ? ' px-5 border-b' : ''     // bg-white border shadow-md rounded-lg
+          } w-full py-1 flex justify-between flex-row items-center border-color-border`
         }>
           <div className='w-full flex flex-row justify-between items-center'>
             <div className='w-2/3 flex flex-row items-center'>
@@ -138,7 +143,7 @@ export default function Notifications() {
             </div>
           </div>
         </div>
-        <NotificationsCardsDisplayer dataToRender={notifications} />
+        <NotificationsCardsDisplayer notificationsToRender={userNotificationsData} />
       </div>
     </div>
   )

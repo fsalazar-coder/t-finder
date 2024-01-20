@@ -95,7 +95,7 @@ export default function Testimonials(props: any) {
                 `${animationActived ?
                   'md:animate-[appear_4.5s]'
                   : 'md:opacity-0'
-                } w-auto h-fit text-gray-400 text-3xl lg:text-5xl md:cursor-pointer md:opacity-80 md:hover:text-fuchsia-300`
+                } w-auto h-fit text-color-text-almost-clear text-3xl lg:text-5xl md:cursor-pointer md:opacity-80 lg:hover:text-color-highlighted-clear`
               }
               onClick={() => {
                 carouselPosition > 0 ?
@@ -140,7 +140,7 @@ export default function Testimonials(props: any) {
                 `${animationActived ?
                   'md:animate-[appear_4.5s]'
                   : 'md:opacity-0'
-                } w-auto h-fit text-gray-400 text-3xl lg:text-5xl md:cursor-pointer md:opacity-80 md:hover:text-fuchsia-300`
+                } w-auto h-fit text-color-text-almost-clear text-3xl lg:text-5xl md:cursor-pointer md:opacity-80 lg:hover:text-color-highlighted-clear`
               }
               onClick={() => setCarouselPosition(carouselPosition + 1)}
             >

@@ -3,6 +3,8 @@ import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
 import { IconCancel } from '../../icons/icons';
 import FormTemplate from './FormTemplate';
+import SimpleBar from 'simplebar-react';
+import 'simplebar/dist/simplebar.min.css';
 
 
 const initialUserRequestData = {
@@ -14,13 +16,13 @@ const initialUserRequestData = {
   jobLocation: '',
   offeredWorkModality: '',
   offeredCompensation: '',
-  companyInfo: '',
+  companyName: '',
   /**job talent information: */
   talentCategory: '',
   talentDescription: '',
   offeredSkills: '',
   experienceYears: '',
-  prefiredWorkModality: '',
+  preferredWorkModality: '',
   availability: '',
   location: '',
   desiredCompensation: '',
@@ -51,13 +53,13 @@ export default function RequestModal(props: any) {
     jobLocation: '',
     offeredWorkModality: '',
     offeredCompensation: '',
-    companyInfo: '',
+    companyName: '',
     /**job talent information: */
     talentCategory: '',
     talentDescription: '',
     offeredSkills: '',
     experienceYears: '',
-    prefiredWorkModality: '',
+    preferredWorkModality: '',
     availability: '',
     location: '',
     desiredCompensation: '',
@@ -83,9 +85,10 @@ export default function RequestModal(props: any) {
         required_skills: userRequestDataUpdate.requiredSkills,
         required_experience_years: userRequestDataUpdate.requiredExperienceYears,
         modality_work: userRequestDataUpdate.offeredWorkModality,
-        company_name: userRequestDataUpdate.companyInfo,
+        company_name: userRequestDataUpdate.companyName,
         location: userRequestDataUpdate.jobLocation,
-        offeredCompensation: userRequestDataUpdate.offeredCompensation,
+        offered_compensation: userRequestDataUpdate.offeredCompensation,
+        status: 'Submitted'
       },
       requestJob: {
         title: userRequestDataUpdate.talentCategory,
@@ -93,10 +96,11 @@ export default function RequestModal(props: any) {
         talent_description: userRequestDataUpdate.talentDescription,
         offered_skills: userRequestDataUpdate.offeredSkills,
         experience_years: userRequestDataUpdate.experienceYears,
-        modality_work: userRequestDataUpdate.prefiredWorkModality,
+        modality_work: userRequestDataUpdate.preferredWorkModality,
         availability: userRequestDataUpdate.availability,
         location: userRequestDataUpdate.location,
-        desiredCompensation: userRequestDataUpdate.desiredCompensation,
+        desired_compensation: userRequestDataUpdate.desiredCompensation,
+        status: 'Submitted'
       },
     };
     let dataToApi;
@@ -132,8 +136,8 @@ export default function RequestModal(props: any) {
       console.error('Error in handleSubmit (Modal-profile):', error);
     }
     finally {
-      setLoading(false);
       setRequestModal('');
+      setLoading(false);
       setRequestModalAction('');
     }
   };
@@ -149,16 +153,22 @@ export default function RequestModal(props: any) {
 
   /**fill form control */
   useEffect(() => {
-    let dataTalentUnfilled = Object.values(userRequestDataUpdate).some(value => value === '');
-    let dataJobUnfilled = Object.values(userRequestDataUpdate).some(value => value === '');
-    if (requestModal === 'Talent' && dataTalentUnfilled) {
-      setFilledForm(false);
-    }
-    else if (requestModal === 'Job' && dataJobUnfilled) {
-      setFilledForm(false);
-    }
-    else {
-      setFilledForm(true);
+    let requestDataAll = Object.entries(userRequestDataUpdate);
+    switch (requestModal) {
+      case 'Talent':
+        let requestTalentEntries = requestDataAll.slice(0, 8);
+        let requestTalentData = Object.fromEntries(requestTalentEntries);
+        let dataTalentUnfilled = Object.values(requestTalentData).some(value => value === '');
+        if (dataTalentUnfilled) { setFilledForm(false) } else { setFilledForm(true) }
+        break;
+      case 'Job':
+        let requestJobEntries = requestDataAll.slice(8);
+        let requestJobData = Object.fromEntries(requestJobEntries);
+        let dataJobUnfilled = Object.values(requestJobData).some(value => value === '');
+        if (dataJobUnfilled) { setFilledForm(false) } else { setFilledForm(true) }
+        break;
+      default:
+        break;
     }
   });
 
@@ -183,6 +193,7 @@ export default function RequestModal(props: any) {
       ]
     },
     { type: 'text', title: 'Job Description', value: 'jobDescription' },
+    { type: 'text', title: 'Required skills', value: 'requiredSkills' },
     {
       type: 'select',
       title: 'Required experience years',
@@ -194,8 +205,6 @@ export default function RequestModal(props: any) {
         { value: '+10', title: '+10' },
       ]
     },
-    { type: 'text', title: 'Required skills', value: 'requiredSkills' },
-    { type: 'text', title: 'Job location', value: 'jobLocation' },
     {
       type: 'select',
       title: 'Modality Work',
@@ -206,8 +215,9 @@ export default function RequestModal(props: any) {
         { value: 'Flexible', title: 'Flexible' },
       ]
     },
+    { type: 'text', title: 'Company Name', value: 'companyName' },
+    { type: 'text', title: 'Job location', value: 'jobLocation' },
     { type: 'text', title: 'Offered compensation (USD)', value: 'offeredCompensation' },
-    { type: 'text', title: 'Company Info', value: 'companyInfo' }
   ];
 
   /**inputs for job form */
@@ -245,8 +255,8 @@ export default function RequestModal(props: any) {
     },
     {
       type: 'select',
-      title: 'Prefered modality work',
-      value: 'preferedWorkModality',
+      title: 'Preferred modality work',
+      value: 'preferredWorkModality',
       options: [
         { value: 'Remote', title: 'Remote' },
         { value: 'On-site', title: 'On-site' },
@@ -264,29 +274,25 @@ export default function RequestModal(props: any) {
       ]
     },
     { type: 'text', title: 'Location', value: 'location' },
-    { type: 'text', title: 'Desired compensation', value: 'desiredCompensation' },
+    { type: 'text', title: 'Desired compensation (USD)', value: 'desiredCompensation' },
   ];
 
-  const showRequestModal = requestModal !== '';
+  const renderRequestModal = requestModal !== '';
 
 
   return (
-    showRequestModal &&
+    renderRequestModal &&
     <div
       className={
-        `${showRequestModal ? 'scale-100 animate-[fade-in_0.50s]'
-          : 'hidden'
+        `${renderRequestModal ? 'scale-100 animate-[fade-in_0.50s]' : 'hidden'
         } w-full h-full fixed top-0 flex flex-col justify-center items-center bg-black bg-opacity-75 z-50`
       }
       onClick={(e: any) => handleCloseModal(e)}
     >
       <div
         className={
-          `${screenNarrow ? 'h-[85%]' : 'h-[90%]'}
-            ${showRequestModal ?
-            'scale-100 animate-[zoom-in_0.50s]'
-            : 'scale-0 animate-[zoom-out_0.30s]'
-          }  container w-64 lg:w-[22rem] relative flex flex-col justify-center items-center list-none rounded-md shadow-lg transform`
+          `${renderRequestModal ? 'scale-100 animate-[zoom-in_0.50s]' : 'scale-0 animate-[zoom-out_0.30s]'
+          } container w-64 max-h-[80%] lg:w-[22rem] relative flex flex-col list-none rounded-md shadow-lg transform`
         }
         onClick={(e) => e.stopPropagation()}
       >
@@ -300,128 +306,58 @@ export default function RequestModal(props: any) {
           </i>
         </div>
         {/**header form */}
-        <div className='w-full px-4 lg:px-8 py-1 lg:py-2 flex flex-col bg-color-highlighted rounded-t-md z-50'>
+        <div className='w-full px-2 lg:px-6 py-1 lg:py-2 flex flex-col bg-color-highlighted rounded-t-md z-50'>
           <h2 className='w-full h-fit py-1 text-white text-xl lg:text-3xl font-bold transition-all z-10'>
-            {`Request ${requestModal}`}
+            {`${requestModal} request`}
           </h2>
         </div>
-        <div className='w-full h-full flex flex-row items-center bg-white rounded-b-md overflow-x-hidden'>
-          {/***carousel form***/}
-          <ul
-            className='w-[9999px] flex flex-row items-center transform transition-all list-none'
-            ref={carouselFormRef}
+        {/**content */}
+        <div className='w-full min-h-[450px] flex bg-white rounded-b-md overflow-x-hidden transition-all'>
+          <SimpleBar
+            className='simplebar-scrollbar w-full h-full px-4 lg:px-8 flex flex-row justify-center'
+            style={{ maxHeight: 440 }}
           >
-            {/**step 1-2: complete talent or job request form */}
-            <li
-              key='new-request-filling'
-              className='w-64 lg:w-[22rem] h-full px-2 lg:px-8 flex flex-col justify-between items-center transition-all'
-            >
-              {/**form I */}
-              <div className='w-full h-full flex flex-col justify-between items-center transition-all z-0'>
-                <div className='w-full h-full flex flex-col items-center'>
-                  {
-                    requestModal === 'Talent' ?
-                      /**talent request I */
-                      <FormTemplate
-                        inputData={talentInput.slice(0, 5)}
-                        formData={userRequestDataUpdate}
-                        changeData={changeUserRequestDataUpdate}
-                        onChange={(e: any) => handleChangeData(e)}
-                        onFocus={(e: any) => setChangeUserrequestDataUpdate({ ...changeUserRequestDataUpdate, [e.target.name]: true })}
-                        onBlur={(e: any) => setChangeUserrequestDataUpdate({ ...changeUserRequestDataUpdate, [e.target.name]: false })}
-                      />
-                      :
-                      /**job request I */
-                      <FormTemplate
-                        inputData={jobInput.slice(0, 5)}
-                        formData={userRequestDataUpdate}
-                        changeData={changeUserRequestDataUpdate}
-                        onChange={(e: any) => handleChangeData(e)}
-                        onFocus={(e: any) => setChangeUserrequestDataUpdate({ ...changeUserRequestDataUpdate, [e.target.name]: true })}
-                        onBlur={(e: any) => setChangeUserrequestDataUpdate({ ...changeUserRequestDataUpdate, [e.target.name]: false })}
-                      />
-                  }
-                </div>
-                {/**next button */}
-                <div className='w-full py-7 flex flex-row justify-center items-center'>
-                  {/**next button */}
-                  <button
-                    className='w-full px-6 py-2 text-slate-50 lg:hover:text-white font-bold  flex flex-row justify-center items-center bg-green-500 lg:bg-green-300 lg:hover:bg-green-500 cursor-default lg:cursor-pointer rounded-md transition-all'
-                    onClick={() => setCarouselFormPosition(1)}
-                  >
-                    <h5 className='w-full h-fit text-sm lg:text-base leading-none tracking-wider'>
-                      Next
-                    </h5>
-                  </button>
-                </div>
+            <form className='w-full pt-5 flex flex-col transition-all z-0' onSubmit={(e: any) => handleSubmit(e)}>
+              <div className='w-full flex flex-col items-center'>
+                {
+                  requestModal === 'Talent' ?
+                    <FormTemplate
+                      inputData={talentInput}
+                      formData={userRequestDataUpdate}
+                      changeData={changeUserRequestDataUpdate}
+                      onChange={(e: any) => handleChangeData(e)}
+                      onFocus={(e: any) => setChangeUserrequestDataUpdate({ ...changeUserRequestDataUpdate, [e.target.value]: true })}
+                      onBlur={(e: any) => setChangeUserrequestDataUpdate({ ...changeUserRequestDataUpdate, [e.target.value]: false })}
+                    />
+                    :
+                    requestModal === 'Job' &&
+                    <FormTemplate
+                      formData={userRequestDataUpdate}
+                      inputData={jobInput}
+                      changeData={changeUserRequestDataUpdate}
+                      onChange={(e: any) => handleChangeData(e)}
+                      onFocus={(e: any) => setChangeUserrequestDataUpdate({ ...changeUserRequestDataUpdate, [e.target.value]: true })}
+                      onBlur={(e: any) => setChangeUserrequestDataUpdate({ ...changeUserRequestDataUpdate, [e.target.value]: false })}
+                    />
+                }
               </div>
-            </li>
-            {/**step 4: complete and submit talent or job request talent form */}
-            <li
-              key='new-request-sending'
-              className='w-64 lg:w-[22rem] h-full px-2 lg:px-8 flex flex-col justify-between items-center transition-all'
-            >
-              {/**form II */}
-              <form
-                className='w-full h-full flex flex-col justify-between items-center transition-all z-0'
-                onSubmit={(e: any) => handleSubmit(e)}
-              >
-                <div className='w-full h-full flex flex-col items-center'>
-                  {
-                    requestModal === 'Talent' ?
-                      /**talent request II */
-                      <FormTemplate
-                        inputData={talentInput.slice(5)}
-                        formData={userRequestDataUpdate}
-                        changeData={changeUserRequestDataUpdate}
-                        onChange={(e: any) => handleChangeData(e)}
-                        onFocus={(e: any) => setChangeUserrequestDataUpdate({ ...changeUserRequestDataUpdate, [e.target.value]: true })}
-                        onBlur={(e: any) => setChangeUserrequestDataUpdate({ ...changeUserRequestDataUpdate, [e.target.value]: false })}
-                      />
-                      :
-                      /**job request II */
-                      <FormTemplate
-                        formData={userRequestDataUpdate}
-                        inputData={jobInput.slice(5)}
-                        changeData={changeUserRequestDataUpdate}
-                        onChange={(e: any) => handleChangeData(e)}
-                        onFocus={(e: any) => setChangeUserrequestDataUpdate({ ...changeUserRequestDataUpdate, [e.target.value]: true })}
-                        onBlur={(e: any) => setChangeUserrequestDataUpdate({ ...changeUserRequestDataUpdate, [e.target.value]: false })}
-                      />
+              <div className='w-full py-8 flex flex-row justify-between items-center'>
+                <button
+                  type='submit'
+                  disabled={!filledForm}
+                  className={`${filledForm ?
+                    'font-bold bg-green-400 lg:bg-green-30 lg:hover:bg-green-400 cursor-default lg:cursor-pointer' :
+                    'bg-slate-400 cursor-default'
+                    } w-full text-slate-50 lg:hover:text-white lg:hover:font-bold px-6 py-2 flex flex-row justify-center items-center rounded-md transition-all z-30`
                   }
-                </div>
-                <div className='w-full py-7 flex flex-row justify-between items-center'>
-                  {/**back button */}
-                  <button
-                    className='w-[45%] text-slate-50 lg:hover:text-white lg:hover:font-bold px-6 py-2 flex flex-row justify-center items-center bg-slate-400 cursor-default lg:cursor-pointer rounded-md transition-all'
-                    onClick={() => setCarouselFormPosition(0)}
-                  >
-                    <h5 className='w-full h-fit text-sm lg:text-base leading-none tracking-wider'>
-                      Back
-                    </h5>
-                  </button>
-                  {/**button submit form */}
-                  <button
-                    type='submit'
-                    className={
-                      `${filledForm ?
-                        'font-bold bg-green-400 lg:bg-green-30 lg:hover:bg-green-400 cursor-default lg:cursor-pointer' :
-                        'bg-slate-400 cursor-default'
-                      } w-[45%] text-slate-50 lg:hover:text-white lg:hover:font-bold px-6 py-2 flex flex-row justify-center items-center rounded-md transition-all z-30`
-                    }
-                    disabled={!filledForm}
-                    onClick={() => {
-                      setTimeout((e: any) => { handleCloseModal(e) }, 1000);
-                    }}
-                  >
-                    <h5 className='w-full h-fit text-sm lg:text-base leading-none tracking-wider'>
-                      Send
-                    </h5>
-                  </button>
-                </div>
-              </form>
-            </li>
-          </ul>
+                >
+                  <h5 className='w-full h-fit text-sm lg:text-base leading-none tracking-wider'>
+                    Send
+                  </h5>
+                </button>
+              </div>
+            </form>
+          </SimpleBar>
         </div>
       </div>
     </div>

@@ -12,7 +12,7 @@ export default function SubmenuCarsTitle({ elements, menuIndex, menuIndexRetro, 
   const clickNextDisabled: boolean = menuIndex === menuItemLast;
 
   useEffect(() => {
-    let movingPositionX: number = (112 * menuIndex);
+    let movingPositionX: number = (128 * menuIndex);
     if (menuProfileSelected) {
       menuProfileSelected.style.transition = 'all 0.5s ease-in';
       menuProfileSelected.style.transform = `translateX(-${movingPositionX}px)`;
@@ -21,8 +21,22 @@ export default function SubmenuCarsTitle({ elements, menuIndex, menuIndexRetro, 
 
 
   return (
-    <div className={`w-72 flex flex-row justify-between items-center border-l border-color-border`}>
-      <div className="w-52 h-full flex overflow-x-hidden">
+    <div className={`px-3 flex flex-row justify-between items-center border-x border-color-border`}>
+      <div className="h-full flex flex-row justify-center items-center transition-all">
+        <button
+          className="w-fit h-full mt-1"
+          disabled={clickRetroDisabled}
+        >
+          <i className={`${clickRetroDisabled ? 'opacity-20' : 'opacity-100 hover:text-color-highlighted cursor-pointer'
+            } w-6 flex flex-row justify-center text-color-text-medium text-lg text-center transition-all`
+          }
+            onClick={() => menuIndexRetro()}
+          >
+            <IconBxChevronLeft />
+          </i>
+        </button>
+      </div>
+      <div className="w-32 h-full flex overflow-x-hidden">
         <ul
           className="w-[1000px] flex flex-row items-center transform"
           ref={menuProfileRef}
@@ -35,7 +49,7 @@ export default function SubmenuCarsTitle({ elements, menuIndex, menuIndexRetro, 
                   key={id}
                   className={
                     `${isItemHighlighted ? 'text-color-text-highlighted font-semibold'
-                      : 'text-color-text-almost-clear'} w-28 text-center`
+                      : 'text-color-text-almost-clear'} w-32 text-center`
                   }>
                   {title}
                 </h4>
@@ -44,21 +58,9 @@ export default function SubmenuCarsTitle({ elements, menuIndex, menuIndexRetro, 
           }
         </ul>
       </div>
-      <div className="w-12 h-full flex flex-row justify-center items-center transition-all">
+      <div className="h-full flex flex-row justify-center items-center transition-all">
         <button
-          className="w-fit h-full border-r border-color-border"
-          disabled={clickRetroDisabled}
-        >
-          <i className={`${clickRetroDisabled ? 'opacity-20' : 'opacity-100 hover:text-color-highlighted cursor-pointer'
-            } w-6 flex flex-row justify-center text-color-text-medium text-lg text-center transition-all`
-          }
-            onClick={() => menuIndexRetro()}
-          >
-            <IconBxChevronLeft />
-          </i>
-        </button>
-        <button
-          className="w-fit h-full"
+          className="w-fit h-full mt-1"
           disabled={clickNextDisabled}
         >
           <i className={`${clickNextDisabled ? 'opacity-20' : 'opacity-100 hover:text-color-highlighted cursor-pointer'

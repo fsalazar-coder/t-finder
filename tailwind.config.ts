@@ -17,8 +17,9 @@ const config: Config = {
           'highlighted-dark' : '#082f49', //#082f49 (sky-950) 
           'navbar': '#ffffff',             //#0f172a (slate-900), #94a3b8 (slate-400)
           'border': '#e2e8f0',             // #e2e8f0 (slate-200)
-          'border-navbar': '#f8fafc',      //#0f172a (slate-900), #94a3b8 (slate-400)
-          'hover': '#bae6fd',              //#bae6fd (sky-200), #0f172a (slate-900), #94a3b8 (slate-400)
+          'border-navbar': '#cbd5e1',      //#0f172a (slate-900), #94a3b8 (slate-400)
+          'hover': '#e0f2fe',              //#e0f2fe (sky-100), #bae6fd (sky-200), #0f172a (slate-900), #94a3b8 (slate-400)
+          'notification-alert': '#059669',              //#059669 (emerald-600)
           'text': {
             'highlighted' : '#0ea5e9',     //#0ea5e9 (sky-500), #d946ef (fuchsia-500)   
             'dark': '#0f172a',             //#0f172a (slate-900), #334155 (slate-700), #475569 (slate-600)
@@ -79,6 +80,14 @@ const config: Config = {
         'zoom-out': {
           '0%': { transform: 'scale(1)' },
           '100%': { transform: 'scale(0)' },
+        },
+        'zoom-in-top': {
+          '0%': { transform: 'scaleY(0)', visibility: 'hidden', opacity: '0',transformOrigin: 'top'  },
+          '100%': { transform: 'scaleY(1)', visibility: 'visible', opacity: '1', transformOrigin: 'top' },
+        },
+        'zoom-out-top': {
+          '0%': { transform: 'scaleY(1)' },
+          '100%': { transform: 'scaleY(0)', transformOrigin: 'bottom' },
         },
         'poing': {
           '0%': { transform: 'scale(0.005)' },
@@ -159,12 +168,12 @@ const config: Config = {
         },
         'draw-circle': {
           '0%': {
-            strokeDasharray: '0, 0',
-            strokeDashoffset: '0',
+            strokeDasharray: '0, 330',
+            strokeDashoffset: '330',
             opacity: '0',
           },
           '100%': {
-            strokeDasharray: '330, 165',
+            strokeDasharray: '330, 330',
             strokeDashoffset: '0',
             opacity: '1',
           },
@@ -173,16 +182,17 @@ const config: Config = {
           '0%': {
             strokeDasharray: '0, 80',
             strokeDashoffset: '48',
-            opacity: '0.25',
+            opacity: '0.10',
           },
           '5%': {
             strokeDasharray: '49, 80',
             strokeDashoffset: '48',
-            opacity: '0.60',
+            opacity: '0.25',
           },
           '100%': {
             strokeDasharray: '130, 80',
             strokeDashoffset: '48',
+            opacity: '1.0',
           }
         },
         'resaltar': {

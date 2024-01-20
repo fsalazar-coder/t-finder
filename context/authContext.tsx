@@ -1,10 +1,11 @@
+import { userDataHandlerFunction } from "@/pages/api/userDataHandlerFunction";
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import io, { Socket } from 'socket.io-client';
 
 
 
 interface UserProfileData {
-  personalInfo: UserProfilePersonalInfo | null;
+  personalInfo: UserProfilePersonalInfo[];
   experience: UserProfileExperience[];
   education: UserProfileEducation[];
   courses: UserProfileCourses[];
@@ -17,7 +18,7 @@ interface UserProfileData {
 
 // Initialize with default values
 const initialUserProfileData: UserProfileData = {
-  personalInfo: null,
+  personalInfo: [],
   experience: [],
   education: [],
   courses: [],
@@ -39,57 +40,32 @@ const initialUserRequestData: UserRequestData = {
   requestJob: [],
 };
 
-
-
-
-interface AuthDataContextProps {
-  token: string | null;
-  setToken: React.Dispatch<React.SetStateAction<string | null>>;
-  userId: Id | string;
-  setUserId: React.Dispatch<React.SetStateAction<Id | string>>;
-  userEmail: string | null;
-  setUserEmail: React.Dispatch<React.SetStateAction<string | null>>;
-  userImage: string | null;
-  setUserImage: React.Dispatch<React.SetStateAction<string | null>>;
-
-  userProfileData: UserProfileData;
-  setUserProfileData: React.Dispatch<React.SetStateAction<UserProfileData>>;
-  userRequestData: UserRequestData;
-  setUserRequestData: React.Dispatch<React.SetStateAction<UserRequestData>>;
-
-  talentRequestStatus: string;
-  setTalentRequestStatus: React.Dispatch<React.SetStateAction<string>>;
-  jobRequestStatus: string;
-  setJobRequestStatus: React.Dispatch<React.SetStateAction<string>>;
-  userScore: number;
-  setUserScore: React.Dispatch<React.SetStateAction<number>>;
-  collectionToChange: string;
-  setCollectionToChange: React.Dispatch<React.SetStateAction<string>>;
-  itemIdToChange: string;
-  setItemIdToChange: React.Dispatch<React.SetStateAction<string>>;
-  update: string;
-  setUpdate: React.Dispatch<React.SetStateAction<string>>;
-  socket: Socket | null;  // Allow socket to be null
-  setSocket: React.Dispatch<React.SetStateAction<Socket | null>>;
-  logout: () => void;
+interface Notifications {
+  _id: string,
+  created_at: string,
+  to_user_id: string,
+  from_user_id: string,
+  to_request_id: string,
+  from_request_id: string,
+  notification_type: string
 }
-
 
 interface AuthUIContextProps {
   accountActived: boolean;
   setAccountActived: React.Dispatch<React.SetStateAction<boolean>>;
   accountModule: string;
   setAccountModule: React.Dispatch<React.SetStateAction<string>>;
-  profileModal: boolean;
-  setProfileModal: React.Dispatch<React.SetStateAction<boolean>>;
+
+  profileModal: string;
+  setProfileModal: React.Dispatch<React.SetStateAction<string>>;
   profileModalAction: string;
   setProfileModalAction: React.Dispatch<React.SetStateAction<string>>;
-  profileModalType: string;
-  setProfileModalType: React.Dispatch<React.SetStateAction<string>>;
+
   requestModal: string;
   setRequestModal: React.Dispatch<React.SetStateAction<string>>;
   requestModalAction: string;
   setRequestModalAction: React.Dispatch<React.SetStateAction<string>>;
+
   chatActived: boolean;
   setChatActived: React.Dispatch<React.SetStateAction<boolean>>;
   chatDataUser: {};
@@ -111,8 +87,6 @@ interface UserProfilePersonalInfo {
   profession_occupation: string,
   preferred_language: string,
   location: string,
-  personal_description: string,
-  availability_status: string,
 }
 
 interface UserProfileEducation {
@@ -179,30 +153,30 @@ interface UserProfileRecommendations {
 
 interface UserRequestTalent {
   _id: string,
-  job_title: string,
+  title: string,
   job_category: string,
-  skills_required: string,
   job_description: string,
-  experience_needed: string,
+  required_skills: string,
+  required_experience_years: string,
+  modality_work: string,
+  company_name: string,
   location: string,
-  compensation: string,
-  application_deadline: string,
-  company_info: string,
-  additional_perks: string,
+  offered_compensation: string,
+  status: string
 }
 
 interface UserRequestJob {
   _id: string,
-  talent_title: string,
+  title: string,
   talent_category: string,
-  skills_offered: string,
   talent_description: string,
-  experience_level: string,
-  location_preference: string,
+  offered_skills: string,
+  experience_years: string,
+  modality_work: string,
   availability: string,
-  duration: string,
-  rates: string,
-  additional_requirements: string
+  location: string,
+  desired_compensation: string,
+  status: string
 }
 
 interface AuthProviderProps {
@@ -238,117 +212,84 @@ interface Messages {
   click: () => void
 }
 
-const AuthDataContext = createContext<AuthDataContextProps | undefined>(undefined);
-const AuthUIContext = createContext<AuthUIContextProps | undefined>(undefined);
+interface UnreadMessagesForUser {
+  [key: string]: number
+}
 
 
+interface UserConnected {
+  _id: string,
+  type: string,
+  user_id: string,
+  user_image_url: string,
+  full_name: string,
+  profession_occupation: string,
+  preferred_language: string,
+  location: string,
+  created_date: string,
+}
 
-export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
-  const [token, setToken] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string | { id: string }>('');
-  const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [userImage, setUserImage] = useState<string | null>(null);
-
-  const [userProfileData, setUserProfileData] = useState<UserProfileData>(initialUserProfileData);
-  const [userRequestData, setUserRequestData] = useState<UserRequestData>(initialUserRequestData);
-
-  const [accountActived, setAccountActived] = useState<boolean>(false);
-  const [accountModule, setAccountModule] = useState<string>('');
-  const [profileModal, setProfileModal] = useState<boolean>(false);
-  const [profileModalAction, setProfileModalAction] = useState<string>('');
-  const [profileModalType, setProfileModalType] = useState<string>('');
-  
-  const [talentRequestStatus, setTalentRequestStatus] = useState<string>('');
-  const [jobRequestStatus, setJobRequestStatus] = useState<string>('');
-  const [userScore, setUserScore] = useState<number>(0);
-  const [requestModal, setRequestModal] = useState<string>('');
-  const [requestModalAction, setRequestModalAction] = useState<string>('');
-  const [collectionToChange, setCollectionToChange] = useState<string>('');
-  const [itemIdToChange, setItemIdToChange] = useState<string>('');
-  const [chatActived, setChatActived] = useState<boolean>(false);
-  const [chatDataUser, setChatDataUser] = useState<object>({});
-  const [update, setUpdate] = useState<string>('');
-  const [socket, setSocket] = useState<Socket | null>(null);
-
-  const logout = () => {
-    setToken(null);
-    setUserId('');
-    setUserEmail(null);
-    setUserImage(null);
-
-    setUserProfileData(initialUserProfileData);
-    setUserRequestData(initialUserRequestData);
-
-    setUserScore(0);
-    setCollectionToChange('');
-    setItemIdToChange('');
-    setProfileModalAction('');
-    setProfileModalType('');
-    setRequestModal('');
-    setRequestModalAction('');
-    setChatActived(false);
-    setAccountActived(false)
-    setAccountModule('')
-    if (socket) {
-      socket.disconnect();
-      setSocket(null);
-    }
-  };
-
-  useEffect(() => {
-    if (token && accountActived) {
-      const newSocket = io('http://localhost:3000', { query: { token: token as string } });
-      newSocket.on('connection', () => { console.log('Conectado al servidor WebSocket') });
-      setSocket(newSocket);
-      console.log('New socket: ', newSocket);
-    }
-    else if (socket) {
-      socket.disconnect();
-      setSocket(null);
-    }
-  }, [token, accountActived]);
+interface UserChatsData {
+  to_user_id: string,
+  from_user_id: string,
+  message: string,
+  message_date: string,
+  message_time: string,
+  message_status: string
+}
 
 
-  return (
-    <AuthDataContext.Provider value={{
-      token, setToken,
-      userId, setUserId,
-      userEmail, setUserEmail,
-      userImage, setUserImage,
+interface AuthDataContextProps {
+  token: string | null;
+  setToken: React.Dispatch<React.SetStateAction<string | null>>;
+  userId: Id | string;
+  setUserId: React.Dispatch<React.SetStateAction<Id | string>>;
+  userEmail: string | null;
+  setUserEmail: React.Dispatch<React.SetStateAction<string | null>>;
+  userImageUrl: string | null;
+  setUserImageUrl: React.Dispatch<React.SetStateAction<string | null>>;
+  userProfileData: UserProfileData;
+  setUserProfileData: React.Dispatch<React.SetStateAction<UserProfileData>>;
+  userRequestData: UserRequestData;
+  setUserRequestData: React.Dispatch<React.SetStateAction<UserRequestData>>;
+  userNotificationsData: Notifications[] | [];
+  setUserNotificationsData: React.Dispatch<React.SetStateAction<Notifications[] | []>>;
+  talentRequestStatus: string;
+  setTalentRequestStatus: React.Dispatch<React.SetStateAction<string>>;
+  jobRequestStatus: string;
+  setJobRequestStatus: React.Dispatch<React.SetStateAction<string>>;
+  userScore: number;
+  setUserScore: React.Dispatch<React.SetStateAction<number>>;
+  collectionToChange: string;
+  setCollectionToChange: React.Dispatch<React.SetStateAction<string>>;
+  itemIdToChange: string;
+  setItemIdToChange: React.Dispatch<React.SetStateAction<string>>;
+  update: string;
+  setUpdate: React.Dispatch<React.SetStateAction<string>>;
+  updateCounter: number;
+  setUpdateCounter: React.Dispatch<React.SetStateAction<number>>;
 
-      userProfileData,
-      setUserProfileData,
-      userRequestData,
-      setUserRequestData,
-      
-      talentRequestStatus, setTalentRequestStatus,
-      jobRequestStatus, setJobRequestStatus,
-      userScore, setUserScore,
-      collectionToChange, setCollectionToChange,
-      itemIdToChange, setItemIdToChange,
-      update, setUpdate,
-      socket, setSocket,
-      logout,
-    }}>
-      <AuthUIContext.Provider value={{
-        accountActived, setAccountActived,
-        accountModule, setAccountModule,
-        profileModal, setProfileModal,
-        profileModalAction, setProfileModalAction,
-        profileModalType, setProfileModalType,
-        requestModal, setRequestModal,
-        requestModalAction, setRequestModalAction,
-        chatActived, setChatActived,
-        chatDataUser, setChatDataUser,
-      }}>
-        {children}
-      </AuthUIContext.Provider>
-    </AuthDataContext.Provider>
-  );
+  unreadMessagesForUser: UnreadMessagesForUser;
+  setUnreadMessagesForUser: React.Dispatch<React.SetStateAction<UnreadMessagesForUser>>;
+
+  isGettingChatData: boolean;
+  setIsGettingChatData: React.Dispatch<React.SetStateAction<boolean>>;
+  userChatsData: UserChatsData[] | [];
+  setUserChatsData: React.Dispatch<React.SetStateAction<UserChatsData[]>>;
+
+  unreadMessages: number;
+  setUnreadMessages: React.Dispatch<React.SetStateAction<number>>;
+  usersConnected: UserConnected[] | [];
+  setUsersConnected: React.Dispatch<React.SetStateAction<UserConnected[]>>;
+
+  socket: Socket | null;
+  setSocket: React.Dispatch<React.SetStateAction<Socket | null>>;
+  logout: () => void;
 }
 
 const UIContext = createContext<UIContextProps | undefined>(undefined);
-
+const AuthUIContext = createContext<AuthUIContextProps | undefined>(undefined);
+const AuthDataContext = createContext<AuthDataContextProps | undefined>(undefined);
 
 
 export const Provider = ({ children }: ProviderProps): JSX.Element => {
@@ -395,17 +336,213 @@ export const Provider = ({ children }: ProviderProps): JSX.Element => {
   );
 }
 
-export function useAuthData(): AuthDataContextProps {
-  const context = useContext(AuthDataContext)!;
-  return context;
+export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
+  const [token, setToken] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | { id: string }>('');
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userImageUrl, setUserImageUrl] = useState<string | null>(null);
+  const [userProfileData, setUserProfileData] = useState<UserProfileData>(initialUserProfileData);
+  const [userRequestData, setUserRequestData] = useState<UserRequestData>(initialUserRequestData);
+  const [userNotificationsData, setUserNotificationsData] = useState<Notifications[] | []>([]);
+  const [accountActived, setAccountActived] = useState<boolean>(false);
+  const [accountModule, setAccountModule] = useState<string>('');
+  const [profileModal, setProfileModal] = useState<string>('');
+  const [profileModalAction, setProfileModalAction] = useState<string>('');
+  const [requestModal, setRequestModal] = useState<string>('');
+  const [requestModalAction, setRequestModalAction] = useState<string>('');
+  const [talentRequestStatus, setTalentRequestStatus] = useState<string>('');
+  const [jobRequestStatus, setJobRequestStatus] = useState<string>('');
+  const [userScore, setUserScore] = useState<number>(0);
+  const [collectionToChange, setCollectionToChange] = useState<string>('');
+  const [itemIdToChange, setItemIdToChange] = useState<string>('');
+
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [usersConnected, setUsersConnected] = useState<UserConnected[]>([]);
+  const [chatDataUser, setChatDataUser] = useState<object>({});
+  const [chatActived, setChatActived] = useState<boolean>(false);
+  const [isGettingChatData, setIsGettingChatData] = useState(true);
+  const [userChatsData, setUserChatsData] = useState<any[]>([]);
+
+  const [unreadMessages, setUnreadMessages] = useState<number>(0);
+  const [unreadMessagesForUser, setUnreadMessagesForUser] = useState<UnreadMessagesForUser>({});
+
+  const [updateCounter, setUpdateCounter] = useState<number>(0);
+  const [update, setUpdate] = useState<string>('');
+
+  const logout = () => {
+    setToken(null);
+    setUserId('');
+    setUserEmail(null);
+    setUserImageUrl(null);
+    setUserProfileData(initialUserProfileData);
+    setUserRequestData(initialUserRequestData);
+    setUserNotificationsData([]);
+    setUserScore(0);
+    setCollectionToChange('');
+    setItemIdToChange('');
+    setProfileModal('');
+    setProfileModalAction('');
+    setRequestModal('');
+    setRequestModalAction('');
+    setChatActived(false);
+    setAccountActived(false)
+    setAccountModule('')
+    if (socket) {
+      socket.disconnect();
+      setSocket(null);
+    }
+  };
+
+
+  // get connections
+  useEffect(() => {
+    if (token && userId && (update === 'all' || update === 'connections')) {
+      setUpdateCounter((counter) => counter + 1);
+      const fetchConnectedUserData = async () => {
+        userDataHandlerFunction({
+          token: token as string,
+          userId: userId as string,
+          action: 'get-connected-user-info',
+          collectionName: 'connections',
+          data: '',
+          onSuccess: (responseData: any) => {
+            setUsersConnected(responseData);
+          },
+          onError: (error: any) => console.error(error)
+        });
+      }
+      fetchConnectedUserData().then(() => {
+        setUpdateCounter((counter) => counter - 1);
+        if ((update === 'all' && updateCounter === 0) || update === 'connections') {
+          setUpdate('');
+        }
+      })
+    };
+  }, [token, userId, update]);
+
+  ///get unread message on chats 
+  useEffect(() => {
+    if (token && userId && update === 'all') {
+      setUpdateCounter((counter) => counter + 1);
+      const fetchUnreadMessage = async () => {
+        userDataHandlerFunction({
+          token: token as string,
+          userId: userId as string,
+          action: 'get-unread-messages',
+          collectionName: 'connections',
+          data: '',
+          onSuccess: (responseData: any) => {
+            setUnreadMessagesForUser(responseData.unreadMessagesByUser);
+            setUnreadMessages(responseData.totalUnreadMessages);
+          },
+          onError: (error: any) => console.error(error)
+        });
+      };
+      fetchUnreadMessage().then(() => {
+        setUpdateCounter((counter) => counter - 1);
+        if (update === 'all' && updateCounter === 0) {
+          setUpdate('');
+        }
+      });
+    };
+  }, [token, userId, update]);
+
+  //web-socket connection
+  useEffect(() => {
+    if (token && userId) {
+      const newSocket = io('http://localhost:3000', { query: { token: token as string } });
+      newSocket.on('connect', () => {
+        console.log('Conectado al servidor WebSocket')
+      });
+      setSocket(newSocket);
+    }
+    else if (socket) {
+      socket.disconnect();
+      setSocket(null);
+    }
+  }, [token, userId]);
+
+
+
+  //web-socket chats message listener
+  useEffect(() => {
+    if (token && socket && chatActived && !isGettingChatData) {
+      socket.on('message', (data: SocketsMessages) => {
+        setUserChatsData(prevChats => [...prevChats, data])
+      });
+      return () => { socket.off('message') };
+    }
+    else if (token && socket && !chatActived) {
+      socket.on('message', (data: SocketsMessages) => {
+        const { from_user_id } = data;
+        setUnreadMessages((prevUnread: number) => prevUnread + 1);
+        setUnreadMessagesForUser((prevMessages: UnreadMessagesForUser) => ({
+          ...prevMessages,
+          [from_user_id]: (prevMessages[from_user_id] || 0) + 1
+        }));
+      });
+      return () => { socket.off('message') };
+    }
+  }, [token, socket, chatActived, isGettingChatData]);
+
+
+
+
+  return (
+    <AuthDataContext.Provider value={{
+      token, setToken,
+      userId, setUserId,
+      userEmail, setUserEmail,
+      userImageUrl, setUserImageUrl,
+      userProfileData,
+      setUserProfileData,
+      userRequestData,
+      setUserRequestData,
+      userNotificationsData,
+      setUserNotificationsData,
+      talentRequestStatus, setTalentRequestStatus,
+      jobRequestStatus, setJobRequestStatus,
+      userScore, setUserScore,
+      collectionToChange, setCollectionToChange,
+      itemIdToChange, setItemIdToChange,
+      update, setUpdate,
+      unreadMessagesForUser, setUnreadMessagesForUser,
+      unreadMessages, setUnreadMessages,
+      usersConnected, setUsersConnected,
+      isGettingChatData, setIsGettingChatData,
+      userChatsData, setUserChatsData,
+      updateCounter, setUpdateCounter,
+      socket, setSocket,
+      logout,
+    }}>
+      <AuthUIContext.Provider value={{
+        accountActived, setAccountActived,
+        accountModule, setAccountModule,
+        profileModal, setProfileModal,
+        profileModalAction, setProfileModalAction,
+        requestModal, setRequestModal,
+        requestModalAction, setRequestModalAction,
+        chatActived, setChatActived,
+        chatDataUser, setChatDataUser,
+      }}>
+        {children}
+      </AuthUIContext.Provider>
+    </AuthDataContext.Provider>
+  );
 }
 
-export function useAuthUI(): AuthUIContextProps {
-  const context = useContext(AuthUIContext)!;
-  return context;
-}
 
 export function useUI(): UIContextProps {
   const context = useContext(UIContext)!;
   return context;
-}
+};
+
+export function useAuthUI(): AuthUIContextProps {
+  const context = useContext(AuthUIContext)!;
+  return context;
+};
+
+export function useAuthData(): AuthDataContextProps {
+  const context = useContext(AuthDataContext)!;
+  return context;
+};

@@ -28,8 +28,8 @@ export default function FormTemplate({ inputData, formData, changeData, onChange
                 id={inputField.value}
                 name={inputField.value}
                 className={
-                  `${formValue ? 'border-green-200 shadow-input'
-                    : changeValue ? 'border-green-400' : 'border-slate-300'
+                  `${formValue ? 'border-color-highlighted-clear shadow-input'
+                    : changeValue ? 'border-color-highlighted' : 'border-color-border'
                   } w-full h-fit pl-2 sm:pl-3 py-1 text-xs lg:text-sm bg-transparent border rounded-md outline-none transition-all z-10`
                 }
                 required
@@ -48,12 +48,12 @@ export default function FormTemplate({ inputData, formData, changeData, onChange
               </select>
               :
               <input
-                type={inputField.type}
                 id={inputField.value}
+                type={inputField.type}
                 name={inputField.value}
                 className={
-                  `${formValue ? 'border-green-200 shadow-input'
-                    : changeValue ? 'border-green-400' : 'border-slate-300'
+                  `${formValue ? 'border-color-highlighted-clear shadow-input'
+                    : changeValue ? 'border-color-highlighted' : 'border-color-border'
                   } w-full h-fit pl-2 sm:pl-3 py-1 text-sm lg:text-base bg-transparent border rounded-md outline-none transition-all z-10`
                 }
                 required

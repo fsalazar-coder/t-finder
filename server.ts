@@ -16,6 +16,20 @@ interface UserSockets {
   [userId: string]: any;
 }
 
+interface SocketsMessages {
+  to_user_id: string,
+  from_user_id: string,
+  message: string,
+  message_date: string,
+  message_time: string,
+  message_status: string,
+}
+
+interface SocketsNotifications {
+  to_user_id: string,
+  update_socket: string,
+}
+
 const userSockets: UserSockets = {};
 
 
@@ -25,27 +39,36 @@ nextApp.prepare().then(() => {
   const server = http.createServer(app);
   const io = new Server(server);
 
-  io.on('connection', (socket: any) => {
+  io.on('connect', (socket: any) => {
+    console.log('Conectado al socket')
     const token = socket.handshake.query.token;
     if (token) {
       try {
         const decoded = jwt.verify(token, SECRET_KEY);
         const userId = decoded.userId;
-        console.log('Connected user (server):', userId);
+        console.log('Connected user:', userId);
 
         // Asociar el socket al userId
         userSockets[userId] = socket;
 
         // Evento disconnect
         socket.on('disconnect', () => {
-          console.log('Disconnected user (server):', userId);
+          console.log('Disconnected user:', userId);
           delete userSockets[userId];
         });
 
-        socket.on('notification', (data: any) => {
-          const { toUserId } = data;
-          if (userSockets[toUserId]) {
-            userSockets[toUserId].emit('notificacion', data);
+        socket.on('notification', (data: SocketsNotifications) => {
+          const { to_user_id } = data;
+          if (userSockets[to_user_id]) {
+            userSockets[to_user_id].emit('notificacion', data);
+          }
+          return;
+        });
+
+        socket.on('message', (data: SocketsMessages) => {
+          const { to_user_id } = data;
+          if (userSockets[to_user_id]) {
+            userSockets[to_user_id].emit('message', data);
           }
           return;
         });
@@ -53,7 +76,7 @@ nextApp.prepare().then(() => {
       }
       catch (error) {
         console.log('Error al verificar el token:', error);
-        socket.disconnect(); 
+        socket.disconnect();
       }
     }
   });

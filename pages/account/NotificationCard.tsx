@@ -14,15 +14,15 @@ interface NotificationCardParams {
 interface DataUser {
   user_id: string,
   user_name: string,
-  user_image: string
+  user_image_url: string
 }
 
 
 
 export default function NotificationsCard({ data, indexCard, listHover, itemHover, isDashboard }: NotificationCardParams) {
   const { setMessageModal } = useUI();
-  const { token, userId, setUpdate } = useAuthData();
-  const { setAccountModule, setChatActived, setChatDataUser } = useAuthUI();
+  const { token, userId, update, setUpdate } = useAuthData();
+  const { accountModule, setAccountModule, setChatActived, setChatDataUser } = useAuthUI();
 
   const buttonNotificationDelete = [
     {
@@ -61,35 +61,59 @@ export default function NotificationsCard({ data, indexCard, listHover, itemHove
     },
   ];
 
-  let notificacionFromUserId = data?.user_id || '';
-  let companyInfo = data?.company_info || '';
-  let companyLocation = data?.company_location || '';
-  let companyJobTitle = data?.company_job_title || '';
-  let candidateLocation = data?.candidate_location || '';
-  let candidateTalentCategory = data?.candidate_talent_category || '';
+  let notificacionUserImageUrl: string = data?.user_image_url || '';
+  let companyInfo: string = data?.company_name || '';
+  let jobLocation: string = data?.job_location || '';
+  let companyJobTitle: string = data?.job_description || '';
+  let candidateLocation: string = data?.candidate_location || '';
+  let candidateTalentCategory: string = data?.candidate_talent_category || '';
 
-  const notificationType: string = data?.notification_type;
-  const message = notificationType === 'request contact' ?
-    `from ${companyInfo} (${companyLocation}), wants to contact you about a job opportunity: ${companyJobTitle}. Reviews your offer and accepts your request to contact you to initiate a chat, to coordinate an interview or to discuss the terms of a contract...`
-    : notificationType === 'offer acceptance' && `from ${candidateLocation} has accepted your contact request to work like ${candidateTalentCategory}. Initiate a chat to coordinate interviews or discuss contract terms...`;
+  const notificationType: any = data?.notification_type;
+
+  const message: any = () => {
+    let message: string;
+    switch (notificationType) {
+      case 'request contact':
+        if (isDashboard) {
+          message = `from ${companyInfo} (${jobLocation}), wants to contact you...`
+        }
+        else {
+          message = `from ${companyInfo} (${jobLocation}), wants to contact you about a job opportunity: ${companyJobTitle}. Accepts your contact request to connect with him/her, coordinate any interview or discuss contract terms...`
+        }
+        return message
+      case 'request accepted':
+        if (isDashboard) {
+          message = `from ${candidateLocation}, accepted your contact request to work like ${candidateTalentCategory}...`
+        }
+        else {
+          message = `from ${candidateLocation}, accepted your contact request to work like ${candidateTalentCategory}. Connect whit him/her to coordinate any interviews or discuss contract terms...`
+        }
+        return message
+      default:
+        break;
+    }
+  };
 
   const goToClick: any = () => {
-    if (notificationType === 'request contact') {
-      setAccountModule('Job');
+    switch (accountModule) {
+      case 'Dashboard':
+        setAccountModule('Notifications')
+        break;
+      case 'Notifications':
+        if (notificationType === 'request contact') {
+          setAccountModule('Job');
+        }
+        else if (notificationType === 'request accepted') {
+          setAccountModule('Connections');
+        }
+        break;
+      default:
+        break;
     }
-    else if (notificationType === 'offer acceptance') {
-      let dataUser: DataUser = {
-        user_id: data?.user_id,
-        user_name: data?.full_name,
-        user_image: data?.profile_image
-      };
-      setChatDataUser(dataUser);
-      setChatActived(true);
-    }
-  }
+  };
 
   const buttonText = notificationType === 'request contact' ? 'Review'
-    : notificationType === 'offer acceptance' && 'Chat';
+    : notificationType === 'request accepted' && 'Chat';
 
 
   return (
@@ -99,31 +123,33 @@ export default function NotificationsCard({ data, indexCard, listHover, itemHove
     >
       {/**edit delete buttons */}
       <div className="w-full absolute top-0 right-0 flex flex-row justify-end items-center transition-all z-20">
-        
+
         {
           //!isDashboard && listHover && (itemHover === indexCard) && (
-            //buttonNotificationDelete.map((button: any) => {
-              //return (
-                //<EditDeleteButtons
-                  //id={button.id}
-                  //icon={button.icon}
-                  //elementId={data?._id}
-                  //collection='notifications'
-                  //handleClick={button.click}
-                ///>
-              //)
-            //})
+          //buttonNotificationDelete.map((button: any) => {
+          //return (
+          //<EditDeleteButtons
+          //id={button.id}
+          //icon={button.icon}
+          //elementId={data?._id}
+          //collection='notifications'
+          //handleClick={button.click}
+          ///>
+          //)
+          //})
           //)
         }
 
       </div>
       {/**fullname, message, date ... */}
-      <div className="w-full pr-2 flex flex-col">
+      <div className="w-full pr-2 flex flex-col hover:cursor-pointer"
+        onClick={() => goToClick()}
+      >
         <h5 className='w-full text-color-text-dark text-xs text-justify'>
           <a className='text-color-primary-clear font-semibold'>
-            {`${data?.full_name}, `}
+            {`${data?.full_name} `}
           </a>
-          {message}
+          {message()}
         </h5>
         <h6 className='w-full text-color-text-medium text-[10px] text-end'>
           {data?.created_date}
@@ -134,25 +160,9 @@ export default function NotificationsCard({ data, indexCard, listHover, itemHove
         <div className={`${isDashboard ? 'w-9 h-9 items-end' : 'w-16 h-16 items-center justify-center'} my-1 flex flex-col`}>
           <ImageIconUser
             type={'notifications'}
-            toUserId={notificacionFromUserId as string}
+            otherUserImageUrl={notificacionUserImageUrl as string}
           />
         </div>
-        {
-          !isDashboard &&
-          <div className={`w-full flex flex-row justify-center z-40`}>
-            <button
-              id='button-go-to'
-              className={
-                `${'hover:font-bold bg-green-400 hover:bg-green-500 bg-opacity-40 hover:bg-opacity-100'
-                } w-full px-4 py-[6px] flex flex-row justify-center items-center rounded-lg font-semibold transition-all`}
-              onClick={() => goToClick()}
-            >
-              <h4 className="h-4 text-white text-[14px] flex flex-row items-center">
-                {buttonText}
-              </h4>
-            </button>
-          </div>
-        }
       </div>
     </div>
   )

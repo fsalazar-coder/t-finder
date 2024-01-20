@@ -21,10 +21,14 @@ export default function ProfileScoreOverall({ profile }: any) {
 
   return (
     <div className={`w-full h-full flex flex-col`}>
-      <h4 className='w-full text-color-text-dark text-sm font-semibold flex flex-row items-center'>
-        Overall score
-        <h5 className='pl-1 text-color-text-medium text-xs font-normal'>(pts)</h5>:
-      </h4>
+      <div className='w-full pb-[1px] flex flex-row items-center'>
+        <h4 className='text-color-text-dark text-sm font-semibold flex flex-row items-center'>
+          Overall score
+        </h4>
+        <h5 className='pl-1 text-color-text-medium text-xs font-normal'>
+          (pts):
+        </h5>
+      </div>
       <div className='w-full relative flex flex-row justify-center border border-color-border rounded-full overflow-hidden z-0'>
         <h6 className='w-fit text-[10px] text-color-text-dark font-semibold'>
           {`${scoreProfile}/${scoreProfileMax}`}

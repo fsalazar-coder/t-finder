@@ -43,16 +43,6 @@ export default function LoginModal(props: any) {
       : (document.body.style.overflowY = 'auto');
   }, [loginModal]);
 
-  const updateUserDataStringArray: string[] = ['image-profile', 'profile', 'request', 'notifications'];
-
-  const updateUserData = () => {
-    updateUserDataStringArray.forEach((string, index) => {
-      setTimeout(() => {
-        setUpdate(string);
-      }, (index * 1000));
-    });
-  }
-
   const loginSubmitHandle = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -73,7 +63,7 @@ export default function LoginModal(props: any) {
         setUserId(user._id);
         setUserEmail(user.email);
         setLoginModal(false);
-        updateUserData();        
+        setUpdate('all');        
       }
     }
     catch (error: any) {

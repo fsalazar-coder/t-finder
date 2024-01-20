@@ -23,12 +23,13 @@ interface ButtonConfig {
 export default function ButtonTitleCards({ id, isData, buttonType, dataBaseCollection, shouldRenderButton }: ButtonTitleParams) {
   const { screenNarrow, setMessageModal } = useUI();
   const { token, setCollectionToChange, setItemIdToChange, setUpdate } = useAuthData();
-  const { accountModule, setAccountModule, setProfileModal, setProfileModalType, setProfileModalAction, setRequestModal, setRequestModalAction } = useAuthUI();
+  const { accountModule, setAccountModule, setProfileModal, setProfileModalAction, setRequestModal, setRequestModalAction } = useAuthUI();
   const [menuDashboardVisible, setMenuDashboardVisible] = useState<boolean>(true);
 
   const isDashboard = accountModule === 'Dashboard';
   const isButtonItems = buttonType === 'profile-items' || buttonType === 'request-items';
   const nameButtonAddOnTitle: any = { 'profile-title': dataBaseCollection, 'request-title': 'request' };
+  const requestType: any = dataBaseCollection === 'request_talent' ? 'Talent' : 'Job';
 
   const buttonActions: any = {
     edit: { icon: <IconEdit />, colorClass: 'text-green-300' },
@@ -52,7 +53,7 @@ export default function ButtonTitleCards({ id, isData, buttonType, dataBaseColle
       {
         id: 'edit-personal-info',
         action: 'edit',
-        click: () => setModalState('edit', dataBaseCollection, id)
+        click: () => setModalState('edit', buttonType, dataBaseCollection, id)
       }
     ],
     'profile-title-dashboard': [
@@ -66,14 +67,14 @@ export default function ButtonTitleCards({ id, isData, buttonType, dataBaseColle
       {
         id: 'edit-request-dashboard',
         action: 'edit',
-        click: () => setAccountModule(dataBaseCollection === 'request_talent' ? 'Talent' : 'Job')
+        click: () => setAccountModule(requestType)
       }
     ],
     'profile-items': [
       {
         id: 'edit-item-profile',
         action: 'edit',
-        click: () => setModalState('edit', dataBaseCollection, id)
+        click: () => setModalState('edit', buttonType, dataBaseCollection, id)
       },
       {
         id: 'delete-item-profile',
@@ -85,7 +86,7 @@ export default function ButtonTitleCards({ id, isData, buttonType, dataBaseColle
       {
         id: 'edit-item-request',
         action: 'edit',
-        click: () => setModalState('edit', dataBaseCollection, id)
+        click: () => setModalState('edit', buttonType, dataBaseCollection, id)
       },
       {
         id: 'delete-item-request',
@@ -95,15 +96,20 @@ export default function ButtonTitleCards({ id, isData, buttonType, dataBaseColle
     ],
   };
 
-  const setModalState = (action: string, collection: string, itemId: string) => {
+  const setModalState = (action: string, modalType: string, collection: string, itemId: string) => {
     const isEdit = action === 'edit';
-    setProfileModal(true);
-    setProfileModalAction(isEdit ? 'edit' : 'post');
-    setProfileModalType(collection);
+    setCollectionToChange(collection);
+    if (modalType === 'profile-title' || modalType === 'personal-info') {
+      setProfileModal(collection);
+      setProfileModalAction(isEdit ? 'edit' : 'post');
+    }
+    else if (modalType === 'request-title') {
+      setRequestModal(requestType);
+      setRequestModalAction(isEdit ? 'edit' : 'post');
+    }
     if (isEdit) {
       setItemIdToChange(itemId);
     }
-    setCollectionToChange(collection);
   };
 
   const deleteItem = (collection: string, itemId: string) => {
@@ -118,6 +124,7 @@ export default function ButtonTitleCards({ id, isData, buttonType, dataBaseColle
           collectionName: collection,
           data: '',
           onSuccess: () => {
+            setCollectionToChange(collection);
             setTimeout(() => {
               setUpdate(collection);
               setMessageModal([{
@@ -144,7 +151,7 @@ export default function ButtonTitleCards({ id, isData, buttonType, dataBaseColle
 
   return (
     <div
-      className="w-fit h-full absolute top-0 right-0 flex flex-row justify-end items-center z-20"
+      className={`${isDashboard && 'absolute top-0 right-2'} w-fit h-full flex flex-row justify-end items-center z-20`}
       onMouseEnter={() => setMenuDashboardVisible(false)}
       onMouseLeave={() => setMenuDashboardVisible(true)}
     >
@@ -163,7 +170,7 @@ export default function ButtonTitleCards({ id, isData, buttonType, dataBaseColle
         <ButtonAddOnTitle
           screenNarrow={screenNarrow}
           nameButtonAddOnTitle={nameButtonAddOnTitle[buttonType] as string}
-          clickAddButton={() => setModalState('post', dataBaseCollection, id)}
+          clickAddButton={() => setModalState('post', buttonType, dataBaseCollection, id)}
         />
       }
       {
@@ -177,10 +184,10 @@ export default function ButtonTitleCards({ id, isData, buttonType, dataBaseColle
 function ButtonAddOnTitle({ screenNarrow, nameButtonAddOnTitle, clickAddButton }: { screenNarrow: boolean, nameButtonAddOnTitle: string, clickAddButton: () => void }) {
   return (
     <button
-      className="w-fit h-full flex flex-row items-center lg:hover:cursor-pointer transition-all"
+      className="h-full flex flex-row items-center lg:hover:cursor-pointer transition-all"
       onClick={clickAddButton}
     >
-      <h3 className='pr-2 text-sm text-color-text-almost-clear transition-all'>
+      <h3 className='pr-2 text-base text-color-text-almost-clear transition-all'>
         {screenNarrow ? 'Add' : `Add ${nameButtonAddOnTitle}`}
       </h3>
       <i className='p-[2px] text-color-text-almost-clear lg:hover:text-green-500 text-xl lg:text-2xl flex flex-row justify-center rounded-full cursor-default lg:cursor-pointer transition-all'>

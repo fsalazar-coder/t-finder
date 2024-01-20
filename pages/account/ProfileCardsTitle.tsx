@@ -1,12 +1,11 @@
 import { useEffect, useRef } from "react";
-import { useUI } from "@/context/authContext";
 import SectionTitles from "../components/SectionTitles";
 import SubmenuCarsTitle from "./SubmenuCarsTitle";
 import ButtonTitleCards from "./ButtonTitleCards";
 
 
 
-export default function CardsTitlesProfile(
+export default function ProfileCardsTitle(
   {
     isDashboard,
     data,
@@ -16,8 +15,6 @@ export default function CardsTitlesProfile(
     profileMenuIndexNext,
   }: any) {
 
-
-  const { screenNarrow } = useUI();
   const menuProfileRef = useRef(null);
   const menuProfileSelected: any = menuProfileRef.current;
 
@@ -34,27 +31,25 @@ export default function CardsTitlesProfile(
   return (
     <div className={
       `${isDashboard ? 'px-5 border-b' : ''     /// bg-white border shadow-md rounded-lg
-      } w-full relative py-1 flex justify-between flex-row items-center border-color-border`
+      } w-full relative py-1 mb-2 flex justify-between flex-row items-center border-color-border`
     }>
-      <div className='w-full flex flex-row justify-between items-center'>
-        <div className='w-2/3 flex flex-row items-center'>
-          <div className="pr-5">
-            <SectionTitles
-              sectionTitle={`Profile`}
-              sectionType='account'
-            />
-          </div>
-          {
-            !isDashboard &&
-            <SubmenuCarsTitle
-              elements={data}
-              menuIndex={profileMenuIndex}
-              menuIndexRetro={() => profileMenuIndexRetro()}
-              menuIndexNext={() => profileMenuIndexNext()}
-            />
-          }
+      <div className='w-full flex flex-row items-center'>
+        <div className="h-full pr-5">
+          <SectionTitles
+            sectionTitle={`Profile`}
+            sectionType='account'
+          />
         </div>
-        <div className="w-1/3 h-full relative flex flex-row justify-end items-center">
+        {
+          !isDashboard &&
+          <SubmenuCarsTitle
+            elements={data}
+            menuIndex={profileMenuIndex}
+            menuIndexRetro={() => profileMenuIndexRetro()}
+            menuIndexNext={() => profileMenuIndexNext()}
+          />
+        }
+        <div className="w-fit h-full pl-5 flex flex-row items-center">
           <ButtonTitleCards
             id={`button-title-profile-${profileId}`}
             isData={true}

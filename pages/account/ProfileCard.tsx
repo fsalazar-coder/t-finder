@@ -10,7 +10,7 @@ interface UserCardParams {
 
 
 
-export default function UserCardProfile({ data, editDeleteButtonVisible, dataBaseCollection }: UserCardParams) {
+export default function ProfileCard({ data, editDeleteButtonVisible, dataBaseCollection }: UserCardParams) {
 
   const shouldRenderData: boolean = Object.keys(data).length > 0;
 

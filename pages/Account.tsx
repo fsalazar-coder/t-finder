@@ -5,25 +5,15 @@ import Dropdown from './components/Dropdown';
 import AccountNavbar from "./account/AccountNavbar";
 import Dashboard from "./account/Dashboard";
 import Profile from "./account/Profile";
-import ProfileModal from "./account/ProfileModal";
-import TalentRequest from "./account/TalentRequest";
-import JobRequest from "./account/JobRequest";
-import RequestModal from "./account/RequestModal";
+import Request from "./account/Request";
 import Notifications from "./account/Notifications";
-import Settings from "./account/Settings";
-import MessageModal from './components/MessageModal';
-import {
-  IconBxlLinkedin,
-  IconFacebook,
-  IconInstagram,
-  IconTwitter
-} from '../icons/icons';
 import ChatCard from "./account/ChatCard";
-
-// Define a type for the modules object
-type ModuleComponents = {
-  [key: string]: React.ComponentType<any>;
-};
+import Settings from "./account/Settings";
+import ProfileModal from "./account/ProfileModal";
+import RequestModal from "./account/RequestModal";
+import MessageModal from './components/MessageModal';
+import { IconBxlLinkedin, IconFacebook, IconInstagram, IconTwitter } from '../icons/icons';
+import Connections from "./account/Connections";
 
 const navegationC: any = [
   { id: 'icon-facebook', icon: <IconFacebook /> },
@@ -44,16 +34,17 @@ export default function Account() {
     }
   }, [accountActived, screenNarrow, setDropdown]);
 
-  const modules: ModuleComponents = {
-    'Dashboard': Dashboard,
-    'Profile': Profile,
-    'Talent': TalentRequest,
-    'Job': JobRequest,
-    'Notifications': Notifications,
-    'Settings': Settings,
+  const modules: any = {
+    'Dashboard': <Dashboard />,
+    'Profile': <Profile />,
+    'Talent': <Request requestType='Talent' />,
+    'Job': <Request requestType='Job' />,
+    'Notifications': <Notifications />,
+    'Connections': <Connections />,
+    'Settings': <Settings />,
   };
 
-  const ActiveModule = modules[accountModule as keyof ModuleComponents] || Dashboard;
+  const ActiveModule: any = modules[accountModule] || <Dashboard />;
 
 
   if (!token) {
@@ -74,7 +65,7 @@ export default function Account() {
       <div className="w-full min-h-screen flex flex-col justify-between items-center">
         {/**dashboard, profile, requests, notifications, account settings, help and support */}
         <div className='w-full lg:pl-1/6'>
-          {(!screenNarrow || accountModule !== 'Dashboard') && <ActiveModule />}
+          {ActiveModule}
         </div>
         {/***Copyright footer***/}
         <div className="w-full flex flex-col border-t border-color-border-clear bg-transparent">
@@ -110,7 +101,7 @@ export default function Account() {
       <RequestModal />
 
       <MessageModal />
-      
+
       <ChatCard />
     </main>
   )

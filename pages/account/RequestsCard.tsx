@@ -1,37 +1,35 @@
 import { useState, useEffect } from "react";
 import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import { userDataHandlerFunction } from "../api/userDataHandlerFunction";
-import { IconUser } from '../../icons/icons';
-import Image from "next/image";
 import CardsItems from "./CardsItems";
 import SubmenuCarsTitle from "./SubmenuCarsTitle";
-import CardsDisplayerProfile from "./CardsDisplayerProfile";
 import ProfileScoreOverview from "./ProfileScoreOverview";
 import ProfileScoreOverall from "./ProfileScoreOverall";
 import ButtonTitleCards from "./ButtonTitleCards";
 import ImageIconUser from "./ImageIconUser";
+import ProfileCardsDisplayer from "./ProfileCardsDisplayer";
 
 interface UserCardParams {
   data: { [key: string]: string },
   dataBaseCollection: string,
   editDeleteButtonVisible: boolean,
-  userCardType: string,
   requestMenu: string,
   goClickCondition: boolean,
   value: string,
+  statusRequestToRender: any,
   goClick: (e: any) => void,
 }
 
 interface DataUser {
   user_id: string,
   user_name: string,
-  user_image: string
+  user_image_url: string
 }
 
 
-export default function UserCardRequest({ data, dataBaseCollection, userCardType, requestMenu, editDeleteButtonVisible, goClickCondition, value, goClick }: UserCardParams) {
+
+export default function RequestsCard({ data, dataBaseCollection, requestMenu, editDeleteButtonVisible, goClickCondition, value, goClick }: UserCardParams) {
   const { token, userId } = useAuthData();
-  const { setChatActived, setChatDataUser } = useAuthUI();
   const [isRequestContactAccepted, setIsRequestContactAccepted] = useState(false);
   const [isGoClickDisabled, setIsGoClickDisabled] = useState(true);
   const [goClickTitle, setGoClickTitle] = useState('');
@@ -116,6 +114,7 @@ export default function UserCardRequest({ data, dataBaseCollection, userCardType
     }
   }, [token, userId, requestMenu]);
 
+  //control de texto en botones
   useEffect(() => {
     let disabled = true;
     let title = '';
@@ -126,20 +125,20 @@ export default function UserCardRequest({ data, dataBaseCollection, userCardType
         break;
       case 'job submitted':
         disabled = goClickCondition;
-        title = goClickCondition ? 'Awaiting offers' : 'Offers';
+        title = goClickCondition ? 'Awaiting requests' : 'Requests';
         break;
       case 'candidates':
         disabled = false;
         title = 'Review';
         break;
-      case 'offers':
-        disabled = false;
-        title = goClickCondition ? 'Chat' : 'Acceptance';
+      case 'requests':
+        disabled = goClickCondition;
+        title = goClickCondition ? 'Accepted' : 'Accept';
         break;
       case 'candidate review':
         if (goClickCondition) {
-          disabled = !isRequestContactAccepted;
-          title = isRequestContactAccepted ? 'Chat' : 'Contacting';
+          disabled = true;
+          title = isRequestContactAccepted ? 'Contacted' : 'Contacting';
         }
         else {
           disabled = false;
@@ -147,8 +146,6 @@ export default function UserCardRequest({ data, dataBaseCollection, userCardType
         }
         break;
       default:
-        //disabled = true; // or some default value
-        //title = ''; // or some default value
         break;
     };
     setIsGoClickDisabled(disabled);
@@ -180,41 +177,20 @@ export default function UserCardRequest({ data, dataBaseCollection, userCardType
     };
   }, [token, userId, requestMenu, data]);
 
-
   const goToClick: any = () => {
     switch (requestMenu) {
+      case 'talent submitted':
+        return goClick(value);
+      case 'job submitted':
+        return goClick(value);
       case 'candidates':
         return goClick(data.user_id);
-      case 'offers':
-        if (goClickTitle === 'Chat') {
-          let dataUser: DataUser = {
-            user_id: data?.user_id,
-            user_name: data?.full_name,
-            user_image: data?.profile_image
-          };
-          setChatDataUser(dataUser);
-          setChatActived(true);
-        }
-        else {
-          return goClick(data.user_id);
-        }
-        break;
+      case 'requests':
+        return goClick(data.user_id);
       case 'candidate review':
-        if (goClickTitle === 'Chat') {
-          let dataUser: DataUser = {
-            user_id: data?.user_id,
-            user_name: data?.full_name,
-            user_image: data?.profile_image
-          };
-          setChatDataUser(dataUser);
-          setChatActived(true);
-        }
-        else {
-          return goClick(data.request_job_id);
-        }
-        break;
+        return goClick(data.request_job_id);
       default:
-        return goClick(value);
+        break
     }
   }
 
@@ -253,11 +229,9 @@ export default function UserCardRequest({ data, dataBaseCollection, userCardType
     }
   ];
 
-
-  const isCardTypeSubmitted = userCardType === 'talent request' || userCardType === 'job request';
-  const isEditableCard = (requestMenu === 'talent submitted' || requestMenu === 'job submitted');
-  const isRequestMenuReview = requestMenu === 'candidate review';
+  const isRequestMenuSubmitted = (requestMenu === 'talent submitted' || requestMenu === 'job submitted');
   const isRequestMenuCandidates = requestMenu === 'candidates';
+  const isRequestMenuReview = requestMenu === 'candidate review';
 
   const candidateProfileIndex: number = reviewMenuIndex > 0 ? reviewMenuIndex - 1 : 0
   const profileElementsId: string = candidateProfile[candidateProfileIndex].id;
@@ -267,7 +241,7 @@ export default function UserCardRequest({ data, dataBaseCollection, userCardType
     'talent submitted': 'h-[430px]',
     'job submitted': 'h-[450px]',
     'candidates': 'h-[500px]',
-    'offers': 'h-[565px]',
+    'requests': 'h-[500px]',
     'candidate review': 'h-auto',
   };
 
@@ -296,7 +270,7 @@ export default function UserCardRequest({ data, dataBaseCollection, userCardType
             isData={shouldRenderData}
             buttonType='request-items'
             dataBaseCollection={dataBaseCollection}
-            shouldRenderButton={editDeleteButtonVisible && isEditableCard}
+            shouldRenderButton={editDeleteButtonVisible && isRequestMenuSubmitted}
           />
         </div>
         {/**user fullname */}
@@ -304,13 +278,13 @@ export default function UserCardRequest({ data, dataBaseCollection, userCardType
           <div className={`${isRequestMenuReview ? 'flex-col' : 'flex-col justify-between'} w-full h-full flex`}>
             <div className={`${isRequestMenuReview ? 'flex-row-reverse' : 'flex-col'} w-full flex`}>
               {
-                !isCardTypeSubmitted &&
+                !isRequestMenuSubmitted &&
                 // user profile image
                 <div className={`${isRequestMenuReview ? 'w-1/5' : 'w-full border-b'} py-2 flex flex-row justify-center items-center border-color-border`}>
                   <div className="w-24 h-24 flex flex-col justify-center items-center">
                     <ImageIconUser
                       type={'request'}
-                      toUserId={data?.user_id as string}
+                      otherUserImageUrl={data?.profile_image_url as string}
                     />
                   </div>
                 </div>
@@ -359,7 +333,7 @@ export default function UserCardRequest({ data, dataBaseCollection, userCardType
                 <ProfileScoreOverview profile={candidateProfile} />
               </div>
               :
-              <CardsDisplayerProfile
+              <ProfileCardsDisplayer
                 id={profileElementsId}
                 key={profileElementsId}
                 data={profileElementsData}

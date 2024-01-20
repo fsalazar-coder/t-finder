@@ -56,7 +56,7 @@ export default function Presentation(props: any) {
                     key={index}
                     className='w-full flex flex-row'
                   >
-                    <i className='w-fit pr-3 pt-3 text-fuchsia-600 text-sm sm:text-xs md:text-sm lg:text-base xl:text-lg font-bold tracking-wider text-start flex flex-col justify-start'>
+                    <i className='w-fit pr-3 pt-3 text-color-highlighted text-sm sm:text-xs md:text-sm lg:text-base xl:text-lg font-bold tracking-wider text-start flex flex-col justify-start'>
                       <IconCheckCircle />
                     </i>
                     <div className='w-full py-2 flex flex-col align-center'>
@@ -70,20 +70,6 @@ export default function Presentation(props: any) {
                   </li>
                 )}
             </ul>
-            {/**button to join */}
-            <div className='w-full h-fit flex flex-row items-center z-[35]'>
-              <button
-                className='w-fit h-fit px-8 py-3 text-slate-50 hover:text-white md:hover:font-bold bg-fuchsia-400 hover:bg-fuchsia-900 flex flex-row justify-center items-center rounded-full cursor-pointer transform hover:scale-[1.1] transition-all z-30'
-                onClick={() => setJoinModal(true)}
-              >
-                <h3 className='w-full h-2/3 text-sm lg:text-base xl:text-lg font-semibold tracking-wider flex flex-row justify-center items-center rounded-full transition-all'>
-                  {props.textButton}
-                </h3>
-                <i className='text-base xl:text-lg leading-none font-bold md:font-medium tracking-wider ml-1'>
-                  <IconArrowRight />
-                </i>
-              </button>
-            </div>
           </div>
         </div>
       </div>

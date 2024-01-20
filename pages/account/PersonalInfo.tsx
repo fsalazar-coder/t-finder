@@ -1,6 +1,4 @@
-import { useState, useEffect } from 'react';
 import { useAuthData, useAuthUI } from "../../context/authContext";
-import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
 import ImageIconUser from './ImageIconUser';
 import SectionTitles from '../components/SectionTitles';
 import CardsItems from './CardsItems';
@@ -11,37 +9,12 @@ import ButtonTitleCards from './ButtonTitleCards';
 
 export default function PersonalInfo() {
 
-  const { token, userId, setCollectionToChange, update, setUpdate } = useAuthData();
-  const { accountModule, setProfileModal, setProfileModalAction, setProfileModalType } = useAuthUI();
-  const [personalInfoData, setPersonalInfoData] = useState<{}>({});
-
-  const fetchData = async () => {
-    userDataHandlerFunction({
-      token: token as string,
-      userId: userId as string,
-      action: 'get',
-      collectionName: 'personal_info',
-      data: '',
-      onSuccess: (responseData: any) => {
-        setPersonalInfoData(responseData);
-        console.log('Response data: ', responseData)
-      },
-      onError: (error: any) => console.error(error)
-    });
-  };
-
-  useEffect(() => {
-    if (accountModule === 'Dashboard' || update === 'personal_info') {
-      fetchData();
-      if (update === 'personal_info') {
-        setUpdate('');
-        setCollectionToChange('');
-      }
-    }
-  }, [token, userId, update, accountModule]);
+  const { userId, userProfileData, setCollectionToChange } = useAuthData();
+  const { accountModule, setProfileModal, setProfileModalAction } = useAuthUI();
 
   const isDashboard = accountModule === 'Dashboard';
-  const renderPersonalInfoData: boolean = Object.keys(personalInfoData).length > 0;
+  const personalInfoData: any = userProfileData.personalInfo;
+  const renderPersonalInfoData: boolean = userProfileData?.personalInfo?.length > 0;
 
 
   return (
@@ -54,7 +27,7 @@ export default function PersonalInfo() {
             sectionType='account'
           />
         </div>
-        <div className="w-1/3 h-full relative flex flex-row justify-end items-center">
+        <div className="w-1/3 h-full flex flex-row justify-end items-center">
           <ButtonTitleCards
             id={userId as string}
             isData={renderPersonalInfoData}
@@ -70,7 +43,7 @@ export default function PersonalInfo() {
           <div className='w-32 h-32 flex flex-col justify-center items-center'>
             <ImageIconUser
               type='personal-info'
-              toUserId={userId as string}
+              otherUserImageUrl={''}
             />
           </div>
         </div>
@@ -81,7 +54,7 @@ export default function PersonalInfo() {
             /**information */
             <ul className='w-full pt-4 flex flex-col'>
               <CardsItems
-                element={personalInfoData as any}
+                element={personalInfoData[0] as any}
                 carsModel='vertical'
               />
             </ul>
@@ -89,12 +62,10 @@ export default function PersonalInfo() {
             /**button add information */
             <ButtonDashboardAddInfo
               id='post-item-profile'
-              isDashboard={isDashboard}
               comment='Add information'
               click={() => {
-                setProfileModal(true);
+                setProfileModal('personal-info');
                 setProfileModalAction('post');
-                setProfileModalType('personal information');
                 setCollectionToChange('personal_info');
               }}
             />

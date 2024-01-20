@@ -2,13 +2,9 @@ import { useState, useEffect } from "react";
 import { useAuthUI } from "../../context/authContext";
 import NotificationCard from "./NotificationCard";
 
-interface NotificationsCardsDisplayerParams {
-  dataToRender: string[],
-}
 
 
-
-export default function NotificationsCardsDisplayer({ dataToRender }: NotificationsCardsDisplayerParams) {
+export default function NotificationsCardsDisplayer({ notificationsToRender }: any) {
 
   const { accountModule, setAccountModule } = useAuthUI();
   const [itemHover, setItemHover] = useState(null);
@@ -26,9 +22,9 @@ export default function NotificationsCardsDisplayer({ dataToRender }: Notificati
         onMouseEnter={() => setListHover(true)}
         onMouseLeave={() => setListHover(false)}
       >
-        <ul className='w-full h-full flex flex-col'>
+        <ul className={`${isDashboard && 'overflow-y-auto'} w-full h-full flex flex-col`}>
           {
-            dataToRender?.map((element: any, index: any) => {
+            notificationsToRender?.map((notificacion: any, index: any) => {
               let evenIndex = index % 2 === 0;
               return (
                 <li key={index}
@@ -45,7 +41,7 @@ export default function NotificationsCardsDisplayer({ dataToRender }: Notificati
                     } w-full px-4 py-3 flex flex-col transform transition-all`
                   }>
                     <NotificationCard
-                      data={element}
+                      data={notificacion}
                       indexCard={index}
                       listHover={listHover}
                       itemHover={itemHover}

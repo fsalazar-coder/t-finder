@@ -18,6 +18,53 @@ export const IconBxErrorCircle = () => {
   )
 }
 
+
+export const IconMessageNotification = () => {
+  return (
+    <div
+      className='icons-container'
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        height="1em"
+        width="1em"
+      >
+        <path d="M20 2H4c-1.103 0-2 .894-2 1.992v12.016C2 17.106 2.897 18 4 18h3v4l6.351-4H20c1.103 0 2-.894 2-1.992V3.992A1.998 1.998 0 0020 2z" />
+      </svg>
+    </div>
+  )
+}
+
+
+export const IconUserConnections = () => {
+  return (
+    <div
+      className='icons-container'
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        height="1em"
+        width="1em"
+      >
+        <path
+          fillRule="evenodd"
+          d="M19.75 17.5a1.75 1.75 0 100 3.5 1.75 1.75 0 000-3.5zm-3.25 1.75a3.25 3.25 0 116.5 0 3.25 3.25 0 01-6.5 0z"
+        />
+        <path
+          fillRule="evenodd"
+          d="M13.905 1.72a.75.75 0 010 1.06L12.685 4h4.065a3.75 3.75 0 013.75 3.75v8.75a.75.75 0 01-1.5 0V7.75a2.25 2.25 0 00-2.25-2.25h-4.064l1.22 1.22a.75.75 0 01-1.061 1.06l-2.5-2.5a.75.75 0 010-1.06l2.5-2.5a.75.75 0 011.06 0zM4.25 6.5a1.75 1.75 0 100-3.5 1.75 1.75 0 000 3.5zM7.5 4.75a3.25 3.25 0 11-6.5 0 3.25 3.25 0 016.5 0z"
+        />
+        <path
+          fillRule="evenodd"
+          d="M10.095 22.28a.75.75 0 010-1.06l1.22-1.22H7.25a3.75 3.75 0 01-3.75-3.75V7.5a.75.75 0 011.5 0v8.75a2.25 2.25 0 002.25 2.25h4.064l-1.22-1.22a.75.75 0 111.061-1.06l2.5 2.5a.75.75 0 010 1.06l-2.5 2.5a.75.75 0 01-1.06 0z"
+        />
+      </svg>
+    </div>
+  )
+}
+
 export const IconBxPowerOff = () => {
   return (
     <div
@@ -134,19 +181,49 @@ export const IconHome = () => {
   )
 }
 
-export const IconRequest = () => {
+export const IconRequestTalent = () => {
   return (
     <div
-      className='icons-container'
+      className='icons-container scale-x-[-1] transform'
     >
       <svg
-        baseProfile="tiny"
         viewBox="0 0 24 24"
         fill="currentColor"
         height="1em"
         width="1em"
       >
-        <path d="M18.277 6.321a1.1 1.1 0 00-1.556 0L15 8.043l-.308-.308c-1.168-1.168-3.216-1.168-4.384 0l-4.172 4.172c-.584.584-.906 1.363-.906 2.192s.322 1.608.906 2.192l.308.308-1.722 1.722a1.1 1.1 0 101.556 1.556L8 18.155l.308.308c.584.584 1.362.906 2.192.906s1.608-.322 2.192-.906l4.172-4.172c.584-.584.906-1.362.906-2.192s-.322-1.608-.906-2.192l-.308-.308 1.722-1.722a1.1 1.1 0 00-.001-1.556zm-2.969 6.414l-4.172 4.172c-.168.168-.402.253-.636.253s-.468-.084-.636-.253l-.308-.308.722-.722a1.1 1.1 0 10-1.556-1.556L8 15.043l-.308-.308c-.168-.168-.261-.395-.261-.636s.093-.468.261-.636l4.172-4.172c.168-.168.394-.261.636-.261s.468.093.636.261l.308.308-.722.722a1.1 1.1 0 101.556 1.556l.722-.722.308.308c.168.168.261.395.261.636s-.093.468-.261.636z" />
+        <path
+          fillRule="evenodd"
+          d="M4.75 3a1.75 1.75 0 100 3.5 1.75 1.75 0 000-3.5zM1.5 4.75a3.25 3.25 0 116.5 0 3.25 3.25 0 01-6.5 0zM4.75 17.5a1.75 1.75 0 100 3.5 1.75 1.75 0 000-3.5zM1.5 19.25a3.25 3.25 0 116.5 0 3.25 3.25 0 01-6.5 0zm17.75-1.75a1.75 1.75 0 100 3.5 1.75 1.75 0 000-3.5zM16 19.25a3.25 3.25 0 116.5 0 3.25 3.25 0 01-6.5 0z"
+        />
+        <path
+          fillRule="evenodd"
+          d="M4.75 7.25A.75.75 0 015.5 8v8A.75.75 0 014 16V8a.75.75 0 01.75-.75zm8.655-5.53a.75.75 0 010 1.06L12.185 4h4.065A3.75 3.75 0 0120 7.75v8.75a.75.75 0 01-1.5 0V7.75a2.25 2.25 0 00-2.25-2.25h-4.064l1.22 1.22a.75.75 0 01-1.061 1.06l-2.5-2.5a.75.75 0 010-1.06l2.5-2.5a.75.75 0 011.06 0z"
+        />
+      </svg>
+    </div>
+  )
+}
+
+export const IconRequestJob = () => {
+  return (
+    <div
+      className='icons-container'
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        height="1em"
+        width="1em"
+      >
+        <path
+          fillRule="evenodd"
+          d="M4.75 3a1.75 1.75 0 100 3.5 1.75 1.75 0 000-3.5zM1.5 4.75a3.25 3.25 0 116.5 0 3.25 3.25 0 01-6.5 0zM4.75 17.5a1.75 1.75 0 100 3.5 1.75 1.75 0 000-3.5zM1.5 19.25a3.25 3.25 0 116.5 0 3.25 3.25 0 01-6.5 0zm17.75-1.75a1.75 1.75 0 100 3.5 1.75 1.75 0 000-3.5zM16 19.25a3.25 3.25 0 116.5 0 3.25 3.25 0 01-6.5 0z"
+        />
+        <path
+          fillRule="evenodd"
+          d="M4.75 7.25A.75.75 0 015.5 8v8A.75.75 0 014 16V8a.75.75 0 01.75-.75zm8.655-5.53a.75.75 0 010 1.06L12.185 4h4.065A3.75 3.75 0 0120 7.75v8.75a.75.75 0 01-1.5 0V7.75a2.25 2.25 0 00-2.25-2.25h-4.064l1.22 1.22a.75.75 0 01-1.061 1.06l-2.5-2.5a.75.75 0 010-1.06l2.5-2.5a.75.75 0 011.06 0z"
+        />
       </svg>
     </div>
   )
@@ -676,18 +753,18 @@ export const IconBxChevronUp = () => {
       className='icons-container'
     >
       <svg
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={1}
-        viewBox="0 0 16 16"
+        viewBox="0 0 512 512"
+        fill="currentColor"
         height="1em"
         width="1em"
       >
         <path
-          fillRule="evenodd"
-          d="M7.776 5.553a.5.5 0 01.448 0l6 3a.5.5 0 11-.448.894L8 6.56 2.224 9.447a.5.5 0 11-.448-.894l6-3z"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={48}
+          d="M112 328l144-144 144 144"
         />
       </svg>
     </div>

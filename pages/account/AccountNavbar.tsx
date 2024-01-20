@@ -2,14 +2,15 @@ import { useRef, useEffect } from 'react'
 import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import { useRouter } from 'next/navigation';
 import ImageIconUser from './ImageIconUser';
-import { IconDashboard, IconUserTie, IconRequest, IconBxsBellRing, IconHelpCircle, IconGear, IconHome, IconBxPowerOff } from '@/icons/icons';
+import { IconDashboard, IconUserTie, IconBxsBellRing, IconGear, IconHome, IconBxPowerOff, IconUserConnections, IconRequestTalent, IconRequestJob, IconMessageNotification } from '@/icons/icons';
 
 const navbarElementAuth = [
   { title: 'Dashboard', accountModule: 'Dashboard', icon: <IconDashboard /> },
   { title: 'Profile', accountModule: 'Profile', icon: <IconUserTie /> },
-  { title: 'Talent request', accountModule: 'Talent', icon: <IconRequest /> },
-  { title: 'Job request', accountModule: 'Job', icon: <IconRequest /> },
+  { title: 'Talent request', accountModule: 'Talent', icon: <IconRequestTalent /> },
+  { title: 'Job request', accountModule: 'Job', icon: <IconRequestJob /> },
   { title: 'Notifications', accountModule: 'Notifications', icon: <IconBxsBellRing /> },
+  { title: 'Connections', accountModule: 'Connections', icon: <IconMessageNotification /> },
   { title: 'Settings', accountModule: 'Settings', icon: <IconGear /> },
 ];
 
@@ -17,7 +18,7 @@ const navbarElementAuth = [
 
 export default function AccountNavbar(props: any) {
 
-  const { userId, userEmail, userProfilePersonalInfo, logout } = useAuthData();
+  const { userId, userEmail, userProfileData, logout } = useAuthData();
   const { setAccountActived, accountModule, setAccountModule, setChatActived } = useAuthUI();
   const { dropdown, setDropdown, screenNarrow, setMessageModal } = useUI();
   const indicatorRef: any = useRef(null);
@@ -27,36 +28,17 @@ export default function AccountNavbar(props: any) {
   useEffect(() => {
     const indicatorSelected: any = indicatorRef.current;
     let translateY = isDashboard ? 56 : 36;
+    let accountModuleArray: any = ['Dashboard', 'Profile', 'Talent', 'Job', 'Notifications', 'Connections', 'Settings' ];
+    let indicatorFactorPosition: any = accountModuleArray.indexOf(accountModule);
     if (indicatorSelected) {
-      switch (accountModule) {
-        case 'Profile':
-          indicatorSelected.style.transition = 'all 0.5s ease';
-          indicatorSelected.style.transform = `translateY(${translateY}px)`;
-          break;
-        case 'Talent':
-          indicatorSelected.style.transition = 'all 0.5s ease';
-          indicatorSelected.style.transform = `translateY(${2 * translateY}px)`;
-          break;
-        case 'Job':
-          indicatorSelected.style.transition = 'all 0.5s ease';
-          indicatorSelected.style.transform = `translateY(${3 * translateY}px)`;
-          break;
-        case 'Notifications':
-          indicatorSelected.style.transition = 'all 0.5s ease';
-          indicatorSelected.style.transform = `translateY(${4 * translateY}px)`;
-          break;
-        case 'Settings':
-          indicatorSelected.style.transition = 'all 0.5s ease';
-          indicatorSelected.style.transform = `translateY(${5 * translateY}px)`;
-          break;
-        default:
-          indicatorSelected.style.transition = 'all 0.5s ease';
-          indicatorSelected.style.transform = `translateY(0px)`;
-          break;
-      }
+      indicatorSelected.style.transition = 'all 0.5s ease';
+      indicatorSelected.style.transform = `translateY(${indicatorFactorPosition * translateY}px)`;
     }
   }, [accountModule, isDashboard])
 
+
+  const userFullName: any = userProfileData?.personalInfo[0]?.full_name;
+  const userFullNameAccountNavbar: string = userFullName ? userFullName : (userEmail || '')
 
   return (
     <div
@@ -67,13 +49,14 @@ export default function AccountNavbar(props: any) {
         } fixed left-0 flex justify-center items-center bg-white border-color-border transition-all z-50`
       }>
       <div className={
-        `${screenNarrow ? 'px-1 flex-row justify-between'
+        `${screenNarrow ? 'px-5 flex-row justify-between'
           : 'flex-col justify-start'
-        } container w-full h-full flex`
+        } w-full h-full flex`
       }>
+
         {/**Logo */}
         <div className={
-          `${isDashboard ? 'h-24 py-4' : 'py-2'} w-full flex flex-row justify-center items-center`
+          `${isDashboard ? screenNarrow ? 'py-2' : 'h-24 py-4 justify-center' : 'py-2 justify-center'} w-full flex flex-row items-center`
         }>
           {(!screenNarrow && isDashboard) ?
             <div className="w-16 h-16 flex flex-col justify-center items-center outline outline-1 outline-color-clear border-2 border-color-secondary rounded-full transition-all">
@@ -89,6 +72,7 @@ export default function AccountNavbar(props: any) {
             </h2>
           }
         </div>
+
         {/**account module indicator: is actived only on screenarrow to active dropdown */
           screenNarrow &&
           <div className='w-full py-1 flex flex-row justify-end items-center z-30'>
@@ -106,8 +90,8 @@ export default function AccountNavbar(props: any) {
           </div>
         }
         {
+          ((isDashboard && screenNarrow) || !isDashboard) &&
           /**image profile */
-          !isDashboard &&
           <div className={
             `${screenNarrow ? 'w-fit relative' : 'w-full py-4 border-y border-color-border'} flex flex-col justify-center items-center`
           }>
@@ -118,7 +102,7 @@ export default function AccountNavbar(props: any) {
               }>
               <ImageIconUser
                 type={screenNarrow ? 'navbar' : 'account-navbar'}
-                toUserId={userId as string}
+                otherUserImageUrl={''}
               />
             </div>
           </div>
@@ -131,7 +115,7 @@ export default function AccountNavbar(props: any) {
               !isDashboard &&
               <div className='w-full flex flex-row justify-center items-center transition-all'>
                 <h3 className='w-full py-3 text-color-text-dark text-base text-center'>
-                  {userProfilePersonalInfo?.full_name ? userProfilePersonalInfo?.full_name : userEmail}
+                  {userFullNameAccountNavbar}
                 </h3>
               </div>
             }
@@ -145,7 +129,7 @@ export default function AccountNavbar(props: any) {
                         key={index}
                         className={
                           `${isDashboard ? 'h-14 py-3 justify-center' : 'h-9 py-1'} 
-                              ${accountModule === item.accountModule ? 'text-color-highlighted font-bold' : 'text-color-text-almost-clear hover:text-color-text-medium hover:bg-color-clear cursor-pointer'}
+                              ${accountModule === item.accountModule ? 'text-white font-bold' : 'text-color-text-almost-clear hover:text-color-text-medium hover:bg-color-hover cursor-pointer'}
                             w-full flex flex-row items-center z-[70]`
                         }
                         onClick={() => setAccountModule(item.accountModule)}
@@ -169,7 +153,7 @@ export default function AccountNavbar(props: any) {
                 key='home-link'
                 className={
                   `${isDashboard ? 'h-14 py-3 justify-center' : 'h-9 py-1'} 
-                  w-full flex flex-row items-center text-color-text-almost-clear hover:text-color-text-medium hover:bg-color-clear cursor-pointer z-[70]`
+                  w-full flex flex-row items-center text-color-text-almost-clear hover:text-color-text-medium hover:bg-color-hover cursor-pointer z-[70]`
                 }
                 onClick={() => {
                   setAccountModule('');
@@ -193,14 +177,14 @@ export default function AccountNavbar(props: any) {
               <div
                 className={
                   `${isDashboard ? 'w-24 h-14' : 'w-60 h-9'} 
-                absolute left-0 top-0 flex flex-row justify-end bg-color-highlighted-clear bg-opacity-10 transform transition-all`
+                absolute left-0 top-0 flex flex-row justify-end bg-color-highlighted-clear transform transition-all`
                 }
                 ref={indicatorRef}
               />
             </nav>
             {/**logout button */}
             <div className={
-              `${isDashboard ? 'py-8' : 'p-8'} 
+              `${isDashboard ? '' : 'px-8 py-2'} 
                   w-full flex flex-row justify-center items-center transition-all`
             }>
               <button

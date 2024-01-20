@@ -48,7 +48,7 @@ export default function Footer(props: any) {
           {/**button to open join modal (register) */}
           <div className='w-full h-fit pt-6 flex flex-row justify-center items-center z-[35]'>
             <button
-              className='w-fit h-fit px-8 py-3 text-slate-50 hover:text-white md:hover:font-bold bg-fuchsia-400 hover:bg-fuchsia-900 flex flex-row justify-center items-center rounded-full cursor-pointer transform hover:scale-[1.1] transition-all z-30'
+              className='w-fit h-fit px-8 py-3 text-slate-50 hover:text-white md:hover:font-bold bg-color-highlighted hover:bg-color-highlighted-clear flex flex-row justify-center items-center rounded-full cursor-pointer transform hover:scale-[1.1] transition-all z-30'
               onClick={() => setJoinModal(true)}
             >
               <h3 className='w-full h-2/3 text-sm lg:text-base xl:text-lg font-semibold tracking-wider flex flex-row justify-center items-center rounded-full transition-all'>
@@ -63,11 +63,11 @@ export default function Footer(props: any) {
       </div>
 
       {/***Links***/}
-      <div className='w-full h-auto py-3 flex flex-row justify-center items-center bg-slate-600 z-10'>
+      <div className='w-full h-auto py-3 flex flex-row justify-center items-center bg-sky-100 z-10'>
         <div className='container w-full h-full px-5 flex flex-row justify-between items-start'>
           {/**location and phone */}
           <div className='w-1/2 h-full flex flex-col justify-center items-start'>
-            <ul className='w-fit h-full text-sm md:text-base lg:text-lg xl:text-xl text-white font-light flex flex-col justify-center items-start'>
+            <ul className='w-fit h-full text-sm md:text-base lg:text-lg xl:text-xl text-color-text-medium font-light flex flex-col justify-center items-start'>
               <li
                 key='location'
                 className='flex flex-row items-start'>
@@ -94,7 +94,7 @@ export default function Footer(props: any) {
                     return (
                       <li
                         key={index}
-                        className='w-full text-white sm:text-slate-400 text-start list-none transition-all sm:cursor-pointer sm:hover:text-white sm:hover:font-semibold'>
+                        className='w-full text-color-text-medium text-start list-none transition-all sm:cursor-pointer lg:hover:text-color-text-dark font-normal'>
                         <h2>{element}</h2>
                       </li>
                     )
@@ -109,7 +109,7 @@ export default function Footer(props: any) {
                     return (
                       <li
                         key={index}
-                        className='w-full text-white sm:text-slate-400 text-start list-none transition-all sm:cursor-pointer sm:hover:text-white sm:hover:font-semibold'>
+                        className='w-full text-color-text-medium text-start list-none transition-all sm:cursor-pointer lg:hover:text-color-text-dark font-normal'>
                         <h2>{element}</h2>
                       </li>
                     )
@@ -123,7 +123,7 @@ export default function Footer(props: any) {
       {/***Copyright footer***/}
       <div
         id='contact'
-        className='w-full h-auto sm:h-[5%] py-5 sm:py-2 flex flex-row justify-center items-center border-t border-slate-300 bg-slate-950 z-10'
+        className='w-full h-auto sm:h-[5%] py-5 sm:py-2 flex flex-row justify-center items-center border-t border-slate-300 bg-color-highlighted-dark z-10'
       >
         <div className='container h-auto px-5 flex flex-col-reverse sm:flex-row justify-between items-center'>
           <h2 className='w-full sm:w-1/2 h-full text-white text-sm sm:text-xs md:text-sm lg:text-base text-center sm:text-start pt-2 sm:pt-0 z-40'>

@@ -1,25 +1,33 @@
 import { useState, useEffect } from 'react';
 import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
 import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
-import ProfileDashboard from './ProfileDashboard';
-import CardsTitlesProfile from './CardsTitleProfile';
-import CardsDisplayerProfile from './CardsDisplayerProfile';
 import { userProfileScoreFunction } from '../api/userProfileScoreFunction';
+import ProfileDashboard from './ProfileDashboard';
+import ProfileCardsDisplayer from './ProfileCardsDisplayer';
+import ProfileCardsTitle from './ProfileCardsTitle';
 
 
 
 export default function Profile() {
 
-  const { token, userId, userProfileData, setUserProfileData, collectionToChange, setCollectionToChange, update, setUpdate } = useAuthData();
-  const { accountModule, setProfileModal, setProfileModalType, setProfileModalAction } = useAuthUI();
   const { screenNarrow } = useUI();
+  const { accountModule, setProfileModal, setProfileModalAction } = useAuthUI();
+  const { token, userId, userProfileData, setUserProfileData, collectionToChange, setCollectionToChange, update, setUpdate, updateCounter, setUpdateCounter } = useAuthData();
   const [userProfileScore, setUserProfileScore] = useState<string>('');
   const [userProfileScoreUpdate, setUserProfileScoreUpdate] = useState<boolean>(false);
   const [cardHover, setCardHover] = useState<boolean>(false);
   const [profileMenu, setProfileMenu] = useState<string>('experience');
   const [profileMenuIndex, setProfileMenuIndex] = useState<number>(0);
 
-  const profile: any = [
+  const userData: any = [
+    {
+      id: 'personal_info',
+      title: 'Personal info...',
+      data: userProfileData.personalInfo,
+      profileMenuCondition: false,
+      shouldRender: userProfileData.personalInfo.length > 0,
+      length: userProfileData.personalInfo.length,
+    },
     {
       id: 'experience',
       title: 'Experience',
@@ -78,9 +86,10 @@ export default function Profile() {
     }
   ];
 
-  const elementsProfile: number = profile.length;
+  const profile: any = userData.slice(1);
+  const elementsProfileAmount: number = profile.length - 1;
   const elementsCompleted = profile.filter((element: any) => element.shouldRender).length;
-  const percentageProfileFilled: number = Math.round((elementsCompleted / elementsProfile) * 100);
+  const percentageProfileFilled: number = Math.round((elementsCompleted / elementsProfileAmount) * 100);
 
   useEffect(() => {
     if (userProfileScoreUpdate || accountModule === 'Dashboard') {
@@ -101,33 +110,40 @@ export default function Profile() {
 
   // Cargar los datos para todos los elementos
   useEffect(() => {
-    if (update === 'profile' || update === collectionToChange) {     // || accountModule === 'Profile' || accountModule === 'Dashboard'
-      profile.forEach((element: any) => {
-        let collectionName = element.id;
-        userDataHandlerFunction({
-          token: token as string,
-          userId: userId as string,
-          action: 'get',
-          collectionName: collectionName,
-          data: '',
-          onSuccess: (responseData: any) => {
-            let elementName: string = collectionName;
-            let data: any = responseData;
-            setUserProfileData((prevData) => ({
-              ...prevData,
-              [elementName]: data
-            }));
-          },
-          onError: (error: any) => console.error(error)
+    if (token && userId && (update === 'all' || update === collectionToChange)) {     // || accountModule === 'Profile' || accountModule === 'Dashboard'
+      setUpdateCounter((counter) => counter + 1);
+      const fetchProfile = async () => {
+        userData.forEach((element: any) => {
+          let collectionName = element.id;
+          userDataHandlerFunction({
+            token: token as string,
+            userId: userId as string,
+            action: 'get',
+            collectionName: collectionName,
+            data: '',
+            onSuccess: (responseData: any) => {
+              let elementName: string = collectionName === 'personal_info' ? 'personalInfo' : collectionName;
+              let data: any = responseData;
+              setUserProfileData((prevData) => ({
+                ...prevData,
+                [elementName]: data
+              }));
+            },
+            onError: (error: any) => console.error(error)
+          });
         });
-        if (update) {
+      };
+      fetchProfile().then(() => {
+        setUpdateCounter((counter) => counter - 1);  
+        setCollectionToChange('');
+        if ((update === 'all' && updateCounter === 0) || update === collectionToChange) {
           setUpdate('');
-          setCollectionToChange('');
         }
       });
     }
   }, [token, userId, update]);
 
+  //profile score
   useEffect(() => {
     if (accountModule === 'Profile' && profile) {
       let score: any = userProfileScoreFunction(profile, 'score');
@@ -148,7 +164,7 @@ export default function Profile() {
   const profileElementsData: any = profile[profileMenuIndex].data;
   const isDashboard = accountModule === 'Dashboard';
   const containerClassNames = `${isDashboard ? 'w-full h-full flex-col bg-white border border-color-border shadow-md rounded-lg'
-    : screenNarrow ? 'w-full flex-col px-1 py-16' : 'w-[52rem] px-2 lg:px-8 lg:py-9 flex-col'
+    : screenNarrow ? 'w-full flex-col px-5 py-16' : 'w-[52rem] px-2 lg:px-8 lg:py-9 flex-col'
     } flex justify-between transition-all`;
 
 
@@ -158,7 +174,7 @@ export default function Profile() {
         onMouseEnter={() => setCardHover(true)}
         onMouseLeave={() => setCardHover(false)}
       >
-        <CardsTitlesProfile
+        <ProfileCardsTitle
           screenNarrow={screenNarrow}
           isDashboard={isDashboard}
           data={profile}
@@ -168,9 +184,8 @@ export default function Profile() {
           profileMenuIndexRetro={() => setProfileMenuIndex(profileMenuIndex > 0 ? profileMenuIndex - 1 : 0)}
           profileMenuIndexNext={() => setProfileMenuIndex(profileMenuIndex + 1)}
           openModalFormClick={() => {
-            setProfileModal(true);
+            setProfileModal(profileElementsId);
             setProfileModalAction('post');
-            setProfileModalType(profileElementsId);
             setCollectionToChange(profileElementsId);
           }}
         />
@@ -181,7 +196,7 @@ export default function Profile() {
               percentage={percentageProfileFilled}
             />
             :
-            <CardsDisplayerProfile
+            <ProfileCardsDisplayer
               id={profileElementsId}
               key={profileElementsId}
               data={profileElementsData}

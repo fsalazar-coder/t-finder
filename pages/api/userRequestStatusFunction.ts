@@ -24,12 +24,12 @@ export const userRequestStatusFunction = async ({ token, userId, collectionName,
       id: userId,
       collectionName,
       action,
-      data: action === 'get' ? '' : statusRequest
+      data: action === 'get-status-request' ? '' : action === 'edit-status-request' && statusRequest
     }, config);
 
     const { status, responseData } = response.data;
     if (status === 'success' && onSuccess) {
-      const statusRequest = responseData[0].status;
+      const statusRequest = responseData;
       onSuccess(statusRequest);
     }
     else if (onError) {
