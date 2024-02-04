@@ -1,5 +1,7 @@
-import { useState, useEffect } from 'react';
-import { useAuthData, useUI } from "../../context/authContext";
+import { useState } from 'react';
+import { useUI } from '@/context/ContextUI';
+import { useAuth } from '@/context/ContextAuth';
+import { useAuthData } from '@/context/ContextAuthData';
 import { IconCancel } from '../../icons/icons';
 import googleIcon from '../../public/images/google-icon.webp';
 import Image from 'next/image';
@@ -8,40 +10,13 @@ import axios from 'axios';
 
 
 export default function LoginModal(props: any) {
-
-  const { setToken, setUserId, setUserEmail, setUpdate } = useAuthData();
-  const {
-    setJoinModal,
-    loginModal, setLoginModal,
-    setPasswordResetModal,
-    setMessageModal,
-    setLoading
-  } = useUI();
+  const { setUpdate  } = useAuthData();
+  const { setLoading, setMessageModal } = useUI();
+  const { setToken, setUserId, setUserEmail, setJoinModal, loginModal, setLoginModal, setPasswordResetModal } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailChange, setEmailChange] = useState(false);
   const [passwordChange, setPasswordChange] = useState(false);
-
-  const modalCloseEscapeHandle = (e: any) => {
-    if (loginModal) {
-      if ((e.charCode | e.keyCode) === 27) {
-        setLoginModal(false);
-      }
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('keydown', modalCloseEscapeHandle);
-    return () => {
-      document.removeEventListener('keydown', modalCloseEscapeHandle);
-    };
-  });
-
-  useEffect(() => {
-    loginModal ?
-      (document.body.style.overflowY = 'hidden')
-      : (document.body.style.overflowY = 'auto');
-  }, [loginModal]);
 
   const loginSubmitHandle = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,7 +38,8 @@ export default function LoginModal(props: any) {
         setUserId(user._id);
         setUserEmail(user.email);
         setLoginModal(false);
-        setUpdate('all');        
+        setUpdate('all');
+        setLoading(false);
       }
     }
     catch (error: any) {
@@ -90,7 +66,8 @@ export default function LoginModal(props: any) {
       setPassword('');
       setLoading(false);
     }
-  }
+  };
+
 
   return (
     loginModal ?

@@ -1,9 +1,8 @@
-import { useAuthUI } from "@/context/authContext"
-
+import { useUI } from "@/context/ContextUI";
 
 
 export default function SectionTitles(props: any) {
-  const { accountModule } = useAuthUI();
+  const { accountModule } = useUI();
 
   const isDashboard = accountModule === 'Dashboard';
 

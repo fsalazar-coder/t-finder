@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { useAuthData, useAuthUI } from "../../context/authContext";
+import { useUI } from '@/context/ContextUI';
+import { useAuth } from "@/context/ContextAuth";
+import { useAuthSocket } from '@/context/ContextAuthSocket';
 import { IconBxChevronUp, IconCancel, IconSendMessage } from '../../icons/icons';
 import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
 import dateTimeFunction from '../api/dateTimeFunction';
@@ -30,8 +32,10 @@ type PositionType = 'start' | 'center' | 'end' | 'single';
 
 export default function ChatCard() {
 
-  const { token, userId, userChatsData, setUserChatsData, setIsGettingChatData, socket, setUnreadMessagesForUser } = useAuthData();
-  const { accountModule, chatActived, setChatActived, chatDataUser, setChatDataUser, } = useAuthUI();
+  const { token, userId } = useAuth();
+  const { accountModule } = useUI();    
+  const { socket, chatDataUser, setChatDataUser, chatActived, setChatActived, userChatsData, setUserChatsData, 
+    setIsGettingChatData, setUnreadMessages, unreadMessagesForUser, setUnreadMessagesForUser } = useAuthSocket();
   const [message, setMessage] = useState('');
   const [messageChange, setMessageChange] = useState(false);
   const [chatMinimized, setChatMinimized] = useState(false);
@@ -41,6 +45,9 @@ export default function ChatCard() {
   const chatUserId: string = (chatDataUser as ChatDataUser).user_id;
   const chatUserName: string = (chatDataUser as ChatDataUser).user_name;
   const chatUserImageUrl: string = (chatDataUser as ChatDataUser).user_image_url;
+  
+  const date: any = dateTimeFunction('date');
+  const time: any = dateTimeFunction('time');
 
   ///get chats 
   useEffect(() => {
@@ -49,8 +56,8 @@ export default function ChatCard() {
         userDataHandlerFunction({
           token: token as string,
           userId: userId as string,
-          action: 'get',
-          collectionName: 'chats',
+          action: 'get-default',
+          collection: 'chats',
           data: { from_user_id: chatUserId },
           onSuccess: (responseData: any) => {
             setUserChatsData(responseData);
@@ -61,20 +68,13 @@ export default function ChatCard() {
       fetchChats().then(() => {
         setIsGettingChatData(false);
         setUnreadMessagesForUser((prevMessages: UnreadMessagesForUser) => ({
-          ...prevMessages,
-          [chatUserId]: 0
+          ...prevMessages, [chatUserId]: 0
         }));
+        let unreadMessagesForChatUserId: number = unreadMessagesForUser[chatUserId];
+        setUnreadMessages((prevUnreadMessages: number) => ( prevUnreadMessages - unreadMessagesForChatUserId));
       })
     };
   }, [chatActived]);
-
-  //web-socket listener
-  ///useEffect(() => {
-  ///  if (token && socket && chatActived && !getChatData) {
-  ///    socket.on('message', (data: SocketsMessages) => { setChatsData(prevChats => [...prevChats, data]) });
-  ///    return () => { socket.off('message') };
-  ///  }
-  ///}, [socket, getChatData]);
 
   useEffect(() => {
     let lastChatItem = chatListRef.current?.lastChild;
@@ -87,9 +87,7 @@ export default function ChatCard() {
 
   const messageChatSubmitHandle = async (e: React.FormEvent) => {
     e.preventDefault();
-    const date: any = dateTimeFunction('date');
-    const time: any = dateTimeFunction('time');
-    const data: SocketsMessages = {
+    const data: MessagesParams = {
       to_user_id: chatUserId,
       from_user_id: userId as string,
       message: message,
@@ -101,7 +99,7 @@ export default function ChatCard() {
       token: token as string,
       userId: userId as string,
       action: 'post',
-      collectionName: 'chats',
+      collection: 'chats',
       data: data,
       onSuccess: () => { socket?.emit('message', data) },                     //webSocket notification
       onError: (error: any) => console.error(error)
@@ -222,7 +220,7 @@ export default function ChatCard() {
                 userChatsData?.map((chat: any, index: any) => {
                   let { isMyMessage, isDifferentDate, roundedSide, positionType } = messageValues(chat, index, userChatsData);
                   let messageEffectBorder = effectRoundedChat(roundedSide as any, positionType as any);
-                  let chatProfileImageUrlToRender: any = isMyMessage ? '' : chatUserImageUrl;
+                  let chatProfileImageUrlToRender: any = isMyMessage ? 'none' : chatUserImageUrl;
                   let messageEffectPadding: any = effectPadding(positionType);
 
                   return (

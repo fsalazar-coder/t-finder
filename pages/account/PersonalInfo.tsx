@@ -1,24 +1,19 @@
-import { useAuthData, useAuthUI } from "../../context/authContext";
+import { useAuth } from "@/context/ContextAuth";
+import { useAuthData } from "@/context/ContextAuthData";
 import ImageIconUser from './ImageIconUser';
 import SectionTitles from '../components/SectionTitles';
 import CardsItems from './CardsItems';
-import ButtonDashboardAddInfo from './ButtonDashboardAddInfo';
-import ButtonTitleCards from './ButtonTitleCards';
-
+import ButtonPostUpdateDelete from './ButtonPostUpdateDelete';
 
 
 export default function PersonalInfo() {
-
-  const { userId, userProfileData, setCollectionToChange } = useAuthData();
-  const { accountModule, setProfileModal, setProfileModalAction } = useAuthUI();
-
-  const isDashboard = accountModule === 'Dashboard';
+  const { userId } = useAuth();
+  const { userProfileData } = useAuthData();
   const personalInfoData: any = userProfileData.personalInfo;
   const renderPersonalInfoData: boolean = userProfileData?.personalInfo?.length > 0;
 
-
   return (
-    <div className='w-full h-full flex flex-col border border-color-border bg-white shadow-md rounded-lg'>
+    <div className='w-full h-full pb-4 flex flex-col border border-color-border bg-white shadow-md rounded-lg'>
       {/**title */}
       <div className='w-full relative px-5 py-1 flex flex-row items-center border-b border-color-border'>
         <div className='w-2/3 flex flex-row'>
@@ -28,12 +23,12 @@ export default function PersonalInfo() {
           />
         </div>
         <div className="w-1/3 h-full flex flex-row justify-end items-center">
-          <ButtonTitleCards
-            id={userId as string}
-            isData={renderPersonalInfoData}
-            buttonType='personal-info'
+          <ButtonPostUpdateDelete
+            itemId={userId as string}
+            action='update-default'
+            buttonType='menu-dashboard'
             dataBaseCollection='personal_info'
-            shouldRenderButton={true}
+            shouldRenderButton={renderPersonalInfoData}
           />
         </div>
       </div>
@@ -43,12 +38,12 @@ export default function PersonalInfo() {
           <div className='w-32 h-32 flex flex-col justify-center items-center'>
             <ImageIconUser
               type='personal-info'
-              otherUserImageUrl={''}
+              otherUserImageUrl={'none'}
             />
           </div>
         </div>
       </div>
-      <div className='w-full h-full px-5 flex flex-col transform transition-all' >
+      <div className={`w-full h-full relative px-5 flex flex-col transform transition-all`} >
         {
           renderPersonalInfoData ?
             /**information */
@@ -59,15 +54,13 @@ export default function PersonalInfo() {
               />
             </ul>
             :
-            /**button add information */
-            <ButtonDashboardAddInfo
-              id='post-item-profile'
-              comment='Add information'
-              click={() => {
-                setProfileModal('personal-info');
-                setProfileModalAction('post');
-                setCollectionToChange('personal_info');
-              }}
+            ///**button add information */
+            <ButtonPostUpdateDelete
+              itemId='post-item-profile'
+              action='post'
+              buttonType='post-dashboard'
+              dataBaseCollection='personal_info'
+              shouldRenderButton={!renderPersonalInfoData}
             />
         }
       </div>

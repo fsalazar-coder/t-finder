@@ -4,7 +4,7 @@ interface UserDataParams {
   token: string
   userId: string
   action: string,
-  collectionName: string,
+  collection: any,
   data: any,
   onSuccess: Function,
   onError: Function,
@@ -16,13 +16,13 @@ export const userDataHandlerFunction = async ({
   token,
   userId,
   action,
-  collectionName,
+  collection,
   data,
   onSuccess,
   onError
 }: UserDataParams) => {
 
-  if (!token || !userId || !action || !collectionName) {
+  if (!token || !userId || !action || !collection) {
     console.error('Missing required parameters');
     onError && onError(new Error('Missing required parameters'));
     return;
@@ -37,7 +37,7 @@ export const userDataHandlerFunction = async ({
   try {
     const response = await axios.post('/api/userDataApi', {
       id: userId,
-      collectionName: collectionName,
+      nameCollection: collection,
       action: action,
       data: data
     }, config);

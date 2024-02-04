@@ -1,35 +1,15 @@
-import { useState, useEffect } from 'react';
-import { useUI } from "../../context/authContext";
+import { useState } from 'react';
+import { useUI } from '@/context/ContextUI';
+import { useAuth } from '@/context/ContextAuth';
 import { IconCancel } from '../../icons/icons';
 
 
 
 export default function PasswordReset(props: any) {
-
-  const { setJoinModal, setLoginModal,
-    passwordResetModal, setPasswordResetModal,
-    setMessageModal } = useUI();
+  const { setMessageModal } = useUI();
+  const { passwordResetModal, setPasswordResetModal } = useAuth();
   const [email, setEmail] = useState('');
   const [emailChange, setEmailChange] = useState(false);
-
-  const modalCloseEscapeHandle = (e: any) => {
-    if (passwordResetModal) {
-      if ((e.chartCode | e.keyCode) === 27) {
-        setPasswordResetModal(false);
-      }
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('keydown', modalCloseEscapeHandle);
-  });
-
-  useEffect(() => {
-    passwordResetModal ?
-      (document.body.style.overflowY = 'hidden')
-      : (document.body.style.overflowY = 'auto');
-  }, [passwordResetModal]);
-
 
   const passwordResetSubmitHandle = async (e: any) => {
     e.preventDefault();

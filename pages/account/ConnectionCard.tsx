@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
+import { useAuthSocket } from "@/context/ContextAuthSocket";
 import ImageIconUser from "./ImageIconUser";
 import { IconMessageNotification } from "@/icons/icons";
 
@@ -8,19 +7,18 @@ interface ConnectionCardParams {
   unreadMessagesToConnectedUser: number
 }
 
-interface DataUser {
+interface ChatDataUser {
   user_id: string,
   user_name: string,
   user_image_url: string
 }
 
 
-
 export default function ConnectionCard({ data, unreadMessagesToConnectedUser }: ConnectionCardParams) {
-  const { chatActived, setChatActived, setChatDataUser } = useAuthUI();
+  const { chatActived, setChatActived, setChatDataUser } = useAuthSocket();
 
   const chatsHandle = () => {
-    const dataUser: DataUser = {
+    const dataUser: ChatDataUser = {
       user_id: data?.user_id,
       user_name: data?.full_name,
       user_image_url: data?.user_image_url

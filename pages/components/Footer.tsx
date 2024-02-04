@@ -1,4 +1,4 @@
-import { useAuthData, useUI } from "../../context/authContext";
+import { useAuth } from '@/context/ContextAuth'; 
 import {
   IconArrowRight,
   IconBxlLinkedin,
@@ -8,26 +8,20 @@ import {
 } from '../../icons/icons';
 
 
-
 export default function Footer(props: any) {
-
-  const { token } = useAuthData();
-  const { setJoinModal } = useUI();
-
+  const { token, setJoinModal } = useAuth();
   const navegationA = [
     'Find Talent',
     'Find Job',
     'About Us',
     'Blog',
   ];
-
   const navegationB = [
     'Terms of service',
     'Privacy',
     'Accessibility',
     'Help'
   ];
-
   const navegationC: any = [
     { id: 'icon-facebook', icon: <IconFacebook /> },
     { id: 'icon-twitter', icon: <IconTwitter /> },

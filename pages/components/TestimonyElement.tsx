@@ -2,9 +2,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 
 
-
 export default function TestimonyElement(props: any) {
-
   const [indexHovered, setIndexHovered] = useState(null);
   const [animationDone, setAnimationDone] = useState(false);
   const hovered = props.hovered;

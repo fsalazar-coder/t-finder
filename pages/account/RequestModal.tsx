@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
+import { useUI } from "@/context/ContextUI";
+import { useAuth } from "@/context/ContextAuth";
+import { useAuthData } from "@/context/ContextAuthData";
 import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
 import { IconCancel } from '../../icons/icons';
 import FormTemplate from './FormTemplate';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
-
+import dateTimeFunction from '../api/dateTimeFunction';
+import { v4 as uuidv4 } from 'uuid';
 
 const initialUserRequestData = {
   /**request talent information: */
@@ -29,21 +32,12 @@ const initialUserRequestData = {
 };
 
 
-
-export default function RequestModal(props: any) {
-
-  const { screenNarrow, setMessageModal, setLoading } = useUI();
-  const { token, userId, collectionToChange, itemIdToChange, setUpdate } = useAuthData();
-  const { requestModal, setRequestModal, requestModalAction, setRequestModalAction } = useAuthUI();
+export default function RequestModal() {
+  const { token, userId } = useAuth();
+  const { setMessageModal, setLoading } = useUI();
+  const { setUserRequestData, collectionToChange, itemIdToChange, requestModal, setRequestModal, requestModalAction, setRequestModalAction } = useAuthData();
   const [filledForm, setFilledForm] = useState(false);
-
-  const carouselFormRef: any = useRef(null);
-  const carouselFormSelected: any = carouselFormRef.current;
-  const [carouselFormPosition, setCarouselFormPosition] = useState(Number);
-  const [carouselTranslateX, setCarouselTranslateX] = useState(Number);
-
   const [userRequestDataUpdate, setUserRequestDataUpdate] = useState(initialUserRequestData);
-
   const [changeUserRequestDataUpdate, setChangeUserrequestDataUpdate] = useState({
     /**request talent information: */
     jobDescription: '',
@@ -64,65 +58,89 @@ export default function RequestModal(props: any) {
     location: '',
     desiredCompensation: '',
   });
+  const date: any = dateTimeFunction('date');
+
+  const handleCloseRequestModal = () => {
+    setRequestModal('');
+    setFilledForm(false);
+  };
 
   const handleChangeData = (e: any) => {
     const { name, value } = e.target;
     setUserRequestDataUpdate({ ...userRequestDataUpdate, [name]: value });
   };
 
-  const handleCloseModal = (e: any) => {
-    setRequestModal('');
-    setCarouselFormPosition(0);
-    setFilledForm(false);
-  }
+  const itemRequestId: string = requestModalAction === 'post' ? uuidv4() : itemIdToChange;
 
-  const dataUpdate = (requestToChange: string) => {
-    const data = {
-      requestTalent: {
-        title: userRequestDataUpdate.jobCategory,
-        job_category: userRequestDataUpdate.jobCategory,
-        job_description: userRequestDataUpdate.jobDescription,
-        required_skills: userRequestDataUpdate.requiredSkills,
-        required_experience_years: userRequestDataUpdate.requiredExperienceYears,
-        modality_work: userRequestDataUpdate.offeredWorkModality,
-        company_name: userRequestDataUpdate.companyName,
-        location: userRequestDataUpdate.jobLocation,
-        offered_compensation: userRequestDataUpdate.offeredCompensation,
-        status: 'Submitted'
-      },
-      requestJob: {
-        title: userRequestDataUpdate.talentCategory,
-        talent_category: userRequestDataUpdate.talentCategory,
-        talent_description: userRequestDataUpdate.talentDescription,
-        offered_skills: userRequestDataUpdate.offeredSkills,
-        experience_years: userRequestDataUpdate.experienceYears,
-        modality_work: userRequestDataUpdate.preferredWorkModality,
-        availability: userRequestDataUpdate.availability,
-        location: userRequestDataUpdate.location,
-        desired_compensation: userRequestDataUpdate.desiredCompensation,
-        status: 'Submitted'
-      },
-    };
-    let dataToApi;
-    requestToChange === 'request_talent' ?
-      dataToApi = data['requestTalent' as keyof typeof data] : dataToApi = data['requestJob' as keyof typeof data]
-    return dataToApi;
+  const requestUpdate: any = {
+    requestTalent: {
+      _id: itemRequestId,
+      user_id: userId,
+      title: userRequestDataUpdate.jobCategory,
+      job_category: userRequestDataUpdate.jobCategory,
+      job_description: userRequestDataUpdate.jobDescription,
+      required_skills: userRequestDataUpdate.requiredSkills,
+      required_experience_years: userRequestDataUpdate.requiredExperienceYears,
+      modality_work: userRequestDataUpdate.offeredWorkModality,
+      company_name: userRequestDataUpdate.companyName,
+      location: userRequestDataUpdate.jobLocation,
+      offered_compensation: userRequestDataUpdate.offeredCompensation,
+      created_at: date,
+      status: 'Submitted'
+    },
+    requestJob: {
+      _id: itemRequestId,
+      user_id: userId,
+      title: userRequestDataUpdate.talentCategory,
+      talent_category: userRequestDataUpdate.talentCategory,
+      talent_description: userRequestDataUpdate.talentDescription,
+      offered_skills: userRequestDataUpdate.offeredSkills,
+      experience_years: userRequestDataUpdate.experienceYears,
+      modality_work: userRequestDataUpdate.preferredWorkModality,
+      availability: userRequestDataUpdate.availability,
+      location: userRequestDataUpdate.location,
+      desired_compensation: userRequestDataUpdate.desiredCompensation,
+      created_at: date,
+      status: 'Submitted'
+    }
   };
+
+  const requestElementNameModule: any = { 'request_talent': 'requestTalent', 'request_job': 'requestJob' };
+  const requestElementName: string = requestElementNameModule[collectionToChange];
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const actionUserId: any = requestModalAction === 'post' ? userId : itemIdToChange;
-    const textMessage = `Your request have been ${requestModalAction === 'post' ? 'posted' : 'uploaded'}`;
+    setLoading(true);
+    let actionUserId: any = requestModalAction === 'post' ? userId : itemIdToChange;
+    let textMessage = `Your request have been ${requestModalAction === 'post' ? 'posted' : 'uploaded'}`;
+    let data: any = requestUpdate[requestElementName];
 
     try {
       await userDataHandlerFunction({
         token: token as string,
         userId: actionUserId,
         action: requestModalAction,
-        collectionName: collectionToChange,
-        data: dataUpdate(collectionToChange),
+        collection: collectionToChange,
+        data: data,
         onSuccess: () => {
-          setUpdate(collectionToChange);
+          setLoading(false);
+          switch (requestModalAction) {
+            case 'post':
+              setUserRequestData((prevData: any) => ({
+                ...prevData,
+                [requestElementName]: [...prevData[requestElementName], data]
+              }));
+              break;
+            case 'update-default':
+              setUserRequestData((prevData: any) => ({
+                ...prevData, [requestElementName]: prevData[requestElementName].map((request: any) =>
+                  request._id === data._id ? data : request
+                )
+              }));
+              break;
+            default:
+              break;
+          };
           setMessageModal([{
             type: 'successful',
             text: textMessage,
@@ -137,19 +155,10 @@ export default function RequestModal(props: any) {
     }
     finally {
       setRequestModal('');
-      setLoading(false);
       setRequestModalAction('');
+      setFilledForm(false);
     }
   };
-
-  /**carousel transition effect control */
-  useEffect(() => {
-    setCarouselTranslateX(carouselFormPosition * (screenNarrow ? 256 : 352));
-    if (carouselFormSelected) {
-      carouselFormSelected.style.transition = 'all 1s ease';
-      carouselFormSelected.style.transform = `translateX(-${carouselTranslateX}px)`;
-    }
-  });
 
   /**fill form control */
   useEffect(() => {
@@ -287,7 +296,7 @@ export default function RequestModal(props: any) {
         `${renderRequestModal ? 'scale-100 animate-[fade-in_0.50s]' : 'hidden'
         } w-full h-full fixed top-0 flex flex-col justify-center items-center bg-black bg-opacity-75 z-50`
       }
-      onClick={(e: any) => handleCloseModal(e)}
+      onClick={() => handleCloseRequestModal()}
     >
       <div
         className={
@@ -300,7 +309,7 @@ export default function RequestModal(props: any) {
         <div className='w-6 h-6 absolute -top-5 -right-5 flex flex-col justify-center items-center rounded-full bg-white'>
           <i
             className='w-full h-full text-gray-900 lg:text-gray-400 text-2xl lg:xl flex justify-center cursor-default lg:cursor-pointer lg:hover:text-gray-900'
-            onClick={(e: any) => handleCloseModal(e)}
+            onClick={() => handleCloseRequestModal()}
           >
             <IconCancel />
           </i>

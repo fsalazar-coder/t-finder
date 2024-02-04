@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useUI } from '@/context/ContextUI';
 import SectionTitles from './SectionTitles';
 import BlogElement from './BlogElement';
 import BlogModal from './BlogModal';
@@ -7,9 +8,9 @@ import BlogModal from './BlogModal';
 
 export default function Blog(props: any) {
 
+  const {setBlogModal} = useUI();
   const [animationActived, setAnimationActived] = useState(false);
   const [hovered, setHovered] = useState(false);
-  const [blogModal, setBlogModal] = useState(false);                                     /***State blog modal open: true or false***/
   const [blogModalAnimationClose, setBlogModalAnimationClose] = useState(false);
   const [blogActiveIndex, setBlogActiveIndex] = useState(Number);                        /***State blog active index to modal open***/
   const blogActived = props.blogSectionActived;                                          /**To active animation on blog section: true or false***/
@@ -65,13 +66,7 @@ export default function Blog(props: any) {
       </div>
       {/**Hidden-visible blog modal */}
       <BlogModal
-        blogModal={blogModal}
         blogActiveIndex={blogActiveIndex}
-        blogModalAnimationClose={blogModalAnimationClose}
-        blogModalClose={() => {
-          setBlogModal(false);
-          setBlogModalAnimationClose(true);
-        }}
         article={props.data? props.data[blogActiveIndex] : undefined }
       />
     </div>

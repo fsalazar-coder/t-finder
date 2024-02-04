@@ -1,5 +1,4 @@
-import { useUI } from "../../context/authContext";
-
+import { useUI } from "@/context/ContextUI"; 
 
 
 export default function LoadingSpinner() {

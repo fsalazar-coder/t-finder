@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
+import { useUI } from "@/context/ContextUI";
+import { useAuth } from "@/context/ContextAuth";
+import { useAuthData } from "@/context/ContextAuthData";
 import { userDataHandlerFunction } from "../api/userDataHandlerFunction";
 import CardsItems from "./CardsItems";
 import SubmenuCarsTitle from "./SubmenuCarsTitle";
 import ProfileScoreOverview from "./ProfileScoreOverview";
 import ProfileScoreOverall from "./ProfileScoreOverall";
-import ButtonTitleCards from "./ButtonTitleCards";
+import ButtonPostUpdateDelete from "./ButtonPostUpdateDelete";
 import ImageIconUser from "./ImageIconUser";
 import ProfileCardsDisplayer from "./ProfileCardsDisplayer";
 
@@ -13,10 +15,9 @@ interface UserCardParams {
   data: { [key: string]: string },
   dataBaseCollection: string,
   editDeleteButtonVisible: boolean,
-  requestMenu: string,
   goClickCondition: boolean,
-  value: string,
   statusRequestToRender: any,
+  value: string,
   goClick: (e: any) => void,
 }
 
@@ -27,9 +28,9 @@ interface DataUser {
 }
 
 
-
-export default function RequestsCard({ data, dataBaseCollection, requestMenu, editDeleteButtonVisible, goClickCondition, value, goClick }: UserCardParams) {
-  const { token, userId } = useAuthData();
+export default function RequestsCard({ data, dataBaseCollection, editDeleteButtonVisible, goClickCondition, value, goClick }: UserCardParams) {
+  const { requestMenu } = useUI();
+  const { token, userId } = useAuth();
   const [isRequestContactAccepted, setIsRequestContactAccepted] = useState(false);
   const [isGoClickDisabled, setIsGoClickDisabled] = useState(true);
   const [goClickTitle, setGoClickTitle] = useState('');
@@ -97,13 +98,13 @@ export default function RequestsCard({ data, dataBaseCollection, requestMenu, ed
   ];
 
   useEffect(() => {
-    if (requestMenu === 'candidate review') {
+    if (requestMenu === 'candidate-review') {
       let requestJobId = data.request_job_id;
       userDataHandlerFunction({
         token: token as string,
         userId: userId as string,
         action: 'get-request-contact-accepted',
-        collectionName: 'notifications',
+        collection: 'notifications',
         data: requestJobId,
         onSuccess: (responseData: any) => {
           let isOfferAccepted = responseData.length !== 0;
@@ -119,11 +120,11 @@ export default function RequestsCard({ data, dataBaseCollection, requestMenu, ed
     let disabled = true;
     let title = '';
     switch (requestMenu) {
-      case 'talent submitted':
+      case 'talent-submitted':
         disabled = goClickCondition;
         title = goClickCondition ? 'Awaiting candidates' : 'Candidates';
         break;
-      case 'job submitted':
+      case 'job-submitted':
         disabled = goClickCondition;
         title = goClickCondition ? 'Awaiting requests' : 'Requests';
         break;
@@ -135,7 +136,7 @@ export default function RequestsCard({ data, dataBaseCollection, requestMenu, ed
         disabled = goClickCondition;
         title = goClickCondition ? 'Accepted' : 'Accept';
         break;
-      case 'candidate review':
+      case 'candidate-review':
         if (goClickCondition) {
           disabled = true;
           title = isRequestContactAccepted ? 'Contacted' : 'Contacting';
@@ -154,14 +155,14 @@ export default function RequestsCard({ data, dataBaseCollection, requestMenu, ed
 
   // Cargar datos del candidato
   useEffect(() => {
-    if (requestMenu === 'candidate review' || requestMenu === 'candidates') {
+    if (requestMenu === 'candidate-review' || requestMenu === 'candidates') {
       candidateProfile.forEach((element: any) => {
         let collectionName = element.id;
         userDataHandlerFunction({
           token: token as string,
           userId: data.user_id as string,
-          action: 'get',
-          collectionName: collectionName,
+          action: 'get-default',
+          collection: collectionName,
           data: '',
           onSuccess: (responseData: any) => {
             let elementName: string = collectionName;
@@ -179,15 +180,15 @@ export default function RequestsCard({ data, dataBaseCollection, requestMenu, ed
 
   const goToClick: any = () => {
     switch (requestMenu) {
-      case 'talent submitted':
+      case 'talent-submitted':
         return goClick(value);
-      case 'job submitted':
+      case 'job-submitted':
         return goClick(value);
       case 'candidates':
         return goClick(data.user_id);
       case 'requests':
         return goClick(data.user_id);
-      case 'candidate review':
+      case 'candidate-review':
         return goClick(data.request_job_id);
       default:
         break
@@ -229,20 +230,20 @@ export default function RequestsCard({ data, dataBaseCollection, requestMenu, ed
     }
   ];
 
-  const isRequestMenuSubmitted = (requestMenu === 'talent submitted' || requestMenu === 'job submitted');
+  const isRequestMenuSubmitted = (requestMenu === 'talent-submitted' || requestMenu === 'job-submitted');
   const isRequestMenuCandidates = requestMenu === 'candidates';
-  const isRequestMenuReview = requestMenu === 'candidate review';
+  const isRequestMenuReview = requestMenu === 'candidate-review';
 
   const candidateProfileIndex: number = reviewMenuIndex > 0 ? reviewMenuIndex - 1 : 0
   const profileElementsId: string = candidateProfile[candidateProfileIndex].id;
   const profileElementsData: any = candidateProfile[candidateProfileIndex].data;
   const isRenderOverview: boolean = reviewMenuIndex === 0;
   const heightCardsModule: any = {
-    'talent submitted': 'h-[430px]',
-    'job submitted': 'h-[450px]',
+    'talent-submitted': 'h-[430px]',
+    'job-submitted': 'h-[450px]',
     'candidates': 'h-[500px]',
     'requests': 'h-[500px]',
-    'candidate review': 'h-auto',
+    'candidate-review': 'h-auto',
   };
 
   const shouldRenderData: boolean = Object.keys(data).length > 0;
@@ -252,7 +253,7 @@ export default function RequestsCard({ data, dataBaseCollection, requestMenu, ed
     <>
       <div className={`${heightCardsModule[requestMenu]} w-full px-5 py-2 flex flex-col bg-white border border-color-border shadow-md rounded-lg transform transition-all`}>
         {/**title */}
-        <div className={`${!isRequestMenuReview && 'h-[7%]'} w-full relative pb-2 flex flex-row border-b border-color-border`}>
+        <div className={`${!isRequestMenuReview && 'h-[7%] justify-between'} w-full relative pb-2 flex flex-row border-b border-color-border`}>
           <h2 className='w-fit pr-5 text-color-text-dark font-semibold'>
             {data?.full_name || data?.title}
           </h2>
@@ -265,12 +266,12 @@ export default function RequestsCard({ data, dataBaseCollection, requestMenu, ed
               menuIndexNext={() => setReviewMenuIndex(reviewMenuIndex + 1)}
             />
           }
-          <ButtonTitleCards
-            id={data._id}
-            isData={shouldRenderData}
-            buttonType='request-items'
+          <ButtonPostUpdateDelete
+            itemId={data._id}
+            action='update-delete'
+            buttonType='update-delete-items'
             dataBaseCollection={dataBaseCollection}
-            shouldRenderButton={editDeleteButtonVisible && isRequestMenuSubmitted}
+            shouldRenderButton={shouldRenderData && editDeleteButtonVisible && isRequestMenuSubmitted}
           />
         </div>
         {/**user fullname */}

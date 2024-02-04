@@ -1,21 +1,20 @@
 'use client';
-
 import type { PutBlobResult } from '@vercel/blob';
-import { useState, useCallback, ChangeEvent, useEffect } from 'react';
-import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
+import { useState, useCallback, ChangeEvent } from 'react';
+import { useUI } from "@/context/ContextUI";
+import { useAuth } from "@/context/ContextAuth";
+import { useAuthData } from "@/context/ContextAuthData";
 import Image from 'next/image';
 import { IconUser } from '../../icons/icons';
 import axios from 'axios';
 
 
-
 export default function ProfileModalImage() {
   const { setMessageModal, setLoading } = useUI();
-  const { token, userId, userImageUrl, setUserImageUrl, collectionToChange, setUpdate } = useAuthData();
-  const { profileModal, setProfileModal, profileModalAction, setProfileModalAction } = useAuthUI();
+  const { token, userId } = useAuth();
+  const { userImageUrl, setUserImageUrl, setProfileModal, profileModalAction, setProfileModalAction } = useAuthData();
   const [previewImage, setPreviewImage] = useState<string | null>(userImageUrl || null);
   const [fileImage, setFileImage] = useState<File | null>(null);
-
 
   const onChangePicture = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const file = e.currentTarget.files?.[0];
@@ -65,8 +64,8 @@ export default function ProfileModalImage() {
               .then((response) => {
                 const { status, imageUrl } = response.data;
                 if (status === 'success') {
+                  setLoading(false);
                   setUserImageUrl(imageUrl);
-                  setUpdate('profile-image')
                   setMessageModal([{
                     type: 'successful',
                     text: `Your profile image have been ${profileModalAction === 'post' ? 'posted' : 'updated'}`,
@@ -95,7 +94,6 @@ export default function ProfileModalImage() {
           setProfileModalAction('');
           setProfileModal('');
           setFileImage(null);
-          setLoading(false);
         });
     }
     else {

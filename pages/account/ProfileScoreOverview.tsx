@@ -1,10 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { userProfileScoreFunction } from '../api/userProfileScoreFunction';
 
 
-
 export default function ProfileScoreOverview({ profile }: any) {
-
   const [overview, setOverview] = useState<[]>([]);
 
   useEffect(() => {

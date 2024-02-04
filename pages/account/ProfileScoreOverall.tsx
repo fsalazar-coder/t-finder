@@ -2,9 +2,7 @@ import { useState, useEffect } from 'react';
 import { userProfileScoreFunction } from '../api/userProfileScoreFunction';
 
 
-
 export default function ProfileScoreOverall({ profile }: any) {
-
   const [scoreProfile, setScoreProfile] = useState<number>(0);
   const [scoreProfileMax, setScoreProfileMax] = useState<number>(0);
   const [percentage, setPercentage] = useState<number>(0);

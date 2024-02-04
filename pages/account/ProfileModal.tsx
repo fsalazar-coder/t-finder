@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useAuthData, useAuthUI, useUI } from "../../context/authContext";
+import { useUI } from "@/context/ContextUI";
+import { useAuth } from "@/context/ContextAuth";
+import { useAuthData } from "@/context/ContextAuthData";
 import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
 import { IconCancel } from '../../icons/icons';
 import FormTemplate from './FormTemplate';
 import ProfileModalImage from './ProfileModalImage';
+import dateTimeFunction from '../api/dateTimeFunction';
+import { v4 as uuidv4 } from 'uuid';
 
 const initialUserProfileData = {
   /**personal information: */
@@ -54,20 +58,13 @@ const initialUserProfileData = {
 };
 
 
-
 export default function ProfileModal() {
-
-  const { token, userId, collectionToChange, setCollectionToChange, itemIdToChange, setUpdate } = useAuthData();
-  const { profileModal, setProfileModal, profileModalAction, setProfileModalAction } = useAuthUI();
+  const { token, userId } = useAuth();
   const { setMessageModal, setLoading } = useUI();
+  const { profileModal, setProfileModal, profileModalAction, setProfileModalAction, 
+    setUserProfileData, collectionToChange, setCollectionToChange, itemIdToChange } = useAuthData();
   const [filledForm, setFilledForm] = useState(true);
-
-  const isPersonalInfoModal = profileModal === 'personal-info';
-  const isProfileImageModal = profileModal === 'profile-image';
-  const isPostAction = profileModalAction === 'post';
-
   const [userProfileDataUpdate, setUserProfileDataUpdate] = useState(initialUserProfileData);
-
   const [changeUserProfileDataUpdate, setChangeUserProfileDataUpdate] = useState({
     /**personal information: */
     fullName: false,
@@ -115,116 +112,142 @@ export default function ProfileModal() {
     recommenderEmail: false,
     recommenderPhone: false,
   });
-
   const [profileSelected, setProfileSelected] = useState(Object);
   const [nameProfileSelected, setNameProfileSelected] = useState('');
 
-  const handleCloseModal = () => {
+  const isPersonalInfoModal = profileModal === 'personal-info';
+  const isProfileImageModal = profileModal === 'profile-image';
+  const isPostAction = profileModalAction === 'post';
+
+  const date: any = dateTimeFunction('date');
+
+  const handleCloseProfileModal = () => {
     setProfileModal('');
     setProfileModalAction('');
     setCollectionToChange('')
     setFilledForm(false);
   };
 
-  const modalCloseEscapeHandle = (e: any) => {
-    (profileModal && ((e.charCode || e.keyCode) === 27)) && handleCloseModal();
-  };
-
-  //modal Close Escape Handle
-  useEffect(() => {
-    document.addEventListener('keydown', modalCloseEscapeHandle);
-    return () => {
-      document.removeEventListener('keydown', modalCloseEscapeHandle);
-    };
-  }, []);
-
-  //ocultar scrool vertical cuando se activa el modal
-  useEffect(() => {
-    document.body.style.overflowY = profileModal ? 'hidden' : 'auto';
-  }, [profileModal]);
-
-
   const handleChangeData = (e: any) => {
     const { name, value } = e.target;
     setUserProfileDataUpdate({ ...userProfileDataUpdate, [name]: value });
   };
 
-  const dataUpdate = () => {
-    const data = {
-      personalInfo: {
-        full_name: userProfileDataUpdate.fullName,
-        profession_or_occupation: userProfileDataUpdate.professionOccupation,
-        preferred_language: userProfileDataUpdate.preferredLanguage,
-        location: userProfileDataUpdate.personalLocation
-      },
-      experience: {
-        title: userProfileDataUpdate.companyOrganization,
-        role_title: userProfileDataUpdate.roleTitle,
-        responsibilities: userProfileDataUpdate.responsibilities,
-        experience_years: userProfileDataUpdate.experienceYears,
-        technologies_used: userProfileDataUpdate.technologiesUsed,
-        team_size: userProfileDataUpdate.teamSize,
-      },
-      education: {
-        title: userProfileDataUpdate.degree,
-        degree: userProfileDataUpdate.degree,
-        university_school: userProfileDataUpdate.universitySchool,
-        major_field_study: userProfileDataUpdate.majorFieldStudy,
-        graduation_year: userProfileDataUpdate.graduationYear,
-      },
-      courses: {
-        title: userProfileDataUpdate.courseTitle,
-        institution: userProfileDataUpdate.institution,
-        skills_acquired: userProfileDataUpdate.skillsAcquired,
-        year_completed: userProfileDataUpdate.yearCompleted,
-      },
-      publications: {
-        title: userProfileDataUpdate.publicationTitle,
-        co_authors: userProfileDataUpdate.coAuthors,
-        journal_name: userProfileDataUpdate.journalName,
-        year_published: userProfileDataUpdate.yearPublished,
-      },
-      conferences: {
-        title: userProfileDataUpdate.presentationTitle,
-        conference_name: userProfileDataUpdate.conferenceName,
-        location: userProfileDataUpdate.conferenceLocation,
-        year: userProfileDataUpdate.year,
-      },
-      certifications: {
-        title: userProfileDataUpdate.certificationName,
-        issuing_organization: userProfileDataUpdate.issuingOrganization,
-        license_number: userProfileDataUpdate.licenseNumber,
-        year_issued: userProfileDataUpdate.yearIssued,
-      },
-      recommendations: {
-        title: userProfileDataUpdate.recommenderName,
-        recommender_title: userProfileDataUpdate.recommenderTitle,
-        recommender_organization: userProfileDataUpdate.recommenderOrganization,
-        recommendation: userProfileDataUpdate.recommendation,
-        recommender_email: userProfileDataUpdate.recommenderEmail,
-        recommender_phone: userProfileDataUpdate.recommenderPhone,
-      }
-    };
-    const dataToApi = data[nameProfileSelected as keyof typeof data];
-    return dataToApi;
+  const itemProfileId: string = profileModalAction === 'post' ? uuidv4() : itemIdToChange;
+
+  const profileUpdate: any = {
+    personalInfo: {
+      _id: userId,
+      full_name: userProfileDataUpdate.fullName,
+      profession_or_occupation: userProfileDataUpdate.professionOccupation,
+      preferred_language: userProfileDataUpdate.preferredLanguage,
+      location: userProfileDataUpdate.personalLocation
+    },
+    experience: {
+      _id: itemProfileId,
+      user_id: userId,
+      title: userProfileDataUpdate.companyOrganization,
+      role_title: userProfileDataUpdate.roleTitle,
+      responsibilities: userProfileDataUpdate.responsibilities,
+      experience_years: userProfileDataUpdate.experienceYears,
+      technologies_used: userProfileDataUpdate.technologiesUsed,
+      team_size: userProfileDataUpdate.teamSize,
+      update_at: date,
+    },
+    education: {
+      _id: itemProfileId,
+      user_id: userId,
+      title: userProfileDataUpdate.degree,
+      degree: userProfileDataUpdate.degree,
+      university_school: userProfileDataUpdate.universitySchool,
+      major_field_study: userProfileDataUpdate.majorFieldStudy,
+      graduation_year: userProfileDataUpdate.graduationYear,
+      update_at: date,
+    },
+    courses: {
+      _id: itemProfileId,
+      user_id: userId,
+      title: userProfileDataUpdate.courseTitle,
+      institution: userProfileDataUpdate.institution,
+      skills_acquired: userProfileDataUpdate.skillsAcquired,
+      year_completed: userProfileDataUpdate.yearCompleted,
+      update_at: date,
+    },
+    publications: {
+      _id: itemProfileId,
+      user_id: userId,
+      title: userProfileDataUpdate.publicationTitle,
+      co_authors: userProfileDataUpdate.coAuthors,
+      journal_name: userProfileDataUpdate.journalName,
+      year_published: userProfileDataUpdate.yearPublished,
+      update_at: date,
+    },
+    conferences: {
+      _id: itemProfileId,
+      user_id: userId,
+      title: userProfileDataUpdate.presentationTitle,
+      conference_name: userProfileDataUpdate.conferenceName,
+      location: userProfileDataUpdate.conferenceLocation,
+      year: userProfileDataUpdate.year,
+      update_at: date,
+    },
+    certifications: {
+      _id: itemProfileId,
+      user_id: userId,
+      title: userProfileDataUpdate.certificationName,
+      issuing_organization: userProfileDataUpdate.issuingOrganization,
+      license_number: userProfileDataUpdate.licenseNumber,
+      year_issued: userProfileDataUpdate.yearIssued,
+      update_at: date,
+    },
+    recommendations: {
+      _id: itemProfileId,
+      user_id: userId,
+      title: userProfileDataUpdate.recommenderName,
+      recommender_title: userProfileDataUpdate.recommenderTitle,
+      recommender_organization: userProfileDataUpdate.recommenderOrganization,
+      recommendation: userProfileDataUpdate.recommendation,
+      recommender_email: userProfileDataUpdate.recommenderEmail,
+      recommender_phone: userProfileDataUpdate.recommenderPhone,
+      update_at: date,
+    }
   };
+
+  const profileElementName: string = collectionToChange === 'personal_info' ? 'personalInfo' : collectionToChange;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-
-    const actionUserId: any = isPersonalInfoModal || isPostAction ? userId : itemIdToChange;
-    const textMessage = `Your information has been ${profileModalAction === 'post' ? 'posted' : 'updated'}.`;
+    let actionUserId: any = isPersonalInfoModal || isPostAction ? userId : itemIdToChange;
+    let textMessage = `Your information has been ${profileModalAction === 'post' ? 'posted' : 'updated'}`;
+    let data: any = profileUpdate[profileElementName];
 
     try {
       await userDataHandlerFunction({
         token: token as string,
         userId: actionUserId,
         action: profileModalAction,
-        collectionName: collectionToChange,
-        data: dataUpdate(),
+        collection: collectionToChange,
+        data: data,
         onSuccess: () => {
-          setUpdate(collectionToChange);
+          setLoading(false);
+          switch (profileModalAction) {
+            case 'post':
+              setUserProfileData((prevData: any) => ({
+                ...prevData,
+                [profileElementName]: [...prevData[profileElementName], data]
+              }));
+              break;
+            case 'update-default':
+              setUserProfileData((prevData: any) => ({
+                ...prevData, [profileElementName]: prevData[profileElementName].map((profile: any) =>
+                  profile._id === data._id ? data : profile
+                )
+              }));
+              break;
+            default:
+              break;
+          };
           setMessageModal([{
             type: 'successful',
             text: textMessage,
@@ -239,10 +262,8 @@ export default function ProfileModal() {
     }
     finally {
       setProfileModal('');
-      setLoading(false);
       setProfileModalAction('');
       setFilledForm(false);
-      setUserProfileDataUpdate(initialUserProfileData);
     }
   };
 
@@ -369,13 +390,13 @@ export default function ProfileModal() {
 
   /**fill-form control */
   useEffect(() => {
-    let userProfileDataUpdateSelected = dataUpdate();
+    let userProfileDataUpdateSelected = profileUpdate[profileElementName];
     if (userProfileDataUpdateSelected) {
       let userProfileDataUpdateSelectedUnfilled = Object.values(userProfileDataUpdateSelected).some(value => value === '');
       setFilledForm(userProfileDataUpdateSelectedUnfilled ? false : true);
     }
   });
-  
+
   const renderProfileModal = profileModal !== '';
 
 
@@ -386,7 +407,7 @@ export default function ProfileModal() {
         `${renderProfileModal ? 'scale-100 animate-[fade-in_0.50s]' : 'hidden'
         } w-full h-full fixed top-0 flex flex-col justify-center items-center bg-black bg-opacity-75 z-50`
       }
-      onClick={() => handleCloseModal()}
+      onClick={() => handleCloseProfileModal()}
     >
       <div
         className={
@@ -399,7 +420,7 @@ export default function ProfileModal() {
         <div className='w-6 h-6 absolute -top-5 -right-5 flex flex-col justify-center items-center rounded-full bg-white'>
           <i
             className='w-full h-full text-gray-900 lg:text-gray-400 text-2xl lg:xl flex justify-center cursor-default lg:cursor-pointer lg:hover:text-gray-900'
-            onClick={() => handleCloseModal()}
+            onClick={() => handleCloseProfileModal()}
           >
             <IconCancel />
           </i>

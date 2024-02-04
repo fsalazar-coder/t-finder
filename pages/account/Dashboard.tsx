@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAuthData, useUI } from "../../context/authContext";
+import { useAuthData } from "@/context/ContextAuthData";
 import Notifications from './Notifications';
 import Profile from './Profile';
 import Request from './Request';
@@ -8,7 +8,6 @@ import PersonalInfo from './PersonalInfo';
 
 
 export default function Dashboard() {
-  const { screenNarrow } = useUI();
   const { userProfileData } = useAuthData();
   const [currentDate, setCurrentDate] = useState('');
 
@@ -28,7 +27,7 @@ export default function Dashboard() {
 
 
   return (
-    <div className='w-full min-h-screen pl-0 lg:pl-24 flex flex-row justify-center'>
+    <div className='w-full min-h-screen flex flex-row justify-center'>
       <div className={`w-full h-full pt-16 lg:pt-5 p-5 lg:p-10 flex flex-col transition-all`}>
         {/**wellcome */}
         <div className='w-full flex flex-col'>
@@ -39,27 +38,31 @@ export default function Dashboard() {
             Today is {currentDate}
           </h4>
         </div>
-        <div className={`flex-col lg:flex-row lg:h-[490px] w-full pt-2 flex`}>
-          {/**section 1: personal information */}
-          <div className={`w-full h-auto pb-2 lg:w-1/5 lg:h-full lg:pr-4 flex flex-col`}>
-            <PersonalInfo />
-          </div>
-          {/**section 2: profile */}
-          <div className={`w-full h-auto pb-2 lg:w-1/5 lg:h-full lg:pr-4 flex`}>
-            <Profile />
-          </div>
-          {/**section 3: request */}
-          <div className={`w-full h-auto pb-2 lg:w-2/5 lg:h-full lg:pr-4 flex flex-col`}>
-            <div className={`lg:h-1/2 w-full pb-2`}>
-              <Request requestType='Talent' />
+        <div className={`w-full pt-2 flex flex-col lg:flex-row lg:h-[490px] `}>
+          <div className='w-full lg:w-2/5 flex flex-col md:flex-row'>
+            {/**section 1: personal information */}
+            <div className={`w-full md:w-1/2 h-auto lg:h-full pb-2 md:pr-1 lg:pr-2 flex`}>
+              <PersonalInfo />
             </div>
-            <div className={`lg:h-1/2 lg:pt-2 w-full`}>
-              <Request requestType='Job' />
+            {/**section 2: profile */}
+            <div className={`w-full md:w-1/2 h-auto lg:h-full pb-2 md:pl-1 lg:px-2 flex`}>
+              <Profile />
             </div>
           </div>
-          {/**section 4: notifications */}
-          <div className={`w-full h-auto pb-2 lg:w-1/5 lg:h-full flex`}>
-            <Notifications />
+          <div className='w-full lg:w-3/5 flex flex-col md:flex-row'>
+            {/**section 3: request */}
+            <div className={`w-full h-auto lg:h-full pb-2 md:w-2/3 md:pr-1 lg:px-2 flex flex-col`}>
+              <div className={`lg:h-1/2 w-full pb-2`}>
+                <Request requestType='Talent' />
+              </div>
+              <div className={`lg:h-1/2 lg:pt-2 w-full`}>
+                <Request requestType='Job' />
+              </div>
+            </div>
+            {/**section 4: notifications */}
+            <div className={`w-full h-auto pb-2 md:w-1/3 md:pl-1 lg:h-full flex`}>
+              <Notifications />
+            </div>
           </div>
         </div>
       </div>

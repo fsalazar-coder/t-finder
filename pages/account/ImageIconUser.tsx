@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { useAuthUI, useAuthData } from "../../context/authContext";
-import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
+import { useState } from 'react';
+import { useUI } from "@/context/ContextUI";
+import { useAuthData } from "@/context/ContextAuthData";
 import { IconCamera, IconUser } from '@/icons/icons';
 import Image from 'next/image';
 
@@ -10,36 +10,12 @@ interface UserProfileImageParams {
 }
 
 
-
 export default function ImageIconUser({ type, otherUserImageUrl }: UserProfileImageParams) {
-  const { accountModule, setProfileModal, setProfileModalAction } = useAuthUI();
-  const { token, userId, userImageUrl, setUserImageUrl, setCollectionToChange, update, setUpdate, updateCounter, setUpdateCounter } = useAuthData();
+  const { accountModule } = useUI();
+  const { userImageUrl, setProfileModal, setProfileModalAction, setCollectionToChange } = useAuthData();
   const [imageHover, setImageHover] = useState(false);
 
-  useEffect(() => {
-    if (token && userId && (update === 'all' || update === 'profile-image')) {
-      setUpdateCounter((counter) => counter + 1);
-      const fetchUserProfileImage = async () => {
-        userDataHandlerFunction({
-          token: token as string,
-          userId: userId as string,
-          action: 'get',
-          collectionName: 'profile_image',
-          data: '',
-          onSuccess: (responseData: any) => setUserImageUrl(responseData.image_url),
-          onError: (error: any) => console.error(error)
-        });
-      };
-      fetchUserProfileImage().then(() => {
-        setUpdateCounter((counter) => counter - 1);  
-        if ((update === 'all' && updateCounter === 0) || update === 'profile-image') {
-          setUpdate('');
-        }
-      });
-    }
-  }, [token, userId, update]);
-
-  const userImageUrlToRender: any = otherUserImageUrl === '' ? userImageUrl : otherUserImageUrl;
+  const userImageUrlToRender: any = otherUserImageUrl === 'none' ? userImageUrl : otherUserImageUrl;
 
   const getImageClasses = () => {
     const baseClass = moduleType[type] && moduleType[type]['image-class'];
@@ -48,11 +24,11 @@ export default function ImageIconUser({ type, otherUserImageUrl }: UserProfileIm
 
   const getIconClasses = () => {
     const baseClass = moduleType[type] && moduleType[type]['icon-class'];
-    return `${baseClass} w-[95%] h-[95%] text-color-text-almost-clear font-light bg-white rounded-full transition-all`;
+    return `${baseClass} w-[95%] h-[95%] text-white bg-color-text-almost-clear rounded-full transition-all`;
   };
 
   const getBorderClass = () => {
-    return userImageUrlToRender ? moduleBorderColor[type] || 'border-color-border' : 'border border-color-border';
+    return userImageUrlToRender ? moduleBorderColor[type] || 'border-color-border' : 'bg-color-text-almost-clear';
   };
 
   const isDashboard = accountModule === 'Dashboard';
@@ -61,12 +37,12 @@ export default function ImageIconUser({ type, otherUserImageUrl }: UserProfileIm
   const moduleType: any = {
     'message-chat': { 'image-class': 'border-[1px]', 'icon-class': 'text-2xl' },
     'title-chat': { 'image-class': 'border-[1px]', 'icon-class': 'text-2xl' },
-    'navbar': { 'image-class': 'w-[93%] h-[93%] border-[1px]', 'icon-class': 'text-2xl' },
+    'navbar': { 'image-class': 'w-[93%] h-[93%] border-[1px]', 'icon-class': 'text-[16px]' },
     'dropdown': { 'image-class': 'w-[92%] h-[92%] border-[1px]', 'icon-class': 'text-2xl' },
     'notifications': { 'image-class': 'border-[2px]', 'icon-class': `${isDashboard ? 'text-2xl' : 'text-4xl'}` },
     'request': { 'image-class': 'border-[2px]', 'icon-class': 'text-4xl' },
-    'account-navbar': { 'image-class': 'border-[2px]', 'icon-class': 'text-6xl' },
-    'personal-info': { 'image-class': 'border-[2px]', 'icon-class': 'text-6xl' },
+    'account-navbar': { 'image-class': 'border-[2px]', 'icon-class': 'text-4xl' },
+    'personal-info': { 'image-class': 'border-[2px]', 'icon-class': 'text-7xl' },
   };
 
   const moduleBorderColor: any = {
@@ -93,7 +69,7 @@ export default function ImageIconUser({ type, otherUserImageUrl }: UserProfileIm
             alt='profile-image'
           />
           :
-          <i className={`${getIconClasses()} flex flex-col text-color-text-clear justify-center items-center`}>
+          <i className={`${getIconClasses()} flex flex-col justify-center items-center`}>
             <IconUser />
           </i>
       }

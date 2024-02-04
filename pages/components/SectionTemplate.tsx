@@ -1,17 +1,13 @@
-import { useAuthData, useUI } from "../../context/authContext";
 import Image from 'next/image';
-import {
-  IconCheckCircle,
-  IconArrowRight
-} from '../../icons/icons';
+import { IconCheckCircle } from '../../icons/icons';
 import SectionTitles from './SectionTitles';
+import { useAuth } from '@/context/ContextAuth';
 
 
 
 export default function Presentation(props: any) {
 
-  const { token } = useAuthData();
-  const { setJoinModal } = useUI();
+  const { token, setJoinModal } = useAuth();
 
 
   return (

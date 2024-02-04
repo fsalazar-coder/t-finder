@@ -3,7 +3,7 @@ import axios from 'axios';
 interface StatusRequestParams {
   token: string,
   userId: string,
-  collectionName: string,
+  collection: string,
   action: string,
   statusRequest: string,
   onSuccess: Function,
@@ -12,7 +12,7 @@ interface StatusRequestParams {
 
 
 
-export const userRequestStatusFunction = async ({ token, userId, collectionName, action, statusRequest, onSuccess, onError }: StatusRequestParams) => {
+export const userRequestStatusFunction = async ({ token, userId, collection, action, statusRequest, onSuccess, onError }: StatusRequestParams) => {
   const config = {
     headers: {
       'Authorization': `Bearer ${token}`
@@ -22,9 +22,9 @@ export const userRequestStatusFunction = async ({ token, userId, collectionName,
   try {
     const response = await axios.post('/api/userDataApi', {
       id: userId,
-      collectionName,
-      action,
-      data: action === 'get-status-request' ? '' : action === 'edit-status-request' && statusRequest
+      action: action,
+      nameCollection: collection,
+      data: statusRequest
     }, config);
 
     const { status, responseData } = response.data;

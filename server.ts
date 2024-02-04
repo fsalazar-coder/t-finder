@@ -5,18 +5,19 @@ const http = require('http');
 const { Server } = require('socket.io');
 const { Socket } = require('socket.io');
 const jwt = require('jsonwebtoken');
+const SECRET_KEY = "BfD8UphBQxiKrdfw";
+
+const userSockets: UserSockets = {};
 
 const dev = process.env.NODE_ENV !== 'production';
 const nextApp = next({ dev });
 const handle = nextApp.getRequestHandler();
 
-const SECRET_KEY = "BfD8UphBQxiKrdfw";   // or const SECRET_KEY = process.env.SECRET_KEY or 'BfD8UphBQxiKrdfw';
-
 interface UserSockets {
   [userId: string]: any;
 }
 
-interface SocketsMessages {
+interface MessagesParams {
   to_user_id: string,
   from_user_id: string,
   message: string,
@@ -25,13 +26,15 @@ interface SocketsMessages {
   message_status: string,
 }
 
-interface SocketsNotifications {
+interface NotificationsParams {
+  from_user_id: string,
   to_user_id: string,
-  update_socket: string,
+  from_request_id: string,
+  to_request_id: string,
+  notification_type: string,
+  created_at: string,
+  notification_status: string,
 }
-
-const userSockets: UserSockets = {};
-
 
 
 nextApp.prepare().then(() => {
@@ -57,15 +60,15 @@ nextApp.prepare().then(() => {
           delete userSockets[userId];
         });
 
-        socket.on('notification', (data: SocketsNotifications) => {
+        socket.on('notification', (data: NotificationsParams) => {
           const { to_user_id } = data;
           if (userSockets[to_user_id]) {
-            userSockets[to_user_id].emit('notificacion', data);
+            userSockets[to_user_id].emit('notification', data);
           }
           return;
         });
 
-        socket.on('message', (data: SocketsMessages) => {
+        socket.on('message', (data: MessagesParams) => {
           const { to_user_id } = data;
           if (userSockets[to_user_id]) {
             userSockets[to_user_id].emit('message', data);

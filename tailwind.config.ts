@@ -19,7 +19,7 @@ const config: Config = {
           'border': '#e2e8f0',             // #e2e8f0 (slate-200)
           'border-navbar': '#cbd5e1',      //#0f172a (slate-900), #94a3b8 (slate-400)
           'hover': '#e0f2fe',              //#e0f2fe (sky-100), #bae6fd (sky-200), #0f172a (slate-900), #94a3b8 (slate-400)
-          'notification-alert': '#059669',              //#059669 (emerald-600)
+          'notification-alert': '#dc2626', //#dc2626 (red-600), #ef4444 (red-500), #059669 (emerald-600)
           'text': {
             'highlighted' : '#0ea5e9',     //#0ea5e9 (sky-500), #d946ef (fuchsia-500)   
             'dark': '#0f172a',             //#0f172a (slate-900), #334155 (slate-700), #475569 (slate-600)

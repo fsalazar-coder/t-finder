@@ -1,41 +1,19 @@
-import { useState, useEffect } from 'react';
-import { useUI } from "../../context/authContext";
+import { useState } from 'react';
+import { useAuth } from '@/context/ContextAuth';
+import { useUI } from '@/context/ContextUI';
 import axios from 'axios';
 import Image from 'next/image';
 import googleIcon from '../../public/images/google-icon.webp';
 import { IconCancel } from '../../icons/icons';
 
 
-
 export default function JoinModal(props: any) {
-
-  const { joinModal, setJoinModal, setLoginModal,
-    setMessageModal, setLoading } = useUI();
+  const { setMessageModal, setLoading } = useUI();
+  const { joinModal, setJoinModal, setLoginModal } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailChange, setEmailChange] = useState(false);
   const [passwordChange, setPasswordChange] = useState(false);
-
-  const modalCloseEscapeHandle = (e: any) => {
-    if (joinModal) {
-      if ((e.charCode | e.keyCode) === 27) {
-        setJoinModal(false);
-      }
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('keydown', modalCloseEscapeHandle);
-    return () => {
-      document.removeEventListener('keydown', modalCloseEscapeHandle);
-    };
-  });
-
-  useEffect(() => {
-    joinModal ?
-      (document.body.style.overflowY = 'hidden')
-      : (document.body.style.overflowY = 'auto');
-  }, [joinModal]);
 
   const joinSubmitHandle = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,7 +71,6 @@ export default function JoinModal(props: any) {
       setLoading(false);
     }
   };
-
 
 
   return (

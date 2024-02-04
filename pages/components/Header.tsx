@@ -1,14 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useAuthData, useUI } from "../../context/authContext";
+import { useAuth } from '@/context/ContextAuth';
 import { Typewriter } from 'react-simple-typewriter';
 import { IconArrowRight } from '../../icons/icons';
 
 
-
 export default function Header(props: any) {
-
-  const { token } = useAuthData();
-  const { joinModal, setJoinModal } = useUI();
+  const { token, joinModal, setJoinModal } = useAuth();
   const [animationActived, setAnimationActived] = useState(false);
   const headerActived = props.headerSectionActived;                                      /**To active animation on header section: true or false***/
 

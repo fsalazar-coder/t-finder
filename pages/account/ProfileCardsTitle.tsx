@@ -1,23 +1,22 @@
 import { useEffect, useRef } from "react";
 import SectionTitles from "../components/SectionTitles";
 import SubmenuCarsTitle from "./SubmenuCarsTitle";
-import ButtonTitleCards from "./ButtonTitleCards";
+import ButtonPostUpdateDelete from "./ButtonPostUpdateDelete";
 
 
 
 export default function ProfileCardsTitle(
   {
     isDashboard,
-    data,
-    profileId,
+    menuProfileElements,
+    elementProfile,
     profileMenuIndex,
-    profileMenuIndexRetro,
-    profileMenuIndexNext,
+    elementProfilePrev,
+    elementProfileNext,  
   }: any) {
 
   const menuProfileRef = useRef(null);
   const menuProfileSelected: any = menuProfileRef.current;
-
 
   useEffect(() => {
     let movingPositionX: number = (112 * profileMenuIndex);
@@ -25,7 +24,7 @@ export default function ProfileCardsTitle(
       menuProfileSelected.style.transition = 'all 0.5s ease-in';
       menuProfileSelected.style.transform = `translateX(-${movingPositionX}px)`;
     }
-  }, [profileMenuIndex]);
+  }, [elementProfile]);
 
 
   return (
@@ -43,18 +42,18 @@ export default function ProfileCardsTitle(
         {
           !isDashboard &&
           <SubmenuCarsTitle
-            elements={data}
+            elements={menuProfileElements}
             menuIndex={profileMenuIndex}
-            menuIndexRetro={() => profileMenuIndexRetro()}
-            menuIndexNext={() => profileMenuIndexNext()}
+            menuIndexRetro={() => elementProfilePrev()}
+            menuIndexNext={() => elementProfileNext()}
           />
         }
         <div className="w-fit h-full pl-5 flex flex-row items-center">
-          <ButtonTitleCards
-            id={`button-title-profile-${profileId}`}
-            isData={true}
-            buttonType={isDashboard ? 'profile-title-dashboard' : 'profile-title'}
-            dataBaseCollection={isDashboard ? '' : data[profileMenuIndex].id}
+          <ButtonPostUpdateDelete
+            itemId={`button-title-profile-${elementProfile}`}
+            action={isDashboard ? 'go-to-profile' : 'post'}
+            buttonType={isDashboard ? 'menu-dashboard' : 'post-account'}
+            dataBaseCollection={isDashboard ? '' : elementProfile}
             shouldRenderButton={true}
           />
         </div>
