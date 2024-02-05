@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react';
 import { useUI } from "@/context/ContextUI";
 import { IconDashboard, IconUserTie, IconBxsBellRing, IconHome, IconRequestJob, IconMessageNotification, IconUserSearchFilled } from '@/icons/icons';
 import ImageIconUser from './ImageIconUser';
@@ -119,7 +119,7 @@ const ProfileImage = () => {
 
   return (
     <div className={`${screenNarrow ? 'w-fit relative' : 'w-full py-2 border-b border-color-border'} flex flex-row justify-center items-center`}>
-      <div className={`${screenNarrow ? 'w-6 h-6 mx-1' : 'w-16 h-16'} flex flex-col justify-center items-center transition-all`}>
+      <div className={`${screenNarrow ? 'w-6 h-6 px-1' : 'w-16 h-16'} flex flex-col justify-center items-center transition-all`}>
         <ImageIconUser
           type={screenNarrow ? 'navbar' : 'account-navbar'}
           otherUserImageUrl={'none'}
