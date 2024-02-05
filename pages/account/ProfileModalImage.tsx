@@ -31,7 +31,7 @@ export default function ProfileModalImage() {
         setPreviewImage(URL.createObjectURL(file));
       }
     }
-  }, [setFileImage]);
+  }, [setFileImage, setMessageModal]);
 
   const profileimageHandleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

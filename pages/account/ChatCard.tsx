@@ -33,8 +33,8 @@ type PositionType = 'start' | 'center' | 'end' | 'single';
 export default function ChatCard() {
 
   const { token, userId } = useAuth();
-  const { accountModule } = useUI();    
-  const { socket, chatDataUser, setChatDataUser, chatActived, setChatActived, userChatsData, setUserChatsData, 
+  const { accountModule } = useUI();
+  const { socket, chatDataUser, setChatDataUser, chatActived, setChatActived, userChatsData, setUserChatsData,
     setIsGettingChatData, setUnreadMessages, unreadMessagesForUser, setUnreadMessagesForUser } = useAuthSocket();
   const [message, setMessage] = useState('');
   const [messageChange, setMessageChange] = useState(false);
@@ -45,7 +45,7 @@ export default function ChatCard() {
   const chatUserId: string = (chatDataUser as ChatDataUser)?.user_id;
   const chatUserName: string = (chatDataUser as ChatDataUser)?.user_name;
   const chatUserImageUrl: string = (chatDataUser as ChatDataUser)?.user_image_url;
-  
+  const isConnections: boolean = accountModule === 'Connections';
   const date: any = dateTimeFunction('date');
   const time: any = dateTimeFunction('time');
 
@@ -71,7 +71,7 @@ export default function ChatCard() {
           ...prevMessages, [chatUserId]: 0
         }));
         let unreadMessagesForChatUserId: number = unreadMessagesForUser[chatUserId];
-        setUnreadMessages((prevUnreadMessages: number) => ( prevUnreadMessages - unreadMessagesForChatUserId));
+        setUnreadMessages((prevUnreadMessages: number) => (prevUnreadMessages - unreadMessagesForChatUserId));
       })
     };
   }, [chatActived, chatUserId, token, unreadMessagesForUser, userId, setIsGettingChatData, setUnreadMessages, setUnreadMessagesForUser, setUserChatsData]);
@@ -83,7 +83,7 @@ export default function ChatCard() {
     }
   }, [userChatsData]);
 
-  useEffect(() => { !isConnections && setChatActived(false) }, [accountModule]);
+  useEffect(() => { !isConnections && setChatActived(false) }, [accountModule, isConnections, setChatActived]);
 
   const messageChatSubmitHandle = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -154,8 +154,6 @@ export default function ChatCard() {
         break;
     }
   };
-
-  const isConnections: boolean = accountModule === 'Connections';
 
 
   return (

@@ -40,7 +40,7 @@ export default function Connections() {
         setConnectionsType('seekers-talent');
       }
     }
-  }, [usersConnectedData]);
+  }, [accountModule, usersConnectedData]);
 
   const connectionTypeItems: any = [
     { id: 'seekers-talent', label: 'Employers' },

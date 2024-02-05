@@ -383,19 +383,19 @@ export default function ProfileModal() {
   ];
 
   useEffect(() => {
-    const modalSelection = modal.find((section) => section.collectionName === collectionToChange);
+    const modalSelection = modal?.find((section) => section.collectionName === collectionToChange);
     modalSelection && setProfileSelected(modalSelection);
     modalSelection && setNameProfileSelected(modalSelection.name);
-  }, [collectionToChange]);
+  }, [modal, collectionToChange]);
 
   /**fill-form control */
   useEffect(() => {
     let userProfileDataUpdateSelected = profileUpdate[profileElementName];
     if (userProfileDataUpdateSelected) {
-      let userProfileDataUpdateSelectedUnfilled = Object.values(userProfileDataUpdateSelected).some(value => value === '');
+      let userProfileDataUpdateSelectedUnfilled = Object.values(userProfileDataUpdateSelected)?.some(value => value === '');
       setFilledForm(userProfileDataUpdateSelectedUnfilled ? false : true);
     }
-  });
+  },[profileUpdate]);
 
   const renderProfileModal = profileModal !== '';
 

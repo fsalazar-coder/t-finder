@@ -73,7 +73,7 @@ export default function MessageModal() {
         }, 1000);
       }, 1000);
     }
-  }, [modalActived]);
+  }, [modalActived, animationState]);
 
   const renderButton = (buttonType: 'medium' | 'large' | 'cancel') => {
     let largeButton: boolean = buttonType === 'large';

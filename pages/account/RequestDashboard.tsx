@@ -41,7 +41,7 @@ export default function RequestDashboard({ requestType, statusRequestToRender, s
       statusRequestUlSelected.style.transition = 'all 0.5s ease-in';
       statusRequestUlSelected.style.transform = `translateX(-${300 * statusRequestIndex}px)`;
     }
-  }, [statusRequestIndex]);
+  }, [statusRequestIndex, statusRequestUlSelected]);
 
 
   return (

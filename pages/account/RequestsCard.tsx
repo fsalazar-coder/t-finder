@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useUI } from "@/context/ContextUI";
 import { useAuth } from "@/context/ContextAuth";
 import { useAuthData } from "@/context/ContextAuthData";
@@ -57,7 +57,7 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
     recommendations: [],
   });
 
-  const candidateProfile: CandidateProfileParams[] = [
+  const candidateProfile: CandidateProfileParams[] = useMemo(() => ([
     {
       id: 'experience',
       title: 'Experience',
@@ -107,7 +107,7 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
       shouldRender: candidateInfo?.recommendations.length > 0,
       length: candidateInfo?.recommendations.length
     }
-  ];
+  ]), []);
 
   useEffect(() => {
     if (requestMenu === 'candidate-review') {

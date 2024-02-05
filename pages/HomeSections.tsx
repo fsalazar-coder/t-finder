@@ -105,7 +105,7 @@ export default function HomeSections({ renderCondition }: any) {
       Component: Footer,
       props: {}
     },
-  ]), []);
+  ]), [sectionActived]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {

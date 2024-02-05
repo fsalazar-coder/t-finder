@@ -134,7 +134,7 @@ export default function Request({ requestType }: any) {
 
   useEffect(() => {
     setRequestMenu(accountModule === 'Talent' ? 'talent-submitted' : 'job-submitted')
-  }, [accountModule]);
+  }, [accountModule, setRequestMenu]);
 
   // Arreglo con todos los candidatos disponibles para cada talent request //
   // y, Arreglo con todos los candidatos que están siendo contactados //
@@ -239,10 +239,9 @@ export default function Request({ requestType }: any) {
         break;
     }
   }, [
-    candidates, candidatesRequestTalentId, requestMenu,
-    connectionRequests, connectionRequestJobId,
-    connectionRequestToAcceptId,
-    requestMenu, candidateToReviewId
+    candidates, candidatesRequestTalentId, requestMenu, connectionRequests, 
+    connectionRequestJobId, connectionRequestToAcceptId, requestMenu, 
+    candidateToReviewId, candidatesToRender, connectionRequestsToRender
   ]);
 
   //All status from request to render on dashboard
