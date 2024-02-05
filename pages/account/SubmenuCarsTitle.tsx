@@ -26,6 +26,7 @@ export default function SubmenuCarsTitle({ elements, menuIndex, menuIndexRetro, 
 
 
   return (
+    elements &&
     <div className={`px-3 flex flex-row justify-between items-center border-x border-color-border`}>
       <div className="h-full flex flex-row justify-center items-center transition-all">
         <button
@@ -47,7 +48,7 @@ export default function SubmenuCarsTitle({ elements, menuIndex, menuIndexRetro, 
           ref={menuProfileRef}
         >
           {
-            elements?.map(({ id, title }: any, index: any) => {
+            elements?.map(({ id, title }: {id: string, title: string}, index: any) => {
               let isItemHighlighted: boolean = index === menuIndex;
               return (
                 <h4
