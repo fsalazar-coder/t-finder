@@ -9,7 +9,7 @@ export default function NotificationsCardsDisplayer({ notificationsToRender }: a
   const [itemHover, setItemHover] = useState(null);
   const [listHover, setListHover] = useState(false);
   const isDashboard = accountModule === 'Dashboard';
-  const shouldRenderNotifications = notificationsToRender.length > 0;
+  const shouldRenderNotifications: boolean = notificationsToRender?.length > 0;
 
   return (
     <div

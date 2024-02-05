@@ -106,6 +106,7 @@ const CarouselArrow = ({ direction, carouselPosition, click }: CarouselArrowProp
 const Carousel = ({ data, carouselPosition, carouselTranslateX, handleTouchStart, handleTouchMove, testimonialsSectionActived }: CarouselProps) => {
   const carouselRef = useRef<HTMLUListElement>(null);
   const [hovered, setHovered] = useState(false);
+  const dataLength: number = data?.length;
   const animations = [
     'md:animate-[appear-right_1.0s_ease]',
     'md:animate-[appear-right_1.5s_ease]',
@@ -114,13 +115,13 @@ const Carousel = ({ data, carouselPosition, carouselTranslateX, handleTouchStart
     'md:animate-[appear-right_3.0s_ease]',
     'md:animate-[appear-right_3.5s_ease]'
   ];
-  
+
   useEffect(() => {
-    const carouselEl = carouselRef.current;
-    if (carouselEl) {
-      carouselEl.style.transform = `translateX(-${carouselPosition * (data.length ? 100 / data.length : 0)}%)`;
+    const carouselSelected = carouselRef.current;
+    if (carouselSelected) {
+      carouselSelected.style.transform = `translateX(-${carouselPosition * (dataLength ? 100 / dataLength : 0)}%)`;
     }
-  }, [carouselPosition, data.length]);
+  }, [carouselPosition, dataLength]);
 
   return (
     <div className='w-full h-full flex flex-row justify-start items-center overflow-x-hidden transition-all z-0'
@@ -134,7 +135,7 @@ const Carousel = ({ data, carouselPosition, carouselTranslateX, handleTouchStart
         onMouseLeave={() => setHovered(false)}
         ref={carouselRef}
       >
-        {data.map((item, index) => (
+        {data?.map((item, index) => (
           <TestimonyElement
             key={index}
             value={index}

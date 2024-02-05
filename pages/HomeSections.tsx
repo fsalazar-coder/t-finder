@@ -118,7 +118,7 @@ export default function HomeSections({ renderCondition }: any) {
         if (ref.current) observer.unobserve(ref.current);
       });
     };
-  }, []);
+  },[sectionActived]);
 
   return renderCondition && (
     <>

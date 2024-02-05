@@ -21,6 +21,18 @@ interface UserCardParams {
   goClick: (e: any) => void,
 }
 
+interface CandidateProfileParams {
+  id: string,
+  title: string,
+  data: DataCandidate[],
+  shouldRender: boolean,
+  length: number,
+};
+
+interface DataCandidate {
+  [key: string]: string
+}
+
 interface DataUser {
   user_id: string,
   user_name: string,
@@ -45,7 +57,7 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
     recommendations: [],
   });
 
-  const candidateProfile: any = [
+  const candidateProfile: CandidateProfileParams[] = [
     {
       id: 'experience',
       title: 'Experience',
@@ -107,7 +119,7 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
         collection: 'notifications',
         data: requestJobId,
         onSuccess: (responseData: any) => {
-          let isOfferAccepted = responseData.length !== 0;
+          let isOfferAccepted = responseData?.length !== 0;
           setIsRequestContactAccepted(isOfferAccepted);
         },
         onError: (error: any) => console.error(error)
@@ -156,7 +168,7 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
   // Cargar datos del candidato
   useEffect(() => {
     if (requestMenu === 'candidate-review' || requestMenu === 'candidates') {
-      candidateProfile.forEach((element: any) => {
+      candidateProfile?.forEach((element: any) => {
         let collectionName = element.id;
         userDataHandlerFunction({
           token: token as string,
@@ -167,10 +179,7 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
           onSuccess: (responseData: any) => {
             let elementName: string = collectionName;
             let data: any = responseData;
-            setCandidateInfo((prevData) => ({
-              ...prevData,
-              [elementName]: data
-            }));
+            setCandidateInfo((prevData) => ({ ...prevData, [elementName]: data }));
           },
           onError: (error: any) => console.error(error)
         });

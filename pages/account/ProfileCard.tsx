@@ -1,5 +1,3 @@
-import { useState, useEffect } from "react";
-
 import ButtonPostUpdateDelete from "./ButtonPostUpdateDelete";
 import CardsItems from "./CardsItems";
 
@@ -12,7 +10,7 @@ interface UserCardParams {
 
 export default function ProfileCard({ data, editDeleteButtonVisible, dataBaseCollection }: UserCardParams) {
 
-  const shouldRenderData: boolean = Object.keys(data).length > 0;
+  const shouldRenderData: boolean = Object.keys(data)?.length > 0;
 
   return (
     <div className="w-full px-5 py-2 flex flex-col bg-white border border-color-border shadow-md rounded-lg transform transition-all">

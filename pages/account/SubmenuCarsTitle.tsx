@@ -1,13 +1,18 @@
 import { useEffect, useRef } from "react";
 import { IconBxChevronLeft, IconBxChevronRight } from "@/icons/icons";
 
+interface SubmenuCardsTitleProps {
+  elements: any, 
+  menuIndex: number, 
+  menuIndexRetro: () => void, 
+  menuIndexNext: () => void
+}
 
 
-export default function SubmenuCarsTitle({ elements, menuIndex, menuIndexRetro, menuIndexNext }: any) {
-
+export default function SubmenuCarsTitle({ elements, menuIndex, menuIndexRetro, menuIndexNext }: SubmenuCardsTitleProps) {
   const menuProfileRef = useRef(null);
   const menuProfileSelected: any = menuProfileRef.current;
-  const menuItemLast: number = Object.keys(elements).length - 1;
+  const menuItemLast: number = Object.keys(elements)?.length - 1;
   const clickRetroDisabled: boolean = menuIndex === 0;
   const clickNextDisabled: boolean = menuIndex === menuItemLast;
 
