@@ -4,8 +4,8 @@ import { useState, useCallback, ChangeEvent } from 'react';
 import { useUI } from "@/context/ContextUI";
 import { useAuth } from "@/context/ContextAuth";
 import { useAuthData } from "@/context/ContextAuthData";
-import Image from 'next/image';
 import { IconUser } from '../../icons/icons';
+import Image from 'next/image';
 import axios from 'axios';
 
 

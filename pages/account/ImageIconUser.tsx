@@ -96,6 +96,5 @@ export default function ImageIconUser({ type, otherUserImageUrl }: UserProfileIm
     setProfileModal('profile-image');
     setProfileModalAction(userImageUrl ? 'edit' : 'post');
     setCollectionToChange('profile_image');
-    console.log('Click on image: ', userImageUrl)
   }
 }

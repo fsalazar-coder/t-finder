@@ -217,16 +217,16 @@ const MenuDashboard: any = ({ renderCondition, buttonsAction, click }: any) => {
     >
       {
         menuDashboardVisible ?
-          <i className={`${buttonsAction.menu.iconClass}`}>
-            {buttonsAction.menu.icon}
+          <i className={`${buttonsAction?.menu.iconClass}`}>
+            {buttonsAction?.menu.icon}
           </i>
           :
           <button
             className="pl-1 flex flex-row justify-center items-center hover:cursor-default transition-all"
             onClick={() => click()}
           >
-            <i className={`${buttonsAction.update.iconClass}`}>
-              {buttonsAction.update.icon}
+            <i className={`${buttonsAction?.update.iconClass}`}>
+              {buttonsAction?.update.icon}
             </i>
           </button>
       }
@@ -242,8 +242,8 @@ const PostDashboard: any = ({ renderCondition, buttonsAction, nameButtonPostDash
         className='w-full flex flex-col justify-center items-center hover:cursor-default'
         onClick={() => click()}
       >
-        <i className={`${buttonsAction.post.iconClass}`}>
-          {buttonsAction.post.icon}
+        <i className={`${buttonsAction?.post.iconClass}`}>
+          {buttonsAction?.post.icon}
         </i>
         <h3 className='text-sm text-color-text-almost-clear transition-all'>
           {`Add ${nameButtonPostDashboard}`}
@@ -263,15 +263,14 @@ const PostAccount: any = ({ buttonsAction, screenNarrow, nameButtonPostAccount, 
       <h3 className='pr-2 text-base text-color-text-almost-clear transition-all'>
         {screenNarrow ? 'Add' : `Add ${nameButtonPostAccount}`}
       </h3>
-      <i className={`${buttonsAction.post.iconClass}`}>
-        {buttonsAction.post.icon}
+      <i className={`${buttonsAction?.post.iconClass}`}>
+        {buttonsAction?.post.icon}
       </i>
     </button>
   );
 }
 
 const UpdateDeleteItems: any = ({ buttonsAction, renderCondition, click }: any) => {
-
   return (
     renderCondition &&
     <>
@@ -279,16 +278,16 @@ const UpdateDeleteItems: any = ({ buttonsAction, renderCondition, click }: any) 
         className="pl-1 flex flex-row justify-center items-center hover:cursor-default transition-all"
         onClick={() => click('update-default')}
       >
-        <i className={`${buttonsAction.update.iconClass}`}>
-          {buttonsAction.update.icon}
+        <i className={`${buttonsAction?.update.iconClass}`}>
+          {buttonsAction?.update.icon}
         </i>
       </button>
       <button
         className="pl-1 flex flex-row justify-center items-center hover:cursor-default transition-all"
         onClick={() => click('delete')}
       >
-        <i className={`${buttonsAction.delete.iconClass}`}>
-          {buttonsAction.delete.icon}
+        <i className={`${buttonsAction?.delete.iconClass}`}>
+          {buttonsAction?.delete.icon}
         </i>
       </button>
     </>

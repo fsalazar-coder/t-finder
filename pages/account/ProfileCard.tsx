@@ -22,7 +22,7 @@ export default function ProfileCard({ data, editDeleteButtonVisible, dataBaseCol
           {data?.title}
         </h2>
         <ButtonPostUpdateDelete
-          itemId={data._id}
+          itemId={data?._id}
           action='update-delete'
           buttonType='update-delete-items'
           dataBaseCollection={dataBaseCollection}

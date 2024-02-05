@@ -9,7 +9,7 @@ import ButtonPostUpdateDelete from './ButtonPostUpdateDelete';
 export default function PersonalInfo() {
   const { userId } = useAuth();
   const { userProfileData } = useAuthData();
-  const personalInfoData: any = userProfileData.personalInfo;
+  const personalInfoData: any = userProfileData?.personalInfo;
   const renderPersonalInfoData: boolean = userProfileData?.personalInfo?.length > 0;
 
   return (

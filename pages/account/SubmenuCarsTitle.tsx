@@ -42,7 +42,7 @@ export default function SubmenuCarsTitle({ elements, menuIndex, menuIndexRetro, 
           ref={menuProfileRef}
         >
           {
-            elements.map(({ id, title }: any, index: any) => {
+            elements?.map(({ id, title }: any, index: any) => {
               let isItemHighlighted: boolean = index === menuIndex;
               return (
                 <h4

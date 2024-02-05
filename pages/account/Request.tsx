@@ -336,7 +336,7 @@ export default function Request({ requestType }: any) {
   const requestElements: any = {
     'talent-submitted': {
       id: 'submitted-talent-request',
-      dataToRender: userRequestData.requestTalent,
+      dataToRender: userRequestData?.requestTalent,
       dataToCompare: Object.keys(candidates).filter(key => candidates[key].length === 0),
       goClick: (value: string) => {
         setRequestMenu('candidates');
@@ -351,7 +351,7 @@ export default function Request({ requestType }: any) {
     },
     'job-submitted': {
       id: 'submitted-job-request',
-      dataToRender: userRequestData.requestJob,
+      dataToRender: userRequestData?.requestJob,
       dataToCompare: Object.keys(connectionRequests).filter(key => connectionRequests[key].length === 0),
       goClick: (value: string) => {
         setRequestMenu('requests')

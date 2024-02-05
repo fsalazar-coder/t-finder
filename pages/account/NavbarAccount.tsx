@@ -59,7 +59,7 @@ export default function NavbarAccount() {
       const indicatorSelected: any = indicatorRef.current;
       let translateY = 60;
       let accountModuleArray: string[] = ['Dashboard', 'Profile', 'Talent', 'Job', 'Connections', 'Notifications', 'Settings'];
-      let indicatorFactorPosition: any = accountModuleArray.indexOf(accountModule);
+      let indicatorFactorPosition: any = accountModuleArray?.indexOf(accountModule);
       if (indicatorSelected) {
         indicatorSelected.style.transition = 'all 0.5s ease';
         indicatorSelected.style.transform = `translateY(${indicatorFactorPosition * translateY}px)`;
@@ -140,7 +140,7 @@ const NavbarAccountElements: React.FC<NavbarElementProps> = ({ navbarAccountElem
   const { accountModule } = useUI();
 
   return (
-    navbarAccountElements.map(({ title, clickGoTo, icon }: any, index: number) => {
+    navbarAccountElements?.map(({ title, clickGoTo, icon }: any, index: number) => {
       return (
         <li key={index} className={
           `${clickGoTo === accountModule ? 'text-color-highlighted' : 'text-color-text-almost-clear hover:text-color-highlighted-clear cursor-pointer'}

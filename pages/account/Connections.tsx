@@ -30,8 +30,8 @@ export default function Connections() {
     if (usersConnectedData && accountModule === 'Connections') {
       let connectionsSeekersTalent: any = usersConnectedData?.filter((element: any) => (element?.type === 'seekers-talent'));
       let connectionsSeekersJob: any = usersConnectedData?.filter((element: any) => (element?.type === 'seekers-job'));
-      let connectionsSeekersTalentLength: number = connectionsSeekersTalent.length;
-      let connectionsSeekersJobLength: number = connectionsSeekersJob.length;
+      let connectionsSeekersTalentLength: number = connectionsSeekersTalent?.length;
+      let connectionsSeekersJobLength: number = connectionsSeekersJob?.length;
 
       if (connectionsSeekersJobLength > connectionsSeekersTalentLength) {
         setConnectionsType('seekers-job');
@@ -69,7 +69,7 @@ export default function Connections() {
               {/**submenu connections: Employers and Talents */}
               <ul className={`w-fit flex flex-row items-center`}>
                 {
-                  connectionTypeItems.map(({ id, label }: any, index: any) => {
+                  connectionTypeItems?.map(({ id, label }: any, index: any) => {
                     let itemActived: boolean = connectionsType === id;
                     return (
                       <li

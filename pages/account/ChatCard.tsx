@@ -42,9 +42,9 @@ export default function ChatCard() {
   const [lastMessageDate, setLastMessageDate] = useState('');
 
   const chatListRef = useRef<HTMLUListElement>(null);
-  const chatUserId: string = (chatDataUser as ChatDataUser).user_id;
-  const chatUserName: string = (chatDataUser as ChatDataUser).user_name;
-  const chatUserImageUrl: string = (chatDataUser as ChatDataUser).user_image_url;
+  const chatUserId: string = (chatDataUser as ChatDataUser)?.user_id;
+  const chatUserName: string = (chatDataUser as ChatDataUser)?.user_name;
+  const chatUserImageUrl: string = (chatDataUser as ChatDataUser)?.user_image_url;
   
   const date: any = dateTimeFunction('date');
   const time: any = dateTimeFunction('time');
@@ -109,19 +109,18 @@ export default function ChatCard() {
   };
 
   function messageValues(chat: any, index: number, chatsData: any) {
-    let fromUserId = chat.from_user_id;
+    let fromUserId = chat?.from_user_id;
     let isMyMessage = fromUserId === userId;
-    let messageDate = chat.message_date;
-    let messageDatePrevious = index === 0 ? '' : chatsData[index - 1].message_date;
+    let messageDate = chat?.message_date;
+    let messageDatePrevious = index === 0 ? '' : chatsData[index - 1]?.message_date;
     let isDifferentDate = messageDate !== messageDatePrevious;
-    let fromUserIdPrevious = index === 0 ? '' : chatsData[index - 1].from_user_id;
-    let fromUserIdNext = index + 1 < chatsData.length ? chatsData[index + 1].from_user_id : '';
+    let fromUserIdPrevious = index === 0 ? '' : chatsData[index - 1]?.from_user_id;
+    let fromUserIdNext = index + 1 < chatsData.length ? chatsData[index + 1]?.from_user_id : '';
     let isMessageStart = fromUserId !== fromUserIdPrevious && fromUserId === fromUserIdNext;
     let isMessageCenter = fromUserId === fromUserIdPrevious && fromUserId === fromUserIdNext;
     let isMessageEnd = fromUserId === fromUserIdPrevious && fromUserId !== fromUserIdNext;
     let roundedSide = isMyMessage ? 'right' : 'left';
     let positionType = isMessageStart ? 'start' : isMessageCenter ? 'center' : isMessageEnd ? 'end' : 'single';
-
     return { isMyMessage, isDifferentDate, roundedSide, positionType };
   };
 
@@ -230,7 +229,7 @@ export default function ChatCard() {
                         /**date */
                         <div className={`w-full relative my-2 flex flex-row justify-center`}>
                           <h6 className='w-fit h-fit py-1 px-4 flex text-color-text-medium text-[10px] bg-white border border-color-border outline outline-white rounded-full z-10'>
-                            {chat.message_date}
+                            {chat?.message_date}
                           </h6>
                           <div className='w-full h-fit absolute top-1/2 bg-white border-b border-color-border rounded-full z-0' />
                         </div>
@@ -240,12 +239,12 @@ export default function ChatCard() {
                           <div className={`${isMyMessage && 'bg-color-clear'} ${messageEffectBorder} px-4 py-1 flex flex-col border border-color-border`}>
                             {/**message */}
                             <h4 className='w-full text-color-text-dark text-sm'>
-                              {chat.message}
+                              {chat?.message}
                             </h4>
                             {/**message time */}
                             <div className='w-full flex flex-row justify-end'>
                               <h6 className='w-fit flex text-color-text-medium text-[10px]'>
-                                {chat.message_time}
+                                {chat?.message_time}
                               </h6>
                             </div>
                           </div>

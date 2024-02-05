@@ -49,57 +49,57 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
     {
       id: 'experience',
       title: 'Experience',
-      data: candidateInfo.experience,
-      shouldRender: candidateInfo.experience.length > 0,
-      length: candidateInfo.experience.length,
+      data: candidateInfo?.experience,
+      shouldRender: candidateInfo?.experience.length > 0,
+      length: candidateInfo?.experience.length,
     },
     {
       id: 'education',
       title: 'Education',
-      data: candidateInfo.education,
-      shouldRender: candidateInfo.education.length > 0,
-      length: candidateInfo.education.length
+      data: candidateInfo?.education,
+      shouldRender: candidateInfo?.education.length > 0,
+      length: candidateInfo?.education.length
     },
     {
       id: 'courses',
       title: 'Courses',
-      data: candidateInfo.courses,
-      shouldRender: candidateInfo.courses.length > 0,
-      length: candidateInfo.courses.length
+      data: candidateInfo?.courses,
+      shouldRender: candidateInfo?.courses.length > 0,
+      length: candidateInfo?.courses.length
     },
     {
       id: 'publications',
       title: 'Publications',
-      data: candidateInfo.publications,
-      shouldRender: candidateInfo.publications.length > 0,
-      length: candidateInfo.publications.length
+      data: candidateInfo?.publications,
+      shouldRender: candidateInfo?.publications.length > 0,
+      length: candidateInfo?.publications.length
     },
     {
       id: 'conferences',
       title: 'Conferences',
-      data: candidateInfo.conferences,
-      shouldRender: candidateInfo.conferences.length > 0,
-      length: candidateInfo.conferences.length
+      data: candidateInfo?.conferences,
+      shouldRender: candidateInfo?.conferences.length > 0,
+      length: candidateInfo?.conferences.length
     },
     {
       id: 'certifications',
       title: 'Certifications',
-      data: candidateInfo.certifications,
-      shouldRender: candidateInfo.certifications.length > 0,
-      length: candidateInfo.certifications.length
+      data: candidateInfo?.certifications,
+      shouldRender: candidateInfo?.certifications.length > 0,
+      length: candidateInfo?.certifications.length
     },
     {
       id: 'recommendations',
       title: 'Recommend...',
-      data: candidateInfo.recommendations,
-      shouldRender: candidateInfo.recommendations.length > 0,
-      length: candidateInfo.recommendations.length
+      data: candidateInfo?.recommendations,
+      shouldRender: candidateInfo?.recommendations.length > 0,
+      length: candidateInfo?.recommendations.length
     }
   ];
 
   useEffect(() => {
     if (requestMenu === 'candidate-review') {
-      let requestJobId = data.request_job_id;
+      let requestJobId = data?.request_job_id;
       userDataHandlerFunction({
         token: token as string,
         userId: userId as string,
@@ -185,11 +185,11 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
       case 'job-submitted':
         return goClick(value);
       case 'candidates':
-        return goClick(data.user_id);
+        return goClick(data?.user_id);
       case 'requests':
-        return goClick(data.user_id);
+        return goClick(data?.user_id);
       case 'candidate-review':
-        return goClick(data.request_job_id);
+        return goClick(data?.request_job_id);
       default:
         break
     }
@@ -235,8 +235,8 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
   const isRequestMenuReview = requestMenu === 'candidate-review';
 
   const candidateProfileIndex: number = reviewMenuIndex > 0 ? reviewMenuIndex - 1 : 0
-  const profileElementsId: string = candidateProfile[candidateProfileIndex].id;
-  const profileElementsData: any = candidateProfile[candidateProfileIndex].data;
+  const profileElementsId: string = candidateProfile[candidateProfileIndex]?.id;
+  const profileElementsData: any = candidateProfile[candidateProfileIndex]?.data;
   const isRenderOverview: boolean = reviewMenuIndex === 0;
   const heightCardsModule: any = {
     'talent-submitted': 'h-[430px]',
@@ -246,7 +246,7 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
     'candidate-review': 'h-auto',
   };
 
-  const shouldRenderData: boolean = Object.keys(data).length > 0;
+  const shouldRenderData: boolean = Object.keys(data)?.length > 0;
 
 
   return (
@@ -267,7 +267,7 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
             />
           }
           <ButtonPostUpdateDelete
-            itemId={data._id}
+            itemId={data?._id}
             action='update-delete'
             buttonType='update-delete-items'
             dataBaseCollection={dataBaseCollection}

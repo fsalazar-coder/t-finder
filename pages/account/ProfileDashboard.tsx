@@ -13,16 +13,16 @@ export default function ProfileDashboard({shouldRender}: ProfileDashboardProps) 
     {
       id: 'experience',
       title: 'Experience',
-      data: userProfileData.experience,
-      shouldRender: userProfileData.experience.length > 0,
-      length: userProfileData.experience.length,
+      data: userProfileData?.experience,
+      shouldRender: userProfileData?.experience.length > 0,
+      length: userProfileData?.experience.length,
     },
     {
       id: 'education',
       title: 'Education',
-      data: userProfileData.education,
-      shouldRender: userProfileData.education.length > 0,
-      length: userProfileData.education.length
+      data: userProfileData?.education,
+      shouldRender: userProfileData?.education.length > 0,
+      length: userProfileData?.education.length
     },
     {
       id: 'courses',
@@ -61,7 +61,7 @@ export default function ProfileDashboard({shouldRender}: ProfileDashboardProps) 
     }
   ];
   const elementsProfileAmount: number = profile.length - 1;
-  const elementsCompleted = profile.filter((element: any) => element.shouldRender).length;
+  const elementsCompleted = profile?.filter((element: any) => element.shouldRender).length;
   const percentageProfileFilled: number = Math.round((elementsCompleted / elementsProfileAmount) * 100);
 
   return (

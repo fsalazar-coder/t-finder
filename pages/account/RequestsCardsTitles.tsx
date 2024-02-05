@@ -15,7 +15,7 @@ export default function RequestsCardsTitles(
 
   return (
     <div className={
-      `${isDashboard ? 'px-5 border-b' : ''     /// bg-white border shadow-md rounded-lg
+      `${isDashboard && 'px-5 border-b'      /// bg-white border shadow-md rounded-lg
       } w-full relative py-1 mb-2 flex justify-between flex-row items-center border-color-border`
     }>
       <div className='w-full flex flex-row items-center'>
@@ -30,7 +30,7 @@ export default function RequestsCardsTitles(
           /**submenu: submitted, candidates, offers, review and chat... */
           <div className={`w-auto h-full flex px-5 flex-row items-center border-x border-color-border`}>
             {
-              dataMenuTitles.map(({ id, label, requestMenuCondition }: any) => (
+              dataMenuTitles?.map(({ id, label, requestMenuCondition }: any) => (
                 requestMenuCondition &&
                 <div key={id} className='cursor-default'>
                   <h4 className={`text-color-text-highlighted text-base font-semibold`}>

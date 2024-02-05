@@ -58,7 +58,7 @@ export default function RequestDashboard({ requestType, statusRequestToRender, s
             <div className="w-[300px] h-full flex flex-col justify-center overflow-x-hidden">
               <ul className='w-[9000px] h-full flex items-center transform' ref={statusRequestUl}>
                 {
-                  statusRequestToRender.map(({ requestId, creationDate, category, status }: any, index: any) => (
+                  statusRequestToRender?.map(({ requestId, creationDate, category, status }: any, index: any) => (
                     <li key={requestId}
                       className='w-[300px] px-2 flex flex-col lg:hover:cursor-pointer'
                       onClick={() => goClick(requestId)}

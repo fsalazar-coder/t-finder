@@ -17,8 +17,6 @@ export default function MessageModal() {
   const { messageModal, setMessageModal } = useUI();
   const { collectionToChange, setCollectionToChange } = useAuthData();
   const [animationState, setAnimationState] = useState({ circle: false, symbol: false, circleGrow: false });
-
-
   const [circleAnimation, setCircleAnimation] = useState(false);
   const [symbolAnimation, setSymbolAnimation] = useState(false);
   const [circleGrowAnimation, setCircleGrowAnimation] = useState(false);
