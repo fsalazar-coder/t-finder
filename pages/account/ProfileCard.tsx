@@ -10,10 +10,10 @@ interface UserCardParams {
 
 export default function ProfileCard({ data, editDeleteButtonVisible, dataBaseCollection }: UserCardParams) {
 
-  const shouldRenderData: boolean = Object.keys(data)?.length > 0;
+  const shouldRenderData: boolean = data ? Object.keys(data).length > 0 : false;
 
   return (
-    shouldRenderData && data &&
+    shouldRenderData &&
     <div className="w-full px-5 py-2 flex flex-col bg-white border border-color-border shadow-md rounded-lg transform transition-all">
       {/**user fullname */}
       <div className="w-full relative pb-2 flex flex-row justify-between border-b border-color-border">

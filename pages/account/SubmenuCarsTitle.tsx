@@ -2,27 +2,27 @@ import { useEffect, useRef } from "react";
 import { IconBxChevronLeft, IconBxChevronRight } from "@/icons/icons";
 
 interface SubmenuCardsTitleProps {
-  elements: any, 
-  menuIndex: number, 
-  menuIndexRetro: () => void, 
-  menuIndexNext: () => void
+  elements: { id: string; title: string }[]; 
+  menuIndex: number; 
+  menuIndexRetro: () => void; 
+  menuIndexNext: () => void;
 }
 
 
-export default function SubmenuCarsTitle({ elements, menuIndex, menuIndexRetro, menuIndexNext }: SubmenuCardsTitleProps) {
+export default function SubmenuCarsTitle({ elements = [], menuIndex, menuIndexRetro, menuIndexNext }: SubmenuCardsTitleProps) {
   const menuProfileRef = useRef(null);
-  const menuProfileSelected: any = menuProfileRef?.current;
-  const menuItemLast: number = Object.keys(elements)?.length - 1;
+  const menuItemLast: number = elements ? Object.keys(elements).length - 1 : 0;
   const clickRetroDisabled: boolean = menuIndex === 0;
   const clickNextDisabled: boolean = menuIndex === menuItemLast;
 
   useEffect(() => {
     let movingPositionX: number = (128 * menuIndex);
+    let menuProfileSelected: any = menuProfileRef?.current;
     if (menuProfileSelected) {
       menuProfileSelected.style.transition = 'all 0.5s ease-in';
       menuProfileSelected.style.transform = `translateX(-${movingPositionX}px)`;
     }
-  }, [menuIndex, menuProfileSelected]);
+  }, [menuIndex, menuProfileRef]);
 
 
   return (
@@ -48,7 +48,7 @@ export default function SubmenuCarsTitle({ elements, menuIndex, menuIndexRetro, 
           ref={menuProfileRef}
         >
           {
-            elements?.map(({ id, title }: {id: string, title: string}, index: any) => {
+            elements?.map(({ id, title }: { id: string, title: string }, index: any) => {
               let isItemHighlighted: boolean = index === menuIndex;
               return (
                 <h4

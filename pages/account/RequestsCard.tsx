@@ -249,7 +249,7 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
   const profileElementsId: string = candidateProfile[candidateProfileIndex]?.id;
   const profileElementsData: any = candidateProfile[candidateProfileIndex]?.data;
   const isRenderOverview: boolean = reviewMenuIndex === 0;
-  const shouldRenderData: boolean = Object.keys(data)?.length > 0;
+  const shouldRenderData: boolean = data ? Object.keys(data).length > 0 : false;
   const heightCardsModule: any = {
     'talent-submitted': 'h-[430px]',
     'job-submitted': 'h-[450px]',
@@ -259,7 +259,7 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
   };
 
   return (
-    shouldRenderData && data &&
+    shouldRenderData &&
     <>
       <div className={`${heightCardsModule[requestMenu]} w-full px-5 py-2 flex flex-col bg-white border border-color-border shadow-md rounded-lg transform transition-all`}>
         {/**title */}
