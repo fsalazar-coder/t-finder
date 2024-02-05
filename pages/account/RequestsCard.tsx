@@ -257,6 +257,7 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
   };
 
   return (
+    data &&
     <>
       <div className={`${heightCardsModule[requestMenu]} w-full px-5 py-2 flex flex-col bg-white border border-color-border shadow-md rounded-lg transform transition-all`}>
         {/**title */}
@@ -338,7 +339,7 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
                 {candidateProfile && <ProfileScoreOverview profile={candidateProfile} />}
               </div>
               :
-              profileElementsData && 
+              profileElementsData &&
               <ProfileCardsDisplayer
                 id={profileElementsId}
                 key={profileElementsId}
