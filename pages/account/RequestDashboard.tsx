@@ -34,7 +34,7 @@ export default function RequestDashboard({ requestType, statusRequestToRender, s
   const requestProcessSteps: any = useMemo(() => ({
     'Talent': ['Submitted', 'Selecting', 'Contacting', 'Connected'],
     'Job': ['Submitted', 'Selecting', 'Accepted', 'Connected']
-  }), [statusRequestToRender]);
+  }), []);
 
   useEffect(() => {
     if (statusRequestUlSelected) {

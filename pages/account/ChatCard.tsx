@@ -74,7 +74,7 @@ export default function ChatCard() {
         setUnreadMessages((prevUnreadMessages: number) => ( prevUnreadMessages - unreadMessagesForChatUserId));
       })
     };
-  }, [chatActived]);
+  }, [chatActived, chatUserId, token, unreadMessagesForUser, userId, setIsGettingChatData, setUnreadMessages, setUnreadMessagesForUser, setUserChatsData]);
 
   useEffect(() => {
     let lastChatItem = chatListRef.current?.lastChild;

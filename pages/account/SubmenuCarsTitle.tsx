@@ -22,7 +22,7 @@ export default function SubmenuCarsTitle({ elements, menuIndex, menuIndexRetro, 
       menuProfileSelected.style.transition = 'all 0.5s ease-in';
       menuProfileSelected.style.transform = `translateX(-${movingPositionX}px)`;
     }
-  }, [menuIndex]);
+  }, [menuIndex, menuProfileSelected]);
 
 
   return (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, ComponentElement } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import Navbar from './components/Navbar';
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -26,8 +26,15 @@ export default function HomeSections({ renderCondition }: any) {
   const testimonialsSectionRef = useRef<HTMLElement>(null);
   const blogSectionRef = useRef<HTMLElement>(null);
   const contactSectionRef = useRef<HTMLElement>(null);
+  const requestProgress: any = useMemo(() => ({
+    'Submitted': 25,
+    'Selecting': 50,
+    'Contacting': 75,
+    'Accepted': 75,
+    'Completed': 100,
+  }), []);
 
-  const sectionsData: SectionDataParams[] = [
+  const sectionsData: SectionDataParams[] = useMemo(() => ([
     {
       id: 'header-section',
       className: 'w-full h-screen',
@@ -98,7 +105,7 @@ export default function HomeSections({ renderCondition }: any) {
       Component: Footer,
       props: {}
     },
-  ];
+  ]), []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {
@@ -118,7 +125,7 @@ export default function HomeSections({ renderCondition }: any) {
         if (ref.current) observer.unobserve(ref.current);
       });
     };
-  },[sectionActived, sectionsData]);
+  }, [sectionActived, sectionsData]);
 
   return renderCondition && (
     <>

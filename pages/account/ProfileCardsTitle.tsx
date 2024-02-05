@@ -24,7 +24,7 @@ export default function ProfileCardsTitle(
       menuProfileSelected.style.transition = 'all 0.5s ease-in';
       menuProfileSelected.style.transform = `translateX(-${movingPositionX}px)`;
     }
-  }, [elementProfile]);
+  }, [elementProfile, menuProfileSelected, profileMenuIndex]);
 
 
   return (

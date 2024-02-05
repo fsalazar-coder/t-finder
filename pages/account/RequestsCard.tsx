@@ -125,7 +125,7 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
         onError: (error: any) => console.error(error)
       });
     }
-  }, [token, userId, requestMenu]);
+  }, [token, userId, requestMenu, data?.request_job_id]);
 
   //control de texto en botones
   useEffect(() => {
@@ -185,7 +185,7 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
         });
       });
     };
-  }, [token, userId, requestMenu, data]);
+  }, [token, userId, requestMenu, candidateProfile, data]);
 
   const goToClick: any = () => {
     switch (requestMenu) {
