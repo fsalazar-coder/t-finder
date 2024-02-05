@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useUI } from "@/context/ContextUI";
 import { useAuth } from "@/context/ContextAuth";
 import { useAuthData } from "@/context/ContextAuthData";
@@ -114,11 +114,9 @@ export default function ProfileModal() {
   });
   const [profileSelected, setProfileSelected] = useState(Object);
   const [nameProfileSelected, setNameProfileSelected] = useState('');
-
   const isPersonalInfoModal = profileModal === 'personal-info';
   const isProfileImageModal = profileModal === 'profile-image';
   const isPostAction = profileModalAction === 'post';
-
   const date: any = dateTimeFunction('date');
 
   const handleCloseProfileModal = () => {
@@ -267,7 +265,7 @@ export default function ProfileModal() {
     }
   };
 
-  const modal = [
+  const modal = useMemo(() => ([
     {
       collectionName: 'personal_info',
       title: 'Personal info...',
@@ -380,7 +378,7 @@ export default function ProfileModal() {
         { type: 'text', title: 'Recommender phone', value: 'recommenderPhone' },
       ],
     },
-  ];
+  ]),[]);
 
   useEffect(() => {
     const modalSelection = modal?.find((section) => section.collectionName === collectionToChange);
@@ -395,7 +393,7 @@ export default function ProfileModal() {
       let userProfileDataUpdateSelectedUnfilled = Object.values(userProfileDataUpdateSelected)?.some(value => value === '');
       setFilledForm(userProfileDataUpdateSelectedUnfilled ? false : true);
     }
-  },[profileUpdate]);
+  },[profileUpdate, profileElementName]);
 
   const renderProfileModal = profileModal !== '';
 

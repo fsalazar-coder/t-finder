@@ -240,8 +240,8 @@ export default function Request({ requestType }: any) {
     }
   }, [
     candidates, candidatesRequestTalentId, requestMenu, connectionRequests, 
-    connectionRequestJobId, connectionRequestToAcceptId, requestMenu, 
-    candidateToReviewId, candidatesToRender, connectionRequestsToRender
+    connectionRequestJobId, connectionRequestToAcceptId, candidateToReviewId, 
+    candidatesToRender, connectionRequestsToRender
   ]);
 
   //All status from request to render on dashboard

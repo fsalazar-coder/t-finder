@@ -107,7 +107,9 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
       shouldRender: candidateInfo?.recommendations.length > 0,
       length: candidateInfo?.recommendations.length
     }
-  ]), []);
+  ]), [candidateInfo?.certifications, candidateInfo?.conferences,
+  candidateInfo?.courses, candidateInfo?.education, candidateInfo?.experience,
+  candidateInfo?.publications, candidateInfo?.recommendations]);
 
   useEffect(() => {
     if (requestMenu === 'candidate-review') {

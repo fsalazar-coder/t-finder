@@ -179,7 +179,7 @@ export default function RequestModal() {
       default:
         break;
     }
-  },[userRequestDataUpdate]);
+  },[userRequestDataUpdate, requestModal]);
 
   /**inputs for talent form */
   const talentInput = [
