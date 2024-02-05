@@ -40,7 +40,7 @@ export default function ProfileCardsTitle(
           />
         </div>
         {
-          !isDashboard &&
+          !isDashboard && menuProfileElements &&
           <SubmenuCarsTitle
             elements={menuProfileElements}
             menuIndex={profileMenuIndex}

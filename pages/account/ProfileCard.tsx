@@ -30,10 +30,7 @@ export default function ProfileCard({ data, editDeleteButtonVisible, dataBaseCol
       {/**header */}
       <div className={`flex-row justify-between w-full flex pt-2 items-center`}>
         <ul className={`w-full flex flex-col`}>
-          <CardsItems
-            element={data as any}
-            carsModel='vertical'
-          />
+          {data && <CardsItems element={data as any} carsModel='vertical' />}
         </ul>
       </div>
     </div>

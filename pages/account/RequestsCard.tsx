@@ -247,6 +247,7 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
   const profileElementsId: string = candidateProfile[candidateProfileIndex]?.id;
   const profileElementsData: any = candidateProfile[candidateProfileIndex]?.data;
   const isRenderOverview: boolean = reviewMenuIndex === 0;
+  const shouldRenderData: boolean = Object.keys(data)?.length > 0;
   const heightCardsModule: any = {
     'talent-submitted': 'h-[430px]',
     'job-submitted': 'h-[450px]',
@@ -254,9 +255,6 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
     'requests': 'h-[500px]',
     'candidate-review': 'h-auto',
   };
-
-  const shouldRenderData: boolean = Object.keys(data)?.length > 0;
-
 
   return (
     <>
@@ -300,7 +298,7 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
                 </div>
               }
               {
-                isRequestMenuCandidates ?
+                isRequestMenuCandidates && candidateProfile ?
                   <div className="w-full py-2 flex flex-col">
                     <div className="w-full pb-2">
                       <ProfileScoreOverall profile={candidateProfile} />
@@ -309,10 +307,7 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
                   </div>
                   :
                   <ul className={`${isRequestMenuReview ? 'w-4/5 flex-wrap' : 'w-full flex-col'} py-2 flex`}>
-                    <CardsItems
-                      element={data as any}
-                      carsModel={isRequestMenuReview ? 'horizontal' : 'vertical'}
-                    />
+                    {data && <CardsItems element={data as any} carsModel={isRequestMenuReview ? 'horizontal' : 'vertical'} />}
                   </ul>
               }
             </div>
@@ -340,9 +335,10 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
           {
             isRenderOverview ?
               <div className="w-full mt-1 px-5 py-5 flex flex-col bg-white border border-color-border shadow-md rounded-lg transform transition-all">
-                <ProfileScoreOverview profile={candidateProfile} />
+                {candidateProfile && <ProfileScoreOverview profile={candidateProfile} />}
               </div>
               :
+              profileElementsData && 
               <ProfileCardsDisplayer
                 id={profileElementsId}
                 key={profileElementsId}
