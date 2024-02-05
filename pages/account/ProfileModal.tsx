@@ -133,7 +133,7 @@ export default function ProfileModal() {
 
   const itemProfileId: string = profileModalAction === 'post' ? uuidv4() : itemIdToChange;
 
-  const profileUpdate: any = {
+  const profileUpdate: any = useMemo(() => ({
     personalInfo: {
       _id: userId,
       full_name: userProfileDataUpdate.fullName,
@@ -209,7 +209,7 @@ export default function ProfileModal() {
       recommender_phone: userProfileDataUpdate.recommenderPhone,
       update_at: date,
     }
-  };
+  }),[]);
 
   const profileElementName: string = collectionToChange === 'personal_info' ? 'personalInfo' : collectionToChange;
 
