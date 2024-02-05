@@ -61,7 +61,7 @@ const initialUserProfileData = {
 export default function ProfileModal() {
   const { token, userId } = useAuth();
   const { setMessageModal, setLoading } = useUI();
-  const { profileModal, setProfileModal, profileModalAction, setProfileModalAction, 
+  const { profileModal, setProfileModal, profileModalAction, setProfileModalAction,
     setUserProfileData, collectionToChange, setCollectionToChange, itemIdToChange } = useAuthData();
   const [filledForm, setFilledForm] = useState(true);
   const [userProfileDataUpdate, setUserProfileDataUpdate] = useState(initialUserProfileData);
@@ -209,7 +209,7 @@ export default function ProfileModal() {
       recommender_phone: userProfileDataUpdate.recommenderPhone,
       update_at: date,
     }
-  }),[]);
+  }), [date, itemProfileId, userId, userProfileDataUpdate]);
 
   const profileElementName: string = collectionToChange === 'personal_info' ? 'personalInfo' : collectionToChange;
 
@@ -378,7 +378,7 @@ export default function ProfileModal() {
         { type: 'text', title: 'Recommender phone', value: 'recommenderPhone' },
       ],
     },
-  ]),[]);
+  ]), []);
 
   useEffect(() => {
     const modalSelection = modal?.find((section) => section.collectionName === collectionToChange);
@@ -393,7 +393,7 @@ export default function ProfileModal() {
       let userProfileDataUpdateSelectedUnfilled = Object.values(userProfileDataUpdateSelected)?.some(value => value === '');
       setFilledForm(userProfileDataUpdateSelectedUnfilled ? false : true);
     }
-  },[profileUpdate, profileElementName]);
+  }, [profileUpdate, profileElementName]);
 
   const renderProfileModal = profileModal !== '';
 
