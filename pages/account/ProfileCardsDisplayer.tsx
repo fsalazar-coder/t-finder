@@ -8,10 +8,10 @@ export default function ProfileCardsDisplayer({ shouldRender, data, dataBaseColl
   const [itemHover, setItemHover] = useState(null);
   const [listHover, setListHover] = useState(false);
   const isDashboard = accountModule === 'Dashboard';
-  const shouldRenderData = Array.isArray(data) && data.length > 0;
+  const shouldRenderData = Array.isArray(data) && data?.length > 0;
 
   return (
-    shouldRender && (
+    shouldRender && data && (
       shouldRenderData ?
         <ul id={dataBaseCollection} className={`${!isDashboard && 'py-1'} w-full h-full flex flex-col`}>
           {

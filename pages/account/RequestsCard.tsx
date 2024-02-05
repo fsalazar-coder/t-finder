@@ -257,7 +257,7 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
   };
 
   return (
-    data &&
+    shouldRenderData && data &&
     <>
       <div className={`${heightCardsModule[requestMenu]} w-full px-5 py-2 flex flex-col bg-white border border-color-border shadow-md rounded-lg transform transition-all`}>
         {/**title */}
@@ -266,7 +266,7 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
             {data?.full_name || data?.title}
           </h2>
           {
-            isRequestMenuReview &&
+            isRequestMenuReview && reviewMenuItems &&
             <SubmenuCarsTitle
               elements={reviewMenuItems}
               menuIndex={reviewMenuIndex}
