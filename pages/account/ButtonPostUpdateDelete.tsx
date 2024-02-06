@@ -116,7 +116,7 @@ export default function ButtonPostUpdateDelete({ itemId, action, buttonType, dat
     };
 
     setMessageModal([{
-      type: 'question',
+      type: 'delete',
       text: `Do you want to delete this ${textToMessageModal()} item?`,
       click: () => {
         userDataHandlerFunction({
@@ -144,7 +144,7 @@ export default function ButtonPostUpdateDelete({ itemId, action, buttonType, dat
             setTimeout(() => {
               setMessageModal([{
                 type: 'successful',
-                text: `Your ${dataBaseCollection} item has been successfully deleted.`,
+                text: `Your ${textToMessageModal()} item has been successfully deleted.`,
                 click: () => setMessageModal([])
               }]);
             }, 500);

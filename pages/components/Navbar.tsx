@@ -37,7 +37,9 @@ export default function Navbar({ sectionActived }: any) {
 
 
   return (
-    <div className={`w-full fixed flex flex-col items-center bg-color-navbar bg-opacity-90 border-b border-color-border transition-all z-50`}>
+    <div className={`w-full fixed flex flex-col items-center bg-color-navbar bg-opacity-90 border-b border-color-border transition-all z-50`}
+      onClick={(e) => e.stopPropagation()}
+    >
       <div className={`container w-full h-12 lg:h-14 px-0 lg:px-5 flex flex-row justify-between items-center`}>
         <HamburguerMenu />
         <Logo />

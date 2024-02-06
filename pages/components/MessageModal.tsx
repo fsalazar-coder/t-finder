@@ -16,9 +16,7 @@ export default function MessageModal() {
   const { messageModal, setMessageModal } = useUI();
   const { collectionToChange, setCollectionToChange } = useAuthData();
   const [animationState, setAnimationState] = useState({ circle: false, symbol: false, circleGrow: false });
-  const [circleAnimation, setCircleAnimation] = useState(false);
-  const [symbolAnimation, setSymbolAnimation] = useState(false);
-  const [circleGrowAnimation, setCircleGrowAnimation] = useState(false);
+  const [animationStep, setAnimationStep] = useState(0); // 0: ninguna, 1: circle, 2: symbol
   const { type, text, click } = messageModal[0] || {};
   const isCancelButton: boolean = type === 'question' || type === 'delete' || type === 'logout';
   const modalActived: boolean = messageModal.length > 0;
@@ -45,13 +43,13 @@ export default function MessageModal() {
     'delete': {
       title: 'Are you sure?',
       textButton: 'Delete',
-      strokeColor: 'stroke-red-400',
+      strokeColor: 'stroke-red-500',
       buttonColor: 'bg-red-500 lg:bg-red-500 lg:hover:bg-red-400'
     },
     'logout': {
       title: 'Are you sure?',
       textButton: 'Logout',
-      strokeColor: 'stroke-color-highlighted-clear',
+      strokeColor: 'stroke-color-highlighted',
       buttonColor: 'bg-color-highlighted lg:hover:bg-color-highlighted-clear'
     },
   };
@@ -61,16 +59,14 @@ export default function MessageModal() {
 
   useEffect(() => {
     if (modalActived) {
-      setAnimationState({ ...animationState, circle: true });
-      setCircleAnimation(true);
-      setSymbolAnimation(false)
-      setTimeout(() => {
-        setSymbolAnimation(true);
-        setCircleGrowAnimation(false);
-        setTimeout(() => {
-          setCircleGrowAnimation(true);
-        }, 1000);
-      }, 1000);
+      setAnimationStep(1);                  // Inicia la animación del círculo primero
+      animationStep === 1 && setAnimationState({ ...animationState, circle: true });
+
+      const timer = setTimeout(() => {      // Espera a que termine la animación del círculo para iniciar la del símbolo
+        setAnimationStep(2);
+        animationStep === 2 && setAnimationState({ ...animationState, symbol: true })
+      }, 2000);
+      return () => clearTimeout(timer);
     }
   }, [modalActived, animationState]);
 
@@ -105,24 +101,24 @@ export default function MessageModal() {
     <div className='w-screen h-screen fixed top-0 flex flex-col justify-center items-center bg-black bg-opacity-75 transition-all z-[60]'>
       <div className={
         `${modalActived ? 'scale-100 animate-[poing_0.50s]' : 'scale-0 animate-[zoom-out_0.30s]'
-        } container w-64 lg:w-[22rem] p-4 lg:p-8 relative flex flex-col justify-start items-center bg-white rounded-lg shadow-md transform z-[100]`
+        } container w-[18rem] lg:w-[22rem] p-6 lg:p-8 relative flex flex-col bg-white rounded-lg shadow-md transform z-[100]`
       }>
-        <div className='w-full flex flex-col justify-start items-center'>
+        <div className='w-full flex flex-col'>
           <AnimatedSVG
             type={type}
             strokeColor={strokeColor}
-            circleAnimation={circleAnimation}
-            symbolAnimation={symbolAnimation}
+            circleAnimation={animationState.circle}
+            symbolAnimation={animationState.symbol}
           />
-          {/**message title */}
-          <h2 className='w-full pt-4 text-xl lg:text-3xl text-slate-950 text-center flex flex-col justify-center items-center'>
-            {title}
-          </h2>
-          {/**text modal */}
-          <h4 className='w-full pb-6 text-sm lg:text-base text-slate-600 text-center flex flex-col justify-center items-center'>
-            {text}
-          </h4>
-          <div className='w-full flex flex-row justify-center items-center'>
+          <div className='w-full pb-3 flex flex-col justify-center items-center'>
+            <h2 className='w-fit text-[20px] lg:text-[30px] text-slate-950 text-center flex flex-col justify-center items-center'>
+              {title}
+            </h2>
+            <h4 className='w-full text-sm lg:text-base text-slate-600 text-center flex flex-col justify-center items-center'>
+              {text}
+            </h4>
+          </div>
+          <div className='w-full flex flex-row justify-between items-center'>
             {isCancelButton && renderButton('cancel')}
             {renderButton(isCancelButton ? 'medium' : 'large')}
           </div>
@@ -139,7 +135,7 @@ const AnimatedSVG = ({ type, strokeColor, circleAnimation, symbolAnimation }: an
     'successful':
       <svg
         className={`${strokeColor} w-10 h-10`}
-        strokeWidth={8}
+        strokeWidth={4}
         viewBox='0 0 40 40'
         strokeLinecap='round'
       >
@@ -162,52 +158,43 @@ const AnimatedSVG = ({ type, strokeColor, circleAnimation, symbolAnimation }: an
       </svg>,
     'question':
       <svg
-        className={`${strokeColor} w-10 lg:w-14 h-10 lg:h-14 flex`}
-        strokeWidth={4}
-        viewBox='0 0 40 40'
+        className={`w-10 lg:w-14 h-10 lg:h-14 flex fill-sky-400`}
+        strokeWidth={1}
+        viewBox='0 0 16 16'
         strokeLinecap='round'
       >
-        <line
+        <path
+          fillRule="evenodd"
           className={`${symbolAnimation ? 'animate-[draw-check_1.0s_ease]' : 'hidden'}`}
-          x1="20" y1="4" x2="20" y2="27"
-        />
-        <line
-          className={`${symbolAnimation ? 'animate-[draw-check_1.5s_ease]' : 'hidden'}`}
-          x1="20" y1="36" x2="20" y2="36"
+          d="M4.475 5.458c-.284 0-.514-.237-.47-.517C4.28 3.24 5.576 2 7.825 2c2.25 0 3.767 1.36 3.767 3.215 0 1.344-.665 2.288-1.79 2.973-1.1.659-1.414 1.118-1.414 2.01v.03a.5.5 0 01-.5.5h-.77a.5.5 0 01-.5-.495l-.003-.2c-.043-1.221.477-2.001 1.645-2.712 1.03-.632 1.397-1.135 1.397-2.028 0-.979-.758-1.698-1.926-1.698-1.009 0-1.71.529-1.938 1.402-.066.254-.278.461-.54.461h-.777zM7.496 14c.622 0 1.095-.474 1.095-1.09 0-.618-.473-1.092-1.095-1.092-.606 0-1.087.474-1.087 1.091S6.89 14 7.496 14z"
         />
       </svg>,
     'delete':
       <svg
-        className={`${strokeColor} w-10 lg:w-14 h-10 lg:h-14 flex`}
-        strokeWidth={4}
-        viewBox='0 0 40 40'
+        className={`w-10 lg:w-14 h-10 lg:h-14 flex fill-red-500`}
+        strokeWidth={1}
+        viewBox='0 0 16 16'
         strokeLinecap='round'
       >
-        <line
+        <path
+          fillRule="evenodd"
           className={`${symbolAnimation ? 'animate-[draw-check_1.0s_ease]' : 'hidden'}`}
-          x1="20" y1="4" x2="20" y2="27"
-        />
-        <line
-          className={`${symbolAnimation ? 'animate-[draw-check_1.5s_ease]' : 'hidden'}`}
-          x1="20" y1="36" x2="20" y2="36"
+          d="M4.475 5.458c-.284 0-.514-.237-.47-.517C4.28 3.24 5.576 2 7.825 2c2.25 0 3.767 1.36 3.767 3.215 0 1.344-.665 2.288-1.79 2.973-1.1.659-1.414 1.118-1.414 2.01v.03a.5.5 0 01-.5.5h-.77a.5.5 0 01-.5-.495l-.003-.2c-.043-1.221.477-2.001 1.645-2.712 1.03-.632 1.397-1.135 1.397-2.028 0-.979-.758-1.698-1.926-1.698-1.009 0-1.71.529-1.938 1.402-.066.254-.278.461-.54.461h-.777zM7.496 14c.622 0 1.095-.474 1.095-1.09 0-.618-.473-1.092-1.095-1.092-.606 0-1.087.474-1.087 1.091S6.89 14 7.496 14z"
         />
       </svg>,
     'logout':
       <svg
-        className={`${strokeColor} w-10 lg:w-14 h-10 lg:h-14 flex`}
-        strokeWidth={4}
-        viewBox='0 0 40 40'
+        className={`w-10 lg:w-14 h-10 lg:h-14 flex fill-sky-500`}
+        strokeWidth={1}
+        viewBox='0 0 16 16'
         strokeLinecap='round'
       >
-        <line
+        <path
+          fillRule="evenodd"
           className={`${symbolAnimation ? 'animate-[draw-check_1.0s_ease]' : 'hidden'}`}
-          x1="20" y1="4" x2="20" y2="27"
+          d="M4.475 5.458c-.284 0-.514-.237-.47-.517C4.28 3.24 5.576 2 7.825 2c2.25 0 3.767 1.36 3.767 3.215 0 1.344-.665 2.288-1.79 2.973-1.1.659-1.414 1.118-1.414 2.01v.03a.5.5 0 01-.5.5h-.77a.5.5 0 01-.5-.495l-.003-.2c-.043-1.221.477-2.001 1.645-2.712 1.03-.632 1.397-1.135 1.397-2.028 0-.979-.758-1.698-1.926-1.698-1.009 0-1.71.529-1.938 1.402-.066.254-.278.461-.54.461h-.777zM7.496 14c.622 0 1.095-.474 1.095-1.09 0-.618-.473-1.092-1.095-1.092-.606 0-1.087.474-1.087 1.091S6.89 14 7.496 14z"
         />
-        <line
-          className={`${symbolAnimation ? 'animate-[draw-check_1.5s_ease]' : 'hidden'}`}
-          x1="20" y1="36" x2="20" y2="36"
-        />
-      </svg>
+      </svg>,
   };
 
   return (

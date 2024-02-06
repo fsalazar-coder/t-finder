@@ -25,7 +25,7 @@ interface DropdownElementsProps {
 export default function DropdownAuth() {
   const { token, userEmail } = useAuth();
   const { userProfileData } = useAuthData();
-  const { screenNarrow, dropdownAuth, accountActived } = useUI();
+  const { screenNarrow, dropdownAuth, setDropdownAuth, accountActived } = useUI();
   const dropdownElements: DropdownElement[] = [
     { key: 'dropdown-link-dashboard', title: 'Dashboard', value: 'Dashboard', icon: <IconDashboard />, renderCondition: true },
     { key: 'dropdown-link-profile', title: 'Profile', value: 'Profile', icon: <IconUserTie />, renderCondition: true },
@@ -38,11 +38,14 @@ export default function DropdownAuth() {
 
   return (
     token && dropdownAuth &&
-    <div className="w-full h-full fixed top-[51px] lg:top-[59px] right-0 flex flex-row justify-center z-[80]">
+    <div className="w-full h-full fixed top-[51px] lg:top-[59px] right-0 flex flex-row justify-center z-[80]"
+      onClick={() => setDropdownAuth(false)}
+    >
       <div className={`${accountActived ? 'px-5' : 'container'} w-full flex flex-row justify-end`}>
         <ul className={`${screenNarrow ? 'w-52' : 'w-60'
           } h-fit animate-[zoom-in-top_0.2s_ease] flex-col justify-start items-start bg-color-navbar border border-color-border rounded-md transition-all z-50`
-        }>
+        } onClick={(e) => e.stopPropagation()}
+        >
           <ProfileImageDropdown userName={userName} />
           <DropdownElements dropdownElements={dropdownElements} />
           <ButtonLogout type='dropdown-auth' />

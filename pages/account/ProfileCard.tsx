@@ -1,5 +1,5 @@
 import ButtonPostUpdateDelete from "./ButtonPostUpdateDelete";
-import CardsItems from "./CardsItems";
+import ItemsCards from "./ItemsCards";
 
 interface UserCardParams {
   data: { [key: string]: string },
@@ -31,7 +31,7 @@ export default function ProfileCard({ data, editDeleteButtonVisible, dataBaseCol
       {/**header */}
       <div className={`flex-row justify-between w-full flex pt-2 items-center`}>
         <ul className={`w-full flex flex-col`}>
-          {data && <CardsItems element={data as any} carsModel='vertical' />}
+          {data && <ItemsCards element={data as any} carsModel='vertical' />}
         </ul>
       </div>
     </div>

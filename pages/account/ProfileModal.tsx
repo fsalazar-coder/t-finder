@@ -4,7 +4,7 @@ import { useAuth } from "@/context/ContextAuth";
 import { useAuthData } from "@/context/ContextAuthData";
 import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
 import { IconCancel } from '../../icons/icons';
-import FormTemplate from './FormTemplate';
+import TemplateForm from './TemplateForm';
 import ProfileModalImage from './ProfileModalImage';
 import dateTimeFunction from '../api/dateTimeFunction';
 import { v4 as uuidv4 } from 'uuid';
@@ -437,7 +437,7 @@ export default function ProfileModal() {
               :
               <form className='w-full pt-5 flex flex-col transition-all z-0' onSubmit={(e: any) => handleSubmit(e)}>
                 <div className='w-full h-full flex flex-col items-center'>
-                  <FormTemplate
+                  <TemplateForm
                     inputData={profileSelected.inputs}
                     formData={userProfileDataUpdate}
                     changeData={changeUserProfileDataUpdate}

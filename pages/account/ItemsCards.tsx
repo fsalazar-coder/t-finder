@@ -1,7 +1,7 @@
 
 
 
-export default function CardsItems({ element, carsModel }: any) {
+export default function ItemsCards({ element, carsModel }: any) {
 
   function formatKeys(element: any) {
     const formattedElement: Record<string, any> = {};

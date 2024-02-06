@@ -4,7 +4,7 @@ import { useAuth } from "@/context/ContextAuth";
 import { useAuthData } from "@/context/ContextAuthData";
 import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
 import { IconCancel } from '../../icons/icons';
-import FormTemplate from './FormTemplate';
+import TemplateForm from './TemplateForm';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 import dateTimeFunction from '../api/dateTimeFunction';
@@ -330,7 +330,7 @@ export default function RequestModal() {
               <div className='w-full flex flex-col items-center'>
                 {
                   requestModal === 'Talent' ?
-                    <FormTemplate
+                    <TemplateForm
                       inputData={talentInput}
                       formData={userRequestDataUpdate}
                       changeData={changeUserRequestDataUpdate}
@@ -340,7 +340,7 @@ export default function RequestModal() {
                     />
                     :
                     requestModal === 'Job' &&
-                    <FormTemplate
+                    <TemplateForm
                       formData={userRequestDataUpdate}
                       inputData={jobInput}
                       changeData={changeUserRequestDataUpdate}

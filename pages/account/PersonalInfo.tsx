@@ -2,7 +2,7 @@ import { useAuth } from "@/context/ContextAuth";
 import { useAuthData } from "@/context/ContextAuthData";
 import ImageIconUser from './ImageIconUser';
 import SectionTitles from '../components/SectionTitles';
-import CardsItems from './CardsItems';
+import ItemsCards from './ItemsCards';
 import ButtonPostUpdateDelete from './ButtonPostUpdateDelete';
 
 
@@ -48,7 +48,7 @@ export default function PersonalInfo() {
           renderPersonalInfoData ?
             /**information */
             <ul className='w-full pt-4 flex flex-col'>
-              <CardsItems
+              <ItemsCards
                 element={personalInfoData[0] as any}
                 carsModel='vertical'
               />

@@ -1,9 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { useUI } from "@/context/ContextUI";
 import { useAuth } from "@/context/ContextAuth";
-import { useAuthData } from "@/context/ContextAuthData";
 import { userDataHandlerFunction } from "../api/userDataHandlerFunction";
-import CardsItems from "./CardsItems";
+import ItemsCards from "./ItemsCards";
 import SubmenuCarsTitle from "./SubmenuCarsTitle";
 import ProfileScoreOverview from "./ProfileScoreOverview";
 import ProfileScoreOverall from "./ProfileScoreOverall";
@@ -310,7 +309,7 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
                   </div>
                   :
                   <ul className={`${isRequestMenuReview ? 'w-4/5 flex-wrap' : 'w-full flex-col'} py-2 flex`}>
-                    {data && <CardsItems element={data as any} carsModel={isRequestMenuReview ? 'horizontal' : 'vertical'} />}
+                    {data && <ItemsCards element={data as any} carsModel={isRequestMenuReview ? 'horizontal' : 'vertical'} />}
                   </ul>
               }
             </div>

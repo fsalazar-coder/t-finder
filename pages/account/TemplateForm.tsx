@@ -68,7 +68,7 @@ const FormField = ({ field, formValue, changeValue, onChange, onFocus, onBlur }:
   );
 };
 
-export default function FormTemplate({ inputData, formData, changeData, onChange, onFocus, onBlur }: FormTemplateProps) {
+export default function TemplateForm({ inputData, formData, changeData, onChange, onFocus, onBlur }: FormTemplateProps) {
   return (
     <>
       {inputData?.map((field, index) => (

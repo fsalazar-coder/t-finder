@@ -16,10 +16,9 @@ interface LogoutConfigType {
 }
 
 
-
 export default function ButtonLogout({ type }: ButtonLogoutParams) {
-  const { setDropdownAuth, setMessageModal, setHamburguerMenuActive } = useUI();
   const { logout } = useAuth();
+  const { setDropdownAuth, setMessageModal, setHamburguerMenuActive } = useUI();
 
   const handleLogout = () => {
     const actions = {

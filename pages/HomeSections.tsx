@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import { useUI } from "@/context/ContextUI";
 import Navbar from './components/Navbar';
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import SectionTemplate from "./components/SectionTemplate";
+import TemplateSection from "./components/TemplateSection";
 import Blog from "./components/Blog";
 import Testimonials from "./components/Testimonials";
 import Data from './data/data.json';
@@ -17,6 +18,7 @@ interface SectionDataParams {
 
 
 export default function HomeSections({ renderCondition }: any) {
+  const { setDropdownHome, setHamburguerMenuActive } = useUI();
   const [sectionActived, setSectionActived] = useState<string>('');
   const headerSectionRef = useRef<HTMLElement>(null);
   const talentSectionRef = useRef<HTMLElement>(null);
@@ -37,7 +39,7 @@ export default function HomeSections({ renderCondition }: any) {
       id: 'recruit-section',
       className: 'w-full h-auto py-8 lg:h-[615px] lg:py-0 bg-white',
       ref: talentSectionRef,
-      Component: SectionTemplate,
+      Component: TemplateSection,
       props: {
         xDirectionReverse: true,
         sectionTitle: 'RECRUIT',
@@ -52,7 +54,7 @@ export default function HomeSections({ renderCondition }: any) {
       id: 'job-section',
       className: 'w-full h-auto py-8 lg:h-[615px] lg:py-0 bg-color-clear',
       ref: jobSectionRef,
-      Component: SectionTemplate,
+      Component: TemplateSection,
       props: {
         xDirectionReverse: false,
         sectionTitle: 'JOB',
@@ -119,10 +121,10 @@ export default function HomeSections({ renderCondition }: any) {
   }, [sectionActived, sectionsData]);
 
   return renderCondition && (
-    <>
+    <div className="w-full h-full flex flex-col" onClick={() => {setDropdownHome(false); setHamburguerMenuActive(false)}}>
       <Navbar sectionActived={sectionActived} />
       <Sections sectionsData={sectionsData} />
-    </>
+    </div>
   );
 };
 
