@@ -18,10 +18,10 @@ interface ContextUIProps {
   setScreenNarrow: React.Dispatch<React.SetStateAction<boolean>>;
   hamburguerMenuActive: boolean;
   setHamburguerMenuActive: React.Dispatch<React.SetStateAction<boolean>>;
-  sidebar: boolean;
-  setSidebar: React.Dispatch<React.SetStateAction<boolean>>;
-  dropdown: boolean;
-  setDropdown: React.Dispatch<React.SetStateAction<boolean>>;
+  dropdownHome: boolean;
+  setDropdownHome: React.Dispatch<React.SetStateAction<boolean>>;
+  dropdownAuth: boolean;
+  setDropdownAuth: React.Dispatch<React.SetStateAction<boolean>>;
   accountActived: boolean;
   setAccountActived: React.Dispatch<React.SetStateAction<boolean>>;
   accountModule: string;
@@ -43,8 +43,8 @@ export const UIProvider = ({ children }: UIProviderProps): JSX.Element => {
     passwordResetModal, setPasswordResetModal, isLoggingOut, setCleanupDone } = useAuth();
   const [screenNarrow, setScreenNarrow] = useState<boolean>(false);
   const [hamburguerMenuActive, setHamburguerMenuActive] = useState<boolean>(false);
-  const [sidebar, setSidebar] = useState<boolean>(false);
-  const [dropdown, setDropdown] = useState<boolean>(false);
+  const [dropdownHome, setDropdownHome] = useState<boolean>(false);
+  const [dropdownAuth, setDropdownAuth] = useState<boolean>(false);
   const [accountActived, setAccountActived] = useState<boolean>(false);
   const [accountModule, setAccountModule] = useState<string>('');
   const [requestMenu, setRequestMenu] = useState<string>('');
@@ -94,7 +94,7 @@ export const UIProvider = ({ children }: UIProviderProps): JSX.Element => {
   /// logout, clear data
   useEffect(() => {
     if (isLoggingOut) {
-      setDropdown(false);
+      setDropdownAuth(false);
       setAccountActived(false);
       setAccountModule('');
       setRequestMenu('');
@@ -109,8 +109,8 @@ export const UIProvider = ({ children }: UIProviderProps): JSX.Element => {
       {
         screenNarrow, setScreenNarrow,
         hamburguerMenuActive, setHamburguerMenuActive,
-        sidebar, setSidebar,
-        dropdown, setDropdown,
+        dropdownHome, setDropdownHome,
+        dropdownAuth, setDropdownAuth,
         accountActived, setAccountActived,
         accountModule, setAccountModule,
         requestMenu, setRequestMenu,

@@ -13,7 +13,7 @@ interface NavbarElement {
 }
 
 interface NavbarElementProps {
-  navbarAccountElements: NavbarElement[];
+  largeElements: NavbarElement[];
   getClickAction: (element: string) => () => void;
 }
 
@@ -24,12 +24,12 @@ interface NavbarAccountIndicatorProps {
 
 export default function NavbarAccount() {
   const { setChatActived } = useAuthSocket();
-  const { screenNarrow, dropdown, setDropdown, setAccountActived, accountModule, setAccountModule } = useUI();
+  const { screenNarrow, dropdownAuth, setDropdownAuth, setAccountActived, accountModule, setAccountModule } = useUI();
   const indicatorRef = useRef<HTMLDivElement>(null);
 
   const isDashboard = accountModule === 'Dashboard';
 
-  const navbarAccountElements: NavbarElement[] = [
+  const navbarLargeElements: NavbarElement[] = [
     { title: 'Dashboard', clickGoTo: 'Dashboard', icon: <IconDashboard /> },
     { title: 'Profile', clickGoTo: 'Profile', icon: <IconUserTie /> },
     { title: 'Talent request', clickGoTo: 'Talent', icon: <IconUserSearchFilled /> },
@@ -75,23 +75,17 @@ export default function NavbarAccount() {
         } fixed left-0 flex items-center bg-white border-color-border transition-all z-50`
       }>
       <div className={`${screenNarrow ? 'w-fit px-5 flex-row' : 'w-full flex-col'} h-full flex justify-between`}
-        onClick={() => screenNarrow && setDropdown(!dropdown)}
+        onClick={() => screenNarrow && setDropdownAuth(!dropdownAuth)}
       >
-        <AccountElementActive />
+        <DropdownIndicator shouldRender={screenNarrow} />
+        <NavbarNarrowElements shouldRender={screenNarrow} />
         <ProfileImage />
-        {
-          !screenNarrow &&
-          <>
-            <nav className='w-full h-fit relative flex flex-col items-center'>
-              <NavbarAccountElements
-                navbarAccountElements={navbarAccountElements}
-                getClickAction={getClickAction}
-              />
-              <NavbarAccountIndicator reference={indicatorRef} />
-            </nav>
-            <ButtonLogout type='navbar-account' />
-          </>
-        }
+        <NavbarAccountLarge
+          shouldRender={!screenNarrow}
+          largeElements={navbarLargeElements}
+          getClickAction={getClickAction}
+          reference={indicatorRef}
+        />
       </div>
     </div>
   )
@@ -99,12 +93,12 @@ export default function NavbarAccount() {
 
 
 /// account module element indicator: is actived only on screenarrow to active dropdown 
-const AccountElementActive = () => {
-  const { screenNarrow, accountModule } = useUI();
+const NavbarNarrowElements = ({ shouldRender }: any) => {
+  const { accountModule } = useUI();
 
   return (
-    screenNarrow &&
-    <div className='w-full py-1 flex flex-row justify-end items-center z-30'>
+    shouldRender &&
+    <div className='w-full py-1 px-2 flex flex-row justify-end items-center z-30'>
       <div className="flex flex-row justify-end items-center">
         <h2 className='w-fit pr-1 text-color-text-dark'>
           {accountModule}
@@ -115,32 +109,51 @@ const AccountElementActive = () => {
 };
 
 const ProfileImage = () => {
-  const { screenNarrow, dropdown } = useUI();
+  const { screenNarrow } = useUI();
 
   return (
     <div className={`${screenNarrow ? 'w-fit relative' : 'w-full py-2 border-b border-color-border'} flex flex-row justify-center items-center`}>
-      <div className={`${screenNarrow ? 'w-6 h-6 px-1' : 'w-16 h-16'} flex flex-col justify-center items-center transition-all`}>
+      <div className={`${screenNarrow ? 'w-6 h-6' : 'w-16 h-16'} flex flex-col justify-center items-center transition-all`}>
         <ImageIconUser
           type={screenNarrow ? 'navbar' : 'account-navbar'}
           otherUserImageUrl={'none'}
         />
       </div>
-      {
-        screenNarrow &&
-        <div className={`${dropdown ? 'pt-3' : 'pt-1'} h-full flex flex-col justify-center`}>
-          <div className={`${dropdown ? '-rotate-[135deg]' : 'rotate-45'} w-2 h-2 border-r-2 border-b-2 border-color-border transform transition-all`} />
-        </div>
-      }
     </div>
   )
 };
 
-const NavbarAccountElements: React.FC<NavbarElementProps> = ({ navbarAccountElements, getClickAction }) => {
+const DropdownIndicator = ({ shouldRender }: any) => {
+  const { dropdownAuth } = useUI();
+
+  return (
+    shouldRender &&
+    <div className={`${dropdownAuth ? 'pt-2' : ''} h-full flex flex-col justify-center`}>
+      <div className={`${dropdownAuth ? '-rotate-[135deg]' : 'rotate-45'} w-2 h-2 border-r-2 border-b-2 border-color-highlighted-clear transform transition-all`} />
+    </div>
+  )
+};
+
+const NavbarAccountLarge = ({ shouldRender, largeElements, getClickAction, reference }: any) => (
+  shouldRender &&
+  <>
+    <nav className='w-full h-fit relative flex flex-col items-center'>
+      <NavbarAccountLargeElements
+        largeElements={largeElements}
+        getClickAction={getClickAction}
+      />
+      <NavbarAccountIndicator reference={reference} />
+    </nav>
+    <ButtonLogout type='navbar-account' />
+  </>
+);
+
+const NavbarAccountLargeElements: React.FC<NavbarElementProps> = ({ largeElements, getClickAction }) => {
   const { unreadNotifications, unreadMessages } = useAuthSocket();
   const { accountModule } = useUI();
 
   return (
-    navbarAccountElements?.map(({ title, clickGoTo, icon }: any, index: number) => {
+    largeElements?.map(({ title, clickGoTo, icon }: any, index: number) => {
       return (
         <li key={index} className={
           `${clickGoTo === accountModule ? 'text-color-highlighted' : 'text-color-text-almost-clear hover:text-color-highlighted-clear cursor-pointer'}

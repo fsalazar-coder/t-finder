@@ -43,8 +43,8 @@ type ButtonType = 'menu-dashboard' | 'post-dashboard' | 'post-account' | 'update
 
 
 export default function ButtonPostUpdateDelete({ itemId, action, buttonType, dataBaseCollection, shouldRenderButton }: ButtonTitleParams) {
-  const { screenNarrow, setMessageModal } = useUI();
   const { token } = useAuth();
+  const { screenNarrow, setAccountModule, setMessageModal } = useUI();
   const { setProfileModal, setProfileModalAction, setRequestModal, setRequestModalAction, setCollectionToChange, setItemIdToChange, setUserProfileData, setUserRequestData } = useAuthData();
   const { accountModule } = useUI();
   const isMenuDashboard = buttonType === 'menu-dashboard';
@@ -71,12 +71,20 @@ export default function ButtonPostUpdateDelete({ itemId, action, buttonType, dat
         break;
       case 'request_talent':
       case 'request_job':
-        setRequestModal(requestType);
-        setRequestModalAction(action === 'update-delete' ? 'update-default' : 'post');
+        if (action === 'go-to-request') {
+          setAccountModule(requestType)
+        } else {
+          setRequestModal(requestType);
+          setRequestModalAction(action === 'update-delete' ? 'update-default' : 'post');
+        }
         break;
       default:
-        setProfileModal(dataBaseCollection);
-        setProfileModalAction(action === 'update-delete' ? 'update-default' : 'post');
+        if (action === 'go-to-profile') {
+          setAccountModule('Profile')
+        } else {
+          setProfileModal(dataBaseCollection);
+          setProfileModalAction(action === 'update-delete' ? 'update-default' : 'post');
+        }
         break;
     }
   };

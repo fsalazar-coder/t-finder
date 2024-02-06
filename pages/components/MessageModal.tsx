@@ -12,7 +12,6 @@ interface ModalConfigType {
 }
 
 
-
 export default function MessageModal() {
   const { messageModal, setMessageModal } = useUI();
   const { collectionToChange, setCollectionToChange } = useAuthData();

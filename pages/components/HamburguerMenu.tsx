@@ -2,7 +2,7 @@ import { useUI } from "@/context/ContextUI";
 
 
 export default function HamburguerMenu() {
-  const { hamburguerMenuActive, setHamburguerMenuActive, sidebar, setSidebar, setDropdown } = useUI();
+  const { hamburguerMenuActive, setHamburguerMenuActive, dropdownHome, setDropdownHome, setDropdownAuth } = useUI();
 
   const renderMenuLines = () => {
     return hamburguerMenuActive ?
@@ -23,9 +23,9 @@ export default function HamburguerMenu() {
     <div
       className='relative transition-all z-50'
       onClick={() => {
-        setDropdown(false);
+        setDropdownAuth(false);
         setHamburguerMenuActive(!hamburguerMenuActive);
-        setSidebar(!sidebar);
+        setDropdownHome(!dropdownHome);
       }}>
       <div className='w-5 h-6 mr-3 relative flex flex-col justify-center items-center transition-all'>
         {renderMenuLines()}

@@ -59,8 +59,8 @@ export default function Notifications() {
       >
         {/**title */}
         <div className={
-          `${isDashboard && 'px-5 pb-4 border-b'     // or bg-white border shadow-md rounded-lg
-          } w-full py-1 flex justify-between flex-row items-center border-color-border`
+          `${isDashboard && 'px-5 border-b'
+          } w-full py-1 flex flex-row justify-between items-center border-color-border`
         }>
           <div className='w-full flex flex-row justify-between items-center'>
             <div className='w-full flex flex-row items-center'>

@@ -6,8 +6,6 @@ import SectionTemplate from "./components/SectionTemplate";
 import Blog from "./components/Blog";
 import Testimonials from "./components/Testimonials";
 import Data from './data/data.json';
-import Dropdown from "./components/Dropdown";
-import Sidebar from "./components/Sidebar";
 
 interface SectionDataParams {
   id: string;
@@ -26,13 +24,6 @@ export default function HomeSections({ renderCondition }: any) {
   const testimonialsSectionRef = useRef<HTMLElement>(null);
   const blogSectionRef = useRef<HTMLElement>(null);
   const contactSectionRef = useRef<HTMLElement>(null);
-  const requestProgress: any = useMemo(() => ({
-    'Submitted': 25,
-    'Selecting': 50,
-    'Contacting': 75,
-    'Accepted': 75,
-    'Completed': 100,
-  }), []);
 
   const sectionsData: SectionDataParams[] = useMemo(() => ([
     {
@@ -129,10 +120,8 @@ export default function HomeSections({ renderCondition }: any) {
 
   return renderCondition && (
     <>
-      <Navbar />
+      <Navbar sectionActived={sectionActived} />
       <Sections sectionsData={sectionsData} />
-      <Sidebar sectionActived={sectionActived} />
-      <Dropdown />
     </>
   );
 };

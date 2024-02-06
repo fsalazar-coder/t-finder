@@ -6,6 +6,7 @@ import { IconBxChevronUp, IconBxsBellRing, IconMessageNotification } from '@/ico
 import ImageIconUser from '../account/ImageIconUser';
 import HamburguerMenu from './HamburguerMenu';
 import IconUnread from '../account/IconUnread';
+import DropdownHome from './DropdownHome';
 
 interface NavbarElementsProps {
   navbarAccountElements: NavbarElement[];
@@ -18,9 +19,8 @@ interface NavbarElement {
 }
 
 
-export default function Navbar() {
+export default function Navbar({ sectionActived }: any) {
   const [transparentBackground, setTransparentBackground] = useState(true);              /***Transparent background state: boolean***/
-  const [navbarFirstUse] = useState(false);
 
   const navbarAccountElements = [
     { title: 'Connections', clickGoTo: 'Connections', icon: <IconMessageNotification /> },
@@ -37,13 +37,8 @@ export default function Navbar() {
 
 
   return (
-    <div
-      className={
-        `${transparentBackground ? navbarFirstUse ? 'animate-[disappear-color_0.50s_ease-out]'
-          : 'bg-white border-color-navbar' : 'bg-color-navbar border-color-border-navbar'     // bg-transparent
-        } w-full h-12 lg:h-14 fixed flex flex-row justify-center items-center border-b transition-colors z-50`
-      }>
-      <div className='container w-full h-full px-0 lg:px-5 flex flex-row justify-between items-center'>
+    <div className={`w-full fixed flex flex-col items-center bg-color-navbar bg-opacity-90 border-b border-color-border transition-all z-50`}>
+      <div className={`container w-full h-12 lg:h-14 px-0 lg:px-5 flex flex-row justify-between items-center`}>
         <HamburguerMenu />
         <Logo />
         <nav className='w-1/2 relative flex flex-row justify-end items-center'>
@@ -51,6 +46,7 @@ export default function Navbar() {
           <NavbarElementsUnauthenticated />
         </nav>
       </div>
+      <DropdownHome sectionActived={sectionActived} />
     </div>
   )
 };
@@ -66,7 +62,7 @@ const Logo: React.FC = () => (
 
 const NavbarElementsAuthenticated: React.FC<NavbarElementsProps> = ({ navbarAccountElements }) => {
   const { token } = useAuth();
-  const { setAccountActived, setAccountModule, screenNarrow, dropdown, setDropdown, setSidebar, setHamburguerMenuActive } = useUI();
+  const { setAccountActived, setAccountModule, screenNarrow, dropdownAuth, setDropdownAuth, setDropdownHome, setHamburguerMenuActive } = useUI();
   const { unreadMessages, unreadNotifications } = useAuthSocket();
 
   return (
@@ -109,8 +105,8 @@ const NavbarElementsAuthenticated: React.FC<NavbarElementsProps> = ({ navbarAcco
           } relative pl-2 flex flex-col z-50`
         }
         onClick={() => {
-          setDropdown(!dropdown)
-          setSidebar(false)
+          setDropdownAuth(!dropdownAuth)
+          setDropdownHome(false)
           setHamburguerMenuActive(false);
         }}
       >
@@ -126,7 +122,7 @@ const NavbarElementsAuthenticated: React.FC<NavbarElementsProps> = ({ navbarAcco
             <h6 className={`w-full h-fit flex text-xs text-center text-color-text-almost-clear hover:text-color-highlighted-clear`}>
               Me
             </h6>
-            <i className={`${!dropdown && 'rotate-180'} w-fit h-fit -mb-[2px]  text-color-text-almost-clear hover:text-color-highlighted-clear text-base text-center flex flex-col transform transition-all`}>
+            <i className={`${!dropdownAuth && 'rotate-180'} w-fit h-fit -mb-[2px]  text-color-text-almost-clear hover:text-color-highlighted-clear text-base text-center flex flex-col transform transition-all`}>
               <IconBxChevronUp />
             </i>
           </div>

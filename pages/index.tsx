@@ -1,5 +1,4 @@
 "use client"
-import { useEffect } from "react";
 import { useAuth } from "@/context/ContextAuth";
 import { useUI } from "@/context/ContextUI";
 import LoginModal from "./components/LoginModal";
@@ -9,6 +8,7 @@ import PasswordResetModal from "./components/PasswordResetModal";
 import LoadingSpinner from "./components/LoadingSpinner";
 import HomeSections from "./HomeSections";
 import Account from "./Account";
+import DropdownAuth from "./components/DropdownAuth";
 
 
 export default function Home() {
@@ -16,9 +16,10 @@ export default function Home() {
   const { accountActived } = useUI();
 
   return (
-    <main className='w-full h-full relative font-montserrat select-none flex flex-col bg-color-clear transition-all'>
+    <main className='w-full h-full relative font-montserrat select-none flex flex-col items-center bg-color-clear transition-all'>
       <HomeSections renderCondition={!accountActived} />
       <Account renderCondition={(token && accountActived)} />
+      <DropdownAuth />
       <JoinModal />
       <LoginModal />
       <PasswordResetModal />

@@ -1,5 +1,6 @@
 import { useUI } from "@/context/ContextUI";
 import { useAuth } from "@/context/ContextAuth";
+import { useAuthData } from "@/context/ContextAuthData";
 import ButtonLogout from "../account/ButtonLogout";
 import ImageIconUser from "../account/ImageIconUser";
 import { IconDashboard, IconUserTie, IconHome, IconRequestJob, IconUserSearchFilled } from '@/icons/icons';
@@ -13,7 +14,7 @@ interface DropdownElement {
 }
 
 interface ProfileImageDropdownProps {
-  userEmail: string | null;
+  userName: string | null;
 }
 
 interface DropdownElementsProps {
@@ -21,9 +22,10 @@ interface DropdownElementsProps {
 }
 
 
-export default function Dropdown() {
+export default function DropdownAuth() {
   const { token, userEmail } = useAuth();
-  const { screenNarrow, dropdown, accountActived } = useUI();
+  const { userProfileData } = useAuthData();
+  const { screenNarrow, dropdownAuth, accountActived } = useUI();
   const dropdownElements: DropdownElement[] = [
     { key: 'dropdown-link-dashboard', title: 'Dashboard', value: 'Dashboard', icon: <IconDashboard />, renderCondition: true },
     { key: 'dropdown-link-profile', title: 'Profile', value: 'Profile', icon: <IconUserTie />, renderCondition: true },
@@ -31,31 +33,37 @@ export default function Dropdown() {
     { key: 'dropdown-link-job-request', title: 'Job request', value: 'Job', icon: <IconRequestJob />, renderCondition: true },
     { key: 'dropdown-link-home', title: 'Home', value: 'Home', icon: <IconHome />, renderCondition: accountActived },
   ];
+  const nameProfile: any = userProfileData?.personalInfo[0]?.full_name;
+  const userName: string = nameProfile ? nameProfile : userEmail;
 
   return (
-    (dropdown && token) &&
-    <ul className={
-      `${screenNarrow ? 'w-52' : 'w-60'} right-0 animate-[zoom-in-top_0.2s_ease] fixed top-[50px] lg:top-[58px] flex-col justify-start items-start bg-color-navbar border border-color-border-navbar rounded-sm transition-all z-40`
-    }>
-      <ProfileImageDropdown userEmail={userEmail} />
-      <DropdownElements dropdownElements={dropdownElements} />
-      <ButtonLogout type='dropdown' />
-    </ul>
+    token && dropdownAuth &&
+    <div className="w-full h-full fixed top-[51px] lg:top-[59px] right-0 flex flex-row justify-center z-[80]">
+      <div className={`${accountActived ? 'px-5' : 'container'} w-full flex flex-row justify-end`}>
+        <ul className={`${screenNarrow ? 'w-52' : 'w-60'
+          } h-fit animate-[zoom-in-top_0.2s_ease] flex-col justify-start items-start bg-color-navbar border border-color-border rounded-md transition-all z-50`
+        }>
+          <ProfileImageDropdown userName={userName} />
+          <DropdownElements dropdownElements={dropdownElements} />
+          <ButtonLogout type='dropdown-auth' />
+        </ul>
+      </div>
+    </div>
   )
 }
 
-const ProfileImageDropdown: React.FC<ProfileImageDropdownProps> = ({ userEmail }) => {
+const ProfileImageDropdown: React.FC<ProfileImageDropdownProps> = ({ userName }) => {
   return (
-    <li className='w-full h-auto py-4 px-4 mb-4 flex flex-row items-center border-b border-color-border-navbar'>
+    <li className='w-full h-auto py-4 px-4 mb-4 flex flex-row items-center border-b border-color-border'>
       <div className='flex flex-row items-center'>
         <div className='w-9 h-9 flex flex-col justify-center items-center'>
           <ImageIconUser
-            type='dropdown'
+            type='dropdown-auth'
             otherUserImageUrl={'none'}
           />
         </div>
         <h5 className='text-color-text-dark pl-3 text-xs lg:text-sm xl:text-sm font-light'>
-          Hello, <br /> {userEmail}
+          Hello, <br /> {userName}
         </h5>
       </div>
     </li>
@@ -63,7 +71,7 @@ const ProfileImageDropdown: React.FC<ProfileImageDropdownProps> = ({ userEmail }
 };
 
 const DropdownElements: React.FC<DropdownElementsProps> = ({ dropdownElements }) => {
-  const { setDropdown } = useUI();
+  const { setDropdownAuth } = useUI();
   const { accountModule, setAccountActived, setAccountModule } = useUI();
 
   return (
@@ -80,7 +88,7 @@ const DropdownElements: React.FC<DropdownElementsProps> = ({ dropdownElements })
             } w-full h-auto flex flex-row items-center`
           }
           onClick={() => {
-            setDropdown(false);
+            setDropdownAuth(false);
             setAccountActived(value === 'Home' ? false : true);
             setAccountModule(value === 'Home' ? '' : value);
           }}

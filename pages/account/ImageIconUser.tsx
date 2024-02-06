@@ -5,7 +5,7 @@ import { IconCamera, IconUser } from '@/icons/icons';
 import Image from 'next/image';
 
 interface UserProfileImageParams {
-  type: 'navbar' | 'dropdown' | 'account-navbar' | 'personal-info' | 'notifications' | 'request' | 'title-chat' | 'message-chat';
+  type: 'navbar' | 'dropdown-auth' | 'account-navbar' | 'personal-info' | 'notifications' | 'request' | 'title-chat' | 'message-chat';
   otherUserImageUrl: string;
 }
 
@@ -28,33 +28,22 @@ export default function ImageIconUser({ type, otherUserImageUrl }: UserProfileIm
   };
 
   const getBorderClass = () => {
-    return userImageUrlToRender ? moduleBorderColor[type] || 'border-color-border' : 'bg-color-text-almost-clear';
+    return userImageUrlToRender ? moduleType[type]['background'] || 'border-color-border' : 'bg-color-text-almost-clear';
   };
 
-  const isDashboard = accountModule === 'Dashboard';
-  const isEditableImage = type === 'personal-info';
+  const isDashboard: boolean = accountModule === 'Dashboard';
+  const isEditableImage: boolean = type === 'personal-info';
 
   const moduleType: any = {
-    'message-chat': { 'image-class': 'border-[1px]', 'icon-class': 'text-2xl' },
-    'title-chat': { 'image-class': 'border-[1px]', 'icon-class': 'text-2xl' },
-    'navbar': { 'image-class': 'w-[93%] h-[93%] border-[1px]', 'icon-class': 'text-[16px]' },
-    'dropdown': { 'image-class': 'w-[92%] h-[92%] border-[1px]', 'icon-class': 'text-2xl' },
-    'notifications': { 'image-class': 'border-[2px]', 'icon-class': `${isDashboard ? 'text-2xl' : 'text-4xl'}` },
-    'request': { 'image-class': 'border-[2px]', 'icon-class': 'text-4xl' },
-    'account-navbar': { 'image-class': 'border-[2px]', 'icon-class': 'text-4xl' },
-    'personal-info': { 'image-class': 'border-[2px]', 'icon-class': 'text-7xl' },
+    'message-chat': { 'image-class': 'border-[1px]', 'icon-class': 'text-2xl', 'background': 'bg-color-highlighted' },
+    'title-chat': { 'image-class': 'border-[1px]', 'icon-class': 'text-2xl', 'background': 'bg-white' },
+    'navbar': { 'image-class': 'w-[93%] h-[93%] border-[1px]', 'icon-class': 'text-[16px]', 'background': 'bg-color-highlighted' },
+    'dropdown-auth': { 'image-class': 'w-[92%] h-[92%] border-[1px]', 'icon-class': 'text-2xl', 'background': 'bg-color-highlighted'},
+    'notifications': { 'image-class': 'border-[2px]', 'icon-class': `${isDashboard ? 'text-2xl' : 'text-4xl'}`, 'background': '' },
+    'request': { 'image-class': 'border-[2px]', 'icon-class': 'text-4xl', 'background': '' },
+    'account-navbar': { 'image-class': 'border-[2px]', 'icon-class': 'text-4xl', 'background': 'bg-gradient-to-br from-color-clear via-color-highlighted to-color-highlighted-dark' },
+    'personal-info': { 'image-class': 'border-[2px]', 'icon-class': 'text-7xl', 'background': 'bg-gradient-to-br from-color-clear via-color-highlighted to-color-highlighted-dark' },
   };
-
-  const moduleBorderColor: any = {
-    'message-chat': 'bg-color-highlighted',
-    'title-chat': 'bg-white',
-    'navbar': 'bg-color-highlighted',
-    'dropdown': 'bg-color-highlighted',
-    'notifications': '',
-    'request': '',
-    'account-navbar': 'bg-gradient-to-br from-color-clear via-color-highlighted to-color-highlighted-dark',
-    'personal-info': 'bg-gradient-to-br from-color-clear via-color-highlighted to-color-highlighted-dark',
-  }
 
 
   return (

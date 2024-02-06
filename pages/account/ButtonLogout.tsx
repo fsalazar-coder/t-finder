@@ -3,7 +3,7 @@ import { useAuth } from "@/context/ContextAuth";
 import { IconBxPowerOff } from "@/icons/icons";
 
 interface ButtonLogoutParams {
-  type: 'navbar-account' | 'dropdown';
+  type: 'navbar-account' | 'dropdown-auth';
 };
 
 interface LogoutConfigType {
@@ -18,7 +18,7 @@ interface LogoutConfigType {
 
 
 export default function ButtonLogout({ type }: ButtonLogoutParams) {
-  const { setDropdown, setMessageModal, setHamburguerMenuActive } = useUI();
+  const { setDropdownAuth, setMessageModal, setHamburguerMenuActive } = useUI();
   const { logout } = useAuth();
 
   const handleLogout = () => {
@@ -32,8 +32,8 @@ export default function ButtonLogout({ type }: ButtonLogoutParams) {
             setMessageModal([])
           }
         }]),
-      'dropdown': () => {
-        setDropdown(false);
+      'dropdown-auth': () => {
+        setDropdownAuth(false);
         setHamburguerMenuActive(false);
         setMessageModal([{
           type: 'logout',
@@ -55,7 +55,7 @@ export default function ButtonLogout({ type }: ButtonLogoutParams) {
       classIcon: 'text-xl lg:text-2xl',
       classText: 'text-xs text-center'
     },
-    'dropdown': {
+    'dropdown-auth': {
       classList: 'mt-4 py-4 text-color-text-almost-clear hover:text-color-text-medium hover:bg-color-hover hover:cursor-pointer',
       classButton: 'h-full flex-row',
       classIcon: 'pl-8 pr-3 text-lg',

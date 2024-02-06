@@ -29,7 +29,7 @@ export default function ProfileCardsTitle(
 
   return (
     <div className={
-      `${isDashboard ? 'px-5 border-b' : ''     /// bg-white border shadow-md rounded-lg
+      `${isDashboard && 'px-5 border-b'
       } w-full relative py-1 mb-2 flex justify-between flex-row items-center border-color-border`
     }>
       <div className='w-full flex flex-row items-center'>
