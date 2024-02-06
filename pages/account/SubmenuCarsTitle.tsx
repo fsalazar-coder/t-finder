@@ -2,9 +2,9 @@ import { useEffect, useRef } from "react";
 import { IconBxChevronLeft, IconBxChevronRight } from "@/icons/icons";
 
 interface SubmenuCardsTitleProps {
-  elements: { id: string; title: string }[]; 
-  menuIndex: number; 
-  menuIndexRetro: () => void; 
+  elements: { id: string; title: string }[];
+  menuIndex: number;
+  menuIndexRetro: () => void;
   menuIndexNext: () => void;
 }
 
@@ -26,7 +26,6 @@ export default function SubmenuCarsTitle({ elements = [], menuIndex, menuIndexRe
 
 
   return (
-    elements &&
     <div className={`px-3 flex flex-row justify-between items-center border-x border-color-border`}>
       <div className="h-full flex flex-row justify-center items-center transition-all">
         <button

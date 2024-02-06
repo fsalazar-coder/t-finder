@@ -243,7 +243,6 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
   const isRequestMenuSubmitted = (requestMenu === 'talent-submitted' || requestMenu === 'job-submitted');
   const isRequestMenuCandidates = requestMenu === 'candidates';
   const isRequestMenuReview = requestMenu === 'candidate-review';
-
   const candidateProfileIndex: number = reviewMenuIndex > 0 ? reviewMenuIndex - 1 : 0
   const profileElementsId: string = candidateProfile[candidateProfileIndex]?.id;
   const profileElementsData: any = candidateProfile[candidateProfileIndex]?.data;
@@ -258,7 +257,6 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
   };
 
   return (
-    shouldRenderData &&
     <>
       <div className={`${heightCardsModule[requestMenu]} w-full px-5 py-2 flex flex-col bg-white border border-color-border shadow-md rounded-lg transform transition-all`}>
         {/**title */}

@@ -23,8 +23,8 @@ export default function Profile() {
   const { userProfileData } = useAuthData();
   const [profileMenuIndex, setProfileMenuIndex] = useState<number>(0);
   const [elementProfileCurrent, setElementProfileCurrent] = useState('experience');
-
   const elementsProfile = Object.keys(userProfileData);
+  const isDashboard = accountModule === 'Dashboard';
 
   const goToNextElementProfile = () => {
     const currentIndex = elementsProfile.indexOf(elementProfileCurrent);
@@ -51,8 +51,6 @@ export default function Profile() {
     { id: 'recommendations', title: 'Recommendations' }
   ];
 
-  const isDashboard = accountModule === 'Dashboard';
-
   const containerClassNames = `${isDashboard ? 'w-full h-full flex-col bg-white border border-color-border shadow-md rounded-lg'
     : screenNarrow ? 'w-full flex-col px-5 py-16' : 'w-[52rem] px-2 lg:px-8 lg:py-9 flex-col'
     } flex justify-between transition-all`;
@@ -60,8 +58,7 @@ export default function Profile() {
 
   return (
     <div className={`w-full h-full flex flex-col items-center`}>
-      <div className={containerClassNames}
-      >
+      <div className={containerClassNames}>
         <ProfileCardsTitle
           isDashboard={isDashboard}
           menuProfileElements={menuProfileElements}

@@ -68,7 +68,7 @@ export default function MessageModal() {
       }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [modalActived, animationState]);
+  }, [modalActived, animationState, animationStep]);
 
   const renderButton = (buttonType: 'medium' | 'large' | 'cancel') => {
     let largeButton: boolean = buttonType === 'large';
