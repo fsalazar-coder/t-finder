@@ -59,34 +59,34 @@ export default function Testimonials({ sectionTitle, sectionSubtitle, sectionTyp
 
 
   return (
-    <div className='w-full h-full flex flex-col justify-center items-center'>
-      <div className='container w-full h-full flex flex-col justify-center px-0 lg:px-5 list-none transition-all'>
-        {/**title */}
+    <div className='container w-full min-h-screen pt-20 px-0 md:px-5 flex flex-col list-none transition-all'>
+      {/**title */}
+      <div className='w-full flex'>
         <SectionTitles
           sectionTitle={sectionTitle}
           sectionSubtitle={sectionSubtitle}
           sectionType={sectionType}
         />
-        <div className='w-full h-full flex flex-row justify-between items-center'>
-          <CarouselArrow
-            direction='left'
-            carouselPosition={carouselPosition}
-            click={() => setCarouselPosition(carouselPosition > 0 ? carouselPosition - 1 : carouselPosition)}
-          />
-          <Carousel
-            data={data}
-            carouselPosition={carouselPosition}
-            carouselTranslateX={carouselTranslateX}
-            handleTouchStart={handleTouchStart}
-            handleTouchMove={handleTouchMove}
-            testimonialsSectionActived={testimonialsSectionActived}
-          />
-          <CarouselArrow
-            direction='right'
-            carouselPosition={carouselPosition}
-            click={() => setCarouselPosition(carouselPosition < carouselLenght - 1 ? carouselPosition + 1 : carouselPosition)}
-          />
-        </div>
+      </div>
+      <div className='w-full flex flex-row justify-center items-center'>
+        <CarouselArrow
+          direction='left'
+          carouselPosition={carouselPosition}
+          click={() => setCarouselPosition(carouselPosition > 0 ? carouselPosition - 1 : carouselPosition)}
+        />
+        <Carousel
+          data={data}
+          carouselPosition={carouselPosition}
+          carouselTranslateX={carouselTranslateX}
+          handleTouchStart={handleTouchStart}
+          handleTouchMove={handleTouchMove}
+          testimonialsSectionActived={testimonialsSectionActived}
+        />
+        <CarouselArrow
+          direction='right'
+          carouselPosition={carouselPosition}
+          click={() => setCarouselPosition(carouselPosition < carouselLenght - 1 ? carouselPosition + 1 : carouselPosition)}
+        />
       </div>
     </div>
   )
@@ -95,7 +95,7 @@ export default function Testimonials({ sectionTitle, sectionSubtitle, sectionTyp
 const CarouselArrow = ({ direction, carouselPosition, click }: CarouselArrowProps) => (
   <button
     className={`${direction === 'left' && carouselPosition === 0 ? 'opacity-0' : 'opacity-100'} 
-  w-auto h-full pt-12 lg:pt-0 text-color-text-almost-clear text-3xl lg:text-5xl cursor-pointer lg:opacity-80 lg:hover:text-color-highlighted-clear flex flex-row justify-center items-center transition-opacity z-30`}
+  w-auto h-full pt-12 text-color-text-almost-clear text-3xl lg:text-5xl cursor-pointer lg:opacity-80 lg:hover:text-color-highlighted-clear flex flex-row justify-center items-center transition-opacity z-30`}
     aria-label={direction === 'left' ? 'Previous' : 'Next'}
     onClick={click}
   >
@@ -104,6 +104,7 @@ const CarouselArrow = ({ direction, carouselPosition, click }: CarouselArrowProp
 );
 
 const Carousel = ({ data, carouselPosition, carouselTranslateX, handleTouchStart, handleTouchMove, testimonialsSectionActived }: CarouselProps) => {
+  const { screenNarrow } = useUI();
   const carouselRef = useRef<HTMLUListElement>(null);
   const [hovered, setHovered] = useState(false);
   const dataLength: number = data?.length;
@@ -124,7 +125,7 @@ const Carousel = ({ data, carouselPosition, carouselTranslateX, handleTouchStart
   }, [carouselPosition, dataLength]);
 
   return (
-    <div className='w-full h-full flex flex-row justify-start items-center overflow-x-hidden transition-all z-0'
+    <div className={`${!screenNarrow && 'pt-16'} w-full h-full flex flex-row justify-start items-end overflow-x-hidden transition-all z-0`}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
     >

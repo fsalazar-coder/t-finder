@@ -1,139 +1,110 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useUI } from "@/context/ContextUI";
+import Data from './data/data.json';
 import Navbar from './components/Navbar';
 import Header from "./components/Header";
-import Footer from "./components/Footer";
 import TemplateSection from "./components/TemplateSection";
-import Blog from "./components/Blog";
 import Testimonials from "./components/Testimonials";
-import Data from './data/data.json';
+import Blog from "./components/Blog";
+import Footer from "./components/Footer";
 
-interface SectionDataParams {
-  id: string;
-  className: string;
-  ref: React.RefObject<HTMLElement>;
-  Component: React.ElementType;
-  props: object;
+interface SectionConfig {
+  background: string;
+  Component: SectionComponentType;
 }
 
+type SectionComponentType = React.ComponentType<any> | (() => JSX.Element);
 
-export default function HomeSections({ renderCondition }: any) {
-  const { setDropdownHome, setHamburguerMenuActive } = useUI();
-  const [sectionActived, setSectionActived] = useState<string>('');
-  const headerSectionRef = useRef<HTMLElement>(null);
-  const talentSectionRef = useRef<HTMLElement>(null);
-  const jobSectionRef = useRef<HTMLElement>(null);
-  const testimonialsSectionRef = useRef<HTMLElement>(null);
-  const blogSectionRef = useRef<HTMLElement>(null);
-  const contactSectionRef = useRef<HTMLElement>(null);
 
-  const sectionsData: SectionDataParams[] = useMemo(() => ([
-    {
-      id: 'header-section',
-      className: 'w-full h-screen',
-      ref: headerSectionRef,
-      Component: Header,
-      props: { headerSectionActived: false }
+export default function HomeSections({ renderCondition }: { renderCondition: boolean }) {
+  const { setDropdownHome, setHamburguerMenuActive, sectionHomeActived } = useUI();
+
+  const sectionComponents: Record<string, SectionConfig> = {
+    'header-section': {
+      background: '',
+      Component: Header
     },
-    {
-      id: 'recruit-section',
-      className: 'w-full h-auto py-8 lg:h-[615px] lg:py-0 bg-white',
-      ref: talentSectionRef,
-      Component: TemplateSection,
-      props: {
-        xDirectionReverse: true,
-        sectionTitle: 'RECRUIT',
-        sectionSubtitle: 'Empower your recruitment. Why recruiters choose t-finder',
-        sectionType: 'home',
-        image: Data?.talent.image,
-        description: Data?.talent.description,
-        textButton: 'Search talents',
-      }
+    'recruit-section': {
+      background: 'bg-white',
+      Component: () => (
+        <TemplateSection
+          xDirectionReverse={true}
+          sectionTitle='RECRUIT'
+          sectionSubtitle='Empower your recruitment. Why recruiters choose t-finder'
+          sectionType='home'
+          image={Data?.talent.image}
+          description={Data?.talent.description}
+          textButton='Search talents'
+        />
+      )
     },
-    {
-      id: 'job-section',
-      className: 'w-full h-auto py-8 lg:h-[615px] lg:py-0 bg-color-clear',
-      ref: jobSectionRef,
-      Component: TemplateSection,
-      props: {
-        xDirectionReverse: false,
-        sectionTitle: 'JOB',
-        sectionSubtitle: 'Say goodbye to resumes. We match you with jobs that truly fit',
-        sectionType: 'home',
-        image: Data?.job.image,
-        description: Data?.job.description,
-        textButton: 'Search job',
-      }
+    'job-section': {
+      background: 'bg-color-clear',
+      Component: () => (
+        <TemplateSection
+          xDirectionReverse={true}
+          sectionTitle='JOB'
+          sectionSubtitle='Say goodbye to resumes. We match you with jobs that truly fit'
+          sectionType='home'
+          image={Data?.job.image}
+          description={Data?.job.description}
+          textButton='Search job'
+        />
+      )
     },
-    {
-      id: 'testimonials-section',
-      className: 'w-full h-auto py-8 lg:h-[615px] bg-white',
-      ref: testimonialsSectionRef,
-      Component: Testimonials,
-      props: {
-        sectionTitle: 'TESTIMONIALS',
-        sectionSubtitle: 'What our users say',
-        sectionType: 'home',
-        data: Data?.testimonials,
-        testimonialsSectionActived: sectionActived === 'testimonials-section'
-      }
+    'testimonials-section': {
+      background: 'bg-white',
+      Component: () => (
+        <Testimonials
+          sectionTitle='TESTIMONIALS'
+          sectionSubtitle='What our users say'
+          sectionType='home'
+          data={Data?.testimonials}
+          testimonialsSectionActived={sectionHomeActived === 'testimonials-section'}
+        />
+      )
     },
-    {
-      id: 'blog-section',
-      className: 'w-full h-auto py-8 lg:h-[615px] lg:py-0 bg-color-clear',
-      ref: blogSectionRef,
-      Component: Blog,
-      props: {
-        sectionTitle: 'BLOG',
-        sectionSubtitle: 'Recent post',
-        sectionType: 'home',
-        data: Data?.blog,
-        blogSectionActived: sectionActived === 'blog-section'
-      },
+    'blog-section': {
+      background: 'bg-color-clear',
+      Component: () => (
+        <Blog
+          sectionTitle='BLOG'
+          sectionSubtitle='Recent post'
+          sectionType='home'
+          data={Data?.blog}
+          blogSectionActived={sectionHomeActived === 'blog-section'}
+        />
+      )
     },
-    {
-      id: 'footer-section',
-      className: 'w-full h-auto',
-      ref: contactSectionRef,
+    'footer-section': {
+      background: '',
       Component: Footer,
-      props: {}
-    },
-  ]), [sectionActived]);
+    }
+  };
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          setSectionActived(entry.target.id);
-        }
-      });
-    }, { root: null, rootMargin: '0px', threshold: 0.55 });
+  const handleClick = () => {
+    setDropdownHome(false);
+    setHamburguerMenuActive(false);
+  };
 
-    sectionsData.forEach(({ ref }) => {
-      if (ref.current) observer.observe(ref.current);
-    });
+  const SectionComponent = useMemo(() => {
+    const config = sectionComponents[sectionHomeActived];
+    if (!config) return null;
+    const { Component, background } = config;
 
-    return () => {
-      sectionsData.forEach(({ ref }) => {
-        if (ref.current) observer.unobserve(ref.current);
-      });
-    };
-  }, [sectionActived, sectionsData]);
+    return (
+      <section className={`${background} w-full h-full flex flex-row justify-center`} onClick={handleClick}>
+        <Component />
+      </section>
+    );
+  }, [sectionHomeActived, handleClick]);
 
-  return renderCondition && (
-    <div className="w-full h-full flex flex-col" onClick={() => {setDropdownHome(false); setHamburguerMenuActive(false)}}>
-      <Navbar sectionActived={sectionActived} />
-      <Sections sectionsData={sectionsData} />
+
+  return (
+    renderCondition &&
+    <div className='w-full flex flex-col items-center'>
+      <Navbar />
+      {SectionComponent}
     </div>
   );
 };
-
-const Sections = ({ sectionsData }: { sectionsData: SectionDataParams[] }) => (
-  <>
-    {sectionsData.map(({ id, className, ref, Component, props }) => (
-      <section id={id} key={id} className={className} ref={ref}>
-        <Component {...props} />
-      </section>
-    ))}
-  </>
-);

@@ -58,11 +58,11 @@ export default function PasswordReset(props: any) {
           {/**content */}
           <div className='w-full flex flex-col justify-start items-center'>
             {/**header form */}
-            <div className='w-full h-24 lg:h-32 px-4 lg:px-8 pt-2 lg:pt-4 flex flex-col bg-color-highlighted rounded-t-md'>
+            <div className='w-full h-24 lg:h-32 px-4 lg:px-8 pt-2 lg:pt-4 flex flex-col bg-color-secondary-dark rounded-t-md'>
               <h2 className='w-full h-fit text-white text-xl lg:text-3xl font-bold z-10'>
                 Password reset
               </h2>
-              <h4 className='w-full h-fit text-slate-500 text-sm lg:text-lg tracking-wide font-normal text-start flex'>
+              <h4 className='w-full h-fit text-slate-300 text-sm lg:text-lg tracking-wide font-normal text-start flex'>
                 Don&apos;t worry, <br /> let&apos;s get your password back
               </h4>
             </div>
@@ -70,7 +70,7 @@ export default function PasswordReset(props: any) {
             <div className='w-full px-4 lg:px-8 flex flex-col'>
               {/**form-box */}
               <form
-                className='w-full flex flex-col'
+                className='w-full pt-6 flex flex-col'
                 onSubmit={(e) => passwordResetSubmitHandle(e)}
               >
                 {/**inputs */}
@@ -115,7 +115,7 @@ export default function PasswordReset(props: any) {
                     type='submit'
                     className={
                       `${email ?
-                        'font-bold bg-green-400 lg:bg-green-300 lg:hover:bg-green-400 cursor-default lg:cursor-pointer' :
+                        'font-bold bg-color-highlighted lg:hover:bg-opacity-75 cursor-default lg:cursor-pointer' :
                         'bg-slate-400 cursor-default'
                       } w-full text-slate-50 lg:hover:text-white lg:hover:font-bold px-6 py-2 flex flex-row justify-center items-center rounded-md transition-all z-30`
                     }

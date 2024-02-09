@@ -40,7 +40,7 @@ export default function BlogModal({ blogActiveIndex, article }: any) {
             {article?.title}
           </h2>
           {/**author */}
-          <h4 className='w-full h-fit text-slate-600 text-sm lg:text-lg font-semibold'>
+          <h4 className='w-full h-fit text-color-highlighted text-sm lg:text-lg font-semibold'>
             {article?.name}
           </h4>
           {/**date */}
@@ -48,7 +48,7 @@ export default function BlogModal({ blogActiveIndex, article }: any) {
             {article?.date}
           </h5>
           {/**line animate-decoration */}
-          <div className={blogModal ? `w-full h-0.5 my-4 bg-fuchsia-300 animate-[width-change_1.0s_ease]` : 'hidden'} />
+          <div className={blogModal ? `w-full h-0.5 my-4 bg-color-highlighted animate-[width-change_1.0s_ease]` : 'hidden'} />
           {/**description */}
           <h4 className='w-full h-full px-2 lg:px-0 mb-4 lg:mb-8 text-gray-700 text-sm sm:text-lg lg:text-xl font-normal text-justify overflow-y-auto'>
             {article?.description}

@@ -1,25 +1,26 @@
 import { useUI } from "@/context/ContextUI";
 
 
-export default function HamburguerMenu() {
+export default function HamburguerMenu({ shouldRender }: { shouldRender: boolean }) {
   const { hamburguerMenuActive, setHamburguerMenuActive, dropdownHome, setDropdownHome, setDropdownAuth } = useUI();
 
   const renderMenuLines = () => {
     return hamburguerMenuActive ?
       <>
-        <div className='w-5 h-[2px] absolute bg-color-highlighted-clear transform rotate-45 transition-all' />
-        <div className='w-5 h-[2px] absolute bg-color-highlighted-clear transform -rotate-45 transition-all' />
+        <div className='w-5 h-[2px] absolute bg-color-secondary-clear transform rotate-45 transition-all' />
+        <div className='w-5 h-[2px] absolute bg-color-secondary-clear transform -rotate-45 transition-all' />
       </>
       :
       <>
-        <div className='w-5 h-[2px] absolute top-1 bg-color-highlighted-clear transition-all' />
-        <div className='w-5 h-[2px] absolute top-[0.7rem] bg-color-highlighted-clear transition-all' />
-        <div className='w-5 h-[2px] absolute bottom-1 bg-color-highlighted-clear transition-all' />
+        <div className='w-5 h-[2px] absolute top-1 bg-color-secondary-clear transition-all' />
+        <div className='w-5 h-[2px] absolute top-[0.7rem] bg-color-secondary-clear transition-all' />
+        <div className='w-5 h-[2px] absolute bottom-1 bg-color-secondary-clear transition-all' />
       </>
       ;
   };
 
   return (
+    shouldRender &&
     <div
       className='relative transition-all z-50'
       onClick={() => {

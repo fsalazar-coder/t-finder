@@ -32,8 +32,8 @@ export default function NavbarAccount() {
   const navbarLargeElements: NavbarElement[] = [
     { title: 'Dashboard', clickGoTo: 'Dashboard', icon: <IconDashboard /> },
     { title: 'Profile', clickGoTo: 'Profile', icon: <IconUserTie /> },
-    { title: 'Talent request', clickGoTo: 'Talent', icon: <IconUserSearchFilled /> },
-    { title: 'Job request', clickGoTo: 'Job', icon: <IconRequestJob /> },
+    { title: 'Talents', clickGoTo: 'Talent', icon: <IconUserSearchFilled /> },
+    { title: 'Jobs', clickGoTo: 'Job', icon: <IconRequestJob /> },
     { title: 'Connections', clickGoTo: 'Connections', icon: <IconMessageNotification /> },
     { title: 'Notifications', clickGoTo: 'Notifications', icon: <IconBxsBellRing /> },
     { title: 'Home', clickGoTo: 'Home', icon: <IconHome /> },
@@ -72,7 +72,7 @@ export default function NavbarAccount() {
     <div
       className={
         `${screenNarrow ? 'w-full h-12 justify-end border-b' : 'w-24 h-screen justify-center border-r'
-        } fixed left-0 flex items-center bg-white border-color-border transition-all z-50`
+        } fixed left-0 flex items-center bg-color-secondary-dark transition-all z-50`
       }>
       <div className={`${screenNarrow ? 'w-fit px-5 flex-row' : 'w-full flex-col'} h-full flex justify-between`}
         onClick={() => screenNarrow && setDropdownAuth(!dropdownAuth)}
@@ -100,7 +100,7 @@ const NavbarNarrowElements = ({ shouldRender }: any) => {
     shouldRender &&
     <div className='w-full py-1 px-2 flex flex-row justify-end items-center z-30'>
       <div className="flex flex-row justify-end items-center">
-        <h2 className='w-fit pr-1 text-color-text-dark'>
+        <h2 className='w-fit pr-1 text-white'>
           {accountModule}
         </h2>
       </div>
@@ -112,7 +112,7 @@ const ProfileImage = () => {
   const { screenNarrow } = useUI();
 
   return (
-    <div className={`${screenNarrow ? 'w-fit relative' : 'w-full py-2 border-b border-color-border'} flex flex-row justify-center items-center`}>
+    <div className={`${screenNarrow ? 'w-fit relative' : 'w-full py-2 border-b border-color-secondary'} flex flex-row justify-center items-center`}>
       <div className={`${screenNarrow ? 'w-6 h-6' : 'w-16 h-16'} flex flex-col justify-center items-center transition-all`}>
         <ImageIconUser
           type={screenNarrow ? 'navbar' : 'account-navbar'}
@@ -129,7 +129,7 @@ const DropdownIndicator = ({ shouldRender }: any) => {
   return (
     shouldRender &&
     <div className={`${dropdownAuth ? 'pt-2' : ''} h-full flex flex-col justify-center`}>
-      <div className={`${dropdownAuth ? '-rotate-[135deg]' : 'rotate-45'} w-2 h-2 border-r-2 border-b-2 border-color-highlighted-clear transform transition-all`} />
+      <div className={`${dropdownAuth ? '-rotate-[135deg]' : 'rotate-45'} w-2 h-2 border-r-2 border-b-2 border-color-secondary-clear transform transition-all`} />
     </div>
   )
 };
@@ -156,7 +156,7 @@ const NavbarAccountLargeElements: React.FC<NavbarElementProps> = ({ largeElement
     largeElements?.map(({ title, clickGoTo, icon }: any, index: number) => {
       return (
         <li key={index} className={
-          `${clickGoTo === accountModule ? 'text-color-highlighted' : 'text-color-text-almost-clear hover:text-color-highlighted-clear cursor-pointer'}
+          `${clickGoTo === accountModule ? 'text-color-highlighted' : 'text-color-secondary hover:text-color-secondary-clear cursor-pointer'}
           w-full h-[3.75rem] flex flex-col justify-center items-center transition-all z-[70]`
         }
           onClick={getClickAction(clickGoTo)}
@@ -178,7 +178,7 @@ const NavbarAccountLargeElements: React.FC<NavbarElementProps> = ({ largeElement
 
 const NavbarAccountIndicator: React.FC<NavbarAccountIndicatorProps> = ({ reference }) => {
   return (
-    <div className={`w-1 h-[3.75rem] absolute right-0 top-0 flex flex-row justify-end bg-color-highlighted rounded-full transform transition-all`}
+    <div className={`w-[2px] h-[3.75rem] absolute left-0 top-0 flex flex-row justify-end bg-color-highlighted transform transition-all`}
       ref={reference}
     />
   )

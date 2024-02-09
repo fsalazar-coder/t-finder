@@ -16,7 +16,7 @@ export default function Home() {
   const { accountActived } = useUI();
 
   return (
-    <main className='w-full h-full relative font-montserrat select-none flex flex-col items-center bg-color-clear transition-all'>
+    <main className='w-full min-h-screen relative flex flex-col font-sans select-none bg-white transition-all'>
       <HomeSections renderCondition={!accountActived} />
       <Account renderCondition={(token && accountActived)} />
       <DropdownAuth />

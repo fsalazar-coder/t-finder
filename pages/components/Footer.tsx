@@ -1,4 +1,5 @@
-import { useAuth } from '@/context/ContextAuth'; 
+import { useUI } from '@/context/ContextUI';
+import { useAuth } from '@/context/ContextAuth';
 import {
   IconArrowRight,
   IconBxlLinkedin,
@@ -6,9 +7,11 @@ import {
   IconInstagram,
   IconTwitter
 } from '../../icons/icons';
+import ButtonGoTo from './ButtonGoTo';
 
 
 export default function Footer(props: any) {
+  const { screenNarrow } = useUI();
   const { token, setJoinModal } = useAuth();
   const navegationA = [
     'Find Talent',
@@ -30,38 +33,27 @@ export default function Footer(props: any) {
   ];
 
   return (
-    <div className='w-full h-full relative flex flex-col justify-start'>
-      <div className='w-full h-auto flex flex-col justify-center items-center bg-slate-50'>
-        <div className='container w-full h-[230px] ml:h-[240px] sm:h-[280px] md:h-[360px] lg:h-[400px] px-5 lg:px-36 flex flex-col justify-center items-center'>
-          <h3 className='w-full h-fit text-gray-600 text-sm sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl tracking-wide font-normal text-center flex justify-center'>
+    <div className='w-full min-h-screen relative flex flex-col justify-end bg-color-clear'>
+      <div className={`${screenNarrow && 'pt-14'} w-full h-full flex flex-col justify-center items-center`}>
+        <div className='container w-full h-full px-5 lg:px-36 flex flex-col justify-center items-center'>
+          <h3 className='text-gray-600 text-sm sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl tracking-wide font-normal text-center flex justify-center'>
             {token ? 'The way of manager talent' : 'Discover the way of manager talent'}
           </h3>
-          <h1 className='w-full h-fit text-gray-950 text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-5xl tracking-wide font-bold text-center drop-shadow-2xl flex justify-center z-30'>
+          <h1 className='text-gray-950 text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-5xl tracking-wide font-bold text-center drop-shadow-2xl flex justify-center z-30'>
             intelligently
           </h1>
           {/**button to open join modal (register) */}
-          <div className='w-full h-fit pt-6 flex flex-row justify-center items-center z-[35]'>
-            <button
-              className='w-fit h-fit px-8 py-3 text-slate-50 hover:text-white md:hover:font-bold bg-color-highlighted hover:bg-color-highlighted-clear flex flex-row justify-center items-center rounded-full cursor-pointer transform hover:scale-[1.1] transition-all z-30'
-              onClick={() => setJoinModal(true)}
-            >
-              <h3 className='w-full h-2/3 text-sm lg:text-base xl:text-lg font-semibold tracking-wider flex flex-row justify-center items-center rounded-full transition-all'>
-                {token ? 'Go to my account' : 'Join to T-finder'}
-              </h3>
-              <i className='text-base xl:text-lg leading-none font-bold md:font-medium tracking-wider ml-1'>
-                <IconArrowRight />
-              </i>
-            </button>
+          <div className='w-full pt-2 md:pt-4 flex flex-row justify-center items-center z-[35]'>
+            <ButtonGoTo />
           </div>
         </div>
       </div>
-
       {/***Links***/}
-      <div className='w-full h-auto py-3 flex flex-row justify-center items-center bg-sky-100 z-10'>
-        <div className='container w-full h-full px-5 flex flex-row justify-between items-start'>
+      <div className='w-full h-52 md:h-36 flex justify-center bg-color-dark z-10'>
+        <div className='container w-full h-full py-5 md:px-5 flex flex-row justify-between items-start'>
           {/**location and phone */}
-          <div className='w-1/2 h-full flex flex-col justify-center items-start'>
-            <ul className='w-fit h-full text-sm md:text-base lg:text-lg xl:text-xl text-color-text-medium font-light flex flex-col justify-center items-start'>
+          <div className='w-1/2 md:w-1/3 h-full flex flex-col'>
+            <ul className='w-full h-fit text-sm md:text-base lg:text-lg xl:text-xl text-color-text-medium font-light flex flex-col justify-center items-start'>
               <li
                 key='location'
                 className='flex flex-row items-start'>
@@ -80,7 +72,7 @@ export default function Footer(props: any) {
             </ul>
           </div>
           {/**links */}
-          <div className='w-fit sm:w-1/2 h-full text-sm sm:text-xs md:text-sm lg:text-base flex flex-col justify-between items-end sm:flex-row sm:items-start'>
+          <div className='w-1/2 md:w-2/3 h-full text-sm sm:text-xs md:text-sm lg:text-base flex flex-col justify-between items-end sm:flex-row sm:items-start'>
             <div className='w-full h-full pb-4 sm:pb-0 flex flex-col justify-start items-start sm:items-end'>
               <ul className='w-fit h-full flex flex-col items-center'>
                 {
@@ -117,13 +109,13 @@ export default function Footer(props: any) {
       {/***Copyright footer***/}
       <div
         id='contact'
-        className='w-full h-auto sm:h-[5%] py-5 sm:py-2 flex flex-row justify-center items-center border-t border-slate-300 bg-color-highlighted-dark z-10'
+        className='w-full h-20 md:h-14 py-5 md:py-2 flex flex-row justify-center items-center bg-color-secondary-dark z-10'
       >
-        <div className='container h-auto px-5 flex flex-col-reverse sm:flex-row justify-between items-center'>
-          <h2 className='w-full sm:w-1/2 h-full text-white text-sm sm:text-xs md:text-sm lg:text-base text-center sm:text-start pt-2 sm:pt-0 z-40'>
+        <div className='container h-full px-5 flex flex-col-reverse md:flex-row justify-between items-center'>
+          <h2 className='w-full md:w-1/2 text-white text-sm md:text-sm lg:text-base text-center md:text-start flex z-40'>
             © 2023 - Decalin-stack all right reserved
           </h2>
-          <ul className='w-full sm:w-1/2 h-full flex flex-row justify-center sm:justify-end items-center list-none z-40'>
+          <ul className='w-full md:w-1/2 flex flex-row justify-center md:justify-end items-center list-none z-40'>
             {
               navegationC.map((element: any) => {
                 return (

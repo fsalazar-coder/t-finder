@@ -109,11 +109,11 @@ export default function JoinModal(props: any) {
           {/**content */}
           <div className='w-full flex flex-col justify-start items-center'>
             {/**header form */}
-            <div className='w-full h-24 lg:h-32 px-4 lg:px-8 pt-2 lg:pt-4 flex flex-col bg-color-highlighted rounded-t-md'>
+            <div className='w-full h-24 lg:h-32 px-4 lg:px-8 pt-2 lg:pt-4 flex flex-col bg-color-secondary-dark rounded-t-md'>
               <h2 className='w-full h-fit text-white text-xl lg:text-3xl font-bold z-10'>
                 REGISTER
               </h2>
-              <h4 className='w-full h-fit text-slate-500 text-sm lg:text-lg tracking-wide font-normal text-start flex'>
+              <h4 className='w-full h-fit text-slate-300 text-sm lg:text-lg tracking-wide font-normal text-start flex'>
                 Join to T-finder, <br /> we appreciate your trust in us
               </h4>
             </div>
@@ -121,7 +121,7 @@ export default function JoinModal(props: any) {
             <div className='w-full px-4 lg:px-8 flex flex-col'>
               {/**form-box */}
               <form
-                className='w-full flex flex-col'
+                className='w-full pt-6 flex flex-col'
                 onSubmit={(e) => joinSubmitHandle(e)}
               >
                 {/**inputs */}
@@ -201,7 +201,7 @@ export default function JoinModal(props: any) {
                     type='submit'
                     className={
                       `${email ? password ?
-                        'font-bold bg-green-400 lg:bg-green-300 lg:hover:bg-green-400 cursor-default lg:cursor-pointer' :
+                        'font-bold bg-color-highlighted lg:hover:bg-opacity-75 cursor-default lg:cursor-pointer' :
                         'bg-slate-400 cursor-default' :
                         'bg-slate-400 cursor-default'
                       } w-full text-slate-50 lg:hover:text-white lg:hover:font-bold px-6 py-2 flex flex-row justify-center items-center rounded-md transition-all z-30`
@@ -209,22 +209,6 @@ export default function JoinModal(props: any) {
                   >
                     <h5 className='w-full h-fit text-sm lg:text-base leading-none tracking-wider'>
                       Create account
-                    </h5>
-                  </button>
-                </div>
-                {/**Join with google */}
-                <div className='w-full h-fit pt-5 flex flex-col justify-center items-center'>
-                  <button
-                    type='submit'
-                    className='w-full h-fit text-white lg:text-gray-400 lg:hover:text-white font-bold lg:font-normal lg:hover:font-bold px-6 py-2 flex flex-row justify-center items-center bg-slate-300 lg:bg-slate-50 border border-slate-200 lg:hover:bg-green-400 rounded-md cursor-default lg:cursor-pointer transition-all z-30'
-                  >
-                    <Image
-                      className='w-3 lg:w-5 h-3 lg:h-5'
-                      src={googleIcon}
-                      alt='icon-google'
-                    />
-                    <h5 className='w-full h-fit text-sm lg:text-base leading-none tracking-wider'>
-                      Join with Google
                     </h5>
                   </button>
                 </div>

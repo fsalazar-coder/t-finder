@@ -31,7 +31,7 @@ export default function ProfileScoreOverall({ profile }: any) {
         <h6 className='w-fit text-[10px] text-color-text-dark font-semibold'>
           {`${scoreProfile}/${scoreProfileMax}`}
         </h6>
-        <div style={{ width: `${percentage}%` }} className={`h-full absolute left-0 top-0 bg-color-highlighted-clear -z-10`} />
+        <div style={{ width: `${percentage}%` }} className={`h-full absolute left-0 top-0 bg-color-secondary-clear -z-10`} />
         <div className={`w-full h-full absolute left-0 top-0 bg-color-clear -z-20`} />
       </div>
     </div>

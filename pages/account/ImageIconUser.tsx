@@ -28,7 +28,7 @@ export default function ImageIconUser({ type, otherUserImageUrl }: UserProfileIm
   };
 
   const getBorderClass = () => {
-    return userImageUrlToRender ? moduleType[type]['background'] || 'border-color-border' : 'bg-color-text-almost-clear';
+    return userImageUrlToRender ? moduleType[type]['background'] : 'bg-color-text-almost-clear';
   };
 
   const isDashboard: boolean = accountModule === 'Dashboard';
@@ -37,12 +37,12 @@ export default function ImageIconUser({ type, otherUserImageUrl }: UserProfileIm
   const moduleType: any = {
     'message-chat': { 'image-class': 'border-[1px]', 'icon-class': 'text-2xl', 'background': 'bg-color-highlighted' },
     'title-chat': { 'image-class': 'border-[1px]', 'icon-class': 'text-2xl', 'background': 'bg-white' },
-    'navbar': { 'image-class': 'w-[93%] h-[93%] border-[1px]', 'icon-class': 'text-[16px]', 'background': 'bg-color-highlighted' },
+    'navbar': { 'image-class': 'w-[93%] h-[93%] border-[1px]', 'icon-class': 'text-[16px]', 'background': 'bg-color-highlighted-clear lg:bg-white hover:bg-color-highlighted-clear' },
     'dropdown-auth': { 'image-class': 'w-[92%] h-[92%] border-[1px]', 'icon-class': 'text-2xl', 'background': 'bg-color-highlighted'},
     'notifications': { 'image-class': 'border-[2px]', 'icon-class': `${isDashboard ? 'text-2xl' : 'text-4xl'}`, 'background': '' },
     'request': { 'image-class': 'border-[2px]', 'icon-class': 'text-4xl', 'background': '' },
-    'account-navbar': { 'image-class': 'border-[2px]', 'icon-class': 'text-4xl', 'background': 'bg-gradient-to-br from-color-clear via-color-highlighted to-color-highlighted-dark' },
-    'personal-info': { 'image-class': 'border-[2px]', 'icon-class': 'text-7xl', 'background': 'bg-gradient-to-br from-color-clear via-color-highlighted to-color-highlighted-dark' },
+    'account-navbar': { 'image-class': 'border-[2px]', 'icon-class': 'text-4xl', 'background': 'bg-gradient-to-br from-color-clear via-color-highlighted-clear to-color-highlighted-dark' },
+    'personal-info': { 'image-class': 'border-[2px]', 'icon-class': 'text-7xl', 'background': 'bg-gradient-to-br from-color-clear via-color-highlighted-clear to-color-highlighted-dark' },
   };
 
 
@@ -51,7 +51,7 @@ export default function ImageIconUser({ type, otherUserImageUrl }: UserProfileIm
       {
         userImageUrlToRender ?
           <Image
-            className={`${getImageClasses()} w-[94%] h-[94%] rounded-full border-white transition-all z-10`}
+            className={`${getImageClasses()} ${type === 'navbar' ? 'border-color-highlighted-clear lg:hover:border-color-highlighted-clear' : 'border-white' } w-[94%] h-[94%] rounded-full transition-all z-10`}
             width={800}
             height={800}
             src={userImageUrlToRender as string}

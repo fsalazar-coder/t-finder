@@ -59,16 +59,23 @@ export default function MessageModal() {
 
   useEffect(() => {
     if (modalActived) {
-      setAnimationStep(1);                  // Inicia la animación del círculo primero
-      animationStep === 1 && setAnimationState({ ...animationState, circle: true });
-
-      const timer = setTimeout(() => {      // Espera a que termine la animación del círculo para iniciar la del símbolo
-        setAnimationStep(2);
-        animationStep === 2 && setAnimationState({ ...animationState, symbol: true })
-      }, 2000);
-      return () => clearTimeout(timer);
+      setAnimationStep(1);
     }
-  }, [modalActived, animationState, animationStep]);
+  }, [modalActived]);
+
+  useEffect(() => {
+    let timer: any;
+    if (animationStep === 1) {
+      setAnimationState({ ...animationState, circle: true });
+      setAnimationState({ ...animationState, symbol: false });
+      timer = setTimeout(() => {
+        setAnimationStep(2);
+      }, 1000);
+    } else if (animationStep === 2) {
+      setAnimationState({ ...animationState, symbol: true });
+    }
+    return () => clearTimeout(timer);
+  }, [animationStep]);
 
   const renderButton = (buttonType: 'medium' | 'large' | 'cancel') => {
     let largeButton: boolean = buttonType === 'large';

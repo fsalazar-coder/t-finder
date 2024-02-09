@@ -23,7 +23,7 @@ export default function CircleProgressBar({ percentage, circleWidth, radius, str
           r={radius}
         />
         <circle
-          className={`w-full h-full stroke-sky-500`}
+          className={`w-full h-full stroke-color-secondary`}
           cx={circleWidth / 2}
           cy={circleWidth / 2}
           fill="none"

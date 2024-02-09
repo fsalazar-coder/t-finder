@@ -22,6 +22,8 @@ interface ContextUIProps {
   setDropdownHome: React.Dispatch<React.SetStateAction<boolean>>;
   dropdownAuth: boolean;
   setDropdownAuth: React.Dispatch<React.SetStateAction<boolean>>;
+  sectionHomeActived: string;
+  setSectionHomeActived: React.Dispatch<React.SetStateAction<string>>;
   accountActived: boolean;
   setAccountActived: React.Dispatch<React.SetStateAction<boolean>>;
   accountModule: string;
@@ -45,6 +47,7 @@ export const UIProvider = ({ children }: UIProviderProps): JSX.Element => {
   const [hamburguerMenuActive, setHamburguerMenuActive] = useState<boolean>(false);
   const [dropdownHome, setDropdownHome] = useState<boolean>(false);
   const [dropdownAuth, setDropdownAuth] = useState<boolean>(false);
+  const [sectionHomeActived, setSectionHomeActived] = useState<string>('header-section');
   const [accountActived, setAccountActived] = useState<boolean>(false);
   const [accountModule, setAccountModule] = useState<string>('');
   const [requestMenu, setRequestMenu] = useState<string>('');
@@ -111,6 +114,7 @@ export const UIProvider = ({ children }: UIProviderProps): JSX.Element => {
         hamburguerMenuActive, setHamburguerMenuActive,
         dropdownHome, setDropdownHome,
         dropdownAuth, setDropdownAuth,
+        sectionHomeActived, setSectionHomeActived,
         accountActived, setAccountActived,
         accountModule, setAccountModule,
         requestMenu, setRequestMenu,

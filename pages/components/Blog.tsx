@@ -8,7 +8,7 @@ import BlogModal from './BlogModal';
 
 export default function Blog(props: any) {
 
-  const {setBlogModal} = useUI();
+  const { setBlogModal } = useUI();
   const [animationActived, setAnimationActived] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [blogModalAnimationClose, setBlogModalAnimationClose] = useState(false);
@@ -28,46 +28,43 @@ export default function Blog(props: any) {
   }, [blogActived]);
 
   return (
-    <div className='w-full h-full flex flex-col justify-center items-center'>
-      {/**Blog content */}
-      <div className='container w-full h-full flex flex-col justify-center px-0 lg:px-5 list-none transition-all'>
-        {/**title */}
+    <div className='container w-full min-h-screen pt-20 px-0 md:px-5 flex flex-col items-center list-none transition-all'>
+      <div className='w-full flex'>
         <SectionTitles
           sectionTitle={props.sectionTitle}
           sectionSubtitle={props.sectionSubtitle}
           sectionType={props.sectionType}
         />
-        {/**content */}
-        <ul
-          className='w-full h-fit my-4 flex flex-col justify-start items-center lg:flex-row lg:justify-between lg:items-center list-none transition-all z-20'
-          onMouseEnter={() => { setHovered(true) }}
-          onMouseLeave={() => { setHovered(false) }}
-        >
-          {
-            props.data?.map((item: any, index: any) => {
-              return (
-                <BlogElement
-                  key={index}
-                  value={index}
-                  index={index}
-                  article={item}
-                  hovered={hovered}
-                  animationActived={animationActived}
-                  animation={animations[index]}
-                  blogModalOpen={(e: any) => {
-                    setBlogModal(true);
-                    setBlogActiveIndex(e.currentTarget.value);
-                  }}
-                />
-              )
-            })
-          }
-        </ul>
       </div>
+      <ul
+        className='w-full h-fit md:pt-4 flex flex-col justify-center items-center lg:flex-row lg:justify-between lg:items-center list-none transition-all z-20'
+        onMouseEnter={() => { setHovered(true) }}
+        onMouseLeave={() => { setHovered(false) }}
+      >
+        {
+          props.data?.map((item: any, index: any) => {
+            return (
+              <BlogElement
+                key={index}
+                value={index}
+                index={index}
+                article={item}
+                hovered={hovered}
+                animationActived={animationActived}
+                animation={animations[index]}
+                blogModalOpen={(e: any) => {
+                  setBlogModal(true);
+                  setBlogActiveIndex(e.currentTarget.value);
+                }}
+              />
+            )
+          })
+        }
+      </ul>
       {/**Hidden-visible blog modal */}
       <BlogModal
         blogActiveIndex={blogActiveIndex}
-        article={props.data? props.data[blogActiveIndex] : undefined }
+        article={props.data ? props.data[blogActiveIndex] : undefined}
       />
     </div>
   )

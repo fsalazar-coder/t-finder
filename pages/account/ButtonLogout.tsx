@@ -67,8 +67,8 @@ export default function ButtonLogout({ type }: ButtonLogoutParams) {
 
 
   return (
-    <li className={`${classList} w-full flex flex-row justify-center items-center border-t border-color-border transition-all`}>
-      <button className={`${classButton} w-full flex items-center text-color-text-medium hover:text-red-500 lg:cursor-pointer z-[70]`}
+    <li className={`${classList} w-full flex flex-row justify-center items-center border-t border-color-secondary transition-all`}>
+      <button className={`${classButton} w-full flex items-center text-color-secondary hover:text-color--clear lg:cursor-pointer z-[70]`}
         onClick={() => handleLogout()}
       >
         <i className={`${classIcon} w-fit h-fit flex flex-col justify-center items-center`}>
