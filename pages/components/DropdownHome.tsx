@@ -13,7 +13,7 @@ export default function DropdownHome() {
       setDropdownHome(false);
       setHamburguerMenuActive(false);
     }
-  },[screenNarrow])
+  },[screenNarrow, setDropdownHome, setHamburguerMenuActive])
 
   return (
     dropdownHome &&

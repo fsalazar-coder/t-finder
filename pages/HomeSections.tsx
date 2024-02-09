@@ -97,7 +97,7 @@ export default function HomeSections({ renderCondition }: { renderCondition: boo
         <Component />
       </section>
     );
-  }, [sectionHomeActived, handleClick]);
+  }, [sectionHomeActived, sectionComponents, handleClick]);
 
 
   return (

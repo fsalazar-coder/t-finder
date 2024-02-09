@@ -75,7 +75,7 @@ export default function MessageModal() {
       setAnimationState({ ...animationState, symbol: true });
     }
     return () => clearTimeout(timer);
-  }, [animationStep]);
+  }, [animationStep, animationState]);
 
   const renderButton = (buttonType: 'medium' | 'large' | 'cancel') => {
     let largeButton: boolean = buttonType === 'large';
