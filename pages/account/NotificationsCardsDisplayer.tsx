@@ -49,7 +49,8 @@ export default function NotificationsCardsDisplayer({ notificationsToRender }: a
             </ul>
           </div>
           :
-          <div className={`${!isDashboard && 'pt-1 bg-white border border-color-border shadow-md rounded-lg transform transition-all'} w-full px-5 py-5 flex flex-col transition-all`}>
+          <div className={`${!isDashboard && 'bg-white border border-color-border shadow-md rounded-lg transform transition-all'
+            } w-full px-5 py-5 flex flex-col transition-all`}>
             <h2 className='w-fit text-color-text-medium'>
               {`You do not have ${isDashboard ? 'unread notifications' : 'any notification'}`}
             </h2>

@@ -29,8 +29,8 @@ export default function CircleProgressBar({ percentage, circleWidth, radius, str
           fill="none"
           strokeWidth={strokeWidth}
           r={radius}
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          //strokeLinecap="round"
+          //strokeLinejoin="round"
           style={{
             strokeDasharray: dashArray,
             strokeDashoffset: dashOffset

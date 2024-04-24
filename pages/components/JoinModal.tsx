@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { useAuth } from '@/context/ContextAuth';
 import { useUI } from '@/context/ContextUI';
 import axios from 'axios';
-import Image from 'next/image';
-import googleIcon from '../../public/images/google-icon.webp';
 import { IconCancel } from '../../icons/icons';
 
 

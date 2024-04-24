@@ -1,19 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useUI } from "@/context/ContextUI";
 import { useAuthData } from "@/context/ContextAuthData";
-import ProfileDashboard from './ProfileDashboard';
-import ProfileCardsDisplayer from './ProfileCardsDisplayer';
-import ProfileCardsTitle from './ProfileCardsTitle';
+import ProfileCardContent from './ProfileCardContent';
+import ProfileCardTitle from './ProfileCardTitle';
 
 interface UserProfileData {
   personalInfo: [];
   experience: [];
   education: [];
   courses: [];
-  projects: [];
-  publications: [];
-  conferences: [];
-  certifications: [];
   recommendations: [];
 };
 
@@ -44,31 +39,26 @@ export default function Profile() {
     { id: 'experience', title: 'Experience' },
     { id: 'education', title: 'Education' },
     { id: 'courses', title: 'Courses' },
-    { id: 'projects', title: 'Projects' },
-    { id: 'publications', title: 'Publications' },
-    { id: 'conferences', title: 'Conferences' },
-    { id: 'certifications', title: 'Certifications' },
     { id: 'recommendations', title: 'Recommendations' }
   ];
 
-  const containerClassNames = `${isDashboard ? 'w-full h-full flex-col bg-white border border-color-border shadow-md rounded-lg'
-    : screenNarrow ? 'w-full flex-col px-5 py-16' : 'w-[52rem] px-2 lg:px-8 lg:py-9 flex-col'
-    } flex justify-between transition-all`;
+  const containerClassNames = `${isDashboard ? 'w-full h-full flex-col border-color-border md:hover:border-color-highlighted-clear'
+    : screenNarrow ? 'w-full flex-col' : 'w-[52rem] flex-col'
+    } flex justify-between bg-white border rounded-lg transition-all`;
 
 
   return (
-    <div className={`w-full h-full flex flex-col items-center`}>
+    <div className={`${screenNarrow && 'px-2'} w-full h-full py-10 flex flex-col items-center`}>
       <div className={containerClassNames}>
-        <ProfileCardsTitle
+        <ProfileCardTitle
           isDashboard={isDashboard}
           menuProfileElements={menuProfileElements}
           elementProfile={elementProfileCurrent}
           profileMenuIndex={profileMenuIndex}
-          elementProfilePrev={() => goToPreviousElementProfile()}     /// setProfileMenuIndex(profileMenuIndex > 0 ? profileMenuIndex - 1 : 0)
-          elementProfileNext={() => goToNextElementProfile()}         /// setProfileMenuIndex(profileMenuIndex + 1)
+          elementProfilePrev={() => goToPreviousElementProfile()} 
+          elementProfileNext={() => goToNextElementProfile()} 
         />
-        <ProfileDashboard shouldRender={isDashboard} />
-        <ProfileCardsDisplayer
+        <ProfileCardContent
           shouldRender={!isDashboard}
           data={userProfileData[elementProfileCurrent as keyof UserProfileData]}
           dataBaseCollection={elementProfileCurrent}

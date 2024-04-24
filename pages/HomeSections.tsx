@@ -15,12 +15,11 @@ interface SectionConfig {
 
 
 export default function HomeSections({ renderCondition }: { renderCondition: boolean }) {
-  const { setDropdownHome, setHamburguerMenuActive, sectionHomeActived } = useUI();
+  const { setHamburguerMenuActive, sectionHomeActived } = useUI();
 
   const handleClick = useCallback(() => {
-    setDropdownHome(false);
     setHamburguerMenuActive(false);
-  }, [setDropdownHome, setHamburguerMenuActive]);
+  }, [setHamburguerMenuActive]);
 
   const SectionComponent = useMemo(() => {
     const sectionComponents: Record<string, SectionConfig> = {

@@ -31,7 +31,6 @@ type PositionType = 'start' | 'center' | 'end' | 'single';
 
 
 export default function ChatCard() {
-
   const { token, userId } = useAuth();
   const { accountModule } = useUI();
   const { socket, chatDataUser, setChatDataUser, chatActived, setChatActived, userChatsData, setUserChatsData,
@@ -67,14 +66,12 @@ export default function ChatCard() {
       }
       fetchChats().then(() => {
         setIsGettingChatData(false);
-        setUnreadMessagesForUser((prevMessages: UnreadMessagesForUser) => ({
-          ...prevMessages, [chatUserId]: 0
-        }));
         let unreadMessagesForChatUserId: number = unreadMessagesForUser[chatUserId];
         setUnreadMessages((prevUnreadMessages: number) => (prevUnreadMessages - unreadMessagesForChatUserId));
+        setUnreadMessagesForUser((prevMessages: UnreadMessagesForUser) => ({ ...prevMessages, [chatUserId]: 0 }));
       })
     };
-  }, [chatActived, chatUserId, token, unreadMessagesForUser, userId, setIsGettingChatData, setUnreadMessages, setUnreadMessagesForUser, setUserChatsData]);
+  }, [token, userId, chatActived]);
 
   useEffect(() => {
     let lastChatItem = chatListRef.current?.lastChild;
@@ -169,7 +166,7 @@ export default function ChatCard() {
       {/**content */}
       <div className='w-full h-full flex flex-col justify-start items-center'>
         {/**header form */}
-        <div className='w-full h-[12%] p-2 flex flex-row justify-between items-center bg-color-secondary-dark rounded-t-md'>
+        <div className='w-full h-[12%] p-2 flex flex-row justify-between items-center bg-color-secondary rounded-t-md'>
           {/**profile image from user contacted */}
           <div className='w-10 h-10 flex flex-row items-center'>
             <ImageIconUser

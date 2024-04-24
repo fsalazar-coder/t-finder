@@ -15,12 +15,11 @@ interface ModalConfigType {
 export default function MessageModal() {
   const { messageModal, setMessageModal } = useUI();
   const { collectionToChange, setCollectionToChange } = useAuthData();
-  const [animationState, setAnimationState] = useState({ circle: false, symbol: false, circleGrow: false });
+  const [animationState, setAnimationState] = useState({ circle: false, symbol: false });
   const [animationStep, setAnimationStep] = useState(0); // 0: ninguna, 1: circle, 2: symbol
   const { type, text, click } = messageModal[0] || {};
   const isCancelButton: boolean = type === 'question' || type === 'delete' || type === 'logout';
   const modalActived: boolean = messageModal.length > 0;
-
   const modalConfig: ModalConfigType = {
     'successful': {
       title: 'Successful',
@@ -37,7 +36,7 @@ export default function MessageModal() {
     'question': {
       title: 'Are you sure?',
       textButton: 'I agree',
-      strokeColor: 'stroke-color-highlighted-clear',
+      strokeColor: 'stroke-color-secondary-clear',
       buttonColor: 'bg-color-highlighted lg:hover:bg-color-highlighted-clear'
     },
     'delete': {
@@ -49,33 +48,27 @@ export default function MessageModal() {
     'logout': {
       title: 'Are you sure?',
       textButton: 'Logout',
-      strokeColor: 'stroke-color-highlighted',
-      buttonColor: 'bg-color-highlighted lg:hover:bg-color-highlighted-clear'
+      strokeColor: 'stroke-color-secondary-clear',
+      buttonColor: 'bg-color-secondary lg:hover:bg-color-secondary-clear'
     },
   };
-
   const getModalStyles = (type: string) => modalConfig[type] || {};
   const { title, textButton, strokeColor, buttonColor } = getModalStyles(type);
 
   useEffect(() => {
-    if (modalActived) {
-      setAnimationStep(1);
-    }
+    if (modalActived) { setAnimationStep(1) }
   }, [modalActived]);
 
   useEffect(() => {
     let timer: any;
     if (animationStep === 1) {
-      setAnimationState({ ...animationState, circle: true });
-      setAnimationState({ ...animationState, symbol: false });
-      timer = setTimeout(() => {
-        setAnimationStep(2);
-      }, 1000);
+      setAnimationState({ circle: true, symbol: false });
+      timer = setTimeout(() => { setAnimationStep(2) }, 1000);
     } else if (animationStep === 2) {
-      setAnimationState({ ...animationState, symbol: true });
+      setAnimationState({ circle: true, symbol: true });
     }
     return () => clearTimeout(timer);
-  }, [animationStep, animationState]);
+  }, [animationStep]);
 
   const renderButton = (buttonType: 'medium' | 'large' | 'cancel') => {
     let largeButton: boolean = buttonType === 'large';
@@ -104,7 +97,8 @@ export default function MessageModal() {
     )
   };
 
-  return modalActived && (
+  return (
+    modalActived &&
     <div className='w-screen h-screen fixed top-0 flex flex-col justify-center items-center bg-black bg-opacity-75 transition-all z-[60]'>
       <div className={
         `${modalActived ? 'scale-100 animate-[poing_0.50s]' : 'scale-0 animate-[zoom-out_0.30s]'
@@ -141,14 +135,16 @@ const AnimatedSVG = ({ type, strokeColor, circleAnimation, symbolAnimation }: an
   const svgsTypes: any = {
     'successful':
       <svg
-        className={`${strokeColor} w-10 h-10`}
+        className={`${strokeColor} w-10 h-10 fill-color-highlighted`}
         strokeWidth={4}
+        fill='none'
         viewBox='0 0 40 40'
         strokeLinecap='round'
       >
         <line
           className={`${symbolAnimation ? 'animate-[draw-check_0.75s_ease-in-out_delay_1.0s]' : 'hidden'}`}
           x1="4" y1="26" x2="16" y2="36"
+          strokeWidth={5}
           strokeMiterlimit={10}
           strokeDasharray={330}
           strokeDashoffset={0}
@@ -156,17 +152,27 @@ const AnimatedSVG = ({ type, strokeColor, circleAnimation, symbolAnimation }: an
         <line
           className={`${symbolAnimation ? 'animate-[draw-check_1.25s_ease-in-out_delay_0.75s]' : 'hidden'}`}
           x1="16" y1="36" x2="36" y2="12"
+          strokeWidth={5}
+          strokeMiterlimit={10}
+          strokeDasharray={330}
+          strokeDashoffset={0}
         />
       </svg>,
     'error':
-      <svg className={`${strokeColor} w-10 lg:w-14 h-10 lg:h-14`} strokeWidth={4} viewBox='0 0 40 40' strokeLinecap='round'>
+      <svg className={`w-10 lg:w-14 h-10 lg:h-14 fill-color-notification-alert`}
+        strokeWidth={4}
+        fill='none'
+        viewBox='0 0 40 40'
+        strokeLinecap='round'
+      >
         <line className={`${symbolAnimation ? 'animate-something' : 'hidden'}`} x1="10" y1="10" x2="30" y2="30" />
         <line className={`${symbolAnimation ? 'animate-something' : 'hidden'}`} x1="30" y1="10" x2="10" y2="30" />
       </svg>,
     'question':
       <svg
-        className={`w-10 lg:w-14 h-10 lg:h-14 flex fill-sky-400`}
+        className={`w-10 lg:w-14 h-10 lg:h-14 flex fill-color-secondary-clear`}
         strokeWidth={1}
+        fill='none'
         viewBox='0 0 16 16'
         strokeLinecap='round'
       >
@@ -178,7 +184,7 @@ const AnimatedSVG = ({ type, strokeColor, circleAnimation, symbolAnimation }: an
       </svg>,
     'delete':
       <svg
-        className={`w-10 lg:w-14 h-10 lg:h-14 flex fill-red-500`}
+        className={`w-10 lg:w-14 h-10 lg:h-14 flex fill-color-notification-alert`}
         strokeWidth={1}
         viewBox='0 0 16 16'
         strokeLinecap='round'
@@ -191,7 +197,7 @@ const AnimatedSVG = ({ type, strokeColor, circleAnimation, symbolAnimation }: an
       </svg>,
     'logout':
       <svg
-        className={`w-10 lg:w-14 h-10 lg:h-14 flex fill-sky-500`}
+        className={`w-10 lg:w-14 h-10 lg:h-14 flex fill-color-secondary-clear`}
         strokeWidth={1}
         viewBox='0 0 16 16'
         strokeLinecap='round'
@@ -211,10 +217,10 @@ const AnimatedSVG = ({ type, strokeColor, circleAnimation, symbolAnimation }: an
         viewBox='0 0 40 40'
       >
         <circle
-          className={`${strokeColor} ${circleAnimation ? 'animate-[draw-circle_2.0s_ease]' : 'hidden'}`}
+          className={`${circleAnimation ? 'animate-[draw-circle_2.0s_ease]' : 'hidden'} ${strokeColor}`}
           cx="20" cy="20" r="19"
+          fill='none'
           strokeWidth={2}
-          fill="none"
           strokeMiterlimit={10}
           strokeDasharray={330}
           strokeDashoffset={0}

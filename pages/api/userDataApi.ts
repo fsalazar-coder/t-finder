@@ -37,9 +37,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let experienceCollection: any = db?.collection('experience');
     let educationCollection: any = db?.collection('education');
     let coursesCollection: any = db?.collection('courses');
-    let publicationsCollection: any = db?.collection('publications');
-    let conferencesCollection: any = db?.collection('conferences');
-    let certificationsCollection: any = db?.collection('certifications');
     let recommendationsCollection: any = db?.collection('recommendations');
     let profileScoreCollection: any = db?.collection('profile_score');
     let requestTalentCollection: any = db?.collection('request_talent');
@@ -187,13 +184,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       case 'get-user-profile-data':
         try {
           const personalInfo = await personalInfoCollection?.find({ _id: id }).toArray();
-          const [experience, education, courses, publications, conferences, certifications, recommendations] = await Promise.all([
+          const [experience, education, courses, recommendations] = await Promise.all([
             experienceCollection?.find({ user_id: id }).toArray(),
             educationCollection?.find({ user_id: id }).toArray(),
             coursesCollection?.find({ user_id: id }).toArray(),
-            publicationsCollection?.find({ user_id: id }).toArray(),
-            conferencesCollection?.find({ user_id: id }).toArray(),
-            certificationsCollection?.find({ user_id: id }).toArray(),
             recommendationsCollection?.find({ user_id: id }).toArray(),
           ]);
 
@@ -202,9 +196,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             experience,
             education,
             courses,
-            publications,
-            conferences,
-            certifications,
             recommendations
           };
 

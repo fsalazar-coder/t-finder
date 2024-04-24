@@ -49,14 +49,14 @@ export default function ButtonLogout({ type }: ButtonLogoutParams) {
 
   const logoutConfigType: LogoutConfigType = {
     'navbar-account': {
-      classList: '',
-      classButton: 'h-14 py-2 flex-col justify-center',
+      classList: 'border-color-secondary',
+      classButton: 'h-14 py-2 flex-col justify-center text-color-secondary hover:text-color-secondary-clear',
       classIcon: 'text-xl lg:text-2xl',
       classText: 'text-xs text-center'
     },
     'dropdown-auth': {
-      classList: 'mt-4 py-4 text-color-text-almost-clear hover:text-color-text-medium hover:bg-color-hover hover:cursor-pointer',
-      classButton: 'h-full flex-row',
+      classList: 'mt-4 py-4 text-color-text-almost-clear hover:text-color-text-medium hover:bg-color-hover hover:cursor-pointer border-color-border',
+      classButton: 'h-full flex-row text-color-text-almost-clear hover:text-color-secondary',
       classIcon: 'pl-8 pr-3 text-lg',
       classText: 'px-4 text-sm lg:text-base text-start',
     },
@@ -67,8 +67,8 @@ export default function ButtonLogout({ type }: ButtonLogoutParams) {
 
 
   return (
-    <li className={`${classList} w-full flex flex-row justify-center items-center border-t border-color-secondary transition-all`}>
-      <button className={`${classButton} w-full flex items-center text-color-secondary hover:text-color--clear lg:cursor-pointer z-[70]`}
+    <li className={`${classList} w-full flex flex-row justify-center items-center border-t transition-all`}>
+      <button className={`${classButton} w-full flex items-center lg:cursor-pointer z-[70]`}
         onClick={() => handleLogout()}
       >
         <i className={`${classIcon} w-fit h-fit flex flex-col justify-center items-center`}>

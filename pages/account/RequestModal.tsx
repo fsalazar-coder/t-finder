@@ -315,7 +315,7 @@ export default function RequestModal() {
           </i>
         </div>
         {/**header form */}
-        <div className='w-full px-2 lg:px-6 py-1 lg:py-2 flex flex-col bg-color-highlighted rounded-t-md z-50'>
+        <div className='w-full px-2 lg:px-6 py-1 lg:py-2 flex flex-col bg-color-secondary rounded-t-md z-50'>
           <h2 className='w-full h-fit py-1 text-white text-xl lg:text-3xl font-bold transition-all z-10'>
             {`${requestModal} request`}
           </h2>

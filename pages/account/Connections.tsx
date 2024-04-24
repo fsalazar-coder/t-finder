@@ -7,7 +7,6 @@ import ConnectionCard from './ConnectionCard';
 type ConnectionsType = 'seekers-talent' | 'seekers-job';
 
 
-
 export default function Connections() {
   const { accountModule } = useUI();
   const { usersConnectedData, unreadMessagesForUser } = useAuthSocket();
@@ -16,7 +15,6 @@ export default function Connections() {
   const [listHover, setListHover] = useState(false);
   const [connectionsType, setConnectionsType] = useState<ConnectionsType>('seekers-talent');
   const [connectionsToShow, setConnectionsToShow] = useState([]);
-
 
   useEffect(() => {
     if (usersConnectedData && accountModule === 'Connections') {
@@ -47,7 +45,7 @@ export default function Connections() {
     { id: 'seekers-job', label: 'Talents' }
   ];
 
-  const containerClassNames = `w-full flex-col px-5 py-16 lg:w-[52rem] lg:px-2 lg:px-8 lg:py-9 lg:flex-col flex justify-between transition-all`;
+  const containerClassNames = `w-full flex-col px-5 lg:w-[52rem] lg:px-2 lg:px-8 lg:py-9 lg:flex-col flex justify-between transition-all`;
   const shouldRenderData = Array.isArray(connectionsToShow) && connectionsToShow.length > 0;
 
 
@@ -113,7 +111,7 @@ export default function Connections() {
               }
             </ul>
             :
-            <div className="w-full mt-1 px-5 py-5 flex flex-col bg-white border border-color-border shadow-md rounded-lg transform transition-all">
+            <div className="w-full px-5 py-5 flex flex-col bg-white border border-color-border shadow-md rounded-lg transform transition-all">
               <h2 className='w-fit text-color-text-medium'>
                 {`You do not have any connected ${connectionsType === 'seekers-talent' ? 'employer' : 'talent'}`}
               </h2>

@@ -4,9 +4,7 @@ import { useAuth } from '@/context/ContextAuth';
 import { useAuthData } from '@/context/ContextAuthData';
 import { IconCancel } from '../../icons/icons';
 import googleIcon from '../../public/images/google-icon.webp';
-import Image from 'next/image';
 import axios from 'axios';
-
 
 
 export default function LoginModal(props: any) {

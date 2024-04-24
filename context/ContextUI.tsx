@@ -18,8 +18,6 @@ interface ContextUIProps {
   setScreenNarrow: React.Dispatch<React.SetStateAction<boolean>>;
   hamburguerMenuActive: boolean;
   setHamburguerMenuActive: React.Dispatch<React.SetStateAction<boolean>>;
-  dropdownHome: boolean;
-  setDropdownHome: React.Dispatch<React.SetStateAction<boolean>>;
   dropdownAuth: boolean;
   setDropdownAuth: React.Dispatch<React.SetStateAction<boolean>>;
   sectionHomeActived: string;
@@ -45,7 +43,6 @@ export const UIProvider = ({ children }: UIProviderProps): JSX.Element => {
     passwordResetModal, setPasswordResetModal, isLoggingOut, setCleanupDone } = useAuth();
   const [screenNarrow, setScreenNarrow] = useState<boolean>(false);
   const [hamburguerMenuActive, setHamburguerMenuActive] = useState<boolean>(false);
-  const [dropdownHome, setDropdownHome] = useState<boolean>(false);
   const [dropdownAuth, setDropdownAuth] = useState<boolean>(false);
   const [sectionHomeActived, setSectionHomeActived] = useState<string>('header-section');
   const [accountActived, setAccountActived] = useState<boolean>(false);
@@ -112,7 +109,6 @@ export const UIProvider = ({ children }: UIProviderProps): JSX.Element => {
       {
         screenNarrow, setScreenNarrow,
         hamburguerMenuActive, setHamburguerMenuActive,
-        dropdownHome, setDropdownHome,
         dropdownAuth, setDropdownAuth,
         sectionHomeActived, setSectionHomeActived,
         accountActived, setAccountActived,

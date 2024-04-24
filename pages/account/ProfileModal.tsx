@@ -33,21 +33,6 @@ const initialUserProfileData = {
   institution: '',
   yearCompleted: '',
   skillsAcquired: '',
-  /**publications */
-  publicationTitle: '',
-  coAuthors: '',
-  journalName: '',
-  yearPublished: '',
-  /**conferences: */
-  presentationTitle: '',
-  conferenceName: '',
-  conferenceLocation: '',
-  year: '',
-  /**certifications: */
-  certificationName: '',
-  issuingOrganization: '',
-  licenseNumber: '',
-  yearIssued: '',
   /**recommendations: */
   recommenderName: '',
   recommenderTitle: '',
@@ -89,21 +74,6 @@ export default function ProfileModal() {
     institution: false,
     yearCompleted: false,
     skillsAcquired: false,
-    /**publications: */
-    publicationTitle: false,
-    coAuthors: false,
-    journalName: false,
-    yearPublished: false,
-    /**conferences: */
-    presentationTitle: false,
-    conferenceName: false,
-    conferenceLocation: false,
-    year: false,
-    /**certifications: */
-    certificationName: false,
-    issuingOrganization: false,
-    licenseNumber: false,
-    yearIssued: false,
     /**recommendations: */
     recommenderName: false,
     recommenderTitle: false,
@@ -169,33 +139,6 @@ export default function ProfileModal() {
       institution: userProfileDataUpdate.institution,
       skills_acquired: userProfileDataUpdate.skillsAcquired,
       year_completed: userProfileDataUpdate.yearCompleted,
-      update_at: date,
-    },
-    publications: {
-      _id: itemProfileId,
-      user_id: userId,
-      title: userProfileDataUpdate.publicationTitle,
-      co_authors: userProfileDataUpdate.coAuthors,
-      journal_name: userProfileDataUpdate.journalName,
-      year_published: userProfileDataUpdate.yearPublished,
-      update_at: date,
-    },
-    conferences: {
-      _id: itemProfileId,
-      user_id: userId,
-      title: userProfileDataUpdate.presentationTitle,
-      conference_name: userProfileDataUpdate.conferenceName,
-      location: userProfileDataUpdate.conferenceLocation,
-      year: userProfileDataUpdate.year,
-      update_at: date,
-    },
-    certifications: {
-      _id: itemProfileId,
-      user_id: userId,
-      title: userProfileDataUpdate.certificationName,
-      issuing_organization: userProfileDataUpdate.issuingOrganization,
-      license_number: userProfileDataUpdate.licenseNumber,
-      year_issued: userProfileDataUpdate.yearIssued,
       update_at: date,
     },
     recommendations: {
@@ -333,39 +276,6 @@ export default function ProfileModal() {
       ],
     },
     {
-      collectionName: 'publications',
-      title: 'Publication',
-      name: 'publications',
-      inputs: [
-        { type: 'text', title: 'Publication Title', value: 'publicationTitle' },
-        { type: 'text', title: 'Co-authors', value: 'coAuthors' },
-        { type: 'text', title: 'Journal or conference', value: 'journalName' },
-        { type: 'text', title: 'Year Published', value: 'yearPublished' },
-      ],
-    },
-    {
-      collectionName: 'conferences',
-      title: 'Conference',
-      name: 'conferences',
-      inputs: [
-        { type: 'text', title: 'Presentation title', value: 'presentationTitle' },
-        { type: 'text', title: 'Conference name', value: 'conferenceName' },
-        { type: 'text', title: 'Location', value: 'conferenceLocation' },
-        { type: 'text', title: 'Year', value: 'year' },
-      ],
-    },
-    {
-      collectionName: 'certifications',
-      title: 'Certification',
-      name: 'certifications',
-      inputs: [
-        { type: 'text', title: 'Certification name', value: 'certificationName' },
-        { type: 'text', title: 'Issuing organization', value: 'issuingOrganization' },
-        { type: 'text', title: 'License number', value: 'licenseNumber' },
-        { type: 'text', title: 'Year issued', value: 'yearIssued' },
-      ],
-    },
-    {
       collectionName: 'recommendations',
       title: 'Recomendation',
       name: 'recommendations',
@@ -424,7 +334,7 @@ export default function ProfileModal() {
           </i>
         </div>
         {/**header form */}
-        <div className='w-full px-2 lg:px-6 py-1 lg:py-2 flex flex-col bg-color-highlighted rounded-t-md z-50'>
+        <div className='w-full px-2 lg:px-6 py-1 lg:py-2 flex flex-col bg-color-secondary rounded-t-md z-50'>
           <h2 className='w-full h-fit py-1 text-white text-xl lg:text-3xl font-bold transition-all z-10'>
             {isProfileImageModal ? 'Profile image' : profileSelected.title}
           </h2>

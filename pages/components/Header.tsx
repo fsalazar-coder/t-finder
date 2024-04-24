@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/context/ContextAuth';
 import { Typewriter } from 'react-simple-typewriter';
-import { IconArrowRight } from '../../icons/icons';
+import { useUI } from '@/context/ContextUI';
 import ButtonGoTo from './ButtonGoTo';
+import Image from 'next/image';
+import headerImageNarrow from '@/public/images/Background_ai_narrow.jpg';
+import headerImageLarge from '@/public/images/Background_ai_large_2.jpg';
 
 
 export default function Header(props: any) {
-  const { token } = useAuth();
+  const { screenNarrow } = useUI();
   const [animationActived, setAnimationActived] = useState(false);
   const headerActived = props.headerSectionActived;                                      /**To active animation on header section: true or false***/
 
@@ -23,11 +25,11 @@ export default function Header(props: any) {
   }, [headerActived]);
 
   return (
-    <div className='w-full min-h-screen px-2 lg:px-8 relative flex flex-col justify-center items-center'>
+    <div className='w-full min-h-screen relative flex flex-col justify-center items-center bg-gradient-to-b from-black via-color-secondary-dark to-color-secondary'>
       {/* Fondo con efecto de gradiente */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black via-color-secondary-dark to-color-secondary" />
+      <div className='w-full h-full absolute flex bg-custom-header bg-right-top bg-cover bg-no-repeat' />
       {/* Contenido del Encabezado */}
-      <div className='w-full flex flex-col justify-center items-center z-[35]'>
+      <div className='w-full md:pt-[10%] flex flex-col justify-center items-center z-[35]'>
         <h3 className='text-color-text-medium text-sm md:text-2xl lg:text-3xl xl:text-4xl tracking-wide font-normal flex'>
           The real app that
         </h3>
@@ -58,3 +60,15 @@ export default function Header(props: any) {
   )
 }
 
+
+
+
+///  <div className="w-full h-full absolute flex flex-row md:justify-end opacity-20">
+///  <Image
+///    className={`w-auto h-full flex flex-row justify-center items-center`}
+///    width={1350}
+///    height={900}
+///    src={screenNarrow ? headerImageNarrow : headerImageLarge}
+///    alt='header-image'
+///  />
+///  </div>

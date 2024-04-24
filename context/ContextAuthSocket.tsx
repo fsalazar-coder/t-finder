@@ -112,32 +112,20 @@ export const AuthSocketProvider = ({ children }: SocketProviderProps): JSX.Eleme
     });
   };
 
-  // get notifications
+  //web-socket connection
   useEffect(() => {
-    if (token && userId && (update === 'all' || update === 'notifications')) {
-      setUpdateCounter((counter) => counter + 1);
-      const fetchUserNotificationsData = async () => {
-        userDataHandlerFunction({
-          token: token as string,
-          userId: userId as string,
-          action: 'get-default',
-          collection: 'notifications',
-          data: '',
-          onSuccess: (responseData: any) => {
-            setUserNotificationsData(responseData);
-          },
-          onError: (error: any) => console.error(error)
-        });
-      }
-      fetchUserNotificationsData().then(() => {
-        setIsGettingNotificationsData(false);
-        setUpdateCounter((counter) => counter - 1);
-        if ((update === 'all' && updateCounter === 0) || update === 'notifications') {
-          setUpdate('');
-        }
-      })
-    };
-  }, [token, userId, update]);
+    if (token && userId) {
+      const newSocket = io('http://localhost:3000', { query: { token: token as string } });
+      newSocket.on('connect', () => {
+        console.log('Conectado al servidor WebSocket')
+      });
+      setSocket(newSocket);
+    }
+    else if (socket) {
+      socket.disconnect();
+      setSocket(null);
+    }
+  }, [token, userId]);
 
   // get connections
   useEffect(() => {
@@ -159,6 +147,33 @@ export const AuthSocketProvider = ({ children }: SocketProviderProps): JSX.Eleme
       fetchConnectedUserData().then(() => {
         setUpdateCounter((counter) => counter - 1);
         if ((update === 'all' && updateCounter === 0) || update === 'connections') {
+          setUpdate('');
+        }
+      })
+    };
+  }, [token, userId, update]);
+
+  // get notifications
+  useEffect(() => {
+    if (token && userId && (update === 'all' || update === 'notifications')) {
+      setUpdateCounter((counter) => counter + 1);
+      const fetchUserNotificationsData = async () => {
+        userDataHandlerFunction({
+          token: token as string,
+          userId: userId as string,
+          action: 'get-default',
+          collection: 'notifications',
+          data: '',
+          onSuccess: (responseData: any) => {
+            setUserNotificationsData(responseData);
+          },
+          onError: (error: any) => console.error(error)
+        });
+      }
+      fetchUserNotificationsData().then(() => {
+        setIsGettingNotificationsData(false);
+        setUpdateCounter((counter) => counter - 1);
+        if ((update === 'all' && updateCounter === 0) || update === 'notifications') {
           setUpdate('');
         }
       })
@@ -191,6 +206,42 @@ export const AuthSocketProvider = ({ children }: SocketProviderProps): JSX.Eleme
     };
   }, [token, userId, update]);
 
+  //actualizacion de las notificaciones de UNREAD a READ
+  useEffect(() => {
+    if (token && userId && isNotifications) {
+      const fetchChats = async () => {
+        userDataHandlerFunction({
+          token: token as string,
+          userId: userId as string,
+          action: 'update-notifications-unread-to-read',
+          collection: 'notifications',
+          data: '',
+          onSuccess: () => {
+            setUnreadNotifications(0);
+            setUserNotificationsData(userNotificationsData.map((notification) =>
+              notification.notification_status === 'unread' ? { ...notification, notification_status: 'read' } : notification
+            ));
+          },
+          onError: (error: any) => console.error(error)
+        });
+      }
+      fetchChats().then(() => { })
+    };
+  }, [token, userId, accountModule]);
+
+  //web-socket notifications listener
+  useEffect(() => {
+    if (token && socket && !isGettingNotificationsData) {
+      socket.on('notification', (data: NotificationsParams) => {
+        userNotificationsDataUpdate(data);
+        const { notification_type } = data;
+        notification_type === 'request-accepted' && setUpdate('connections');
+        if (!isNotifications) { setUnreadNotifications((prevUnread: number) => prevUnread + 1) }
+      });
+      return () => { socket.off('notification') };
+    }
+  }, [token, socket, isGettingNotificationsData]);
+
   ///get unread messages on chats 
   useEffect(() => {
     if (token && userId && update === 'all') {
@@ -218,22 +269,7 @@ export const AuthSocketProvider = ({ children }: SocketProviderProps): JSX.Eleme
     };
   }, [token, userId, update]);
 
-  //web-socket connection
-  useEffect(() => {
-    if (token && userId) {
-      const newSocket = io('http://localhost:3000', { query: { token: token as string } });
-      newSocket.on('connect', () => {
-        console.log('Conectado al servidor WebSocket')
-      });
-      setSocket(newSocket);
-    }
-    else if (socket) {
-      socket.disconnect();
-      setSocket(null);
-    }
-  }, [token, userId]);
-
-  //web-socket chats message listener
+  //web-socket message listener
   useEffect(() => {
     if (token && socket && chatActived && !isGettingChatData) {
       socket.on('message', (data: MessagesParams) => {
@@ -253,42 +289,6 @@ export const AuthSocketProvider = ({ children }: SocketProviderProps): JSX.Eleme
       return () => { socket.off('message') };
     }
   }, [token, socket, chatActived, isGettingChatData]);
-
-  //web-socket notifications listener
-  useEffect(() => {
-    if (token && socket && !isGettingNotificationsData) {
-      socket.on('notification', (data: NotificationsParams) => {
-        userNotificationsDataUpdate(data);
-        const { notification_type } = data;
-        notification_type === 'request-accepted' && setUpdate('connections');
-        if (!isNotifications) { setUnreadNotifications((prevUnread: number) => prevUnread + 1) }
-      });
-      return () => { socket.off('notification') };
-    }
-  }, [token, socket, accountModule, isGettingNotificationsData]);
-
-  //actualizacion de las notificaciones de UNREAD a READ
-  useEffect(() => {
-    if (token && userId && isNotifications) {
-      const fetchChats = async () => {
-        userDataHandlerFunction({
-          token: token as string,
-          userId: userId as string,
-          action: 'update-notifications-unread-to-read',
-          collection: 'notifications',
-          data: '',
-          onSuccess: () => {
-            setUnreadNotifications(0);
-            setUserNotificationsData(userNotificationsData.map((notification) =>
-              notification.notification_status === 'unread' ? { ...notification, notification_status: 'read' } : notification
-            ));
-          },
-          onError: (error: any) => console.error(error)
-        });
-      }
-      fetchChats().then(() => { })
-    };
-  }, [token, userId, accountModule]);
 
   /// logout, clear data
   useEffect(() => {

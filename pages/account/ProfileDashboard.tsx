@@ -2,11 +2,12 @@ import { useAuthData } from "@/context/ContextAuthData";
 import CircleProgressBar from './CircleProgressBar';
 import ProfileScoreOverall from './ProfileScoreOverall';
 import ProfileScoreOverview from './ProfileScoreOverview';
+import SectionTitles from "../components/SectionTitles";
 
-interface ProfileDashboardProps { shouldRender: boolean }
+interface ProfileDashboardProps { type: string }
 
 
-export default function ProfileDashboard({shouldRender}: ProfileDashboardProps) {
+export default function ProfileDashboard({ type }: ProfileDashboardProps) {
   const { userProfileData } = useAuthData();
 
   const profile: any = [
@@ -32,27 +33,6 @@ export default function ProfileDashboard({shouldRender}: ProfileDashboardProps) 
       length: userProfileData.courses.length
     },
     {
-      id: 'publications',
-      title: 'Publications',
-      data: userProfileData.publications,
-      shouldRender: userProfileData.publications.length > 0,
-      length: userProfileData.publications.length
-    },
-    {
-      id: 'conferences',
-      title: 'Conferences',
-      data: userProfileData.conferences,
-      shouldRender: userProfileData.conferences.length > 0,
-      length: userProfileData.conferences.length
-    },
-    {
-      id: 'certifications',
-      title: 'Certifications',
-      data: userProfileData.certifications,
-      shouldRender: userProfileData.certifications.length > 0,
-      length: userProfileData.certifications.length
-    },
-    {
       id: 'recommendations',
       title: 'Recommend...',
       data: userProfileData.recommendations,
@@ -65,32 +45,53 @@ export default function ProfileDashboard({shouldRender}: ProfileDashboardProps) 
   const percentageProfileFilled: number = Math.round((elementsCompleted / elementsProfileAmount) * 100);
 
   return (
-    shouldRender &&
-    <div className='w-full h-full px-5 pb-4 flex flex-col items-center'>
-      {/**graphycal profile completed */}
-      <div className='w-full flex flex-col items-center border-b border-color-border transition-all'>
-        <div className="w-24 h-24">
-          <CircleProgressBar
-            percentage={percentageProfileFilled}
-            radius={65}
-            circleWidth='160'
-            strokeWidth='15px'
+    <div className='w-full pb-1 flex-col justify-center bg-white border border-color-border md:hover:border-color-highlighted-clear rounded-lg'>
+      {/**title */}
+      <div className='w-full py-1 px-5 flex flex-row items-center border-b border-color-border'>
+        <div className='w-full flex flex-row'>
+          <SectionTitles
+            sectionTitle={`Profile ${type}`}
+            sectionType='account'
           />
         </div>
-        <div className='w-full py-1 flex flex-row justify-center'>
-          <h4 className='w-fit text-color-text-almost-clear text-sm font-semibold'>
-            Completed
-          </h4>
-        </div>
       </div>
-      <div className='w-full h-fit flex flex-col items-center'>
-        <div className="w-full py-2 flex flex-col">
-          <div className="w-full pb-2">
-            <ProfileScoreOverall profile={profile} />
-          </div>
-          <ProfileScoreOverview profile={profile} />
-        </div>
-      </div>
+      <ProfileOverview percentage={percentageProfileFilled} profile={profile} shouldRender={type === 'overview'} />
+      <ProfileOverall profile={profile} shouldRender={type === 'overall'} />
     </div>
   )
-}
+};
+
+
+
+
+const ProfileOverview = ({ percentage, profile, shouldRender }: any) => (
+  shouldRender &&
+  <div className='w-full py-4 px-5 flex flex-row transition-all'>
+    <div className='w-fit flex flex-col justify-center'>
+      <div className="w-24 h-24">
+        <CircleProgressBar
+          percentage={percentage}
+          radius={65}
+          circleWidth='160'
+          strokeWidth='15px'
+        />
+      </div>
+      <div className='w-24 py-1 flex flex-row justify-center'>
+        <h4 className='w-fit text-color-text-almost-clear text-sm font-semibold'>
+          Completed
+        </h4>
+      </div>
+    </div>
+    <div className="w-full pl-5 flex flex-col">
+      <ProfileScoreOverview profile={profile} />
+    </div>
+  </div>
+);
+
+
+const ProfileOverall = ({ profile, shouldRender }: any) => (
+  shouldRender &&
+  <div className="w-full py-4 px-5 flex flex-col">
+    <ProfileScoreOverall profile={profile} />
+  </div>
+);

@@ -44,10 +44,10 @@ export default function Notifications() {
       }
       setNotificationsToRender(notificationsSelected);
     }
-  }, [accountModule, userNotificationsData, isDashboard, isNotifications]);
+  }, [accountModule, userNotificationsData]);
 
-  const containerClassNames = `${isDashboard ? 'w-full h-full flex-col bg-white border border-color-border shadow-md rounded-lg'
-    : screenNarrow ? 'w-full flex-col px-5 py-16' : 'w-[52rem] px-2 lg:px-8 lg:py-9 flex-col'
+  const containerClassNames = `${isDashboard ? 'w-full h-full flex-col bg-white border-2 border-transparent md:hover:border-color-highlighted-clear shadow-outner md:hover:shadow-none rounded-lg'
+    : screenNarrow ? 'w-full flex-col px-5' : 'w-[52rem] px-2 lg:px-8 lg:py-9 flex-col'
     } flex justify-between transition-all`;
 
 
@@ -58,10 +58,7 @@ export default function Notifications() {
         onMouseLeave={() => setCardHover(false)}
       >
         {/**title */}
-        <div className={
-          `${isDashboard && 'px-5 border-b'
-          } w-full py-1 flex flex-row justify-between items-center border-color-border`
-        }>
+        <div className={`${isDashboard && 'px-5 border-b'} w-full py-1 pb-2 flex flex-row justify-between items-center border-color-border`}>
           <div className='w-full flex flex-row justify-between items-center'>
             <div className='w-full flex flex-row items-center'>
               <SectionTitles

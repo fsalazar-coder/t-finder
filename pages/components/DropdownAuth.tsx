@@ -38,10 +38,10 @@ export default function DropdownAuth() {
 
   return (
     token && dropdownAuth &&
-    <div className="w-full h-full fixed top-[51px] lg:top-[59px] right-0 flex flex-row justify-center z-[80]"
+    <div className="w-full h-full fixed top-[58px] right-0 flex flex-row justify-center z-[80]"
       onClick={() => setDropdownAuth(false)}
     >
-      <div className={`${accountActived ? 'px-5' : 'container'} w-full flex flex-row justify-end`}>
+      <div className={`${accountActived ? 'px-5' : 'container'} w-full px-0 lg:px-5 flex flex-row justify-end`}>
         <ul className={`${screenNarrow ? 'w-52' : 'w-60'
           } h-fit animate-[zoom-in-top_0.2s_ease] flex-col justify-start items-start bg-color-navbar border border-color-border rounded-md transition-all z-50`
         } onClick={(e) => e.stopPropagation()}
@@ -87,7 +87,7 @@ const DropdownElements: React.FC<DropdownElementsProps> = ({ dropdownElements })
           className={
             `${isAccountModuleValue ?
               'text-color-highlighted font-bold' :
-              'text-color-text-almost-clear hover:text-color-text-medium font-normal hover:bg-color-hover hover:cursor-pointer'
+              'text-color-text-almost-clear hover:text-color-secondary font-normal hover:bg-color-hover hover:cursor-pointer'
             } w-full h-auto flex flex-row items-center`
           }
           onClick={() => {

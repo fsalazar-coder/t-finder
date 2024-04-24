@@ -2,13 +2,12 @@ import { useState, useEffect } from 'react';
 import { useUI } from "@/context/ContextUI";
 import { useAuth } from "@/context/ContextAuth";
 import { useAuthData } from "@/context/ContextAuthData";
+import { useAuthSocket } from '@/context/ContextAuthSocket';
 import { userDataHandlerFunction } from '../api/userDataHandlerFunction';
 import { userRequestStatusFunction } from '../api/userRequestStatusFunction';
-import RequestDashboard from './RequestDashboard';
-import RequestsCardsDisplayer from './RequestsCardsDisplayer';
-import RequestsCardsTitles from './RequestsCardsTitles';
+import RequestsCardContent from './RequestsCardContent';
+import RequestsCardTitle from './RequestsCardTitle';
 import dateTimeFunction from '../api/dateTimeFunction';
-import { useAuthSocket } from '@/context/ContextAuthSocket';
 
 interface Request {
   collection: string;
@@ -107,7 +106,6 @@ interface StatusRequestParams {
 }
 
 
-
 export default function Request({ requestType }: any) {
   const { token, userId } = useAuth();
   const { userNotificationsData, setUserNotificationsData, socket } = useAuthSocket();
@@ -130,11 +128,12 @@ export default function Request({ requestType }: any) {
   const [connectionRequestsAccepted, setConnectionRequestsAccepted] = useState<ConnectionRequestsAccepted>({});
   const [goClickUpdate, setGoClickUpdate] = useState('');
   const [statusRequestToRender, setStatusRequestToRender] = useState([]);
+  const [dashboardRequestType, setDashboardRequestType] = useState('Talent');
 
 
   useEffect(() => {
     setRequestMenu(accountModule === 'Talent' ? 'talent-submitted' : 'job-submitted')
-  }, [accountModule, setRequestMenu]);
+  }, [accountModule]);
 
   // Arreglo con todos los candidatos disponibles para cada talent request //
   // y, Arreglo con todos los candidatos que están siendo contactados //
@@ -175,7 +174,7 @@ export default function Request({ requestType }: any) {
       }
       setGoClickUpdate('');
     }
-  }, [token, userId, userRequestData.requestTalent, requestMenu, goClickUpdate]);
+  }, [token, userId, userRequestData.requestTalent, requestMenu]);
 
   // Arreglo con todas las ofertas disponibles para cada job request //
   useEffect(() => {
@@ -215,7 +214,7 @@ export default function Request({ requestType }: any) {
       }
       setGoClickUpdate('');
     }
-  }, [token, userId, userRequestData.requestJob, requestMenu, goClickUpdate])
+  }, [token, userId, userRequestData.requestJob, requestMenu])
 
   useEffect(() => {
     switch (requestMenu) {
@@ -239,8 +238,8 @@ export default function Request({ requestType }: any) {
         break;
     }
   }, [
-    candidates, candidatesRequestTalentId, requestMenu, connectionRequests, 
-    connectionRequestJobId, connectionRequestToAcceptId, candidateToReviewId, 
+    candidates, candidatesRequestTalentId, requestMenu, connectionRequests,
+    connectionRequestJobId, connectionRequestToAcceptId, candidateToReviewId,
     candidatesToRender, connectionRequestsToRender
   ]);
 
@@ -455,6 +454,7 @@ export default function Request({ requestType }: any) {
                 socket?.emit('notification', data);                //webSocket notification
                 setAccountModule('Connections');
                 setUpdate('connections');
+                console.log('se hizo un POST connection')
               })
             });
           }
@@ -521,14 +521,14 @@ export default function Request({ requestType }: any) {
     }
   };
 
+  const dataToRenderDashboard = dashboardRequestType === 'Talent' ? userRequestData?.requestTalent : dashboardRequestType === 'Job' && userRequestData?.requestJob;
   const isDashboard = accountModule === 'Dashboard';
   const shouldRenderRequest = requestType === 'Talent' ? userRequestData?.requestTalent?.length > 0 : userRequestData?.requestJob?.length > 0;
-  const isCardTypeSubmitted = requestMenu === 'talent-submitted' || requestMenu === 'job-submitted';
-  const isButtonBack = !isCardTypeSubmitted;
+  const isRequestMenuSubmitted = requestMenu === 'talent-submitted' || requestMenu === 'job-submitted';
+  const isButtonBack = !isRequestMenuSubmitted;
 
-  const containerClassNames = `${isDashboard ? 'w-full h-full flex-col bg-white border border-color-border shadow-md rounded-lg'
-    : screenNarrow ? 'w-full flex-col px-5 py-16' : 'w-[52rem] px-2 lg:px-8 lg:py-9 flex-col'
-    } flex justify-between transition-all`;
+  const containerClassNames = `${isDashboard ? 'w-full h-full border md:hover:border-color-highlighted-clear' : screenNarrow ? 'w-full' : 'w-[52rem]'
+    } ${(isDashboard || isRequestMenuSubmitted) && 'bg-white border'} flex flex-col justify-start border-color-border rounded-lg transition-all`;
 
   const goCandidatesFromStatusRequestIdCard: any = (value: string) => {
     if (requestType === 'Talent') {
@@ -548,42 +548,29 @@ export default function Request({ requestType }: any) {
 
 
   return (
-    <div className={`w-full h-full flex flex-col items-center`}>
+    <div className={`${screenNarrow && 'px-2'} ${isDashboard ? 'pb-10' : 'py-10'} w-full h-full flex flex-col items-center`}>
       <div className={containerClassNames}
         onMouseEnter={() => setCardHover(true)}
         onMouseLeave={() => setCardHover(false)}
       >
-        <RequestsCardsTitles
-          screenNarrow={screenNarrow}
+        <RequestsCardTitle
           isDashboard={isDashboard}
-          dataType={requestType}
-          dataMenuTitles={requestMenuTitles}
+          isRequestMenuSubmitted={isRequestMenuSubmitted}
           isData={shouldRenderRequest}
-          cardHover={cardHover}
-          openAccountModuleClick={() => setAccountModule(requestType)}
-          openModalFormClick={() => {
-            setRequestModal(requestType);
-            setRequestModalAction('post');
-            setCollectionToChange(requestType === 'Talent' ? 'request_talent' : 'request_job');
-          }}
+          dataType={isDashboard ? dashboardRequestType : requestType}
+          dataMenuTitles={requestMenuTitles}
           isButtonBack={isButtonBack}
           requestBackButton={() => requestBackButton()}
+          dashboardRequestClick={(e: string) => setDashboardRequestType(e)}
+          openAccountModuleClick={() => setAccountModule(requestType)}
         />
-        <RequestDashboard
-          requestType={requestType}
-          statusRequestToRender={statusRequestToRender}
-          statusRequestLast={statusRequestToRender.length - 1}
-          goClick={(value: string) => goCandidatesFromStatusRequestIdCard(value)}
-          shouldRenderComponent={isDashboard}
-          shouldRenderRequest={shouldRenderRequest}
-        />
-        <RequestsCardsDisplayer
+        <RequestsCardContent
           id={requestElements[requestMenu]?.id}
-          dataToRender={requestElements[requestMenu]?.dataToRender}
+          requestType={isDashboard ? dashboardRequestType : requestType}
+          dataToRender={isDashboard ? dataToRenderDashboard : requestElements[requestMenu]?.dataToRender}
           dataToCompare={requestElements[requestMenu]?.dataToCompare as any}
           statusRequestToRender={statusRequestToRender}
           goClick={requestElements[requestMenu]?.goClick}
-          shouldRenderComponent={!isDashboard}
         />
       </div>
     </div>

@@ -3,15 +3,17 @@ import { useUI } from "@/context/ContextUI";
 import { useAuth } from "@/context/ContextAuth";
 import { userDataHandlerFunction } from "../api/userDataHandlerFunction";
 import ItemsCards from "./ItemsCards";
-import SubmenuCarsTitle from "./SubmenuCarsTitle";
+import SubmenuCardTitle from "./SubmenuCardTitle";
 import ProfileScoreOverview from "./ProfileScoreOverview";
 import ProfileScoreOverall from "./ProfileScoreOverall";
 import ButtonPostUpdateDelete from "./ButtonPostUpdateDelete";
 import ImageIconUser from "./ImageIconUser";
-import ProfileCardsDisplayer from "./ProfileCardsDisplayer";
+import ProfileCardContent from "./ProfileCardContent";
+import RequestStatus from "./RequestStatus";
 
-interface UserCardParams {
+interface RequestCardParams {
   data: { [key: string]: string },
+  requestType: string,
   dataBaseCollection: string,
   editDeleteButtonVisible: boolean,
   goClickCondition: boolean,
@@ -36,11 +38,11 @@ interface DataUser {
   user_id: string,
   user_name: string,
   user_image_url: string
-}
+};
 
 
-export default function RequestsCard({ data, dataBaseCollection, editDeleteButtonVisible, goClickCondition, value, goClick }: UserCardParams) {
-  const { requestMenu } = useUI();
+export default function RequestsCard({ data, requestType, dataBaseCollection, editDeleteButtonVisible, goClickCondition, value, goClick }: RequestCardParams) {
+  const { accountModule, requestMenu } = useUI();
   const { token, userId } = useAuth();
   const [isRequestContactAccepted, setIsRequestContactAccepted] = useState(false);
   const [isGoClickDisabled, setIsGoClickDisabled] = useState(true);
@@ -106,12 +108,10 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
       shouldRender: candidateInfo?.recommendations.length > 0,
       length: candidateInfo?.recommendations.length
     }
-  ]), [candidateInfo?.certifications, candidateInfo?.conferences,
-  candidateInfo?.courses, candidateInfo?.education, candidateInfo?.experience,
-  candidateInfo?.publications, candidateInfo?.recommendations]);
+  ]), []);
 
   useEffect(() => {
-    if (requestMenu === 'candidate-review') {
+    if (token && userId && requestMenu === 'candidate-review') {
       let requestJobId = data?.request_job_id;
       userDataHandlerFunction({
         token: token as string,
@@ -126,7 +126,7 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
         onError: (error: any) => console.error(error)
       });
     }
-  }, [token, userId, requestMenu, data?.request_job_id]);
+  }, [token, userId, requestMenu, data]);
 
   //control de texto en botones
   useEffect(() => {
@@ -240,63 +240,56 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
     }
   ];
 
+  const isDashboard: boolean = accountModule === 'Dashboard';
   const isRequestMenuSubmitted = (requestMenu === 'talent-submitted' || requestMenu === 'job-submitted');
   const isRequestMenuCandidates = requestMenu === 'candidates';
   const isRequestMenuReview = requestMenu === 'candidate-review';
-  const candidateProfileIndex: number = reviewMenuIndex > 0 ? reviewMenuIndex - 1 : 0
-  const profileElementsId: string = candidateProfile[candidateProfileIndex]?.id;
-  const profileElementsData: any = candidateProfile[candidateProfileIndex]?.data;
-  const isRenderOverview: boolean = reviewMenuIndex === 0;
   const shouldRenderData: boolean = data ? Object.keys(data).length > 0 : false;
   const heightCardsModule: any = {
-    'talent-submitted': 'h-[430px]',
-    'job-submitted': 'h-[450px]',
-    'candidates': 'h-[500px]',
+    'talent-submitted': 'h-[500px]',
+    'job-submitted': 'h-[500px]',
+    'candidates': 'h-[400px]',
     'requests': 'h-[500px]',
     'candidate-review': 'h-auto',
   };
 
+
   return (
     <>
-      <div className={`${heightCardsModule[requestMenu]} w-full px-5 py-2 flex flex-col bg-white border border-color-border shadow-md rounded-lg transform transition-all`}>
-        {/**title */}
-        <div className={`${!isRequestMenuReview && 'h-[7%] justify-between'} w-full relative pb-2 flex flex-row border-b border-color-border`}>
-          <h2 className='w-fit pr-5 text-color-text-dark font-semibold'>
-            {data?.full_name || data?.title}
-          </h2>
-          {
-            isRequestMenuReview && reviewMenuItems &&
-            <SubmenuCarsTitle
+      <div className={`${!isDashboard && !isRequestMenuSubmitted && `${heightCardsModule[requestMenu]} bg-white border-2 border-transparent md:hover:border-color-highlighted-clear shadow-outner md:hover:shadow-none rounded-lg transform transition-all`} w-full px-5 py-2 flex flex-col`}>
+        {/**card title*/}
+        <div className={`w-full relative flex flex-row justify-between items-center`}>
+          <div className={`${!isRequestMenuReview && 'justify-start'} ${isDashboard ? 'pb-0' : 'pb-2'} w-auto relative flex flex-row justify-between items-center border-color-border`}>
+            <h2 className={`${!isRequestMenuSubmitted && 'hidden'} w-3 h-3 mr-2 flex rounded-full bg-color-secondary border-[3px] border-color-highlighted-clear`} />
+            <h2 className={`w-fit text-color-text-dark font-semibold flex`}>
+              {`${data?.full_name || data?.title} `}
+              {(isDashboard || isRequestMenuSubmitted) && `(${data?.talent_description || data?.job_description})`}
+            </h2>
+            <SubmenuCardTitle
               elements={reviewMenuItems}
               menuIndex={reviewMenuIndex}
               menuIndexRetro={() => setReviewMenuIndex(reviewMenuIndex - 1)}
               menuIndexNext={() => setReviewMenuIndex(reviewMenuIndex + 1)}
+              shouldRenderSubmenu={isRequestMenuReview && reviewMenuItems}
             />
-          }
+          </div>
           <ButtonPostUpdateDelete
             itemId={data?._id}
             action='update-delete'
             buttonType='update-delete-items'
             dataBaseCollection={dataBaseCollection}
-            shouldRenderButton={shouldRenderData && editDeleteButtonVisible && isRequestMenuSubmitted}
+            shouldRenderButton={shouldRenderData && editDeleteButtonVisible && isRequestMenuSubmitted && !isDashboard}
           />
         </div>
-        {/**user fullname */}
-        <div className={`${!isRequestMenuReview && 'h-[93%]'} w-full flex flex-col`}>
-          <div className={`${isRequestMenuReview ? 'flex-col' : 'flex-col justify-between'} w-full h-full flex`}>
+        {/**card content */}
+        <div className={`${!isRequestMenuReview && 'h-[93%]'} ${(isDashboard || isRequestMenuSubmitted) && 'pl-5'} w-full flex flex-col`}>
+          <div className={`${isRequestMenuReview ? '' : 'justify-between'} w-full h-full flex flex-col`}>
             <div className={`${isRequestMenuReview ? 'flex-row-reverse' : 'flex-col'} w-full flex`}>
-              {
-                !isRequestMenuSubmitted &&
-                // user profile image
-                <div className={`${isRequestMenuReview ? 'w-1/5' : 'w-full border-b'} py-2 flex flex-row justify-center items-center border-color-border`}>
-                  <div className="w-24 h-24 flex flex-col justify-center items-center">
-                    <ImageIconUser
-                      type={'request'}
-                      otherUserImageUrl={data?.profile_image_url as string}
-                    />
-                  </div>
-                </div>
-              }
+              <RequestCardImage
+                shouldRender={!isRequestMenuSubmitted}
+                data={data}
+                isRequestMenuReview={isRequestMenuReview}
+              />
               {
                 isRequestMenuCandidates && candidateProfile ?
                   <div className="w-full py-2 flex flex-col">
@@ -306,50 +299,92 @@ export default function RequestsCard({ data, dataBaseCollection, editDeleteButto
                     <ProfileScoreOverview profile={candidateProfile} />
                   </div>
                   :
-                  <ul className={`${isRequestMenuReview ? 'w-4/5 flex-wrap' : 'w-full flex-col'} py-2 flex`}>
-                    {data && <ItemsCards element={data as any} carsModel={isRequestMenuReview ? 'horizontal' : 'vertical'} />}
-                  </ul>
+                  <div className={`${isDashboard && 'flex-col lg:flex-row'} w-full h-full flex flex-col justify-between`}>
+                    <div className={`${isDashboard && 'w-full lg:w-2/5'} flex flex-col`}>
+                      <ul className={`${isRequestMenuReview ? 'w-4/5 flex-wrap' : 'w-full flex-col'} py-2 flex`}>
+                        <ItemsCards
+                          element={data as any}
+                          cardModel={isRequestMenuReview ? 'horizontal' : 'vertical'}
+                          itemsCardType={requestType}
+                        />
+                      </ul>
+                    </div>
+                    <RequestStatus
+                      requestType={requestType}
+                      shouldRender={isDashboard}
+                    />
+                  </div>
               }
             </div>
-            {/**buttons go to: candidates, offers or rivew */}
-            <div className={`w-full h-fit pb-2 flex flex-row justify-end`}>
-              <button
-                id='button-go-to'
-                className={
-                  `${isGoClickDisabled ? 'bg-slate-400' : 'bg-color-highlighted hover:bg-color-highlighted-clear'
-                  } w-full px-4 py-2 flex flex-row justify-center items-center rounded-lg font-semibold transition-all`}
-                disabled={isGoClickDisabled}
-                onClick={() => goToClick()}
-              >
-                <h4 className="h-4 text-white text-[14px] flex flex-row items-center">
-                  {goClickTitle}
-                </h4>
-              </button>
-            </div>
+            {
+              !isDashboard &&
+              /**buttons go to: candidates, offers or rivew */
+              <div className={`w-full h-fit pb-2 flex flex-row justify-end`}>
+                <button
+                  id='button-go-to'
+                  className={
+                    `${isGoClickDisabled ? 'bg-slate-400' : 'bg-color-highlighted hover:bg-color-highlighted-clear'
+                    } w-full px-4 py-2 flex flex-row justify-center items-center rounded-lg font-semibold transition-all`}
+                  disabled={isGoClickDisabled}
+                  onClick={() => goToClick()}
+                >
+                  <h4 className="h-4 text-white text-[14px] flex flex-row items-center">
+                    {goClickTitle}
+                  </h4>
+                </button>
+              </div>
+            }
           </div>
         </div>
-      </div >
-      {
-        isRequestMenuReview &&
-        <div className={`w-full flex flex-col`}>
-          {
-            isRenderOverview ?
-              <div className="w-full mt-1 px-5 py-5 flex flex-col bg-white border border-color-border shadow-md rounded-lg transform transition-all">
-                {candidateProfile && <ProfileScoreOverview profile={candidateProfile} />}
-              </div>
-              :
-              profileElementsData &&
-              <ProfileCardsDisplayer
-                id={profileElementsId}
-                key={profileElementsId}
-                data={profileElementsData}
-                collectionName={profileElementsId}
-              />
-          }
-        </div>
-      }
+      </div>
+      <CandidateReview
+        shouldRender={isRequestMenuReview}
+        candidateProfile={candidateProfile}
+        reviewMenuIndex={reviewMenuIndex}
+      />
     </>
   )
 };
 
 
+const RequestCardImage: any = ({ shouldRender, data, isRequestMenuReview }: any) => {
+  return (
+    shouldRender &&
+    <div className={`${isRequestMenuReview ? 'w-1/5' : 'w-full border-b'} py-2 flex flex-row justify-center items-center border-color-border`}>
+      <div className="w-24 h-24 flex flex-col justify-center items-center">
+        <ImageIconUser
+          type={'request'}
+          otherUserImageUrl={data?.profile_image_url as string}
+        />
+      </div>
+    </div>
+  )
+};
+
+const CandidateReview: any = ({ shouldRender, candidateProfile, reviewMenuIndex }: any) => {
+
+  const candidateProfileIndex: number = reviewMenuIndex > 0 ? reviewMenuIndex - 1 : 0;
+  const profileElementsId: string = candidateProfile[candidateProfileIndex]?.id;
+  const profileElementsData: any = candidateProfile[candidateProfileIndex]?.data;
+  const renderOverview: boolean = reviewMenuIndex === 0;
+
+  return (
+    shouldRender &&
+    <div className={`w-full flex flex-col`}>
+      {
+        renderOverview ?
+          <div className="w-full mt-1 px-5 py-5 flex flex-col bg-white border border-color-border shadow-md rounded-lg transform transition-all">
+            {candidateProfile && <ProfileScoreOverview profile={candidateProfile} />}
+          </div>
+          :
+          profileElementsData &&
+          <ProfileCardContent
+            id={profileElementsId}
+            key={profileElementsId}
+            data={profileElementsData}
+            collectionName={profileElementsId}
+          />
+      }
+    </div>
+  )
+}

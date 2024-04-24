@@ -4,7 +4,6 @@ import { useAuth } from '@/context/ContextAuth';
 import { IconCancel } from '../../icons/icons';
 
 
-
 export default function PasswordReset(props: any) {
   const { setMessageModal } = useUI();
   const { passwordResetModal, setPasswordResetModal } = useAuth();

@@ -1,13 +1,9 @@
-import { useAuth } from '@/context/ContextAuth';
 import { IconCheckCircle } from '../../icons/icons';
 import Image from 'next/image';
 import SectionTitles from './SectionTitles';
 
 
 export default function Presentation(props: any) {
-
-  const { token, setJoinModal } = useAuth();
-
 
   return (
     <div className='container w-full min-h-screen pt-20 px-0 md:px-5 flex flex-col list-none transition-all'>

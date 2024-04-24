@@ -19,19 +19,18 @@ export default function ProfileScoreOverall({ profile }: any) {
 
   return (
     <div className={`w-full h-full flex flex-col`}>
+
       <div className='w-full pb-[1px] flex flex-row items-center'>
-        <h4 className='text-color-text-dark text-sm font-semibold flex flex-row items-center'>
+        <h5 className='text-color-dark font-medium text-xs flex flex-row items-center'>
           Overall score
-        </h4>
-        <h5 className='pl-1 text-color-text-medium text-xs font-normal'>
-          (pts):
         </h5>
-      </div>
-      <div className='w-full relative flex flex-row justify-center border border-color-border rounded-full overflow-hidden z-0'>
-        <h6 className='w-fit text-[10px] text-color-text-dark font-semibold'>
-          {`${scoreProfile}/${scoreProfileMax}`}
+        <h6 className='pl-1 text-color-dark font-medium text-xs flex flex-row items-center'>
+          {`(${scoreProfile}/${scoreProfileMax} pts)`}
         </h6>
-        <div style={{ width: `${percentage}%` }} className={`h-full absolute left-0 top-0 bg-color-secondary-clear -z-10`} />
+      </div>
+
+      <div className='w-full h-2 relative flex flex-row justify-center border border-color-border rounded-full overflow-hidden z-0'>
+        <div style={{ width: `${percentage}%` }} className={`h-full absolute left-0 top-0 bg-color-secondary -z-10`} />
         <div className={`w-full h-full absolute left-0 top-0 bg-color-clear -z-20`} />
       </div>
     </div>

@@ -10,10 +10,6 @@ interface UserProfileData {
   experience: Experience[];
   education: Education[];
   courses: Courses[];
-  projects: Projects[];
-  publications: Publications[];
-  conferences: Conferences[];
-  certifications: Certifications[];
   recommendations: Recommendations[];
 };
 
@@ -46,35 +42,6 @@ interface Experience {
   achievements: string,
   technologies_used: string,
   team_size: string,
-}
-
-interface Projects {
-  project_name: string,
-  role: string,
-  technologies_used: string,
-  description: string,
-  project_url: string,
-}
-
-interface Publications {
-  publication_title: string,
-  authors: string,
-  journal_name: string,
-  year_published: number,
-}
-
-interface Conferences {
-  presentation_title: string,
-  conference_name: string,
-  location: string,
-  year: number,
-}
-
-interface Certifications {
-  certification_name: string,
-  issuing_organization: string,
-  license_number: number,
-  year_issued: number,
 }
 
 interface Recommendations {
@@ -194,10 +161,6 @@ export const AuthDataProvider = ({ children }: DataProviderProps): JSX.Element =
     experience: [],
     education: [],
     courses: [],
-    projects: [],
-    publications: [],
-    conferences: [],
-    certifications: [],
     recommendations: []
   });
   const [userProfileScore, setUserProfileScore] = useState<number>(0);
@@ -340,24 +303,6 @@ export const AuthDataProvider = ({ children }: DataProviderProps): JSX.Element =
             length: userProfileData.courses.length
           },
           {
-            id: 'publications',
-            data: userProfileData.publications,
-            shouldRender: userProfileData.publications.length > 0,
-            length: userProfileData.publications.length
-          },
-          {
-            id: 'conferences',
-            data: userProfileData.conferences,
-            shouldRender: userProfileData.conferences.length > 0,
-            length: userProfileData.conferences.length
-          },
-          {
-            id: 'certifications',
-            data: userProfileData.certifications,
-            shouldRender: userProfileData.certifications.length > 0,
-            length: userProfileData.certifications.length
-          },
-          {
             id: 'recommendations',
             data: userProfileData.recommendations,
             shouldRender: userProfileData.recommendations.length > 0,
@@ -445,13 +390,11 @@ export const AuthDataProvider = ({ children }: DataProviderProps): JSX.Element =
           setAccountModule(goto.account);
           setConnectionRequestJobId(goto.requestId);
           setGotoCounter(1);
-          console.log('Goto 1')
           break;
         case 1:
           setRequestMenu(goto.menu);
           setConnectionRequestJobId(goto.requestId);
           setGotoCounter(2);
-          console.log('Goto 2')
           break;
         case 2:
           setRequestMenu(goto.menu);
@@ -459,7 +402,6 @@ export const AuthDataProvider = ({ children }: DataProviderProps): JSX.Element =
           setTimeout(() => {
             setGoto(null);
           }, 1000);
-          console.log('Goto 3')
           break;
         default:
           break;
@@ -478,10 +420,6 @@ export const AuthDataProvider = ({ children }: DataProviderProps): JSX.Element =
         experience: [],
         education: [],
         courses: [],
-        projects: [],
-        publications: [],
-        conferences: [],
-        certifications: [],
         recommendations: []
       });
       setUserProfileScore(0);
@@ -508,15 +446,11 @@ export const AuthDataProvider = ({ children }: DataProviderProps): JSX.Element =
   return (
     <ContextAuthData.Provider value={{
       userImageUrl, setUserImageUrl,
-      userProfileData,
-      setUserProfileData,
+      userProfileData, setUserProfileData,
       userProfileScore, setUserProfileScore,
-      userRequestData,
-      setUserRequestData,
-      connectionRequestJobId,
-      setConnectionRequestJobId,
-      userRequestStatusData,
-      setUserRequestStatusData,
+      userRequestData, setUserRequestData,
+      connectionRequestJobId, setConnectionRequestJobId,
+      userRequestStatusData, setUserRequestStatusData,
       profileModal, setProfileModal,
       profileModalAction, setProfileModalAction,
       requestModal, setRequestModal,

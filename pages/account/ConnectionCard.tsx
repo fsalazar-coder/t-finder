@@ -42,7 +42,7 @@ export default function ConnectionCard({ data, unreadMessagesToConnectedUser }: 
 
 
   return (
-    <div className={`w-full h-[400px] px-5 py-2 flex flex-col bg-white border border-color-border shadow-md rounded-lg transform transition-all`}>
+    <div className={`w-full h-[400px] px-5 py-2 flex flex-col bg-white border-2 border-transparent md:hover:border-color-highlighted-clear shadow-outner md:hover:shadow-none rounded-lg transform transition-all`}>
       <div className={`w-full h-full flex flex-col`}>
         <div className={`flex-col justify-between w-full h-full flex`}>
           <div className={`flex-col w-full flex`}>
@@ -56,13 +56,13 @@ export default function ConnectionCard({ data, unreadMessagesToConnectedUser }: 
                   />
                   {
                     unreadMessagesToConnectedUser > 0 &&
-                    <div className="w-fit h-fit absolute right-0 -top-2 flex flex-col justify-center items-center">
-                      <div className="w-fit h-fit relative flex flex-row justify-center">
-                        <i className="w-fit h-fit absolute top-[1px] flex text-color-notification-alert text-3xl stroke-1 stroke-white drop-shadow-md z-0">
+                    <div className="w-fit h-fit absolute right-0 bottom-2 flex flex-col justify-center items-center">
+                      <div className="w-6 h-6 relative flex flex-row justify-center items-center bg-color-notification-alert rounded-full">
+                        <i className="absolute top-[3px] flex text-white text-xl stroke-1 stroke-white z-0">
                           <IconMessageNotification />
                         </i>
-                        <h6 className="w-full h-fit p-1 flex text-white text-sm font-bold text-center z-10">
-                          {unreadMessagesToConnectedUser}
+                        <h6 className="w-fit h-fit pb-[2px] flex text-color-notification-alert text-[10px] font-bold text-center z-10">
+                          {unreadMessagesToConnectedUser < 10 ? unreadMessagesToConnectedUser : '+9'}
                         </h6>
                       </div>
                     </div>

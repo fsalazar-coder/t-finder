@@ -5,9 +5,6 @@ export const userProfileScoreFunction = (data: any, request: string) => {
     experience: 40,
     education: 70,
     courses: 30,
-    publications: 20,
-    conferences: 20,
-    certifications: 30,
     recommendations: 15
   };
 
@@ -29,9 +26,6 @@ export const userProfileScoreFunction = (data: any, request: string) => {
     experience: 0,
     education: 0,
     courses: 0,
-    publications: 0,
-    conferences: 0,
-    certifications: 0,
     recommendations: 0
   }
   const calculateScore = (elementLength: any, pointsPerItem: any, maxPoints: any) => {
@@ -59,15 +53,6 @@ export const userProfileScoreFunction = (data: any, request: string) => {
         break;
       case 'courses':
         scores.courses += calculateScore(elementLength, 5, maxPoints.courses);
-        break;
-      case 'publications':
-        scores.publications += calculateScore(elementLength, 4, maxPoints.conferences);
-        break;
-      case 'conferences':
-        scores.conferences += calculateScore(elementLength, 4, maxPoints.conferences);
-        break;
-      case 'certifications':
-        scores.certifications += calculateScore(elementLength, 6, maxPoints.certifications);
         break;
       case 'recommendations':
         scores.recommendations += calculateScore(elementLength, 3, maxPoints.recommendations);

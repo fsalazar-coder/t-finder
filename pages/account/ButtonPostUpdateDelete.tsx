@@ -13,33 +13,7 @@ interface ButtonTitleParams {
   shouldRenderButton: boolean;
 }
 
-interface ButtonsTypeConfig {
-  [key: string]: ActionType;
-}
-
-interface ActionType {
-  [key: string]: Config
-}
-
-interface Config {
-  id: string;
-  click: () => void;
-}
-
-interface AddInfo {
-  id: string,
-  comment: string,
-  click: () => void
-};
-
-interface NewPostAccountParams {
-  screenNarrow: boolean,
-  nameButtonPostAccount: string,
-  renderCondition: boolean,
-  clickAddButton: () => void
-}
-
-type ButtonType = 'menu-dashboard' | 'post-dashboard' | 'post-account' | 'update-delete-items'; ///  | 'profile-items' | 'request-items' | 'profile-title-dashboard' | 'profile-title' | 'request-title-dashboard' | 'request-title';
+type ButtonType = 'menu-dashboard' | 'post-dashboard' | 'post-account' | 'update-delete-items';
 
 
 export default function ButtonPostUpdateDelete({ itemId, action, buttonType, dataBaseCollection, shouldRenderButton }: ButtonTitleParams) {
@@ -47,17 +21,18 @@ export default function ButtonPostUpdateDelete({ itemId, action, buttonType, dat
   const { screenNarrow, setAccountModule, setMessageModal } = useUI();
   const { setProfileModal, setProfileModalAction, setRequestModal, setRequestModalAction, setCollectionToChange, setItemIdToChange, setUserProfileData, setUserRequestData } = useAuthData();
   const { accountModule } = useUI();
+  const isDasboard: boolean = accountModule === 'Dashboard';
   const isMenuDashboard = buttonType === 'menu-dashboard';
   const isPostDashboard = buttonType === 'post-dashboard';
-  const nameButtonPostAccount: any = { 'Profile': dataBaseCollection, 'Talent': 'request', 'Job': 'request' };
+  const nameButtonPostAccount: any = { 'Profile': dataBaseCollection, 'Talent': 'request', 'Job': 'request', 'request_talent': 'request', 'request_job': 'request' };
   const nameButtonPostDashboard: any = { 'personal_info': 'personal info', 'request_talent': 'request', 'request_job': 'request' };
   const requestType: any = dataBaseCollection === 'request_talent' ? 'Talent' : 'Job';
   const baseIconClass: any = `${isPostDashboard ? 'text-[8rem]' : 'text-xl lg:text-2xl'}  flex flex-row justify-center rounded-full cursor-default lg:cursor-pointer transition-all`
 
   const buttonsAction: any = {
     menu: { icon: <IconMenuI />, iconClass: `${baseIconClass} text-color-text-almost-clear` },
-    post: { icon: <IconAdd />, iconClass: `${baseIconClass} text-green-400 lg:text-color-text-almost-clear lg:hover:text-green-500 p-[2px]` },
-    update: { icon: <IconEdit />, iconClass: `${baseIconClass} text-green-400 lg:text-color-text-almost-clear lg:hover:text-green-500` },
+    post: { icon: <IconAdd />, iconClass: `${baseIconClass} text-color-highlighted-clear lg:text-color-text-almost-clear lg:hover:text-color-highlighted-clear p-[2px]` },
+    update: { icon: <IconEdit />, iconClass: `${baseIconClass} text-color-highlighted-clear lg:text-color-text-almost-clear lg:hover:text-color-highlighted-clear` },
     delete: { icon: <IconDelete />, iconClass: `${baseIconClass} text-red-400 lg:text-color-text-almost-clear lg:hover:text-red-500` },
   };
 
@@ -182,7 +157,7 @@ export default function ButtonPostUpdateDelete({ itemId, action, buttonType, dat
         buttonsAction={buttonsAction}
         screenNarrow={screenNarrow}
         renderCondition={shouldRenderButton}
-        nameButtonPostAccount={nameButtonPostAccount[accountModule]}
+        nameButtonPostAccount={nameButtonPostAccount[isDasboard ? dataBaseCollection : accountModule]}
         click={() => setModalState()}
       />,
     'update-delete-items':
@@ -245,7 +220,7 @@ const MenuDashboard: any = ({ renderCondition, buttonsAction, click }: any) => {
 const PostDashboard: any = ({ renderCondition, buttonsAction, nameButtonPostDashboard, click }: any) => {
   return (
     renderCondition &&
-    <div id={`new-post-`} className='w-full h-full flex flex-col justify-center items-center transition-all'>
+    <div id={`new-post`} className='w-full h-full flex flex-col justify-center items-center transition-all'>
       <button
         className='w-full flex flex-col justify-center items-center hover:cursor-default'
         onClick={() => click()}
